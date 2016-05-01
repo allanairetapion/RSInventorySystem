@@ -13,33 +13,29 @@
 </style>
   </head>
 <body>
-	<div class="container">
-	  		<center><img src="/img/remoteStaff.jpg" class="img-responsive"\>
-		<div class="row">
-			<div class="col-sm-offset-4 col-sm-4">
-				<div class="well">
-					<form role="form">
-		  				<div class="form-group">
-		    				<input type="email" class="form-control" id="email" placeholder="Username">
-		  				</div>
-		  				
-		  				<div class="form-group">
-		    				<input type="password" class="form-control" id="pwd" placeholder="Password">
-		  				</div>
-		  				
-		  				<button type="button" class="btn btn-primary btn-block">Login</button>
-					</form>
-					
-		 			<div class="container-fluid">
-		              <br>
-		              <a class="small" href="#">Forgot password?</a>
-		            </div> 
-					
-					<label><font size="2">Do not have an account?</label><br>
-		 			<button type="button" class="btn btn-default btn-block">Create an account</button>
-				</div>
-			</div>	
-		</div>
-	</div>
+<div class="container">
+  <center><img src="/img/remoteStaff.jpg" class="img-responsive">
+  
+
+
+<div class="row">
+	<div class="col-sm-offset-4 col-sm-4">
+	<div class="well">
+		<form role="form">
+  <div class="form-group">
+    <input type="email" class="form-control" id="email" placeholder="Username">
+  </div>
+  <div class="form-group">
+    <input type="password" class="form-control" id="pwd" placeholder="Password">
+  </div>
+  <button type="button" class="btn btn-primary btn-block">Login</button>
+</form>
+ <div class="container-fluid">
+              <br>
+              <a class="small" href="#">Forgot password?</a>
+            </div> 
+			<label><font size="2">Do not have an account?</label><br>
+ <button type="button" class="btn btn-default btn-block">Create an account</button>
+
 </body>
 </html>
