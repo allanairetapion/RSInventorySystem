@@ -58,7 +58,7 @@
 							<a href="index.html"><i class="fa fa-th-large"></i> <span class="nav-label">Dashboards</span> <span class="fa arrow"></span></a>
 							<ul class="nav nav-second-level">
 								<li class="active">
-									<a href="InventorySys/index">Dashboard v.1</a>
+									<a href="inventory/index">Dashboard v.1</a>
 								</li>
 								<li>
 									<a href="dashboard_2.html">Dashboard v.2</a>
