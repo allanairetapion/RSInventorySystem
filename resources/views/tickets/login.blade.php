@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html>
 
 <head>
@@ -26,16 +27,28 @@
             <div>              
 				<div class="well">
 		            <form class="m-t" role="form" method="post" action="login"  >
-		            	 <input type="hidden" name="_token" value="{{ csrf_token() }}">
-		                <div class="form-group">
-		                    <input type="email" class="form-control" placeholder="Email" name="email" required="">
+		            	 {!! csrf_field() !!}
+		            	  @if ($errors->has('password'))
+      									<center><label class="label-danger"><strong>Email or Password<strong> didn't match. </label></center>
+  									<br>
+                             @endif
+                             @if ($errors->has('email'))
+      									<center><label class="label-danger"><strong>Email<strong> doesn't exist. Are you sure you have an account?</label></center>
+  									<br>
+                             @endif
+                             
+		                <div class="form-group{{ $errors->has('email') ? ' has-error' : '' }}">
+		                    <input type="email" class="form-control" placeholder="Email" value="{{ old('email') }}"name="email" required="">
+		                     
 		                </div>
-		                <div class="form-group">
+		                <div class="form-group{{ $errors->has('password') ? ' has-error' : '' }}">
 		                    <input type="password" class="form-control" placeholder="Password" name="password" required="">
+		     
 		                </div>
-		                <button type="submit" action="" class="btn btn-primary block full-width m-b">Login</button>
+		                <button type="submit" action="" class="btn btn-primary block full-width m-b">
+		                	<i class="fa fa-btn fa-sign-in"></i>Login</button>
 		
-		                <a href="#"><small>Forgot password?</small></a>
+		                <a href="/tickets/forgotPassword"><small>Forgot password?</small></a>
 		                <p class="text-muted text-center"><small>Do not have an account?</small></p>
 		                <a class="btn btn-sm btn-white btn-block" href="/tickets/signUp">Create an account</a>
 		            </form>

@@ -30,7 +30,7 @@
     <div class="middle-box text-center loginscreen   animated fadeInDown">
     	<div class="well">         
         	<form class="m-t" role="form" method="Post" action="signUp">
-        		 <input type="hidden" name="_token" value="{{ csrf_token() }}">
+        		 {!! csrf_field() !!}
             	<div class="form-group">
                     <input type="text" class="form-control" placeholder="First Name" name="fname"required="">
                     <input type="text" class="form-control" placeholder="Last Name" name="lname"required="">
@@ -41,13 +41,19 @@
                 </div>
                 
                 <div class="form-group">
-                    <input type="password" class="form-control" placeholder="Password" name="password" required="">
-                </div>
-                
-				<div class="form-group">
                     <input type="password" class="form-control" placeholder="Department" name="dept" required="">
                 </div>
                 
+                
+                <div class="form-group">
+                    <input type="password" class="form-control" placeholder="Password" name="password" required="" pattern=".{6,}" title="6 characters minimum">
+                </div>
+                
+                <div class="form-group">
+                    <input type="password" class="form-control" placeholder="Confirm Password" name="Cpassword" required="">
+                </div>
+                
+				
                 <button type="submit" class="btn btn-primary block full-width m-b">Register</button>
 
                 <p class="text-muted text-center"><small>Already have an account?</small></p>
@@ -59,6 +65,7 @@
 
     </div>
     
+   
 </body>
 
 </html>

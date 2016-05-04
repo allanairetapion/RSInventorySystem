@@ -12,7 +12,8 @@
     <link href="css/plugins/iCheck/custom.css" rel="stylesheet">
     <link href="/css/animate.css" rel="stylesheet">
     <link href="/css/style.css" rel="stylesheet">
-
+	<script src="/js/jquery-2.1.1.js"></script>
+	<script src="/js/bootstrap.min.js"></script>
 </head>
 
 <body class="gray-bg">
@@ -26,18 +27,25 @@
                     <h2 class="font-bold">Forgot password</h2>
 
                     <p>
-                        Enter your email address and your password will be reset and emailed to you.
+                        Enter your email address and we will send a verification code to reset your password.
                     </p>
 
                     <div class="row">
 
                         <div class="col-lg-12">
-                            <form class="m-t" role="form" action="index.html">
+                            <form class="m-t" role="form" action="forgotPassword" method="post">
+                            	{!! csrf_field() !!}
                                 <div class="form-group">
-                                    <input type="email" class="form-control" placeholder="Email address" required="">
+                                    <input type="email" class="form-control" name="email" placeholder="Email address" required="">
+                                  @if($errors->has('email'))
+   										<br>
+      									<center><label class="label-danger"><strong>Email<strong> doesn't exist. Are you sure you have an account?</label></center>
+  									
+								  @endif
                                 </div>
+                                 
 
-                                <button type="submit" class="btn btn-primary block full-width m-b">Send new password</button>
+                                <button type="submit" class="btn btn-primary block full-width m-b">Send Verification Code</button>
 
                             </form>
                         </div>
@@ -56,6 +64,11 @@
         </div>
     </div>
 
+	<script>
+		
+			$('span').hide();
+		
+	</script>
 </body>
 
 </html>
