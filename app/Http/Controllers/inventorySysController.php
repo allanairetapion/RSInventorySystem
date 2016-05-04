@@ -5,13 +5,13 @@ use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
 
-class indexhtmlcontroller extends Controller{
+class inventorySysController extends Controller{
 	/**
 	 * Show the login page for the given user
 	 * 
 	 */
 	 public function showIndex(){
-	 	return view("InventorySys.index");
+	 	return view("inventory.index");
 	 }
 	 
 	/**
