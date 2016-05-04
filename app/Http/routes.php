@@ -13,7 +13,7 @@
 
 Route::get('/', "UserController@showDashboard");
 
-Route::get('/inventory/index',"inventorySysController@showIndex");
+Route::get('/InventorySys/index',"indexhtmlcontroller@showIndex");
 	
 
 Route::get('/dashboard', "UserController@showDashboard");
