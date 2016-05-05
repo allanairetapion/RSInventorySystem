@@ -1,33 +1,7 @@
-<!DOCTYPE html>
-<html>
-
-<head>
-
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Tickets Sign Up</title>
-
-	<link href="/css/bootstrap.min.css" rel="stylesheet">
-    <link href="font-awesome/css/font-awesome.css" rel="stylesheet">
-    <link href="css/plugins/iCheck/custom.css" rel="stylesheet">
-    <link href="/css/animate.css" rel="stylesheet">
-    <link href="/css/style.css" rel="stylesheet">
-    
-    <script src="/js/bootstrap.min.js"></script>
-    <script src="/js/jquery-2.1.1.js"></script>
-    <script src="/js/bootstrap.min.js"></script>
-    <script src="js/plugins/iCheck/icheck.min.js"></script>
-</head>
-
-<body class="white-bg">
-	<br><br>
-
-        <center><img src="/img/remote-staff-logo.jpg" class="img-responsive"></center>
-		<br>
-	
-
-    <div class="middle-box text-center loginscreen   animated fadeInDown">
+@extends('tickets.ticketlayout1')
+@section('title', 'Remote Staff - Sign Up')
+@section('body')
+<div class="middle-box text-center loginscreen   animated fadeInDown">
     	<div class="well">         
         	<form class="m-t" role="form" method="Post" action="signUp">
         		 {!! csrf_field() !!}
@@ -47,11 +21,10 @@
                 
                 <div class="form-group">
                     <input type="password" class="form-control" placeholder="Password" name="password" required="" pattern=".{6,}" title="6 characters minimum">
+                	<input type="password" class="form-control" placeholder="Confirm Password" name="Cpassword" required="">
                 </div>
                 
-                <div class="form-group">
-                    <input type="password" class="form-control" placeholder="Confirm Password" name="Cpassword" required="">
-                </div>
+              
                 
 				
                 <button type="submit" class="btn btn-primary block full-width m-b">Register</button>
@@ -62,10 +35,13 @@
             </form>
             
         </div class="well">
-
+		<div class="row">
+            <div class="col-md-7">
+                Copyright Remote Staff Inc
+            </div>
+            <div class="col-md-5 text-right">
+               <small>© 2014-2015</small>
+            </div>
+        </div>
     </div>
-    
-   
-</body>
-
-</html>
+    @endsection

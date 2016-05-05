@@ -1,18 +1,16 @@
 @extends('tickets.ticketlayout1')
-@section('title', 'Remote Staff - Forgot Password')
+@section('title', 'Remote Staff - Verify Code')
 @section('body')
-
-
  <div class="passwordBox animated fadeInDown">
         <div class="row">
 
             <div class="col-md-12">
                 <div class="ibox-content">
 
-                    <h2 class="font-bold">Forgot password</h2>
+                    <h2 class="font-bold">Verify Code</h2>
 
                     <p>
-                        Enter your email address and we will send a verification code to reset your password.
+                        Enter the verification code sent to your email address to continue.
                     </p>
 
                     <div class="row">
@@ -25,12 +23,12 @@
                             <form class="m-t" role="form" action="forgotPassword" method="post">
                             	{!! csrf_field() !!}
                                 <div class="form-group">
-                                    <input type="email" class="form-control" name="email" placeholder="Email address" required="">
+                                    <input type="text" class="form-control" name="vcode" placeholder="Code here" required="">
                                  
                                 </div>
                                  
 
-                                <button type="submit" class="btn btn-primary block full-width m-b">Send Verification Code</button>
+                                <button type="submit" class="btn btn-primary block full-width m-b">Submit</button>
 
                             </form>
                         </div>
@@ -48,4 +46,5 @@
             </div>
         </div>
     </div>
+
 @endsection    
