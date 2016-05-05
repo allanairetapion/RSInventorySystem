@@ -31,9 +31,11 @@ class TicketsController extends Controller{
 	 }
 	 
 	 public function showSignUp(){
-	 	return view("tickets.ticketSignUp");
+	 	return view("tickets.SignUp");
 	 }
-	 
+	  public function showSignUpSuccess(){
+		return view("tickets.signUpSuccess");
+	}	 	
 	 public function showForgotPassword(){
 	 	return view("tickets.forgotpassword");
 	 }
@@ -42,16 +44,23 @@ class TicketsController extends Controller{
 	 public function landingPage(Request $request){
 	 	return view("tickets.landingPage");
 	 }
-	 
-	   
+	 public function showChangePassword(){
+		return view("tickets.ChangePassword");
+	}
+	 public function showChangePasswordSuccess(){
+		return view("tickets.changePasswordSuccess");
+	}	 	 
+	 public function showCodeVerification()
+	 {
+		return view("tickets.enterVerificationCode"); 
+	 }  
+	  
 	 public function processSignUP(Request $request){
 	 	
 		
 		 // get all the data that has been posted from the form
 		 $post_data = $request->all();
-		
-		
-			
+				
 		 $client = new Client();
 		 $client->department_id = $post_data['dept'];
 		 $client->email = $post_data['email'];
@@ -66,40 +75,29 @@ class TicketsController extends Controller{
 		 $clientProfile->first_name = $post_data['fname'];
 		 $clientProfile->last_name = $post_data['lname'];
 		 $clientProfile->date_updated=date('Y-m-d H:i:s');	
-		 $clientProfile->save();
-			
-		 
+		 $clientProfile->save();		 
 	 }
 	 
 	 public function processLogIn (Request $request){
-	 	 $post_data = $request->all();
-		 
-		 $client = Client::where('email','=',$post_data['email'])->first();
-		 $request->password = sha1("$request->password");
-		 $validator = Validator::make($request->all(), 	
-	 	['email' => 'required|exists:clients,email',
-	 	 'password'=> 'required|exists:clients,password|min:6,password_confirmation']);
+	 	 $post_data = $request->all();		 
+		 $client = Client::where('email','=',$post_data['email'])->first();		 
+		 $request['password'] = sha1($post_data['password']); 
+		 $validator = Validator::make($request->all(),	['email' => 'required|exists:clients,email',
+	 	 'password'=> 'exists:clients,password|required|min:6']);
 		
 		 
 	if ($validator->fails()) {
+		echo $request['password'];
 		return redirect('tickets/login')
                         ->withErrors($validator)
-                        ->withInput();
+                        ->withInput();						
       	}
-    else{
-        	if ($client->password == sha1($post_data['password'])){
-        		return redirect('tickets/landingPage');
-        		}
-			else{
-				return redirect('tickets/login')->withInput()->withErrors('password');;		
-	  			}	 	 
+    else{ 	
+        return redirect('tickets/landingPage'); 
 	 	}
 	 }		 	 
 	 
-	 
-	public function processForgot(Request $request)
-	 {
-	 	
+	public function processForgot(Request $request){	 	
 	 	$validator = Validator::make($request->all(), 
 	 	['email' => 'required|exists:clients,email']);
 		
@@ -110,10 +108,11 @@ class TicketsController extends Controller{
                         ->withInput();
         }
         else{
-        	echo "exists";
-            
+        	echo "exists";            
         }	
-	  }	 	 
+	}
+	
+		 
 }
 
 ?>

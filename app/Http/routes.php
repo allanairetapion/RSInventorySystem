@@ -24,12 +24,15 @@ Route::get("/tickets/login", "TicketsController@showLogin");
 Route::get("/tickets/signUp", "TicketsController@showSignUp");
 Route::get("/tickets/forgotPassword", "TicketsController@showForgotPassword");
 Route::get("/tickets/landingPage", "TicketsController@landingPage");
-
+Route::get("tickets/changePassword","TicketsController@showChangePassword");
+Route::get("tickets/changePasswordSuccess","TicketsController@showChangePasswordSuccess");
+Route::get("tickets/signUpSuccess","TicketsController@showSignUpSuccess");
+Route::get("tickets/codeVerification","TicketsController@showCodeVerification");
 
 Route::post('/tickets/signUp', "TicketsController@processSignUp");
 Route::post('/tickets/login', "TicketsController@processLogIn");
 Route::post('/tickets/forgotPassword', "TicketsController@processForgot");
-
+// End Tickets
 Route::get('/home', 'HomeController@index');
 
 Route::auth();
