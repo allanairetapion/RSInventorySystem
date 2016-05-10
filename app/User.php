@@ -3,19 +3,18 @@
 namespace App;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
-
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Auth\Passwords\CanResetPassword;
 class User extends Authenticatable
 {
-	
-	protected $table = "users";
-	
+	protected $table = "clients";
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password',
+         'email', 'password','department_id',
     ];
 
     /**

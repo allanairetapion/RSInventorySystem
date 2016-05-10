@@ -1,8 +1,9 @@
 <?php
 
 namespace App\Http\Controllers\Auth;
-
+use App\ClientProfile;
 use App\User;
+use Auth;
 use Validator;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
@@ -20,16 +21,18 @@ class AuthController extends Controller
     | a simple trait to add these behaviors. Why don't you explore it?
     |
     */
-
+	protected $table = 'clients';
     use AuthenticatesAndRegistersUsers, ThrottlesLogins;
+    
 
     /**
      * Where to redirect users after login / registration.
      *
      * @var string
      */
-    protected $redirectTo = 'tickets/landingPage';
-
+    protected $redirectTo = 'tickets/signUpSuccess';
+    protected $loginPath = '/login';
+	protected $redirectAfterLogout = '/tickets/login';
     /**
      * Create a new authentication controller instance.
      *
@@ -49,9 +52,12 @@ class AuthController extends Controller
     protected function validator(array $data)
     {
         return Validator::make($data, [
-            'name' => 'required|max:255',
-            'email' => 'required|email|max:255|unique:users',
+        	'dept' => 'required',
+            'fname' => 'required|max:255',
+            'lname' => 'required|max:255',
+            'email' => 'required|email|max:255|unique:clients',
             'password' => 'required|min:6|confirmed',
+            'password_confirmation' => 'required|min:6',
         ]);
     }
 
@@ -63,10 +69,28 @@ class AuthController extends Controller
      */
     protected function create(array $data)
     {
-        return User::create([
-            'name' => $data['name'],
+         $user = User::create([
+            'department_id' => $data['dept'],
             'email' => $data['email'],
             'password' => bcrypt($data['password']),
         ]);
+		
+		$client_profiles = ClientProfile::create([
+			'first_name' => $data['fname'],
+			'client_id' => $user->id,
+			'last_name' => $data['lname'],
+		]);
+		
+		return $user;
     }
+	
+	public function showLoginForm(){
+		if (Auth::check()){
+	 	     return view("tickets.landingPage");
+		}
+		else{
+			return view("tickets.login");
+		}
+	}
+	
 }

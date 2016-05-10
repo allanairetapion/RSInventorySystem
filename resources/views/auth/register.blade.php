@@ -1,82 +1,57 @@
-@extends('layouts.app')
-
-@section('content')
-<div class="container">
-    <div class="row">
-        <div class="col-md-8 col-md-offset-2">
-            <div class="panel panel-default">
-                <div class="panel-heading">Register</div>
-                <div class="panel-body">
-                    <form class="form-horizontal" role="form" method="POST" action="{{ url('/register') }}">
-                        {!! csrf_field() !!}
-
-                        <div class="form-group{{ $errors->has('name') ? ' has-error' : '' }}">
-                            <label class="col-md-4 control-label">Name</label>
-
-                            <div class="col-md-6">
-                                <input type="text" class="form-control" name="name" value="{{ old('name') }}">
-
-                                @if ($errors->has('name'))
-                                    <span class="help-block">
-                                        <strong>{{ $errors->first('name') }}</strong>
-                                    </span>
-                                @endif
-                            </div>
-                        </div>
-
-                        <div class="form-group{{ $errors->has('email') ? ' has-error' : '' }}">
-                            <label class="col-md-4 control-label">E-Mail Address</label>
-
-                            <div class="col-md-6">
-                                <input type="email" class="form-control" name="email" value="{{ old('email') }}">
-
-                                @if ($errors->has('email'))
-                                    <span class="help-block">
-                                        <strong>{{ $errors->first('email') }}</strong>
-                                    </span>
-                                @endif
-                            </div>
-                        </div>
-
-                        <div class="form-group{{ $errors->has('password') ? ' has-error' : '' }}">
-                            <label class="col-md-4 control-label">Password</label>
-
-                            <div class="col-md-6">
-                                <input type="password" class="form-control" name="password">
-
-                                @if ($errors->has('password'))
+@extends('tickets.ticketlayout1')
+@section('title', 'Remote Staff - Sign Up')
+@section('body')
+<div class="middle-box text-center loginscreen   animated fadeInDown">
+    	<div class="well">         
+        	<form class="m-t" role="form" method="post" action="{{ url('/tickets/signUp') }}">
+        		 {!! csrf_field() !!}
+            	<div class="form-group{{ $errors->has('fname') ? ' has-error' : '' }}{{ $errors->has('lname') ? ' has-error' : '' }}">
+                    <input type="text" class="form-control" placeholder="First Name" name="fname"required="" value="{{ old('fname') }}">
+                    <input type="text" class="form-control" placeholder="Last Name" name="lname"required="" value="{{ old('lname') }}">
+                </div>
+                
+                <div class="form-group{{ $errors->has('email') ? ' has-error' : '' }}">
+                    <input type="email" class="form-control" placeholder="Email" name="email" required="" value="{{ old('email') }}">
+                </div>
+                
+                <div class="form-group{{ $errors->has('dept') ? ' has-error' : '' }}">
+                    <input type="password" class="form-control" placeholder="Department" name="dept" required="">
+                </div>
+                
+                
+                <div class="form-group{{ $errors->has('password') ? ' has-error' : '' }}">
+                	  @if ($errors->has('password'))
                                     <span class="help-block">
                                         <strong>{{ $errors->first('password') }}</strong>
                                     </span>
                                 @endif
-                            </div>
-                        </div>
-
-                        <div class="form-group{{ $errors->has('password_confirmation') ? ' has-error' : '' }}">
-                            <label class="col-md-4 control-label">Confirm Password</label>
-
-                            <div class="col-md-6">
-                                <input type="password" class="form-control" name="password_confirmation">
-
                                 @if ($errors->has('password_confirmation'))
                                     <span class="help-block">
                                         <strong>{{ $errors->first('password_confirmation') }}</strong>
                                     </span>
                                 @endif
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <div class="col-md-6 col-md-offset-4">
-                                <button type="submit" class="btn btn-primary">
-                                    <i class="fa fa-btn fa-user"></i>Register
-                                </button>
-                            </div>
-                        </div>
-                    </form>
+                    <input type="password" class="form-control" placeholder="Password" name="password" required="" pattern=".{6,}" title="6 characters minimum">
+                	<input type="password" class="form-control" placeholder="Confirm Password" name="password_confirmation" required="">
                 </div>
+                
+              
+                
+				
+                <button type="submit" class="btn btn-primary block full-width m-b"> <i class="fa fa-btn fa-user"></i>Register</button>
+
+                <p class="text-muted text-center"><small>Already have an account?</small></p>
+                
+                <a class="btn btn-sm btn-white btn-block" href="/tickets/login">Login</a>
+            </form>
+            
+        </div class="well">
+		<div class="row">
+            <div class="col-md-7">
+                Copyright Remote Staff Inc
+            </div>
+            <div class="col-md-5 text-right">
+               <small>© 2014-2015</small>
             </div>
         </div>
     </div>
-</div>
-@endsection
+    @endsection
