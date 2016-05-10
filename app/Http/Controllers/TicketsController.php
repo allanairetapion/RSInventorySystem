@@ -3,7 +3,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers;
 use App\Http\Controllers\Controller;
-
+use Auth;
 use Illuminate\Http\Request;
 use Validator;
 use App\Client as Client;
@@ -33,16 +33,34 @@ class TicketsController extends Controller{
 	 public function showSignUp(){
 	 	return view("tickets.SignUp");
 	 }
-	  public function showSignUpSuccess(){
-		return view("tickets.signUpSuccess");
-	}	 	
+	 
+	  public function showSignUpSuccess(Request $request){
+	  	
+		$client = Client::where('email', '=',$request->email)->where('remember_token','=', "null");
+		
+		if($client != null){
+			return view("tickets.signUpSuccess");
+		}
+		else{
+			return redirect("tickets/landingPage");
+		}
+		
+		
+	}
+	  	 	
 	 public function showForgotPassword(){
 	 	return view("tickets.forgotpassword");
 	 }
 
 	 
 	 public function landingPage(Request $request){
-	 	return view("tickets.landingPage");
+	 	if (Auth::guest()){
+	 	     return view("auth.login");
+		}
+		else{
+			
+			return view("tickets.landingPage");
+		}
 	 }
 	 public function showChangePassword(){
 		return view("tickets.ChangePassword");
@@ -50,11 +68,8 @@ class TicketsController extends Controller{
 	 public function showChangePasswordSuccess(){
 		return view("tickets.changePasswordSuccess");
 	}	 	 
-	 public function showCodeVerification()
-	 {
-		return view("tickets.enterVerificationCode"); 
-	 }  
-	  
+	 
+	  /*
 	 public function processSignUP(Request $request){
 	 	
 		
@@ -82,7 +97,10 @@ class TicketsController extends Controller{
 	 	 $post_data = $request->all();		 
 		 $client = Client::where('email','=',$post_data['email'])->first();		 
 		 $request['password'] = sha1($post_data['password']); 
-		 $validator = Validator::make($request->all(),	['email' => 'required|exists:clients,email',
+		 
+		 
+		 $validator = Validator::make($request->all(),	
+		 ['email' => 'required|exists:clients,email',
 	 	 'password'=> 'exists:clients,password|required|min:6']);
 		
 		 
@@ -96,8 +114,8 @@ class TicketsController extends Controller{
         return redirect('tickets/landingPage'); 
 	 	}
 	 }		 	 
-	 
-	public function processForgot(Request $request){	 	
+	 */
+	/*public function processForgot(Request $request){	 	
 	 	$validator = Validator::make($request->all(), 
 	 	['email' => 'required|exists:clients,email']);
 		
@@ -110,7 +128,7 @@ class TicketsController extends Controller{
         else{
         	echo "exists";            
         }	
-	}
+	}*/
 	
 		 
 }

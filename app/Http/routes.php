@@ -11,7 +11,7 @@
 |
 */
 
-Route::get('/', "UserController@showDashboard");
+Route::get('/', "TicketsController@landingPage");
 
 Route::get('/InventorySys/index',"indexhtmlcontroller@showIndex");
 	
@@ -20,18 +20,34 @@ Route::get('/dashboard', "UserController@showDashboard");
 //Tickets
 Route::get("/tickets/dashboard", "TicketsController@showDashboard");
 Route::get("/tickets/welcome", "TicketsController@showWelcome");
-Route::get("/tickets/login", "TicketsController@showLogin");
-Route::get("/tickets/signUp", "TicketsController@showSignUp");
-Route::get("/tickets/forgotPassword", "TicketsController@showForgotPassword");
-Route::get("/tickets/landingPage", "TicketsController@landingPage");
-Route::get("tickets/changePassword","TicketsController@showChangePassword");
-Route::get("tickets/changePasswordSuccess","TicketsController@showChangePasswordSuccess");
-Route::get("tickets/signUpSuccess","TicketsController@showSignUpSuccess");
-Route::get("tickets/codeVerification","TicketsController@showCodeVerification");
 
-Route::post('/tickets/signUp', "TicketsController@processSignUp");
-Route::post('/tickets/login', "TicketsController@processLogIn");
-Route::post('/tickets/forgotPassword', "TicketsController@processForgot");
+Route::get("/tickets/forgotPassword", ['as' => 'auth.passwords.email', 'uses' => 'Auth\PasswordController@getEmail']);
+Route::post("/tickets/forgotPassword", ['as' => 'auth.passwords.email', 'uses' => 'Auth\PasswordController@postEmail']);
+
+Route::get("/tickets/landingPage", "TicketsController@landingPage");
+
+Route::get("tickets/changePassword",['as' => 'auth.passwords.reset','uses' => 'Auth\PasswordController@getReset']);
+Route::post("tickets/changePassword",['as' => 'auth.passwords.reset','uses' => 'Auth\PasswordController@postReset'   ]);
+
+Route::get("tickets/changePasswordSuccess","TicketsController@showChangePasswordSuccess");
+
+
+Route::get("tickets/signUpSuccess","TicketsController@showSignUpSuccess");
+
+
+
+Route::get('tickets/signUp', ['as' => 'auth.register', 'uses' => 'Auth\AuthController@showRegistrationForm']);
+Route::post('tickets/signUp', ['as' => 'auth.register', 'uses' => 'Auth\AuthController@register']);
+
+
+Route::get('tickets/login', ['as' => 'auth.login', 'uses' => 'Auth\AuthController@showLoginForm']);
+Route::post('/tickets/login', ['as' => 'auth.login', 'uses' => 'Auth\AuthController@login']);
+Route::get('tickets/logout', ['as' => 'auth.logout', 'uses' => 'Auth\AuthController@logout']);
+
+
+Route::get("/tickets/landingPage","TicketsController@landingPage");
+
+//Route::post('/tickets/forgotPassword', "TicketsController@processForgot");
 // End Tickets
 Route::get('/home', 'HomeController@index');
 
