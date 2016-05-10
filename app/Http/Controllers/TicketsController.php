@@ -8,7 +8,8 @@ use Illuminate\Http\Request;
 use Validator;
 use App\Client as Client;
 use App\ClientProfile as ClientProfile;
-
+use app\user;
+use Illuminate\Support\Facades\Mail;
 
 
 
@@ -69,30 +70,49 @@ class TicketsController extends Controller{
 		return view("tickets.changePasswordSuccess");
 	}	 	 
 	 
-	  /*
-	 public function processSignUP(Request $request){
+	  public function processSignUP(Request $request){
 	 	
+		$validator = Validator::make($request->all(), 
+	 		['email' => 'required|unique:clients,email',
+			'fname'=> 'required|alpha|min:2',
+			'lname' =>'required|alpha|min:2',
+			'password'=>'required|alpha_num|between:6,100|confirmed',
+			'password_confirmation'=>'required|alpha_num|between:6,100', 	
+			'dept' => 'required',
+			'captcha' => 'required|captcha']								);
+			if ($validator->fails()) {
+					return redirect('tickets/signUp')
+                        ->withErrors($validator)
+                        ->withInput();
+        			}
+        	else
+				
+        	{
 		
 		 // get all the data that has been posted from the form
 		 $post_data = $request->all();
-				
+		
 		 $client = new Client();
 		 $client->department_id = $post_data['dept'];
 		 $client->email = $post_data['email'];
 		 $client->password = sha1($post_data['password']);
+		 /*$client->confirm_password = sha1($post_data['password_confirmation']);*/
 		 $client->date_registered = date('Y-m-d H:i:s');		 
 		 $client->save();
 		 
-		 $clientid = Client::where('email','=',$post_data['email'])->orderby('id','desc')->first();
-		 
 		 $clientProfile = new ClientProfile();
-		 $clientProfile->client_id = $clientid->id;
 		 $clientProfile->first_name = $post_data['fname'];
 		 $clientProfile->last_name = $post_data['lname'];
 		 $clientProfile->date_updated=date('Y-m-d H:i:s');	
-		 $clientProfile->save();		 
-	 }
+		 $clientProfile->save();
+		
+		return view("tickets.signUpSuccess");	
+        
+        }
+        }
+        
 	 
+	   /*
 	 public function processLogIn (Request $request){
 	 	 $post_data = $request->all();		 
 		 $client = Client::where('email','=',$post_data['email'])->first();		 

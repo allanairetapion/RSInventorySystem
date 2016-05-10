@@ -19,6 +19,15 @@
     <script src="/js/bootstrap.min.js"></script>
     <script src="js/plugins/iCheck/icheck.min.js"></script>
     <script src="js/plugins/chartJs/Chart.min.js"></script>
+    
+    <style type="text/css">
+    	#wellSignup{
+    		width:610px;
+    		margin-left:370px;
+    	}
+    	
+    	
+    </style>
 </head>
 
 <body class="white-bg">
