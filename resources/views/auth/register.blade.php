@@ -3,8 +3,11 @@
 @section('body')
 
 <div class=" text-center loginscreen   animated fadeInDown">
-    <div class="wellSignup">   
-		<div class="row">
+  
+   	<div class="col-md-offset-3 col-md-6">
+   				
+    		<div class="well">   
+		
 			<form class="m-t" role="form" method="Post" action="signUp">
         		<input type="hidden" name="_token" value="{{ csrf_token() }}">
             		<div class="form-group">
@@ -59,33 +62,41 @@
    										<br>
       									<center><label class="text-danger"><strong>Captcha not match.</label></center>	
 						 @endif  
+						 
+						 {!! captcha_img() !!}
       					 	<div class="form-group {{ $errors->has('captcha') ? ' has-error' : '' }}">
-              					{!! captcha_img() !!}
+              					
+              					<br>
+              					<p><input type="text" name="captcha"></p>
+               			 		
               				</div>
-           						<p><input type="text" name="captcha"></p>
-               			 		<br>
+           						
                 	
-                				<div class="col-md-12">
-                					<center><button type="submit"  class="btn btn-primary block full-width m-b">Register</button>
-								</div>
+                				
+                					<button type="submit"  class="btn btn-primary block full-width m-b">Register</button>
+								
 									<p class="text-muted text-center"><small>Already have an account?</small></p>
                
-                					<div class="col-md-12">
+                				
                							<a class="btn btn-sm btn-white btn-block" href="/tickets/login">Login</a>
-            						</div>
-            </form>  
-       </div>          
-    </div>
-</div>
-
-
-		<div class="row">
-            <div class="col-md-7">
+            						
+           						
+           			</form>		
+                 </div>
+                
+                  <div class="row">
+            <div class="col-md-4">
                 Copyright Remote Staff Inc
             </div>
-            <div class="col-md-5 text-right">
+            <div class="col-md-offset-3 col-md-5 text-right">
                <small>© 2014-2015</small>
             </div>
         </div>
-    </div>
+            
+           
+      
+</div>
+
+
+		
     @endsection
