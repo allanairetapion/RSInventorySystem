@@ -25,29 +25,13 @@ class TicketsController extends Controller{
 	 	return view("tickets.welcome", array("client_profile"=>$client_profile));
 	 }
 	 
-	 
-	 public function showLogin(){
-	 	return view("tickets.login");
-	 }
-	 
 	 public function showSignUp(){
 	 	return view("tickets.SignUp");
 	 }
 	 
-	  public function showSignUpSuccess(Request $request){
-	  	
-		$client = Client::where('email', '=',$request->email)->where('remember_token','=', "null");
-		
-		if($client != null){
-			return view("tickets.signUpSuccess");
-		}
-		else{
-			return redirect("tickets/landingPage");
-		}
-		
-		
+	   public function showSignUpSuccess(Request $request){	
+			return view("tickets.signUpSuccess");	
 	}
-	  	 	
 	 public function showForgotPassword(){
 	 	return view("tickets.forgotpassword");
 	 }

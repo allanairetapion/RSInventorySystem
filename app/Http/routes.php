@@ -11,8 +11,6 @@
 |
 */
 
-Route::get('/', "TicketsController@landingPage");
-
 Route::get('/InventorySys/index',"indexhtmlcontroller@showIndex");
 	
 
@@ -23,8 +21,6 @@ Route::get("/tickets/welcome", "TicketsController@showWelcome");
 
 Route::get("/tickets/forgotPassword", ['as' => 'auth.passwords.email', 'uses' => 'Auth\PasswordController@getEmail']);
 Route::post("/tickets/forgotPassword", ['as' => 'auth.passwords.email', 'uses' => 'Auth\PasswordController@postEmail']);
-
-Route::get("/tickets/landingPage", "TicketsController@landingPage");
 
 Route::get("tickets/changePassword",['as' => 'auth.passwords.reset','uses' => 'Auth\PasswordController@getReset']);
 Route::post("tickets/changePassword",['as' => 'auth.passwords.reset','uses' => 'Auth\PasswordController@postReset'   ]);
@@ -45,7 +41,7 @@ Route::post('/tickets/login', ['as' => 'auth.login', 'uses' => 'Auth\AuthControl
 Route::get('tickets/logout', ['as' => 'auth.logout', 'uses' => 'Auth\AuthController@logout']);
 
 
-Route::get("/tickets/landingPage","TicketsController@landingPage");
+Route::get("/tickets/landingPage",array('before' => 'auth', 'uses' =>"TicketsController@landingPage"));
 
 //Route::post('/tickets/forgotPassword', "TicketsController@processForgot");
 // End Tickets

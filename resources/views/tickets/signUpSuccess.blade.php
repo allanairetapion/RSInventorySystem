@@ -9,7 +9,7 @@
                 <div class="ibox-content">
                     <h3 class="text-success">Account Successfuly created</h3>
         	 		You may now Sign in to your account by clicking the button below <br><br>        	 
-        	 		<a href="login" class="btn btn-primary btn-block">Sign In</a>                   
+        	 		<a href="landingPage" class="btn btn-primary btn-block">Sign In</a>                   
                 </div>
             </div>
         </div>

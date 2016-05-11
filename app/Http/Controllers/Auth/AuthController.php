@@ -8,6 +8,7 @@ use Validator;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
 use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
+use Illuminate\Http\Request;
 
 class AuthController extends Controller
 {
@@ -30,7 +31,7 @@ class AuthController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = 'tickets/signUpSuccess';
+    protected $redirectTo = 'tickets/landingPage';
     protected $loginPath = '/login';
 	protected $redirectAfterLogout = '/tickets/login';
     /**
@@ -38,6 +39,7 @@ class AuthController extends Controller
      *
      * @return void
      */
+    
     public function __construct()
     {
         $this->middleware($this->guestMiddleware(), ['except' => 'logout']);
@@ -69,6 +71,7 @@ class AuthController extends Controller
      */
     protected function create(array $data)
     {
+		
          $user = User::create([
             'department_id' => $data['dept'],
             'email' => $data['email'],
@@ -84,6 +87,21 @@ class AuthController extends Controller
 		return $user;
     }
 	
+	public function register(Request $request)
+    {
+        $validator = $this->validator($request->all());
+
+        if ($validator->fails()) {
+            $this->throwValidationException(
+                $request, $validator
+            );
+        }
+
+        Auth::guard($this->getGuard())->login($this->create($request->all()));
+
+        return redirect('tickets/signUpSuccess');
+    }
+	
 	public function showLoginForm(){
 		if (Auth::check()){
 	 	     return view("tickets.landingPage");
@@ -92,5 +110,12 @@ class AuthController extends Controller
 			return view("tickets.login");
 		}
 	}
+	
+	public function logout()
+    {
+        Auth::guard($this->getGuard())->logout();
+
+        return redirect(property_exists($this, 'redirectAfterLogout') ? $this->redirectAfterLogout : '/');
+    }
 	
 }
