@@ -11,10 +11,36 @@
 |
 */
 
-Route::get('/InventorySys/index',"indexhtmlcontroller@showIndex");
 	
 
 Route::get('/dashboard', "UserController@showDashboard");
+
+
+//inventory
+
+Route::get('/inventory/index',"inventorySysController@showIndex");
+	
+Route::get('/inventory/login','inventorySysController@showLogin');
+Route::get('/inventory/register','inventorySysController@showRegister');
+Route::get('/inventory/signuptypage','inventorySysController@showCr8AccTyPage');
+Route::get('/inventory/forgotpass','inventorySysController@showForgotpass');
+Route::get('/inventory/verification','inventorySysController@showVerify');
+Route::get('/inventory/newpassword','inventorySysController@showNewPass');
+Route::get("/inventory/thankyoupage","inventorySysController@showNewPassTy");
+
+
+Route::post("/inventory/login","inventorySysController@processLogin");
+
+
+
+
+
+
+
+
+
+
+
 //Tickets
 Route::get("/tickets/dashboard", "TicketsController@showDashboard");
 Route::get("/tickets/welcome", "TicketsController@showWelcome");
