@@ -70,19 +70,31 @@ class inventorySysController extends Controller {
 				$is_users = IsUser::where('email', '=', $post_data['email']) -> first();
 				$request['password'] = sha1($post_data['password']);
 				$validator = Validator::make($request->all(),	['email' => 'required|exists:is_users,email',
-								 	 'password'=> 'exists:is_users,password|required|min:6']);
+								 	 'password'=> 'required|min:6']);
 		 
 				if ($validator->fails()) 
 				{
 						
 						return redirect('/inventory/login')
-                        ->withErrors($validator)
+                             ->with('message','Email is not registered.')
                         ->withInput();						
       			}
     			else
     			{
     	
-    	 				return 	redirect('/inventory/index');
+    				if($is_users['password'] == $request['password'])
+    				{
+    						
+    					return 	redirect('/inventory/index');
+    				}
+    			
+					else
+					{
+						return redirect('/inventory/login')
+						->with('message','Incorrect password.');
+						
+					}
+    	
 			 	
 				}	
 			
