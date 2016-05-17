@@ -4,17 +4,17 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class ClientProfile extends Model
+class AdminProfile extends Model
 {
 	public $timestamps = false;
-	protected $table = "client_profiles";
+	protected $table = "admin_profiles";
 
 protected $fillable = [
-        'first_name', 'last_name','client_id',
+        'first_name', 'last_name','agent_id',
     ];
 
 	public function client(){
-		return $this->belongsTo("App\User");
+		return $this->belongsTo("App\Admin");
 	}
 
 }
