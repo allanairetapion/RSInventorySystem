@@ -32,44 +32,58 @@ Route::get("/inventory/thankyoupage","inventorySysController@showNewPassTy");
 Route::post("/inventory/login","inventorySysController@processLogin");
 
 
-
-
-
-
-
-
-
-
-
 //Tickets
-Route::get("/tickets/dashboard", "TicketsController@showDashboard");
-Route::get("/tickets/welcome", "TicketsController@showWelcome");
 
-Route::get("/tickets/forgotPassword", ['as' => 'auth.passwords.email', 'uses' => 'Auth\PasswordController@getEmail']);
-Route::post("/tickets/forgotPassword", ['as' => 'auth.passwords.email', 'uses' => 'Auth\PasswordController@postEmail']);
 
-Route::get("tickets/changePassword",['as' => 'auth.passwords.reset','uses' => 'Auth\PasswordController@getReset']);
-Route::post("tickets/changePassword",['as' => 'auth.passwords.reset','uses' => 'Auth\PasswordController@postReset'   ]);
+//Tickets Client
+Route::get('tickets/signUp', 'Auth\AuthController@showRegistrationForm');
+Route::post('tickets/signUp', 'Auth\AuthController@register');
+
+Route::get('tickets/login', 'Auth\AuthController@showLoginForm');
+Route::post('/tickets/login', 'Auth\AuthController@postLogin');
+Route::get('tickets/logout','Auth\AuthController@logout');
+
+Route::get("/tickets/forgotPassword", 'Auth\PasswordController@getEmail');
+Route::post("/tickets/forgotPassword",'Auth\PasswordController@postEmail');
+
+Route::get("tickets/changePassword/{token}",'Auth\PasswordController@getReset');
+Route::post("tickets/changePassword",'Auth\PasswordController@postReset');
 
 Route::get("tickets/changePasswordSuccess","TicketsController@showChangePasswordSuccess");
 
 
 Route::get("tickets/signUpSuccess","TicketsController@showSignUpSuccess");
 
-
-
-Route::get('tickets/signUp', ['as' => 'auth.register', 'uses' => 'Auth\AuthController@showRegistrationForm']);
-Route::post('tickets/signUp', ['as' => 'auth.register', 'uses' => 'Auth\AuthController@register']);
-
-
-Route::get('tickets/login', ['as' => 'auth.login', 'uses' => 'Auth\AuthController@showLoginForm']);
-Route::post('/tickets/login', ['as' => 'auth.login', 'uses' => 'Auth\AuthController@login']);
-Route::get('tickets/logout', ['as' => 'auth.logout', 'uses' => 'Auth\AuthController@logout']);
-
+Route::get("/tickets/landingPage","TicketsController@landingPage");
 
 Route::get("/tickets/landingPage",array('before' => 'auth', 'uses' =>"TicketsController@landingPage"));
 
-//Route::post('/tickets/forgotPassword', "TicketsController@processForgot");
+//Tickets Admin
+//Login Routes...
+Route::get('/admin/login','AdminAuth\AuthController@showLoginForm');
+Route::post('/admin/login','AdminAuth\AuthController@postLogin');
+Route::get('/admin/logout','AdminAuth\AuthController@logout');
+// Registration Routes...
+Route::get('admin/register', 'AdminAuth\AuthController@showRegistrationForm');
+Route::post('admin/register', 'AdminAuth\AuthController@register');
+
+Route::get("/admin/forgotPassword", 'AdminAuth\PasswordController@getEmail');
+Route::post("/admin/forgotPassword",'AdminAuth\PasswordController@postEmail');
+
+Route::get("admin/changePassword/{token}",'AdminAuth\PasswordController@getReset');
+Route::post("admin/changePassword",'AdminAuth\PasswordController@postReset');
+
+Route::get("admin/changePasswordSuccess","TicketsAdmin@showChangePasswordSuccess");
+
+Route::get('/admin', ['middleware' => 'admin','uses' =>'TicketsAdmin@index']);
+	
+Route::get('/admin/createAgent',['middleware' => 'admin', 'uses' => 'TicketsAdmin@createAgent']);
+
+
+Route::get('/checkPassword/{password}',['middleware' => 'admin','uses' => 'TicketsAdmin@checkPassword']);
+
+
+ 
 // End Tickets
 Route::get('/home', 'HomeController@index');
 
@@ -102,3 +116,7 @@ Route::any('captcha-test', function(Request $request)
         return $form;
     });
 
+
+
+
+Route::get('/home', 'HomeController@index');

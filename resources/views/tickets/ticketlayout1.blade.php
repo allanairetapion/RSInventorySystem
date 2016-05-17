@@ -31,10 +31,10 @@
 </head>
 
 <body class="white-bg">
-	<br><br>
+	<br>
 
         <center><img src="/img/remote-staff-logo.jpg" class="img-responsive"></center>
-		<br>
+		
 	
 		@section('body')
     

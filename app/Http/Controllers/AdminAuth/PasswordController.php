@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Auth;
+namespace App\Http\Controllers\AdminAuth;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\ResetsPasswords;
@@ -19,12 +19,12 @@ class PasswordController extends Controller
     */
     
     use ResetsPasswords;
-	protected $linkRequestView ="auth/passwords/email";
-	protected $resetView ='auth/passwords/reset';
-    protected $guard = "user";
-	protected $broker = 'user';
-    protected $redirectTo = 'tickets/changePasswordSuccess';
-	protected $table = 'clients';
+	protected $linkRequestView ="tickets/admin/passwords/email";
+	protected $resetView ='tickets/admin/passwords/reset';
+    protected $guard ='admin';
+    protected $redirectTo = 'admin/changePasswordSuccess';
+	protected $table = 'admin';
+	protected $broker = 'admin';
     /**
      * Create a new password controller instance.
      *
@@ -33,5 +33,6 @@ class PasswordController extends Controller
     public function __construct()
     {
         $this->middleware('web');
+		
     }
 }

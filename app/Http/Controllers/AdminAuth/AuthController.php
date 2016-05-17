@@ -1,15 +1,14 @@
 <?php
 
-namespace App\Http\Controllers\Auth;
-use App\ClientProfile;
-use App\User;
+namespace App\Http\Controllers\AdminAuth;
+use App\AdminProfile;
+use App\Admin;
 use Auth;
 use Validator;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
 use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
 use Illuminate\Http\Request;
-
 class AuthController extends Controller
 {
     /*
@@ -22,25 +21,24 @@ class AuthController extends Controller
     | a simple trait to add these behaviors. Why don't you explore it?
     |
     */
+
     use AuthenticatesAndRegistersUsers, ThrottlesLogins;
-    
 
     /**
      * Where to redirect users after login / registration.
      *
      * @var string
      */
-	protected $guard ='user';
-    protected $redirectTo = 'tickets/landingPage';
-    protected $loginPath = '/login';
-	protected $redirectAfterLogout = '/tickets/login';
-	protected $loginView ="/tickets/login";
+	protected $guard ='admin';
+    protected $redirectTo = '/admin';
+    protected $loginPath = '/admin/login';
+	protected $redirectAfterLogout = '/admin/login';
+	protected $loginView ="/admin/login";
     /**
      * Create a new authentication controller instance.
      *
      * @return void
      */
-    
     public function __construct()
     {
         $this->middleware('web');
@@ -55,10 +53,10 @@ class AuthController extends Controller
     protected function validator(array $data)
     {
         return Validator::make($data, [
-        	'dept' => 'required',
+        	'user_type' => 'required',
             'fname' => 'required|max:255',
             'lname' => 'required|max:255',
-            'email' => 'required|email|max:255|unique:clients',
+            'email' => 'required|email|max:255|unique:admin',
             'password' => 'required|min:6|confirmed',
             'password_confirmation' => 'required|min:6',
         ]);
@@ -73,21 +71,20 @@ class AuthController extends Controller
     protected function create(array $data)
     {
 		
-         $user = User::create([
-            'department' => $data['dept'],
+         $user = Admin::create([
+            'user_type' => $data['user_type'],
             'email' => $data['email'],
             'password' => bcrypt($data['password']),
         ]);
 		
-		$client_profiles = ClientProfile::create([
+		$admin_profiles = AdminProfile::create([
 			'first_name' => $data['fname'],
-			'client_id' => $user->id,
+			'agent_id' => $user->id,
 			'last_name' => $data['lname'],
 		]);
 		
 		return $user;
     }
-	
 	public function register(Request $request)
     {
         $validator = $this->validator($request->all());
@@ -100,18 +97,14 @@ class AuthController extends Controller
 
         Auth::guard($this->getGuard())->login($this->create($request->all()));
 
-        return redirect('tickets/signUpSuccess');
+        return redirect('/admin');
     }
-	
-	public function showLoginForm(){
-		
-			return view("auth.login");
-		
+	public function showLoginForm()
+	{
+		return view('tickets.admin.login');
 	}
-	
 	public function showRegistrationForm()
-{
-    return view('auth.register');
-} 
-	
+	{
+		return view('tickets.admin.register');
+	}  
 }

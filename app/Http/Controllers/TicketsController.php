@@ -14,17 +14,11 @@ use Illuminate\Support\Facades\Mail;
 
 
 class TicketsController extends Controller{
-	
-	 public function showDashboard(Request $request){
-	 	return view("tickets.dashboard");
-	 }
+
+	public function __construct(){
+        $this->middleware('web');
+   }
 	 
-	 public function showWelcome(Request $request){
-	 	
-		$client_profile = ClientProfile::find(1);
-		
-	 	return view("tickets.welcome", array("client_profile"=>$client_profile));
-	 }
 	 
 	 public function showSignUp(){
 	 	return view("tickets.SignUp");
@@ -39,18 +33,18 @@ class TicketsController extends Controller{
 
 	 
 	 public function landingPage(Request $request){
-	 	if (Auth::guest()){
-	 	     return view("auth.login");
-		}
-		else{
-			
+	 	if(Auth::guard('user')->check()){	
 			return view("tickets.landingPage");
+		}
+		else {
+			return redirect('tickets/login');
 		}
 	 }
 	 public function showChangePassword(){
 		return view("tickets.ChangePassword");
 	}
 	 public function showChangePasswordSuccess(){
+	 	Auth::guard('user')->logout();
 		return view("tickets.changePasswordSuccess");
 	}	 	 
 	 
