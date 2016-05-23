@@ -3,13 +3,15 @@
 @section('body')
    
  <div class="passwordBox animated fadeInDown">
-        <div class="row">
+        <div class="ibox">
 
-            <div class="col-md-12">
-                <div class="ibox-content">
+            <div class="ibox-title">
+            	<center><h2 class="font-bold">Reset password</h2><center>
+            </div>
+                <div class="ibox-content text-center">
 
-                    <h2 class="font-bold">Reset password</h2>
-					<P>Enter your email, new password and confirm your new password.</P>
+                    
+					<P>Enter your new password and confirm your new password.</P>
                    
 
                     <div class="row">
@@ -21,15 +23,15 @@
 
                         <div class="form-group{{ $errors->has('email') ? ' has-error' : '' }}">
                             
-
-                           
-                                <input type="email" placeholder="Email Address" class="form-control" name="email" value="{{ $email or old('email') }}" required>
-
-                                @if ($errors->has('email'))
+								@if ($errors->has('email'))
                                     <span class="help-block">
                                         <strong>{{ $errors->first('email') }}</strong>
                                     </span>
                                 @endif
+                           
+                                <input type="email" placeholder="Email Address" class="form-control" name="email" value="{{ $email or old('email') }}" required>
+
+                                
                             
                         </div>
 
@@ -60,23 +62,27 @@
                             
                         </div>
 		                <button type="submit" action="" class="btn btn-primary block full-width m-b">
-		                	<i class="fa fa-btn fa-sign-in"></i>Confirm</button>
+		                	<i class="fa fa-btn fa-sign-in"></i>&nbsp;Confirm</button>
 		
 		                
 		            </form>
                         </div>
                     </div>
                 </div>
-            </div>
+           
         </div>
         <hr/>
-        <div class="row">
-            <div class="col-md-6">
-                Copyright Remote Staff Inc
-            </div>
-            <div class="col-md-6 text-right">
-               <small>© 2014-2015</small>
-            </div>
-        </div>
     </div>
+    <div class="footer">
+            	  <p class="pull-right">&copy;2014-2015</p>
+                <p><strong>Copyright</strong> Remote Staff Inc.</p> 	            
+    </div>
+    
+<script type="text/javascript">
+	
+	$(document).ready(function(){
+		$('input[type="email"]').hide();
+		
+	});
+</script>
 @endsection

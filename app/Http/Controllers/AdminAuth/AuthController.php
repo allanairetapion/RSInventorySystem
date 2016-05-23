@@ -9,6 +9,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
 use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
 use Illuminate\Http\Request;
+use Session;
+
 class AuthController extends Controller
 {
     /*
@@ -55,10 +57,9 @@ class AuthController extends Controller
         return Validator::make($data, [
         	'user_type' => 'required',
             'fname' => 'required|max:255',
-            'lname' => 'required|max:255',
+            'Last name' => 'required|min:2|max:255',
             'email' => 'required|email|max:255|unique:admin',
-            'password' => 'required|min:6|confirmed',
-            'password_confirmation' => 'required|min:6',
+            
         ]);
     }
 
@@ -68,13 +69,16 @@ class AuthController extends Controller
      * @param  array  $data
      * @return User
      */
+    
+
     protected function create(array $data)
     {
 		
          $user = Admin::create([
             'user_type' => $data['user_type'],
             'email' => $data['email'],
-            'password' => bcrypt($data['password']),
+            'status' => 'Not Activated',
+            
         ]);
 		
 		$admin_profiles = AdminProfile::create([
@@ -95,16 +99,74 @@ class AuthController extends Controller
             );
         }
 
-        Auth::guard($this->getGuard())->login($this->create($request->all()));
+        $this->create($request->all());
 
-        return redirect('/admin');
+        
     }
 	public function showLoginForm()
 	{
-		return view('tickets.admin.login');
+		if(Auth::guard('admin')->check()){
+				return redirect('/admin');
+		}
+		else{
+				return view('tickets.admin.login');
+		}
 	}
 	public function showRegistrationForm()
 	{
 		return view('tickets.admin.register');
-	}  
+	} 
+	
+	public function login(Request $request)
+    {
+       
+		
+		$activate = Admin::select('email')->whereNull('password')->get();
+		
+		if($activate != null){
+			
+			$checkEmail = Admin::where('email',$request['email'])->first();
+			
+			if($checkEmail != null){
+				if($checkEmail->password == null){
+					Session::flash('message', "Your account is not activated.");
+					return redirect('/admin/login')->withInput();
+				}
+				else{
+					$this->validateLogin($request);
+				}
+			}
+			else{
+				Session::flash('message', "Email does'nt exist in our records.");
+				return redirect('/admin/login')->withInput();
+			}
+			
+		}
+		
+        // If the class is using the ThrottlesLogins trait, we can automatically throttle
+        // the login attempts for this application. We'll key this by the username and
+        // the IP address of the client making these requests into this application.
+        $throttles = $this->isUsingThrottlesLoginsTrait();
+
+        if ($throttles && $lockedOut = $this->hasTooManyLoginAttempts($request)) {
+            $this->fireLockoutEvent($request);
+
+            return $this->sendLockoutResponse($request);
+        }
+
+        $credentials = $this->getCredentials($request);
+
+        if (Auth::guard($this->getGuard())->attempt($credentials, $request->has('remember'))) {
+            return $this->handleUserWasAuthenticated($request, $throttles);
+        }
+
+        // If the login attempt was unsuccessful we will increment the number of attempts
+        // to login and redirect the user back to the login form. Of course, when this
+        // user surpasses their maximum number of attempts they will get locked out.
+        if ($throttles && ! $lockedOut) {
+            $this->incrementLoginAttempts($request);
+        }
+
+        return $this->sendFailedLoginResponse($request);
+    } 
 }

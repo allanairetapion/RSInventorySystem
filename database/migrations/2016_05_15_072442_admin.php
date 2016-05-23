@@ -29,6 +29,6 @@ class Admin extends Migration
      */
     public function down()
     {
-        Schema::drop('admub');
+        Schema::drop('admin');
     }
 }

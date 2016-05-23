@@ -36,54 +36,75 @@ Route::post("/inventory/login","inventorySysController@processLogin");
 
 
 //Tickets Client
+//Client Registration Route
 Route::get('tickets/signUp', 'Auth\AuthController@showRegistrationForm');
 Route::post('tickets/signUp', 'Auth\AuthController@register');
-
+Route::get('tickets/signUpSuccess','TicketsController@showSignUpSuccess');
+//Client Login Route
 Route::get('tickets/login', 'Auth\AuthController@showLoginForm');
 Route::post('/tickets/login', 'Auth\AuthController@postLogin');
 Route::get('tickets/logout','Auth\AuthController@logout');
-
+//Client Forgot Password (get email)
 Route::get("/tickets/forgotPassword", 'Auth\PasswordController@getEmail');
 Route::post("/tickets/forgotPassword",'Auth\PasswordController@postEmail');
-
+//Client Change Password
 Route::get("tickets/changePassword/{token}",'Auth\PasswordController@getReset');
 Route::post("tickets/changePassword",'Auth\PasswordController@postReset');
-
 Route::get("tickets/changePasswordSuccess","TicketsController@showChangePasswordSuccess");
+//Client Activation
+Route::post('/tickets/sendActivate','Auth\PasswordController@ActivatesendResetLinkEmail');
+Route::get('/tickets/activate/{token}','Auth\PasswordController@getActivateReset');
+Route::post('/tickets/activate','Auth\PasswordController@Activate');
 
 
-Route::get("tickets/signUpSuccess","TicketsController@showSignUpSuccess");
 
-Route::get("/tickets/landingPage","TicketsController@landingPage");
+//Client Pages
+Route::group(['middleware' => 'user'], function () {
+	Route::get("/tickets/landingPage","TicketsController@landingPage");
+	Route::get("/tickets/createTicket",'TicketsController@showCreateTicket');
 
-Route::get("/tickets/landingPage",array('before' => 'auth', 'uses' =>"TicketsController@landingPage"));
+	Route::post('/tickets/createTicket','TicketsController@createTicket');
+});
+
+//End Client
 
 //Tickets Admin
-//Login Routes...
+//Admin Login Routes...
 Route::get('/admin/login','AdminAuth\AuthController@showLoginForm');
 Route::post('/admin/login','AdminAuth\AuthController@postLogin');
 Route::get('/admin/logout','AdminAuth\AuthController@logout');
-// Registration Routes...
+//Admin Registration Routes...
 Route::get('admin/register', 'AdminAuth\AuthController@showRegistrationForm');
 Route::post('admin/register', 'AdminAuth\AuthController@register');
-
+//Admin Forgot Password (get email)
 Route::get("/admin/forgotPassword", 'AdminAuth\PasswordController@getEmail');
 Route::post("/admin/forgotPassword",'AdminAuth\PasswordController@postEmail');
-
+//Admin Change Password
 Route::get("admin/changePassword/{token}",'AdminAuth\PasswordController@getReset');
 Route::post("admin/changePassword",'AdminAuth\PasswordController@postReset');
+Route::get("admin/changePasswordSuccess","AdminAuth\PasswordController@showChangePasswordSuccess");
+//Admin Account Activation
+Route::post('/admin/sendActivate','AdminAuth\PasswordController@ActivatesendResetLinkEmail');
+Route::get('/admin/activate/{token}','AdminAuth\PasswordController@getActivateReset');
+Route::post('/admin/activate','AdminAuth\PasswordController@Activate');
+Route::get('/admin/activateSuccess','AdminAuth\PasswordController@activateSuccess');
 
-Route::get("admin/changePasswordSuccess","TicketsAdmin@showChangePasswordSuccess");
 
-Route::get('/admin', ['middleware' => 'admin','uses' =>'TicketsAdmin@index']);
+
+//Admin Pages
+Route::group(['middleware' => 'admin'], function () {
 	
-Route::get('/admin/createAgent',['middleware' => 'admin', 'uses' => 'TicketsAdmin@createAgent']);
+	Route::get('/checkPassword/{password}','TicketsAdmin@checkPassword');
+	Route::get('/admin', 'TicketsAdmin@index');
+	Route::get('/admin/createAgent','TicketsAdmin@createAgent');
+	Route::get('/admin/createTicket','TicketsAdmin@showCreateTicket');
+	
+	Route::post('/admin/createTicket','TicketsAdmin@createTicket');	
+	Route::post('/checkEmail','TicketsAdmin@checkEmail');
+
+});
 
 
-Route::get('/checkPassword/{password}',['middleware' => 'admin','uses' => 'TicketsAdmin@checkPassword']);
-
-
- 
 // End Tickets
 Route::get('/home', 'HomeController@index');
 
@@ -108,9 +129,9 @@ Route::any('captcha-test', function(Request $request)
         }
 
         $form = '<form method="post" action="captcha-test">';
-        $form .= '<input type="hidden" name="_token" value=">';
+        $form .= '<input type="hidden" name="_token" value="' . csrf_token() . '">';
         $form .= '<p>' . captcha_img() . '</p>';
-       
+        $form .= '<p><input type="text" name="captcha"></p>';
         $form .= '<p><button type="submit" name="check">Check</button></p>';
         $form .= '</form>';
         return $form;

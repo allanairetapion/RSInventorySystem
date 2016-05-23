@@ -27,13 +27,14 @@
                             <form class="m-t" role="form" action="{{ url('/tickets/forgotPassword') }}" method="post">
                             	{!! csrf_field() !!}
                                 <div class="form-group">
-                                    <input type="email" class="form-control" name="email" placeholder="Email address" required="" value="{{ old('email') }}">
-                                 
-                                  @if($errors->has('email'))
-   										<br>
+                                	@if($errors->has('email'))
+   										
       									<center><label class="text-danger"><strong>Email</strong> doesn't exist. Are you sure you have an account?</label></center>
   									
 						          @endif
+                                    <input type="email" class="form-control" name="email" placeholder="Email address" required="" value="{{ old('email') }}">
+                                 
+                                  
                                 </div>
                                  
 
