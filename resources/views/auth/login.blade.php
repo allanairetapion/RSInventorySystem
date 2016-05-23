@@ -1,49 +1,45 @@
 @extends('tickets.ticketlayout1')
 @section('title', 'Remote Staff - Log In')
 @section('body')
- <div class="middle-box text-center loginscreen animated fadeInDown">
-        <div>
-            <div>              
-				<div class="well">
-		            <form class="m-t" role="form" method="post" action="login"  >
-		            	 {!! csrf_field() !!}
-		                                      
-                             
-		                <div class="form-group{{ $errors->has('email') ? ' has-error' : '' }}">
-		                	@if ($errors->has('email'))
-      									<center><label class="text-danger"><strong>Email</strong> doesn't exist. Are you sure you have an account?</label></center>
-  									<br>
-                             @endif
-		                	
-		                    <input type="email" class="form-control" placeholder="Email" value="{{ old('email') }}"name="email" required="">
-		                     
-		                </div>
-		                <div class="form-group{{ $errors->has('password') ? ' has-error' : '' }}">
-		                	@if ($errors->has('password'))
-      									<center><label class="text-danger"><strong>Email or Password</strong> didn't match. </label></center>
-  									<br>
-                             @endif
-		                    <input type="password" class="form-control" placeholder="Password" name="password" required="">
-		     
-		                </div>
-		                <button type="submit" action="" class="btn btn-primary block full-width m-b">
-		                	<i class="fa fa-btn fa-sign-in"></i>Login</button>
-		
-		                <a href="/tickets/forgotPassword"><small>Forgot password?</small></a>
-		                <p class="text-muted text-center"><small>Do not have an account?</small></p>
-		                <a class="btn btn-sm btn-white btn-block" href="/tickets/signUp">Create an account</a>
-		            </form>
-				</div>  
-        	</div>
-        </div>
-        <div class="row">
-            <div class="col-md-7">
-                Copyright Remote Staff Inc
-            </div>
-            <div class="col-md-5 text-right">
-               <small>© 2014-2015</small>
-            </div>
-        </div>
-    </div>
-    
+<div class="col-md-offset-4 col-md-4 text-center animated fadeInDown ">
+
+	<div class="ibox-title">
+		<h2 class="font-bold">Sign in</h2>
+	</div>
+	<div class="ibox-content">
+		<form class="m-t" role="form" method="post" action="login"  >
+			{!! csrf_field() !!}
+
+			<center>
+				<label class="text-warning">{{ Session::get('message') }}</label>
+			</center>
+
+			@if ($errors->has('email'))
+			<center>
+				<label class="text-warning">{{$errors->first()}}</label>
+			</center>
+
+			@endif
+
+			<div class="form-group{{ $errors->has('email') ? ' has-error' : '' }}">
+				<input type="email" class="form-control" placeholder="Email" value="{{ old('email') }}"name="email" required="">
+
+			</div>
+			<div class="form-group{{ $errors->has('password') ? ' has-error' : '' }}">
+				<input type="password" class="form-control" placeholder="Password" name="password" required="">
+
+			</div>
+			<button type="submit" action="" class="btn btn-primary block full-width m-b">
+				<i class="fa fa-btn fa-sign-in"></i>&nbsp;Sign in
+			</button>
+
+			<a href="/tickets/forgotPassword"><small>Forgot password?</small></a>
+			<p class="text-muted text-center">
+				<small>Do not have an account?</small>
+			</p>
+			<a class="btn btn-sm btn-white btn-block" href="/tickets/signUp">Create an account</a>
+		</form>
+	</div>
+</div>
+
 @endsection

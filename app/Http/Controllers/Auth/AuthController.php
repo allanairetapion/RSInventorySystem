@@ -3,12 +3,15 @@
 namespace App\Http\Controllers\Auth;
 use App\ClientProfile;
 use App\User;
+use DB;
 use Auth;
 use Validator;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
 use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
 use Illuminate\Http\Request;
+use Session;
+
 
 class AuthController extends Controller
 {
@@ -57,10 +60,11 @@ class AuthController extends Controller
         return Validator::make($data, [
         	'dept' => 'required',
             'fname' => 'required|max:255',
-            'lname' => 'required|max:255',
+            'lname' => 'required|min:2|max:255',
             'email' => 'required|email|max:255|unique:clients',
             'password' => 'required|min:6|confirmed',
             'password_confirmation' => 'required|min:6',
+            'captcha' => 'required|captcha',
         ]);
     }
 
@@ -77,6 +81,7 @@ class AuthController extends Controller
             'department' => $data['dept'],
             'email' => $data['email'],
             'password' => bcrypt($data['password']),
+            'status' => 'Not Activated',
         ]);
 		
 		$client_profiles = ClientProfile::create([
@@ -93,18 +98,22 @@ class AuthController extends Controller
         $validator = $this->validator($request->all());
 
         if ($validator->fails()) {
-            $this->throwValidationException(
-                $request, $validator
-            );
+            return redirect('tickets/signUp')
+                        ->withErrors($validator)
+                        ->withInput();
+            
         }
 
-        Auth::guard($this->getGuard())->login($this->create($request->all()));
-
-        return redirect('tickets/signUpSuccess');
+       $this->create($request->all());
+	   
+        return redirect('tickets/signUpSuccess')->with($request->all());
     }
 	
+	
 	public function showLoginForm(){
-		
+		if(Auth::guard('user')->check()){
+			return redirect('tickets/landingPage');
+		}
 			return view("auth.login");
 		
 	}
@@ -114,4 +123,55 @@ class AuthController extends Controller
     return view('auth.register');
 } 
 	
+	public function login(Request $request)
+    {
+        
+		$activate = DB::table('clients')->where('status','Not Activated')->get();
+		
+		if($activate != null){
+			$checkEmail = DB::table('clients')->where('email',$request['email'])->first();
+			
+			if ($checkEmail != Null){
+				if($checkEmail->status != "Activated" ){
+					Session::flash('message', "Your account is not activated.");
+					return redirect('/tickets/login')->withInput();
+				}
+				else{
+					$this->validateLogin($request);
+				}
+			}
+			else{
+				Session::flash('message', "Email does'nt exist in our records.");
+				return redirect('/tickets/login')->withInput();
+			}
+			
+		}
+		
+        // If the class is using the ThrottlesLogins trait, we can automatically throttle
+        // the login attempts for this application. We'll key this by the username and
+        // the IP address of the client making these requests into this application.
+        $throttles = $this->isUsingThrottlesLoginsTrait();
+
+        if ($throttles && $lockedOut = $this->hasTooManyLoginAttempts($request)) {
+            $this->fireLockoutEvent($request);
+
+            return $this->sendLockoutResponse($request);
+        }
+
+        $credentials = $this->getCredentials($request);
+
+        if (Auth::guard($this->getGuard())->attempt($credentials, $request->has('remember'))) {
+            return $this->handleUserWasAuthenticated($request, $throttles);
+        }
+
+        // If the login attempt was unsuccessful we will increment the number of attempts
+        // to login and redirect the user back to the login form. Of course, when this
+        // user surpasses their maximum number of attempts they will get locked out.
+        if ($throttles && ! $lockedOut) {
+            $this->incrementLoginAttempts($request);
+        }
+
+        return $this->sendFailedLoginResponse($request);
+        }
+    
 }
