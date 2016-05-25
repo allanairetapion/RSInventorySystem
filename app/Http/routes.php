@@ -15,21 +15,66 @@
 
 Route::get('/dashboard', "UserController@showDashboard");
 
-
-//inventory
-
-Route::get('/inventory/index',"inventorySysController@showIndex");
-	
-Route::get('/inventory/login','inventorySysController@showLogin');
-Route::get('/inventory/register','inventorySysController@showRegister');
-Route::get('/inventory/signuptypage','inventorySysController@showCr8AccTyPage');
-Route::get('/inventory/forgotpass','inventorySysController@showForgotpass');
-Route::get('/inventory/verification','inventorySysController@showVerify');
-Route::get('/inventory/newpassword','inventorySysController@showNewPass');
-Route::get("/inventory/thankyoupage","inventorySysController@showNewPassTy");
+Route::get('/inventory/index', ['middleware' => 'inventory','uses' =>'inventorySysController@showIndex']);
 
 
-Route::post("/inventory/login","inventorySysController@processLogin");
+/* Login */
+Route::get('/inventory/login', 'InputAuth\AuthController@showLoginForm');
+Route::post('/inventory/login', 'InputAuth\AuthController@postLogin');
+Route::get('/inventory/logout', 'InputAuth\AuthController@logout');
+
+/* Register */
+
+
+Route::get('/inventory/register', 'InputAuth\AuthController@showRegistrationForm');
+Route::get('/register', 'inventorySysController@refereshCapcha');
+Route::post('/inventory/register', "InputAuth\AuthController@register");
+Route::get('/inventory/signuptypage', 'InputAuth\AuthController@showRegisterty');
+
+
+/* Verify */
+
+Route::get('register/verify/{confirmationCode}', [
+    'as' => 'confirmation_path',
+    'uses' => 'InputAuth\AuthController@confirm'
+]);
+
+
+Route::get('/inventory/verified',"InputAuth\AuthController@showVerified");
+
+Route::get('/inventory/resend/{confirmationCode}', [
+    'as' => 'confirmation_path',
+    'uses' => 'InputAuth\AuthController@resendVerLink'
+]);
+
+Route::get('/inventory/resend2/{confirmationCode}', [
+    'uses' => 'InputAuth\AuthController@resendVerLink2'
+]);
+
+/* Password Resets */
+
+Route::get("/inventory/forgotPassword", 'InputAuth\PasswordController@getEmail');
+Route::post("/inventory/forgotPassword",'InputAuth\PasswordController@postEmail');
+Route::get("/inventory/Thankyou", "inventorySysController@forgotpassTypage");
+
+Route::get("inventory/changePassword/{token}",'InputAuth\PasswordController@getReset');
+Route::post("inventory/changePassword",'InputAuth\PasswordController@postReset');
+Route::get("/inventory/thankyoupage", "inventorySysController@showNewPassTy");
+Route::get("/inventory/change_pass", "inventorySysController@changePass");
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 //Tickets

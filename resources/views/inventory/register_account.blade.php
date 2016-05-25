@@ -33,16 +33,16 @@
 							<h1 align="center" class="login-title">Create new account</h1>
 							<br>
 
-							<form class="form-reg" role="form" method="Post" action="register_account" >
+							<form class="form-reg" role="form" method="Post" action="register" >
 
 								<input type="hidden" name="_token" value="{{ csrf_token() }}">
 								<div class="row">
 
 									<div class="col-lg-6">
-										<input type="text" class="form-control"  style="text-transform: capitalize;" name="firstname" placeholder="Firstname" autocomplete="off" required autofocus>
+										<input type="text" class="form-control"  style="text-transform: capitalize;" name="first_name" placeholder="Firstname" autocomplete="off" required autofocus>
 									</div>
 									<div class="col-lg-6">
-										<input type="text" class="form-control"  style="text-transform: capitalize;" name="lastname"  placeholder="Lastname" autocomplete="off" required>
+										<input type="text" class="form-control"  style="text-transform: capitalize;" name="last_name"  placeholder="Lastname" autocomplete="off" required>
 									</div>
 								</div>
 								<br>
@@ -54,50 +54,53 @@
 								<br>
 
 								<div class="row">
-									<div class="col-lg-4">
 
-										<select class="select form-control" name="usertype"  style="width: 180px; height: 35px" >
-
-											<option value=""   disabled="disabled"></option>
-											<option value="Admin"  selected="selected">Admin</option>
-											<option value="Technical Support">Technical Support</option>
-											<option value="Staff">Staff</option>
-										</select>
-
-									</div>
-
-									<div class="col-lg-7 col-lg-offset-1">
+									<div class="col-lg-12">
 										<input type="number" class="form-control" maxlength="11" name="phone_number" autocomplete="off" placeholder="Phone Number"  required>
 									</div>
 								</div>
 
+								<br>
+								<div class="container-fluid">
+
+									<div class="row" style="background-color: #D9D9D9; border-radius:10px">
+										<br>
+										<p style="text-align: left; margin-left: 10px; margin-top: -10px">
+											<strong>Type the code you see below:</strong>
+										</p>
+
+										<div class="col-lg-5">
+
+											<div style="margin-left: 5px" form-group refreshrecapcha{{ $errors->
+												has('captcha') ? ' has-error' : '' }}" >
+												{!! captcha_img('flat') !!}
+
+											</div>
+										</div>
+
+										<div class="col-lg-7">
+
+											<p>
+												<input class="form form-control" type="text" name="captcha" placeholder="Enter the code here" style="margin-left: 0px">
+											</p>
+										</div>
+									</div>
+
+								</div>
 								<br>
 								@if (count($errors) > 0)
 								<div class="alert alert-danger">
 									<ul>
 										@foreach ($errors->all() as $error)
 										<li>
+
 											{{ $error }}
 										</li>
 										@endforeach
 									</ul>
 								</div>
 								@endif
-
-
-	<div class="well" align="center">
-
-									<div class="form-group{{ $errors->has('captcha') ? ' has-error' : '' }}">
-										{!! captcha_img() !!}
-									</div>
-
-									<p>
-										<input type="text" name="captcha">
-									</p>
-
-								</div>
-
-
+							
 								<button type="submit" class="btn btn-lg btn-primary btn-block">
 									Register
 								</button>

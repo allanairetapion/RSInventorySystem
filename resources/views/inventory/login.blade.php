@@ -31,35 +31,33 @@
 					</div>
 					<div class="account-wall">
 						<div class="container-fluid">
-							<h1 align="center" class="login-title">Sign In</h1>
+							<h1 align="center" class="login-title">Sign in</h1>
 							<img id="profile-img" class=" img-responsive center-block" src="/img/1.png" alt="">
+							<br>
 
 							<form class="form-signin" role="form" method="post" action="/inventory/login">
 								{!! csrf_field() !!}
-
-								<input type="hidden" name="_token" value="{{ csrf_token() }}">
-								
-
 								<div class="form-group{{ $errors->has('email') ? ' has-error' : '' }}">
-									<input type="email" class="form-control" placeholder="Email" name="email" required="" autofocus>
-								</div>
 
-								<div class="form-group{{ $errors->has('password') ? ' has-error' : '' }}">
-									<input type="password" class="form-control" placeholder="Password" name="password" required="">
+									<input type="email" class="form-control" placeholder="Email" value="{{ old('email') }}"name="email" required="" autofocus="">
+
 								</div>
-								<br>
+								<div class="form-group{{ $errors->has('password') ? ' has-error' : '' }}">
+
+									<input type="password" class="form-control" placeholder="Password" name="password" required="">
+
+								</div>
 
 								
-					<div>
+
 									@if (Session::has('message'))
-    								<div class="alert alert-danger">{{ Session::get('message') }}</div>
+								
+								<div class="alert alert-danger">
+									{{ Session::get('message') }}
+								</div>
 									@endif
 									
-									
-									
-									
-								</div>
-
+								
 								<div align="center">
 
 									<button type="submit" action="" class="btn btn-lg btn-primary btn-block">
@@ -67,7 +65,7 @@
 									</button>
 								</div>
 								<br>
-								<a href="/inventory/forgotpass" class="pull-right need-help">Forgot Password? </a>
+								<a href="/inventory/forgotPassword" class="pull-right need-help">Forgot Password? </a>
 								<a href="/inventory/register" class="pull-left need-help">Create an account</a>
 								<br>
 								<br>
