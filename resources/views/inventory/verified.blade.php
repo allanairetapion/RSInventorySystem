@@ -55,17 +55,14 @@
             <div class="account-wall">
             	    	<div align="center">
             	    		
-				<h1>Account successfully created.	</h1><br>
+				<h1>Account successfully verified.	</h1><br>
+            	<p><img src="/img/checkgreen.png" height="10px" width="10px"> Thankyou! Your Email Is Now Succesfully Verified.
+            		
             	
-            	<p id="emailRes"><img src="/img/checkgreen.png" height="10px" width="10px"> Thankyou You For Registering! You Will Receive An Email Shortly For Verification Link.
             	</p>
-            	<br>
-            	<p>
-            	Note: If You Didnt Receive An Email For Verification Link Kindly Click The Button Below.</p> 
-            
-  
+
    			 <br>
-             To sign up with your new account please<a href="/inventory/login"> Click Here!</a>
+             To sign in with your new account please<a href="/inventory/login"> click here</a>
              <br><br>
                 </form>
             </div>
@@ -75,7 +72,7 @@
     
     
     </div>	
-    	
+    
     
 </div> 
     

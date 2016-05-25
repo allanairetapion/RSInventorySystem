@@ -7,7 +7,7 @@
 		Remove this if you use the .htaccess -->
 		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 
-		<title>Thank You!</title>
+		<title>Oops!</title>
 		<meta name="description" content="">
 		<meta name="author" content="ITDEVSOJT4">
 
@@ -55,17 +55,18 @@
             <div class="account-wall">
             	    	<div align="center">
             	    		
-				<h1>Account successfully created.	</h1><br>
+				<h1>Oooops Something Went Wrong.	</h1><br>
+            	<p id="emailRes"><img src="/img/checkgreen.png" height="10px" width="10px"> <nbsp><nbsp><nbsp><nbsp>Your account is not verified. Please Click The Link Below To Send The Verification Link To Your Email. Thank you!
+            		
             	
-            	<p id="emailRes"><img src="/img/checkgreen.png" height="10px" width="10px"> Thankyou You For Registering! You Will Receive An Email Shortly For Verification Link.
             	</p>
-            	<br>
+            	
             	<p>
-            	Note: If You Didnt Receive An Email For Verification Link Kindly Click The Button Below.</p> 
-            
-  
-   			 <br>
-             To sign up with your new account please<a href="/inventory/login"> Click Here!</a>
+            	<a href="/inventory/resend2/{{$is_users->confirmation_code}}">Resend Email >>></a>
+            	</p>
+
+			 <br>   
+             To sign in with your new account please<a href="/inventory/login"> Click Here!</a>
              <br><br>
                 </form>
             </div>
@@ -75,7 +76,7 @@
     
     
     </div>	
-    	
+    
     
 </div> 
     
