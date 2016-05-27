@@ -10,8 +10,10 @@ use Illuminate\Foundation\Auth\ThrottlesLogins;
 use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
 use Illuminate\Http\Request;
 use Mail;
-
 use Hash;
+use Illuminate\Contracts\Auth\Guard;
+use Illuminate\Contracts\Auth\Registrar;
+use Session;
 
 class AuthController extends Controller
 {
@@ -45,12 +47,7 @@ class AuthController extends Controller
      *
      * @return void
      */
-    
-    public function __construct()
-    {
-        $this->middleware('web');
-    }
-
+  
     /**
      * Get a validator for an incoming registration request.
      *
@@ -213,6 +210,14 @@ public function confirm($confirmation_code)
 
 
 
+    public function logout()
+    {
+    
+        Auth::guard('inventory')->logout();
+       
+		return redirect('/inventory/index');
+
+    }
 
 
 public function showVerified()
@@ -281,7 +286,8 @@ public function resendVerLink2($confirmation_code)
             );
         }
 
-        Auth::guard($this->getGuard())->login($this->create($request->all()));
+     $this->create($request->all());
+
 	
 				$is_users = IsUser::where('email', '=', $request['email']) -> first();
 			
@@ -311,6 +317,7 @@ public function resendVerLink2($confirmation_code)
 			
         return redirect('/inventory/signuptypage')
 		->with('data',$is_users['confirmation_code']);
+	
     }
 	
 	
@@ -330,7 +337,15 @@ public function resendVerLink2($confirmation_code)
 	
 	public function showRegistrationForm()
 {
-    return view('inventory.register_account');
+		if(Auth::guard('inventory')->check()){
+	return redirect('inventory/index');
+	}
+	
+	else{
+			 return view('inventory.register_account');
+		}
+	
+   
 } 
 
   	public function showRegisterty(Request $request)

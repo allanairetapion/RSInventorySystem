@@ -11,17 +11,20 @@
 |
 */
 
-	
 
-Route::get('/dashboard', "UserController@showDashboard");
+ Route::get('/inventory', 'inventorySysController@showInventory');
+ 
+ 
+//Route::get('/', "UserController@showDashboard");
 
 Route::get('/inventory/index', ['middleware' => 'inventory','uses' =>'inventorySysController@showIndex']);
+
 
 
 /* Login */
 Route::get('/inventory/login', 'InputAuth\AuthController@showLoginForm');
 Route::post('/inventory/login', 'InputAuth\AuthController@postLogin');
-Route::get('/inventory/logout', 'InputAuth\AuthController@logout');
+Route::get('/inventory/logout', 'InputAuth\AuthController@getLogout');
 
 /* Register */
 
@@ -55,7 +58,7 @@ Route::get('/inventory/resend2/{confirmationCode}', [
 
 Route::get("/inventory/forgotPassword", 'InputAuth\PasswordController@getEmail');
 Route::post("/inventory/forgotPassword",'InputAuth\PasswordController@postEmail');
-Route::get("/inventory/Thankyou", "inventorySysController@forgotpassTypage");
+Route::get("/inventory/forgotPassword/Thankyou", "InputAuth\PasswordController@forgotpassTypage");
 
 Route::get("inventory/changePassword/{token}",'InputAuth\PasswordController@getReset');
 Route::post("inventory/changePassword",'InputAuth\PasswordController@postReset');
@@ -63,8 +66,12 @@ Route::get("/inventory/thankyoupage", "inventorySysController@showNewPassTy");
 Route::get("/inventory/change_pass", "inventorySysController@changePass");
 
 
+/* Item input */
+Route::get("/inventory/addItems", 'inventorySysController@showInputItem');
 
+Route::get("/inventory/manageAccounts", 'inventorySysController@showManageAccounts');
 
+Route::get("/inventory/borrow", 'inventorySysController@showBorrow');
 
 
 
