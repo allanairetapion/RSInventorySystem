@@ -43,6 +43,37 @@ class inventorySysController extends Controller {
 		return view("inventory.borrow") -> with('borrow', $borrowTable);
 
 	}
+	
+	public function showReturn()
+	 {
+	 	return view("inventory.return");	
+	 }
+	 
+	  public function showDetailed()
+	 {
+	 	return view("inventory.detailed");	
+	 }
+	 
+	  public function showIssues()
+	 {
+	 	return view("inventory.issues");	
+	 }
+	 
+	  public function showBroken()
+	 {
+	 	return view("inventory.broken");	
+	 }
+	 
+	  public function showSummaryMonYrs()
+	 {
+	 	return view("inventory.summaryMonYrs");	
+	 }
+	 
+	  public function showSummaryAll()
+	 {
+	 	return view("inventory.summaryAll");	
+	 }	 
+	
 
 	public function showCr8AccTyPage() {
 
