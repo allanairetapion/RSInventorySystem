@@ -71,7 +71,14 @@ Route::get("/inventory/addItems", 'inventorySysController@showInputItem');
 
 Route::get("/inventory/manageAccounts", 'inventorySysController@showManageAccounts');
 
-Route::get("/inventory/borrow", 'inventorySysController@showBorrow');
+Route::get("/inventory/borrow","inventorySysController@showBorrow");
+Route::get("/inventory/return","inventorySysController@showReturn");
+Route::get("/inventory/detailed","inventorySysController@showDetailed");
+Route::get("/inventory/issues","inventorySysController@showIssues");
+Route::get("/inventory/broken","inventorySysController@showBroken");
+Route::get("/inventory/summaryMonYrs","inventorySysController@showSummaryMonYrs");
+Route::get("/inventory/summaryAll","inventorySysController@showSummaryAll");
+	
 
 
 
