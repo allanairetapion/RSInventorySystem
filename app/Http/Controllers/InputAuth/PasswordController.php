@@ -4,6 +4,7 @@ namespace App\Http\Controllers\InputAuth;
 use App\IsUser as IsUser;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\ResetsPasswords;
+use Auth;
 
 class PasswordController extends Controller
 {
@@ -35,9 +36,24 @@ class PasswordController extends Controller
         $this->middleware('web');
     }
 
+    public function getEmail()
+    {		if(Auth::guard('inventory')->check()){
+	return redirect('inventory/index');
+	}
+	
+	else{
+return view('inventoryAuth.passwords.email');
+		}
+	
+        
+    }
 
 
-			
+				public function forgotpassTypage() {
+		
+		return view('inventory.forgotpass_typage');
+
+	}
 	  protected function getResetValidationRules()
     {
         return [
@@ -47,10 +63,9 @@ class PasswordController extends Controller
         ];
     }
 	
-	protected function getSendResetLinkEmailSuccessResponse($response)
+   protected function getSendResetLinkEmailSuccessResponse()
     {
-        	 
-        return redirect('/inventory/Thankyou');
+        return redirect('/inventory/forgotPassword/Thankyou');
     }
 
     protected function getResetSuccessResponse($response)
