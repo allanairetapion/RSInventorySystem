@@ -26,11 +26,11 @@ class PasswordController extends Controller
     */
     
     use ResetsPasswords;
-	protected $ActivateresetView = "tickets/admin/passwords/activate";
-	protected $linkRequestView ="tickets/admin/passwords/email";
-	protected $resetView ='tickets/admin/passwords/reset';
+	protected $ActivateresetView = "/tickets/admin/passwords/activate";
+	protected $linkRequestView ="/tickets/admin/passwords/email";
+	protected $resetView ='/tickets/admin/passwords/reset';
     protected $guard ='admin';
-    protected $redirectTo = 'admin/changePasswordSuccess';
+    protected $redirectTo = '/admin/changePasswordSuccess';
 	protected $table = 'admin';
 	protected $broker = 'admin';
     /**
@@ -128,8 +128,7 @@ class PasswordController extends Controller
     {
         $user->forceFill([
             'password' => bcrypt($password),
-            'remember_token' => Str::random(60),
-            'status' => 'Activated',
+            'remember_token' => Str::random(60),            
         ])->save();
 		
 		
@@ -137,10 +136,19 @@ class PasswordController extends Controller
         
     }
 	public function activateSuccess(){
+		Auth::guard('admin')->logout();
 		return view('tickets.admin.activateSuccess');
+		
 	}
 	public function showChangePasswordSuccess (){
+		Auth::guard('admin')->logout();
 		return view('tickets.admin.changePasswordSuccess');
 	}
+	protected function getResetFailureResponse(Request $request, $response)
+    {
+        return redirect()->back()
+            ->withInput($request->only('email'))
+            ->withErrors();
+    }
 	
 }

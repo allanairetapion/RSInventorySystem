@@ -1,7 +1,9 @@
 @extends('tickets.ticketlayout1')
 @section('title', 'Remote Staff - Forgot Password')
 @section('body')
-
+<div class="white-bg">
+	<img src="/img/Network.jpg">
+</div>
 
  <div class="passwordBox animated fadeInDown">
         <div class="row">

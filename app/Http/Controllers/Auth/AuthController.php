@@ -61,7 +61,7 @@ class AuthController extends Controller
         	'dept' => 'required',
             'fname' => 'required|max:255',
             'lname' => 'required|min:2|max:255',
-            'email' => 'required|email|max:255|unique:clients',
+            'email' => 'required|email|max:255|unique:clients|unique:admin',
             'password' => 'required|min:6|confirmed',
             'password_confirmation' => 'required|min:6',
             'captcha' => 'required|captcha',
@@ -76,8 +76,14 @@ class AuthController extends Controller
      */
     protected function create(array $data)
     {
+		$ida;
+    	do{
+			$ida =rand(0, 9999);
+		}
+		while (DB::table('admin')->where('id',$ida)->first() != null);
 		
          $user = User::create([
+         	'id' => $ida,
             'department' => $data['dept'],
             'email' => $data['email'],
             'password' => bcrypt($data['password']),
@@ -86,7 +92,7 @@ class AuthController extends Controller
 		
 		$client_profiles = ClientProfile::create([
 			'first_name' => $data['fname'],
-			'client_id' => $user->id,
+			'client_id' => $ida,
 			'last_name' => $data['lname'],
 		]);
 		
@@ -173,5 +179,14 @@ class AuthController extends Controller
 
         return $this->sendFailedLoginResponse($request);
         }
+
+	public function showChangePasswordSuccess(){
+	 	Auth::guard('user')->logout();
+		return view("tickets.changePasswordSuccess");
+	}	
+	public function showSignUpSuccess(Request $request){
+	   		Auth::guard('user')->logout();
+			return view("tickets.signUpSuccess");	
+	}
     
 }

@@ -5,7 +5,7 @@
 	<div class="col-md-offset-3 col-md-6">
 		<div class="ibox">
 			<div class="ibox-title">
-				<h3 class="font-bold text-info">Create New Agent/Admin</h3>
+				<h3 class="font-bold text-info">Create New User</h3>
 			</div>
 			<div class="ibox-content">
 
@@ -16,14 +16,14 @@
 						<div class="form-group email {{ $errors->has('fname') ? ' has-error' : '' }}">
 							<label class="col-md-3 control-label">First Name:&nbsp;</label>
 							<div class="col-md-8">
-								<input type="text" class="form-control" placeholder="First Name" name="firstname" value="{{old('fname')}}" required="">
+								<input type="text" class="form-control" placeholder="First Name" name="firstname" value="{{old('firstname')}}" required="">
 
 							</div>
 						</div>
 						<div class="form-group fname {{ $errors->has('lname') ? ' has-error' : '' }}">
 							<label class="col-md-3 control-label">Last Name:&nbsp;</label>
 							<div class="col-md-8">
-								<input type="text" class="form-control" placeholder="Last Name" name="lastname" value="{{old('lname')}}" required="">
+								<input type="text" class="form-control" placeholder="Last Name" name="lastname" value="{{old('lastname')}}" required="">
 
 							</div>
 						</div>
@@ -37,10 +37,14 @@
 						<div class="form-group usertype">
 							<label class="col-md-3 control-label">User type: &nbsp; </label>
 							<div class="col-md-8">
-								<select name="user_type"class="form-control">
+								<select name="user_type"class="form-control">									
+									@if(Auth::guard('admin')->user()->user_type == 'agent')
+									<option value="agent"> Agent</option>
+									@else
 									<option value=""> Select user type...</option>
 									<option value="admin"> Admin</option>
 									<option value="agent"> Agent</option>
+									@endif
 								</select>
 
 							</div>

@@ -2,69 +2,68 @@
 @section('title', 'Remote Staff - Change Password')
 @section('body')
 
+
 <div class="passwordBox animated fadeInDown">
 	<div class="ibox">
 
-		<div class="ibox-title">
+		<div class="ibox-title text-center gray-bg">
 			<center>
 				<h2 class="font-bold">Reset Password</h2>
 			</center>
 		</div>
-		<div class="ibox-content text-center">
+		<div class="ibox-content gray-bg">
+<center>
+			<P class="font-bold">
+				Enter your new password.
+			</P></center>
 
-			<center>
-				<P class="font-bold">
-					Enter your new password.
-				</P>
-				<center>
+			<form class="m-t" role="form" method="post" action="{{ url('/admin/changePassword') }}"  >
+				{!! csrf_field() !!}
+				<input type="hidden" name="token" value="{{ $token }}">
 
-					<div class="row">
+				<div class="form-group{{ $errors->has('email') ? ' has-error' : '' }}">
 
-						<div class="col-lg-12">
-							<form class="m-t" role="form" method="post" action="{{ url('/admin/changePassword') }}"  >
-								{!! csrf_field() !!}
-								<input type="hidden" name="token" value="{{ $token }}">
+					@if ($errors->has('email'))
+					<span class="help-block"> <strong>{{ $errors->first() }}</strong> </span>
+					@endif
 
-								<div class="form-group{{ $errors->has('email') ? ' has-error' : '' }}">
+					<input type="hidden" placeholder="Email Address" class="form-control" name="email" value="{{ $email or old('email') }}" required>
 
-									@if ($errors->has('email'))
-									<span class="help-block"> <strong>{{ $errors->first('email') }}</strong> </span>
-									@endif
+				</div>
 
-									<input type="email" placeholder="Email Address" class="form-control" name="email" value="{{ $email or old('email') }}" required>
+				<div class="form-group{{ $errors->has('password') ? ' has-error' : '' }}">
 
-								</div>
+					<input type="password" placeholder="New Password" class="form-control" name="password" required>
 
-								<div class="form-group{{ $errors->has('password') ? ' has-error' : '' }}">
+					@if ($errors->has())
+					<span class="help-block text-warning"> <strong>{{ $errors->first() }}</strong> </span>
+					@endif
 
-									<input type="password" placeholder="New Password" class="form-control" name="password" required>
+				</div>
 
-									@if ($errors->has('password'))
-									<span class="help-block"> <strong>{{ $errors->first('password') }}</strong> </span>
-									@endif
+				<div class="form-group{{ $errors->has('password_confirmation') ? ' has-error' : '' }}">
 
-								</div>
+					<input type="password" placeholder="Confirm New Password" class="form-control" name="password_confirmation" required>					
 
-								<div class="form-group{{ $errors->has('password_confirmation') ? ' has-error' : '' }}">
+				</div>
+				<button type="submit" action="" class="btn btn-primary block full-width m-b">
+					<i class="fa fa-btn fa-sign-in"></i> Confirm
+				</button>
 
-									<input type="password" placeholder="Confirm New Password" class="form-control" name="password_confirmation" required>
+			</form>
 
-									@if ($errors->has('password_confirmation'))
-									<span class="help-block"> <strong>{{ $errors->first('password_confirmation') }}</strong> </span>
-									@endif
-
-								</div>
-								<button type="submit" action="" class="btn btn-primary block full-width m-b">
-									<i class="fa fa-btn fa-sign-in"></i>Confirm
-								</button>
-
-							</form>
-						</div>
-					</div>
 		</div>
 
 	</div>
 	<hr/>
+	<div class="row">
+		<div class="col-md-6">
+			<strong>Copyright</strong> Remote Staff Inc.
+		</div>
+		<div class="col-md-6 text-right">
+			&copy; 2008-<?php echo date("Y");?>
+		</div>
+	</div>
 
 </div>
 

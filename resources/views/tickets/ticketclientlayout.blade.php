@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+
 <html>
 
 	<head>
@@ -9,12 +9,15 @@
 		<title>Client</title>
 
 		<link href="/css/bootstrap.min.css" rel="stylesheet">
-		<link href="font-awesome/css/font-awesome.css" rel="stylesheet">
+		<link href="/font-awesome/css/font-awesome.css" rel="stylesheet">
 		<link href="/css/animate.css" rel="stylesheet">
 		<link href="/css/style.css" rel="stylesheet">
 		<link href="/css/plugins/sweetalert/sweetalert.css" rel="stylesheet">
 		<script src="/js/plugins/sweetalert/sweetalert.min.js"></script>
 		<script src="/js/plugins/chartJs/Chart.min.js"></script>
+		<link href="/css/plugins/dataTables/datatables.min.css" rel="stylesheet">
+		<link href="/css/plugins/summernote/summernote.css" rel="stylesheet">
+		<link href="/css/plugins/summernote/summernote-bs3.css" rel="stylesheet">
 
 	</head>
 
@@ -25,32 +28,27 @@
 				<div class="row border-bottom white-bg">
 					<nav class="navbar navbar-static-top" role="navigation">
 						<div class="navbar-header">
-							<button aria-controls="navbar" aria-expanded="false" data-target="#navbar" data-toggle="collapse" class="navbar-toggle collapsed"
-
-							type="button">
+							<button aria-controls="navbar" aria-expanded="false" data-target="#navbar" data-toggle="collapse" class="navbar-toggle collapsed"type="button">
 								<i class="fa fa-reorder"></i>
-							</button>
-							<a href="/tickets/landingPage" class="navbar-brand">RS Tickets</a>
+							</button>						
+							<a href="/tickets/landingPage" class="navbar-brand">Remote Staff</a>
 						</div>
 						<div class="navbar-collapse collapse" id="navbar">
 							<ul class="nav navbar-nav">
 								<li class="active">
 									<a> Hello, {{ Auth::guard('user')->user()->clientProfile ? Auth::guard('user')->user()->clientProfile->first_name.' '.Auth::guard('user')->user()->clientProfile->last_name : '' }}! </a>
-								</li>
+								</li>								
 								<li>
-									<a href="/tickets/createTicket"> Create Ticket </a>
-								</li>
-								<li>
-									<a href="#"> Ticket Status <span class="label label-warning">7</span> </a>
+									<a href="/tickets/ticketStatus"> Ticket Status</a>
 								</li>
 
 							</ul>
-							<ul class="nav navbar-top-links navbar-right">
+							<ul class="nav navbar-top-links navbar-right">								
 								<li>
 									<a href="#" class="adminEmail">{{ Auth::guard('user')->user()->email   }}</a>
 								</li>
 								<li>
-									<a href="/tickets/logout"> <span class="glyphicon glyphicon-log-out"></span>&nbsp;Log out </a>
+									<a href="/tickets/logout"> <i class="fa fa-sign-out"></i></span>&nbsp;Log out </a>
 								</li>
 							</ul>
 						</div>
@@ -67,7 +65,7 @@
 
 				<div class="footer">
 					<div class="pull-right">
-						&copy; 2014-2015
+						&copy; 2008-<?php echo date("Y");?>
 					</div>
 					<div>
 						<strong>Copyright</strong> Remote Staff Inc.
@@ -100,13 +98,21 @@
 		<script src="/js/plugins/peity/jquery.peity.min.js"></script>
 		<!-- Peity demo -->
 		<script src="/js/demo/peity-demo.js"></script>
-
+		<!--datatable-->
+		<script src="/js/plugins/jeditable/jquery.jeditable.js"></script>
+		<script src="/js/plugins/dataTables/datatables.min.js"></script>
+		<!-- SUMMERNOTE -->
+		<script src="/js/plugins/summernote/summernote.min.js"></script>
 	</body>
 
 </html>
 
 <script>
 	$(document).ready(function() {
+		$('div.summernote').summernote({
+					placeholder:"hello",
+				});
+		var $table = $('table.tickets').DataTable();
 		var doughnutData = [{
 			value : 300,
 			color : "#a3e1d4",
@@ -139,9 +145,16 @@
 		var DoughnutChart = new Chart(ctx).Doughnut(doughnutData, doughnutOptions);
 
 	});
+	
+	
 
 	/// Create Ticket
 	$('button.create-ticket').click(function(e) {
+		$('input[type="hidden"].topic').val($('div.summernote').code());
+				console.log($('div.summernote').code());		
+		$('div.topic').removeClass('has-error');
+		$('div.subject').removeClass('has-error');
+		$('div.summary').removeClass('has-error');
 		e.preventDefault
 		$.ajax({
 			type : "POST",
@@ -153,13 +166,13 @@
 				$.each(data.errors, function(k, v) {
 					msg = v + "\n" + msg;
 				})
-				if (data.errors['Topic']) {
+				if (data.errors['topic']) {
 					$('div.topic').addClass('has-error');
 				}
-				if (data.errors['Subject']) {
+				if (data.errors['subject']) {
 					$('div.subject').addClass('has-error');
 				}
-				if (data.errors['Summary']) {
+				if (data.errors['summary']) {
 					$('div.summary').addClass('has-error');
 				}
 

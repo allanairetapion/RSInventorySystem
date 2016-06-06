@@ -92,8 +92,16 @@ class PasswordController extends Controller
         if (is_null($token)) {
             return $this->getEmail();
         }
+		
 		$email = $request->input('email');
         return view('auth.passwords.activate')->with(compact('token', 'email'));        
+    }
+	
+	protected function getResetFailureResponse(Request $request, $response)
+    {
+        return redirect()->back()
+            ->withInput($request->only('email'))
+            ->withErrors();
     }
 
 /// When Client clicks activation link on Email
