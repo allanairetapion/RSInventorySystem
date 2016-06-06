@@ -24,11 +24,11 @@
 						</center>
 						@endif
 						<div class="col-md-6{{ $errors->has('fname') ? ' has-error' : '' }}">
-							<input type="text" class="form-control" placeholder="First Name" name="fname"required="" value={{old("fname")}}>
+							<input type="text" class="form-control" placeholder="First Name" name="firstname"required="" value={{old("fname")}}>
 							<br>
 						</div>
 						<div class="col-md-6{{ $errors->has('lname') ? ' has-error' : '' }}">
-							<input type="text" class="form-control" placeholder="Last Name" name="lname"required="" value={{old("lname")}} >
+							<input type="text" class="form-control" placeholder="Last Name" name="lastname"required="" value={{old("lname")}} >
 							<br>
 						</div>
 					</div>

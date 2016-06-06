@@ -1,12 +1,14 @@
 @extends('tickets.ticketlayout1')
 @section('title', 'Remote Staff - Sign Up')
 @section('body')
-
+<div class="white-bg text-center">
+	<img src="/img/remote-staff-logo.jpg">
+</div>
 <div class="passwordBox animated fadeInDown">
 	<div class='ibox'>
 		<div class="ibox-title">
 			<center>
-				<h3 class="text-success font-bold">Password successfully changed</h3>
+				<h2 class="text-success font-bold">Password successfully changed!</h2>
 			</center>
 		</div>
 		<div class="ibox-content text-center">
@@ -17,7 +19,16 @@
 			<a href="/admin/logout" class="btn btn-primary btn-block">Sign In</a>
 		</div>
 	</div>
+	
 	<hr/>
+	<div class="row">
+		<div class="col-md-6">
+			<strong>Copyright</strong> Remote Staff Inc.
+		</div>
+		<div class="col-md-6 text-right">
+			<small>© 2015-2016</small>
+		</div>
+	</div>
 </div>
 
 @endsection

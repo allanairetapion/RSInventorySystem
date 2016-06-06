@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\AdminAuth;
 use App\AdminProfile;
 use App\Admin;
+use DB;
 use Auth;
 use Validator;
 use App\Http\Controllers\Controller;
@@ -56,9 +57,9 @@ class AuthController extends Controller
     {
         return Validator::make($data, [
         	'user_type' => 'required',
-            'fname' => 'required|max:255',
-            'Last name' => 'required|min:2|max:255',
-            'email' => 'required|email|max:255|unique:admin',
+            'firstname' => 'required|max:255',
+            'lastname' => 'required|min:2|max:255',
+            'email' => 'required|email|max:255|unique:admin|unique:clients',
             
         ]);
     }
@@ -69,12 +70,18 @@ class AuthController extends Controller
      * @param  array  $data
      * @return User
      */
-    
+  
 
     protected function create(array $data)
     {
+    	$ida;
+    	do{
+			$ida = rand(0, 9999);
+		}
+		while (DB::table('admin')->where('id',$ida)->first() != null);
 		
          $user = Admin::create([
+         	'id' => $ida,
             'user_type' => $data['user_type'],
             'email' => $data['email'],
             'status' => 'Not Activated',
@@ -82,9 +89,9 @@ class AuthController extends Controller
         ]);
 		
 		$admin_profiles = AdminProfile::create([
-			'first_name' => $data['fname'],
-			'agent_id' => $user->id,
-			'last_name' => $data['lname'],
+			'first_name' => $data['firstname'],
+			'agent_id' => $ida,
+			'last_name' => $data['lastname'],
 		]);
 		
 		return $user;

@@ -1,7 +1,9 @@
 @extends('tickets.ticketlayout1')
 @section('title', 'Remote Staff - Change Password')
 @section('body')
-
+<div class="white-bg text-center">
+	<img src="/img/remote-staff-logo.jpg">
+</div>
 <div class="passwordBox animated fadeInDown">
 	<div class="ibox">
 		<div class="ibox-title">
@@ -15,7 +17,7 @@
 				To finish your account activation, Please setup your password.
 			</P>
 
-			<form class="m-t form-horizontal" role="form" method="post" action="{{ url('/admin/changePassword') }}"  >
+			<form class="m-t form-horizontal" role="form" method="post" action="{{ url('/admin/activate') }}"  >
 				{!! csrf_field() !!}
 
 				<input type="hidden" name="token" value="{{ $token }}">
@@ -26,7 +28,7 @@
 					@endif
 
 					<div class="col-md-7">
-						<input type="email" class=" form-control email" placeholder="Email Address" name="email" value="{{$email or old('email')}}" required="">
+						<input type="hidden" class=" form-control email" placeholder="Email Address" name="email" value="{{$email or old('email')}}" required="">
 					</div>
 
 				</div>
@@ -58,11 +60,15 @@
 
 	</div>
 	<hr/>
+        <div class="row">
+            <div class="col-md-6">
+                <strong>Copyright</strong> Remote Staff Inc.
+            </div>
+            <div class="col-md-6 text-right">
+               &copy; 2008-<?php echo date("Y");?>
+            </div>
+        </div>
 </div>
 
-<script type="text/javascript">
-	$(document).ready(function() {
-		$('input[type="email"]').hide();
-	}); 
-</script>
+
 @endsection

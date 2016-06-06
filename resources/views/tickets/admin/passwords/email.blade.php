@@ -5,11 +5,11 @@
 <div class="passwordBox animated fadeInDown">
 	<div class="ibox">
 
-		<div class="ibox-title">
+		<div class="ibox-title gray-bg">
 			<center>
 				<h2 class="font-bold">Forgot password</h2><center>
 		</div>
-		<div class="ibox-content text-center">
+		<div class="ibox-content gray-bg">
 			<p>
 				Enter your email address and we will send a reset link to reset your password.
 			</p>
@@ -22,9 +22,8 @@
 			</div>
 			@endif
 
-			<div class="row">
-
-				<div class="col-lg-12">
+			
+				
 					<form class="m-t" role="form" action="{{ url('/admin/forgotPassword') }}" method="post">
 						{!! csrf_field() !!}
 						<div class="form-group">
@@ -40,15 +39,24 @@
 						</div>
 
 						<button type="submit" class="btn btn-primary block full-width m-b">
-							Send
+							<i class="fa fa-btn fa-send"></i> Send
 						</button>
 
 					</form>
-				</div>
-			</div>
+				
+			
 		</div>
 	</div>
 	<hr/>
+        <div class="row">
+            <div class="col-md-6">
+                <strong>Copyright</strong> Remote Staff Inc.
+            </div>
+            <div class="col-md-6 text-right">
+               &copy; 2008-<?php echo date("Y");?>
+            </div>
+        </div>
+	
 </div>
 
 @endsection

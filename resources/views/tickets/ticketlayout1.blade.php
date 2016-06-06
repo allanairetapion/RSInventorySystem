@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+
 <html>
 
 	<head>
@@ -16,32 +16,33 @@
 
 		<script src="/js/bootstrap.min.js"></script>
 		<script src="/js/jquery-2.1.1.js"></script>
+		<script src="/js/jquery-ui-1.10.4.min.js"></script>
+		<script type="text/javascript" src="/js/jquery-ui-1.10.4.min.js"></script>
+		<link rel="stylesheet" type="text/css" href="/css/plugins/jQueryUI/jquery-ui.css" />
 
 	</head>
 
-	<body class="gray-bg">
-		<div class="white-bg">
-			<center><img src="/img/remote-staff-logo.jpg" class="img-responsive">
-			</center>
+	<body class="white-bg" >
 
-		</div>
-		<div class="wrapper wrapper-content">
-			<div class="container">
-				<div class="row">
-					@section('body')
-					@show
-				</div>
-			</div>
-		</div>
+		@section('body')
+		@show
 
-		<div class="footer">
-			<p class="pull-right">
-				&copy;2014-2015
-			</p>
-			<p>
-				<strong>Copyright</strong> Remote Staff Inc.
-			</p>
-		</div>
 	</body>
 
+	<script>
+		 $(document).ready(function() {
+
+			$(function() {
+				$("input.department").keyup(function() {
+					$("input.department").autocomplete({
+						source : "{{URL('/search')}}",
+						minLength : 1
+					});
+					$("#auto").autocomplete("widget").height(200);
+				});
+			});
+		});
+
+	
+	</script>
 </html>

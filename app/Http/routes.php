@@ -87,18 +87,15 @@ Route::get("/inventory/summaryAll","inventorySysController@showSummaryAll");
 
 
 
-
-
-
-
 //Tickets
-
+Route::get('/checkNew','HomeController@checkNew');
+Route::get('/search', 'HomeController@postSearch');
 
 //Tickets Client
 //Client Registration Route
 Route::get('tickets/signUp', 'Auth\AuthController@showRegistrationForm');
 Route::post('tickets/signUp', 'Auth\AuthController@register');
-Route::get('tickets/signUpSuccess','TicketsController@showSignUpSuccess');
+Route::get('tickets/signUpSuccess','Auth\AuthController@showSignUpSuccess');
 //Client Login Route
 Route::get('tickets/login', 'Auth\AuthController@showLoginForm');
 Route::post('/tickets/login', 'Auth\AuthController@postLogin');
@@ -109,7 +106,7 @@ Route::post("/tickets/forgotPassword",'Auth\PasswordController@postEmail');
 //Client Change Password
 Route::get("tickets/changePassword/{token}",'Auth\PasswordController@getReset');
 Route::post("tickets/changePassword",'Auth\PasswordController@postReset');
-Route::get("tickets/changePasswordSuccess","TicketsController@showChangePasswordSuccess");
+Route::get("tickets/changePasswordSuccess","Auth\AuthController@showChangePasswordSuccess");
 //Client Activation
 Route::post('/tickets/sendActivate','Auth\PasswordController@ActivatesendResetLinkEmail');
 Route::get('/tickets/activate/{token}','Auth\PasswordController@getActivateReset');
@@ -121,6 +118,8 @@ Route::post('/tickets/activate','Auth\PasswordController@Activate');
 Route::group(['middleware' => 'user'], function () {
 	Route::get("/tickets/landingPage","TicketsController@landingPage");
 	Route::get("/tickets/createTicket",'TicketsController@showCreateTicket');
+	Route::get('/tickets/ticketStatus','TicketsController@showTicketStatus');
+	
 
 	Route::post('/tickets/createTicket','TicketsController@createTicket');
 });
@@ -133,15 +132,15 @@ Route::get('/admin/login','AdminAuth\AuthController@showLoginForm');
 Route::post('/admin/login','AdminAuth\AuthController@postLogin');
 Route::get('/admin/logout','AdminAuth\AuthController@logout');
 //Admin Registration Routes...
-Route::get('admin/register', 'AdminAuth\AuthController@showRegistrationForm');
-Route::post('admin/register', 'AdminAuth\AuthController@register');
+Route::get('/admin/register', 'AdminAuth\AuthController@showRegistrationForm');
+Route::post('/admin/register', 'AdminAuth\AuthController@register');
 //Admin Forgot Password (get email)
 Route::get("/admin/forgotPassword", 'AdminAuth\PasswordController@getEmail');
 Route::post("/admin/forgotPassword",'AdminAuth\PasswordController@postEmail');
 //Admin Change Password
-Route::get("admin/changePassword/{token}",'AdminAuth\PasswordController@getReset');
-Route::post("admin/changePassword",'AdminAuth\PasswordController@postReset');
-Route::get("admin/changePasswordSuccess","AdminAuth\PasswordController@showChangePasswordSuccess");
+Route::get("/admin/changePassword/{token}",'AdminAuth\PasswordController@getReset');
+Route::post("/admin/changePassword",'AdminAuth\PasswordController@postReset');
+Route::get("/admin/changePasswordSuccess","AdminAuth\PasswordController@showChangePasswordSuccess");
 //Admin Account Activation
 Route::post('/admin/sendActivate','AdminAuth\PasswordController@ActivatesendResetLinkEmail');
 Route::get('/admin/activate/{token}','AdminAuth\PasswordController@getActivateReset');
@@ -157,19 +156,27 @@ Route::group(['middleware' => 'admin'], function () {
 	Route::get('/admin', 'TicketsAdmin@index');
 	Route::get('/admin/createAgent','TicketsAdmin@createAgent');
 	Route::get('/admin/createTicket','TicketsAdmin@showCreateTicket');
+	Route::get('/admin/topics','TicketsAdmin@showTopics');
+	Route::get('/admin/clients','TicketsAdmin@showClients');
+	Route::get('/admin/agents','TicketsAdmin@showAgents');
+	Route::get('/admin/restrictions','TicketsAdmin@showRestriction');
+	Route::get('/admin/ticketReport','TicketsAdmin@showTicketStatus');
+	Route::get('/admin/ticketReply','TicketsAdmin@showTicketReply');
+	
+	Route::get('/admin/printTicketClosed','TicketsAdmin@printTicketClosed');
 	
 	Route::post('/admin/createTicket','TicketsAdmin@createTicket');	
 	Route::post('/checkEmail','TicketsAdmin@checkEmail');
+	Route::post('/admin/addTopic','TicketsAdmin@addTopic');
+	Route::post('/admin/updateSelection','TicketsAdmin@updateSelection');
+	Route::post('/admin/deleteTopic','TicketsAdmin@deleteTopic');	
+	Route::post('/admin/updateRestriction','TicketsAdmin@updateRestriction');
+	Route::post('/admin/deleteTicket','TicketsAdmin@deleteTicket');
 
 });
 
-
-// End Tickets
-Route::get('/home', 'HomeController@index');
-
 Route::auth();
 
-Route::get('/home', 'HomeController@index');
 
 Route::any('captcha-test', function(Request $request)
     {
@@ -195,8 +202,3 @@ Route::any('captcha-test', function(Request $request)
         $form .= '</form>';
         return $form;
     });
-
-
-
-
-Route::get('/home', 'HomeController@index');

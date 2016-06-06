@@ -4,6 +4,7 @@ use App\Tickets;
 use App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Auth;
+use DB;
 use Illuminate\Http\Request;
 use Validator;
 use App\Client as Client;
@@ -17,47 +18,25 @@ class TicketsController extends Controller{
 
 	public function __construct(){
         $this->middleware('user');
-   }
-	 
-	 
-	 public function showSignUp(){
-	 	return view("tickets.SignUp");
-	 }
-	 
-	   public function showSignUpSuccess(Request $request){
-	   			
-			return view("tickets.signUpSuccess");	
-	}
-	 public function showForgotPassword(){
-	 	return view("tickets.forgotpassword");
-	 }
-
-	 
-	 public function landingPage(Request $request){
-	 	if(Auth::guard('user')->check()){	
-			return view("tickets.landingPage");
+   }	 
+	public function landingPage(Request $request){
+	 	if(Auth::guard('user')->check()){
+	 		$users = DB::table('ticket_topics')->where('status',1)->get();	
+			return view("tickets.landingPage",['topics' => $users]);
 		}
 		else {
 			return redirect('tickets/login');
 		}
-	 }
-	 public function showChangePassword(){
-		return view("tickets.ChangePassword");
-	}
-	 public function showChangePasswordSuccess(){
-	 	Auth::guard('user')->logout();
-		return view("tickets.changePasswordSuccess");
-	}	 	 
-	 
+	 }		  	 	 
 	public function showCreateTicket(){
-		return view('tickets.createTicket');
-	}
-	
+		$users = DB::table('ticket_topics')->where('status',1)->get();
+		return view('tickets.createTicket',['topics' => $users]);
+	}	
 	public function createTicket(Request $request){
 		$validator = Validator::make($request->all(),[
-        	'Topic' => 'required',
-        	'Subject'  => 'required|min:3|max:255',    
-            'Summary' =>'required|min:3',            
+        	'topic' => 'required',
+        	'subject'  => 'required|min:6|max:255',    
+            'summary' =>'required|min:10',            
         ]);
 
         if ($validator->fails()) {
@@ -67,11 +46,12 @@ class TicketsController extends Controller{
 		else {
 			
 			$user = Tickets::create([
-            'sender' => Auth::guard('user')->user()->email,
-            'topic' => $request['Topic'],
-            'subject' => $request['Subject'],
-            'summary' => $request['Summary'],
-            'status' => 'Open',
+            'sender' => Auth::guard('user')->user()->clientProfile ? Auth::guard('user')->user()->clientProfile->first_name.' '.Auth::guard('user')->user()->clientProfile->last_name : '',
+            'sender_email' => Auth::guard('user')->user()->email,
+            'topic_id' => $request['topic'],
+            'subject' => $request['subject'],
+            'summary' => $request['summary'],
+            'ticket_status' => 'Open',
             'priority' => 'Medium',
             'department' =>Auth::guard('user')->user()->department,
         ]);
@@ -81,8 +61,13 @@ class TicketsController extends Controller{
 			
 		}
 	}
-	
-	
+	public function showTicketStatus(){
+		$user = DB::table('tickets')->leftJoin('ticket_topics','tickets.topic_id','=','ticket_topics.topic_id')->where('sender_email',Auth::guard('user')->user()->email)->get();
+		
+		return view('tickets.ticketStatus',['tickets' => $user]);
+		
+	}	
+		
 		 
 }
 
