@@ -23,7 +23,7 @@
 				<h4 class="text-warning">{{$errors->first()}}</h4>			
 			@endif
 			<div class="form-group{{ $errors->has('email') ? ' has-error' : '' }}">
-				<input type="email" class="form-control" placeholder="Email" value="{{ old('email') }}"name="email" required="">
+				<input type="email" class="form-control" placeholder="Enter email" value="{{ old('email') }}"name="email" required="">
 			</div>
 			<div class="form-group{{ $errors->has('password') ? ' has-error' : '' }}">
 				<input type="password" class="form-control" placeholder="Password" name="password" required="">
@@ -44,7 +44,7 @@
                 <strong>Copyright</strong> Remote Staff Inc.
             </div>
             <div class="col-md-6 text-right">
-               <small>© 2015-2016</small>
+               <small>© 2008-2016</small>
             </div>
         </div>
     </div>

@@ -10,7 +10,7 @@
 | and give it the controller to call when that URI is requested.
 |
 */
-
+use App\Tickets as Tickets;
 
  Route::get('/inventory', 'inventorySysController@showInventory');
  
@@ -93,23 +93,23 @@ Route::get('/search', 'HomeController@postSearch');
 
 //Tickets Client
 //Client Registration Route
-Route::get('tickets/signUp', 'Auth\AuthController@showRegistrationForm');
-Route::post('tickets/signUp', 'Auth\AuthController@register');
-Route::get('tickets/signUpSuccess','Auth\AuthController@showSignUpSuccess');
+Route::get('/tickets/signUp', 'Auth\AuthController@showRegistrationForm');
+Route::post('/tickets/signUp', 'Auth\AuthController@register');
+Route::get('/tickets/signUpSuccess','Auth\AuthController@showSignUpSuccess');
 //Client Login Route
-Route::get('tickets/login', 'Auth\AuthController@showLoginForm');
+Route::get('/tickets/login', 'Auth\AuthController@showLoginForm');
 Route::post('/tickets/login', 'Auth\AuthController@postLogin');
-Route::get('tickets/logout','Auth\AuthController@logout');
+Route::get('/tickets/logout','Auth\AuthController@logout');
 //Client Forgot Password (get email)
 Route::get("/tickets/forgotPassword", 'Auth\PasswordController@getEmail');
 Route::post("/tickets/forgotPassword",'Auth\PasswordController@postEmail');
 //Client Change Password
-Route::get("tickets/changePassword/{token}",'Auth\PasswordController@getReset');
-Route::post("tickets/changePassword",'Auth\PasswordController@postReset');
-Route::get("tickets/changePasswordSuccess","Auth\AuthController@showChangePasswordSuccess");
+Route::get("/tickets/changePassword/{token}",'Auth\PasswordController@getReset');
+Route::post("/tickets/changePassword",'Auth\PasswordController@postReset');
+Route::get("/tickets/changePasswordSuccess","Auth\AuthController@showChangePasswordSuccess");
 //Client Activation
 Route::post('/tickets/sendActivate','Auth\PasswordController@ActivatesendResetLinkEmail');
-Route::get('/tickets/activate/{token}','Auth\PasswordController@getActivateReset');
+Route::get('/tickets/activate/{token}','Auth\PasswordController@showActivateResetForm');
 Route::post('/tickets/activate','Auth\PasswordController@Activate');
 
 
@@ -119,9 +119,13 @@ Route::group(['middleware' => 'user'], function () {
 	Route::get("/tickets/landingPage","TicketsController@landingPage");
 	Route::get("/tickets/createTicket",'TicketsController@showCreateTicket');
 	Route::get('/tickets/ticketStatus','TicketsController@showTicketStatus');
-	
+	Route::get('/tickets/topIssue','TicketsController@topIssue');
+	Route::get('/tickets/editAccount','TicketsController@editAccount');
 
 	Route::post('/tickets/createTicket','TicketsController@createTicket');
+	
+	Route::put('/tickets/changePersonalInfo','TicketsController@changePersonalInfo');
+	Route::put('/tickets/changePassword','TicketsController@changePassword');
 });
 
 //End Client
@@ -157,28 +161,55 @@ Route::group(['middleware' => 'admin'], function () {
 	Route::get('/admin/createAgent','TicketsAdmin@createAgent');
 	Route::get('/admin/createTicket','TicketsAdmin@showCreateTicket');
 	Route::get('/admin/topics','TicketsAdmin@showTopics');
-	Route::get('/admin/clients','TicketsAdmin@showClients');
+	Route::get('/admin/clients/','TicketsAdmin@showClients');
 	Route::get('/admin/agents','TicketsAdmin@showAgents');
 	Route::get('/admin/restrictions','TicketsAdmin@showRestriction');
 	Route::get('/admin/ticketReport','TicketsAdmin@showTicketStatus');
-	Route::get('/admin/ticketReply','TicketsAdmin@showTicketReply');
-	
+	Route::get('/admin/tickets','TicketsAdmin@showTickets');
+	Route::get('/admin/tickets-Open','TicketsAdmin@showTicketsOpen');
+	Route::get('/admin/tickets-Pending','TicketsAdmin@showTicketsPending');
+	Route::get('/admin/tickets-Closed','TicketsAdmin@showTicketsClosed');
+	Route::get('/admin/tickets/{id}','TicketsAdmin@showTicketDetails');
+	Route::get('admin/ticketReply',function(){
+		session(['email' => ""]);
+		return view('tickets.admin.ticketReply');
+	});
+	Route::get('/admin/ticketReply/{id}','TicketsAdmin@showTicketReply');
 	Route::get('/admin/printTicketClosed','TicketsAdmin@printTicketClosed');
+	Route::get('/admin/topIssue','TicketsAdmin@topIssue');
+	Route::get('/admin/ticketStat','TicketsAdmin@ticketStat');
+	Route::get('/admin/topSupport','TicketsAdmin@topSupport');
+	Route::get('/admin/createClient','TicketsAdmin@showCreateClient');
+	Route::get('/admin/editAccount','TicketsAdmin@editAccount');
 	
 	Route::post('/admin/createTicket','TicketsAdmin@createTicket');	
 	Route::post('/checkEmail','TicketsAdmin@checkEmail');
-	Route::post('/admin/addTopic','TicketsAdmin@addTopic');
-	Route::post('/admin/updateSelection','TicketsAdmin@updateSelection');
-	Route::post('/admin/deleteTopic','TicketsAdmin@deleteTopic');	
-	Route::post('/admin/updateRestriction','TicketsAdmin@updateRestriction');
-	Route::post('/admin/deleteTicket','TicketsAdmin@deleteTicket');
+	Route::post('/admin/addTopic','TicketsAdmin@addTopic');		
+	Route::post('/admin/advancedSearch','TicketsAdmin@advancedSearch');
+	Route::post('/admin/ticketReply','TicketsAdmin@sendReply');
+	
+	Route::put('/admin/updateSelection','TicketsAdmin@updateSelection');
+	Route::put('/admin/updateRestriction','TicketsAdmin@updateRestriction');
+	Route::put('/admin/ticketStatus','TicketsAdmin@changeTicketStatus');
+	Route::put('/admin/forwardTicket','TicketsAdmin@forwardTicket');
+	Route::put('/admin/assignSupport','TicketsAdmin@assignSupport');
+	Route::put('/admin/changeClientPassword','TicketsAdmin@changeClientPassword');
+	Route::put('/admin/changeClientStatus','TicketsAdmin@changeClientStatus');
+	Route::put('/admin/changeAgentUserType','TicketsAdmin@changeAgentUserType');
+	Route::put('/admin/closeTicket','TicketsAdmin@closeTicket');
+	Route::put('/admin/changePersonalInfo','TicketsAdmin@changePersonalInfo');
+	Route::put('/admin/changePassword','TicketsAdmin@changePassword');
+	
+	Route::delete('/admin/deleteTopic','TicketsAdmin@deleteTopic');
+	Route::delete('/admin/deleteTicket','TicketsAdmin@deleteTicket');
+	Route::delete('/admin/deleteViewedTicket','TicketsAdmin@deleteViewedTicket');	
 
 });
 
 Route::auth();
 
 
-Route::any('captcha-test', function(Request $request)
+Route::any('/captcha-test', function(Request $request)
     {
         if (Request::getMethod() == 'POST')
         {
@@ -194,11 +225,8 @@ Route::any('captcha-test', function(Request $request)
             }
         }
 
-        $form = '<form method="post" action="captcha-test">';
-        $form .= '<input type="hidden" name="_token" value="' . csrf_token() . '">';
-        $form .= '<p>' . captcha_img() . '</p>';
-        $form .= '<p><input type="text" name="captcha"></p>';
-        $form .= '<p><button type="submit" name="check">Check</button></p>';
-        $form .= '</form>';
-        return $form;
+        
+       
+       
+        return captcha_src();
     });

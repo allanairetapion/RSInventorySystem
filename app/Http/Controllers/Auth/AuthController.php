@@ -8,10 +8,11 @@ use Auth;
 use Validator;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
+use Mail;
 use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
 use Illuminate\Http\Request;
 use Session;
-
+use Carbon\Carbon;
 
 class AuthController extends Controller
 {
@@ -58,12 +59,12 @@ class AuthController extends Controller
     protected function validator(array $data)
     {
         return Validator::make($data, [
-        	'dept' => 'required',
-            'fname' => 'required|max:255',
-            'lname' => 'required|min:2|max:255',
+        	'dept' => 'required|max:255',
+            'fname' => 'required|min:2|max:255|alpha',
+            'lname' => 'required|min:2|max:255|alpha',
             'email' => 'required|email|max:255|unique:clients|unique:admin',
             'password' => 'required|min:6|confirmed',
-            'password_confirmation' => 'required|min:6',
+            
             'captcha' => 'required|captcha',
         ]);
     }
@@ -78,47 +79,59 @@ class AuthController extends Controller
     {
 		$ida;
     	do{
-			$ida =rand(0, 9999);
+			$ida = rand(0, 9999);						
 		}
-		while (DB::table('admin')->where('id',$ida)->first() != null);
+		while ((DB::table('admin')->where('id',$ida)->first() == null) && (DB::table('clients')->where('id',$ida)->first() == null));
 		
+		$ida = Carbon::today()->year . $ida;
          $user = User::create([
          	'id' => $ida,
             'department' => $data['dept'],
             'email' => $data['email'],
             'password' => bcrypt($data['password']),
             'status' => 'Not Activated',
+            'date_registered' => Carbon::now(),
         ]);
 		
 		$client_profiles = ClientProfile::create([
 			'first_name' => $data['fname'],
 			'client_id' => $ida,
 			'last_name' => $data['lname'],
+			'date_registered' => Carbon::now(),
 		]);
 		
+		$activate = DB::table('password_resets')->insert(['id' => $ida, 'email' => $data['email'],'token' => $data['_token']]);
+		
+		Mail::send('auth.emails.activate', ['user' => $data], function (\Illuminate\Mail\Message $m) use ($data) {
+           
+
+            $m->to($data['email'], $data['fname'])->subject('Activate your account');
+        });
+	   
 		return $user;
     }
 	
 	public function register(Request $request)
     {
-        $validator = $this->validator($request->all());
+         $validator = $this->validator($request->all());
 
         if ($validator->fails()) {
-            return redirect('tickets/signUp')
-                        ->withErrors($validator)
-                        ->withInput();
+           return response()->json(array('success'=> false, 'errors' =>$validator->getMessageBag()->toArray())); 
             
+        }else{
+        	
+       	$this->create($request->all());
+		
+		
+        return response()->json(array('success'=> true)); 
         }
 
-       $this->create($request->all());
-	   
-        return redirect('tickets/signUpSuccess')->with($request->all());
     }
 	
 	
 	public function showLoginForm(){
 		if(Auth::guard('user')->check()){
-			return redirect('tickets/landingPage');
+			return redirect('/tickets/landingPage');
 		}
 			return view("auth.login");
 		

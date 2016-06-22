@@ -14,7 +14,7 @@
 					</div>
 
 					<div class = "panel-body">
-						<form class="topic form-horizontal" method="post">
+						<form class="topic form-horizontal">
 							{!! csrf_field() !!}
 							<div style=" height:180px; overflow-y: scroll; overflow-x: hidden;">
 								<table class="table table-striped table-bordered topics">
@@ -46,11 +46,11 @@
 
 							<br>
 							<div class="pull-right">
-								<button type="button" class="btn btn-sm btn-warning deleteTopic ">
+								<button type="button" data-style="zoom-in" class="btn btn-sm btn-warning deleteTopic ">
 									Delete Topic
 								</button>
 
-								<button type="button" class="btn btn-sm btn-primary updateTopic ">
+								<button type="button" data-style="zoom-in" class="ladda-button btn btn-sm btn-primary updateTopic ">
 									Update Selection
 								</button>
 								

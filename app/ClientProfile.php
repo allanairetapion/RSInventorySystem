@@ -10,7 +10,7 @@ class ClientProfile extends Model
 	protected $table = "client_profiles";
 
 protected $fillable = [
-        'first_name', 'last_name','client_id',
+        'first_name', 'last_name','client_id','date_registered'
     ];
 
 	public function client(){

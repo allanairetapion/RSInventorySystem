@@ -1,11 +1,14 @@
 @extends('tickets.ticketadminlayout')
 @section('body')
 <div class="row">
-	<div class="col-md-8">
+	<div class="col-md-12">
 		<div class="  ibox animated fadeInDown">
 
 			<div class="ibox">
 				<div class="ibox-title">
+					<div class="pull-right">
+					<a href="/admin/createClient" class="btn btn-sm btn-primary"><i class="fa fa-user-plus"></i> Create client account </a>
+					</div>
 					<h2 class="font-bold ">Clients</h2>
 				</div>
 				<div class="ibox-content">
@@ -18,8 +21,10 @@
 								<tr>
 									<th>Id</th>
 									<th>Email</th>
+									<th>Name</th>
 									<th>Department</th>
-									<th>Password</th>
+									<th>Status</th>
+									<th class="text-center">Actions</th>
 
 								</tr>
 							</thead>
@@ -28,10 +33,18 @@
 								<tr class="gradeX">
 									<td>{{$client->id}}</td>
 									<td>{{$client->email}}</td>
+									<td>{{$client->first_name.' '.$client->last_name}}</td>
 									<td>{{$client->department}}</td>
-									<td>
-									<button type="button" class="btn btn-sm btn-primary clientPassword" value="{{$client->email}}">
+									<td id="{{$client->id}}">{{$client->status}}</td>
+									<td class="text-center">
+									<button type="button" class="btn btn-sm btn-primary clientPasswordResetLink" value="{{$client->email}}">
 										Send Password Reset Link
+									</button>
+									<button type="button" class="btn btn-sm btn-warning clientChangePassword" value="{{$client->id}}">
+										Change Password
+									</button>
+									<button type="button" class="btn btn-sm btn-danger changeClientStatus" name="{{$client->status}}" value="{{$client->id}}">
+										Change Status
 									</button></td>
 
 								</tr>
@@ -48,72 +61,7 @@
 			</div>
 		</div>
 	</div>
-	<div class="col-md-4">
-		<div class="ibox ">
-
-                        <div class="ibox-content">
-                            <div class="tab-content">
-                                <div id="contact-1" class="tab-pane active">
-                                    <div class="row m-b-lg">
-                                        <div class="col-lg-4 text-center">
-                                            <h2>Nicki Smith</h2>
-
-                                            <div class="m-b-sm">
-                                                <img alt="image" class="img-circle" src="/img/a2.jpg"
-                                                     style="width: 62px">
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-8">
-                                            <strong>
-                                                About me
-                                            </strong>
-
-                                            <p>
-                                                Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-                                                tempor incididunt ut labore et dolore magna aliqua.
-                                            </p>
-                                            <button type="button" class="btn btn-primary btn-sm btn-block"><i
-                                                    class="fa fa-envelope"></i> Send Message
-                                            </button>
-                                        </div>
-                                    </div>
-                                   
-                                    <div class="full-height-scroll">
-
-                                        <strong>Last activity</strong>
-
-                                        <ul class="list-group clear-list">
-                                            <li class="list-group-item fist-item">
-                                                <span class="pull-right"> 09:00 pm </span>
-                                                Please contact me
-                                            </li>
-                                            <li class="list-group-item">
-                                                <span class="pull-right"> 10:16 am </span>
-                                                Sign a contract
-                                            </li>
-                                            <li class="list-group-item">
-                                                <span class="pull-right"> 08:22 pm </span>
-                                                Open new shop
-                                            </li>
-                                            <li class="list-group-item">
-                                                <span class="pull-right"> 11:06 pm </span>
-                                                Call back to Sylvia
-                                            </li>
-                                            <li class="list-group-item">
-                                                <span class="pull-right"> 12:00 am </span>
-                                                Write a letter to Sandra
-                                            </li>
-                                        </ul>
-                                        <strong>Notes</strong>
-                                        <p>
-                                            Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-                                            tempor incididunt ut labore et dolore magna aliqua.
-                                        </p>
-                                        <hr/>
-                                   
-                                    </div>
-                                </div>
-
-	</div>
+	
+	
 </div>
 @endsection

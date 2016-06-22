@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\ResetsPasswords;
-
+use DB;
 use App\User;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
@@ -54,20 +54,25 @@ class PasswordController extends Controller
 	///For Activation :D
 	public function ActivatesendResetLinkEmail(Request $request)
     {
-    		
-        $this->validate($request, ['dept' => 'required',
-            'fname' => 'required|max:255',
-            'lname' => 'required|max:255',
-            'email' => 'required|email|max:255|unique:clients',
-            'password' => 'required|min:6|confirmed',
-            'password_confirmation' => 'required|min:6',
-            ]);
+    	
+
+       $this->validate($request, ['email' => 'required|email']);
 
         $broker = $this->ActivategetBroker();
 
         $response = Password::broker($broker)->sendResetLink(
             $request->only('email'), $this->ActivateresetEmailBuilder()
         );
+		
+		switch ($response) {
+            case Password::RESET_LINK_SENT:
+                return "true";
+
+            case Password::INVALID_USER:
+            default:
+                return "false";
+        }
+		
     }
 
 	public function ActivategetBroker()
@@ -82,19 +87,16 @@ class PasswordController extends Controller
             $message->subject('Activate your account');
         };
     }
-	public function getActivateReset(Request $request, $token = null)
-    {
-        return $this->showActivateResetForm($request, $token);
-    }
 	
-	public function showActivateResetForm(Request $request, $token = null)
+	
+	public function showActivateResetForm($token)
     {
-        if (is_null($token)) {
-            return $this->getEmail();
-        }
+    	$activate = DB::table('password_resets')->where('token',$token)->first();
 		
-		$email = $request->input('email');
-        return view('auth.passwords.activate')->with(compact('token', 'email'));        
+		$activateUser = User::where('email',$activate->email)->update(['status'=>'Activated']);
+		
+       	session(['ActivateEmail' => $activate->email]);
+        return view('auth.passwords.activate');        
     }
 	
 	protected function getResetFailureResponse(Request $request, $response)
@@ -107,17 +109,7 @@ class PasswordController extends Controller
 /// When Client clicks activation link on Email
 	
 
-    public function Activate(Request $request)
-    {
-        $this->validate(
-            $request,[
-            'token' => 'required',
-            'email' => 'required|email',
-        ]
-        );
-
-        $activateUser = User::where('email',$request['email'])->update(['status'=>'Activated']);
-    }
+   
 	
 	
 	

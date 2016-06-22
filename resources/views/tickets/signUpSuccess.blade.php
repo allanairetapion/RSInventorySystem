@@ -1,7 +1,7 @@
 @extends('tickets.ticketlayout1')
 @section('title', 'Remote Staff - Sign Up')
 @section('body')
-<div class="white-bg text-center">
+<div class="white-bg text-center animated fadeInDown">
 	<img src="/img/remote-staff-logo.jpg">
 </div>
 <div class="passwordBox animated fadeInDown">
@@ -20,6 +20,7 @@
 		</div>
 
 	</div>
+	
 	<hr/>
 	<div class="row">
 		<div class="col-md-6">

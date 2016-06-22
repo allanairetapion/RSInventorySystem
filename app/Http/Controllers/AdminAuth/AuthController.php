@@ -11,6 +11,7 @@ use Illuminate\Foundation\Auth\ThrottlesLogins;
 use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
 use Illuminate\Http\Request;
 use Session;
+use Carbon\Carbon;
 
 class AuthController extends Controller
 {
@@ -76,22 +77,25 @@ class AuthController extends Controller
     {
     	$ida;
     	do{
-			$ida = rand(0, 9999);
+			$ida = rand(0, 9999);						
 		}
-		while (DB::table('admin')->where('id',$ida)->first() != null);
+		while ((DB::table('admin')->where('id',$ida)->first() == null) && (DB::table('clients')->where('id',$ida)->first() == null));
 		
+		$ida = Carbon::today()->year . $ida;
          $user = Admin::create([
          	'id' => $ida,
+         	
             'user_type' => $data['user_type'],
             'email' => $data['email'],
             'status' => 'Not Activated',
-            
+            'date_registered' => Carbon::now(),
         ]);
 		
 		$admin_profiles = AdminProfile::create([
 			'first_name' => $data['firstname'],
 			'agent_id' => $ida,
 			'last_name' => $data['lastname'],
+			'date_registered' => Carbon::now(),
 		]);
 		
 		return $user;
