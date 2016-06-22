@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Auth\Passwords\CanResetPassword;
 class Admin extends Authenticatable
 {
+	public $timestamps = false;
 	protected $table = "admin";
     /**
      * The attributes that are mass assignable.
@@ -14,7 +15,7 @@ class Admin extends Authenticatable
      * @var array
      */
     protected $fillable = [
-         'id','email', 'password','user_type',
+         'id','uid','email', 'password','user_type','date_registered'
     ];
 
     /**

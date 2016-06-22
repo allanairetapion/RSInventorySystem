@@ -129,11 +129,14 @@ class PasswordController extends Controller
         $user->forceFill([
             'password' => bcrypt($password),
             'remember_token' => Str::random(60),            
-        ])->save();
-		
-		
-
-        
+        ])->save();				        
+    }
+	
+	protected function resetEmailBuilder()
+    {
+        return function (Message $message) {
+            $message->subject($this->getEmailSubject())->from('rsnoreply@remotestaff.com' , "Remote Staff");
+        };
     }
 	public function activateSuccess(){
 		Auth::guard('admin')->logout();

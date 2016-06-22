@@ -1,16 +1,14 @@
-@extends('tickets.ticketlayout1')
-@section('title', 'Remote Staff - Sign Up')
-
+@extends('tickets.ticketadminlayout')
 @section('body')
-
-
-<div class="ibox  float-e-margins col-md-offset-3 col-md-6  animated fadeInDown">
-	<div class="gray-bg ibox-title ">
-	<h2 class=" font-bold">Create an Account</h2>
+<div class="row">
+<div class="ibox col-md-offset-3 col-md-6  animated fadeInDown">
+	<div class="ibox-title ">
+	<h3 class=" font-bold">Create an Account</h3>
 	</div>
-	<div class="gray-bg ibox-content">					
+	<div class="ibox-content">					
 		<form class="clientForm" method="Post" action="/tickets/signUp">
 			{!! csrf_field() !!}
+			
 			<div class="row">
 				<div class="form-group col-md-6 firstname">
 					<label>First Name:</label>									
@@ -73,25 +71,23 @@
 			</div>
 			<hr/>
 			<div class="text-center">
-			<button type="button" class="ladda-button btn btn-primary registerClient btn-lg" data-style="zoom-in"> Register</button><br>
-			<span class="text-muted">Already have an account?</span>
-		
-
-		<a href="/tickets/login">Login here</a>
+			<button type="button" class="ladda-button btn btn-primary registerClient btn-lg" data-style="zoom-in"> Create</button><br>
+			
 			</div>
 		</form>
 	</div>
 </div>
+</div>
+
 
 
 <script>
-	$(document).ready(function(){
-		$('div.form-group').removeClass('has-error');
+$(document).ready(function(){
+	$('div.form-group').removeClass('has-error');
 		$('span.text-danger').hide();
 		$('label.text-danger').hide();
-	});
-	
-	$(function() {
+});
+$(function() {
 				$("input.department").keyup(function() {
 					$("input.department").autocomplete({
 						source : "{{URL('/search')}}",
@@ -99,8 +95,6 @@
 					});
 					$("#auto").autocomplete("widget").height(200);
 				});
-			});
+			});		
 </script>
-
-
 @endsection

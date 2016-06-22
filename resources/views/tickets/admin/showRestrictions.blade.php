@@ -1,5 +1,6 @@
 @extends('tickets.ticketadminlayout')
 @section('body')
+<div class="container">
 <div class="  ibox animated fadeInDown">
 	<div class="col-md-offset-2 col-md-8">
 		<div class="ibox">
@@ -10,7 +11,7 @@
 				
 				
 
-					<form class="topic form-horizontal restriction" method="post">
+					<form class="topic form-horizontal restriction">
 							{!! csrf_field() !!}
 							
 							<table class="table table-striped table-bordered topics">
@@ -52,5 +53,6 @@
 			
 		</div>
 	</div>
+</div>
 </div>
 @endsection

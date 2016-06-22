@@ -8,6 +8,7 @@ use Illuminate\Auth\Passwords\CanResetPassword;
 
 class User extends Authenticatable
 {
+	public $timestamps = false;
 	protected $table = "clients";
     /**
      * The attributes that are mass assignable.
@@ -15,7 +16,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-         'id','email', 'password','department','status',
+         'id','email', 'password','department','status','date_registered'
     ];
 
     /**

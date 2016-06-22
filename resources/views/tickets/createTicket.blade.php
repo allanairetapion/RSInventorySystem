@@ -35,7 +35,7 @@
 						<label class="col-md-2 control-label">Topic: &nbsp; </label>
 						<div class="col-md-10">
 							<select name="topic"class="form-control topic">
-								<option value=""> Choose a topic... </option>
+								<option value="" selected hidden> Choose a topic... </option>
 								@foreach ($topics as $topic)														
 								<option value="{{$topic->topic_id}}"> {{$topic->description}}</option>								
 								@endforeach
