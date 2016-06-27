@@ -2,7 +2,8 @@
 
 namespace App\Http\Controllers\AdminAuth;
 use App\AdminProfile;
-use App\Admin;
+use App\Admin as Admins;
+use App\User as Clients;
 use DB;
 use Auth;
 use Validator;
@@ -58,8 +59,8 @@ class AuthController extends Controller
     {
         return Validator::make($data, [
         	'user_type' => 'required',
-            'firstname' => 'required|max:255',
-            'lastname' => 'required|min:2|max:255',
+            'firstname' => 'required|min:3|max:255|alpha',
+            'lastname' => 'required|min:2|max:255|alpha',
             'email' => 'required|email|max:255|unique:admin|unique:clients',
             
         ]);
@@ -77,12 +78,13 @@ class AuthController extends Controller
     {
     	$ida;
     	do{
-			$ida = rand(0, 9999);						
+			$ida = mt_rand(0, 9999);
+			$ida = Carbon::today()->year . $ida;						
 		}
-		while ((DB::table('admin')->where('id',$ida)->first() == null) && (DB::table('clients')->where('id',$ida)->first() == null));
+		while (Admins::where('id',$ida)->exists() && Clients::where('id',$ida)->exists());
 		
-		$ida = Carbon::today()->year . $ida;
-         $user = Admin::create([
+		
+        $user = Admins::create([
          	'id' => $ida,
          	
             'user_type' => $data['user_type'],
@@ -132,11 +134,11 @@ class AuthController extends Controller
     {
        
 		
-		$activate = Admin::select('email')->whereNull('password')->get();
+		$activate = Admins::select('email')->whereNull('password')->get();
 		
 		if($activate != null){
 			
-			$checkEmail = Admin::where('email',$request['email'])->first();
+			$checkEmail = Admins::where('email',$request['email'])->first();
 			
 			if($checkEmail != null){
 				if($checkEmail->password == null){

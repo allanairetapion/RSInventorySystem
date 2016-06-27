@@ -8,6 +8,7 @@
 		.mailView * {
 			visibility: visible;
 		}
+		
 		.mailView {
 			position: absolute;
 			top: 40px;
@@ -32,9 +33,11 @@
 						<li>
 							<a href="/admin/tickets-Open"><i class="fa fa-ticket"></i>Open Tickets </a>
 						</li>
+						@if(Auth::guard('admin')->user()->user_type == 'admin')
 						<li>
 							<a href="/admin/tickets-Pending"><i class="fa fa-warning"></i>Pending Tickets </a>
 						</li>
+						@endif
 						<li>
 							<a href="/admin/tickets-Closed"><i class="fa fa-thumbs-o-up"></i>Closed Tickets </a>
 						</li>
@@ -59,7 +62,7 @@
 		</div>
 	</div>
 	<div class="col-lg-9 animated fadeInRight mailView">
-		@if(Carbon\Carbon::today()->subDays(2)->endOfDay()  >=  Session::get('date_sent') && Session::get('status') != "Closed")
+		@if(Carbon\Carbon::today()->subDays(2)->endOfDay()  >=  Session::get('date_modified') && Session::get('status') != "Closed")
 		<div class="alert alert-danger">
 			<i class="fa fa-warning fa-2x"></i><strong> This ticket has been unresolved for more than two days</strong>
 		</div>
@@ -75,7 +78,7 @@
 					<div class="pull-right">
 						<div class="form-group">
 							<label class="">Topic: </label>
-							@if(Session::get('status') == "Closed" && Auth::guard('admin')->user()->user_type == "agent")
+							@if(Auth::guard('admin')->user()->user_type == "agent")
 							<select name="topic"class="form-control topic" readonly>
 
 							@else
@@ -93,7 +96,7 @@
 						</div>
 						<div class="form-group">
 							<label class="">Priority: </label>
-							@if(Session::get('status') == "Closed" && Auth::guard('admin')->user()->user_type == "agent")
+							@if(Auth::guard('admin')->user()->user_type == "agent")
 							<select name="priority" class=" form-control" readonly>
 							@else
 							<select name="priority" class=" form-control">
@@ -125,16 +128,22 @@
 							@endif
 								@if(Session::get('status') == "Open")
 								<option value="Open">Open</option>
+									@if(Auth::guard('admin')->user()->user_type == 'admin')
 								<option value="Pending">Pending</option>
+									@endif
 								<option value="Closed">Closed</option>
 								@elseif(Session::get('status') == "Pending")
+									@if(Auth::guard('admin')->user()->user_type == 'admin')
 								<option value="Pending">Pending</option>
+									@endif
 								<option value="Open">Open</option>
 								<option value="Closed">Closed</option>
 								@else
 								<option value="Closed">Closed</option>
 								<option value="Open">Open</option>
+									@if(Auth::guard('admin')->user()->user_type == 'admin')
 								<option value="Pending">Pending</option>
+									@endif
 								@endif
 							</select>
 
@@ -190,8 +199,10 @@
 					<i class="fa fa-save "></i> Save
 				</button>
 				@endif
-				<a class="btn btn-sm btn-white" href="/admin/ticketReply/{{Session::get('id')}}"><i class="fa fa-reply"></i> Reply</a>
-				@if(Auth::guard('admin')->user()->user_type == 'agent')
+				<button class="btn btn-sm btn-white" onclick="window.document.location='/admin/ticketReply/{{Session::get('id')}}'"><i class="fa fa-reply"></i> Reply</button>
+				@if(Auth::guard('admin')->user()->user_type == 'admin')
+						<a class="btn btn-sm btn-white" data-toggle="modal" data-target="#forward"><i class="fa fa-mail-forward"></i> Forward</a>
+				@else
 					@if($restrictions[4]->agent == 1)
 						<a class="btn btn-sm btn-white" data-toggle="modal" data-target="#forward"><i class="fa fa-mail-forward"></i> Forward</a>
 					@endif

@@ -25,10 +25,10 @@ $(function() {
 		});
 
 		$('div.ticketsummernote').summernote({
-			toolbar : [['style', ['bold', 'italic', 'underline', 'clear']], ['font', ['strikethrough', 'superscript', 'subscript']], ['fontsize', ['fontsize']], ['color', ['color']], ['para', ['ul', 'ol', 'paragraph']], ['height', ['height']]]
+			toolbar : [['style', ['bold', 'italic', 'underline', 'clear']], ['fontname', ['fontname']], ['fontsize', ['fontsize']], ['color', ['color']], ['para', ['ul', 'ol', 'paragraph']], ['height', ['height']]]
 		});
 		$('div.ticketReplySummernote').summernote({
-			toolbar : [['style', ['bold', 'italic', 'underline', 'clear']], ['font', ['strikethrough', 'superscript', 'subscript']], ['fontsize', ['fontsize']], ['color', ['color']], ['para', ['ul', 'ol', 'paragraph']], ['height', ['height']]]
+			toolbar : [['style', ['bold', 'italic', 'underline', 'clear']], ['fontname', ['fontname']], ['fontsize', ['fontsize']], ['color', ['color']], ['para', ['ul', 'ol', 'paragraph']], ['height', ['height']]]
 		});
 		$('table.noSupport').dataTable({
 			"bSort" : false,
@@ -105,6 +105,15 @@ $(function() {
 				if (i == 15) {
 					return false;
 				}
+				if(data.closed_by[i]['first_name'] == null){
+					data.closed_by[i]['first_name'] = '';
+				}
+				
+				if(data.closed_by[i]['last_name'] == null){
+					data.closed_by[i]['last_name'] = '';
+				}
+				
+				
 				if (v.ticket_status == "Open") {
 					html += "<tr class='bg-primary'  id='" + v.id + "'>";
 				} else if (v.ticket_status == "Pending") {
@@ -122,7 +131,10 @@ $(function() {
 				if (v.closed_at == null) {
 					v.closed_at = "";
 				}
-				html += "<td><input type='checkbox' value=" + v.id + "> </td><td>" + v.id + "</td><td>" + v.sender + "</td>" + "<td>" + v.sender_email + "</td><td>" + v.description + "</td><td>" + v.subject + "</td><td>" + v.ticket_status + "</td>" + "<td>" + v.department + "</td><td>" + v.first_name + " " + v.last_name + "</td><td>" + v.closed_by + "</td><td>" + v.created_at + "</td>" + "<td>" + v.closed_at + "</td><tr>";
+				html += "<td><input type='checkbox' value=" + v.id + "> </td><td>" + v.id + "</td><td>" + v.sender + "</td>" + 
+				"<td>" + v.sender_id + "</td><td>" + v.description + "</td><td>" + v.subject + "</td><td>" + v.ticket_status + 
+				"</td>" + "<td>" + v.department + "</td><td>" + v.first_name + " " + v.last_name + "</td><td>" 
+				+ data.closed_by[i]['first_name'] + " " + data.closed_by[i]['last_name'] + "</td><td>" + v.created_at + "</td>" + "<td>" + v.closed_at + "</td></tr>";
 			});
 			$('tbody.ticketReport').html(html);
 
@@ -147,6 +159,14 @@ $(function() {
 			var html;
 
 			$.each(data.response, function(i, v) {
+				if(data.closed_by[i]['first_name'] == null){
+					data.closed_by[i]['first_name'] = '';
+				}
+				
+				if(data.closed_by[i]['last_name'] == null){
+					data.closed_by[i]['last_name'] = '';
+				}
+				
 				if (v.ticket_status == "Open") {
 					html += "<tr class='bg-primary'  id='" + v.id + "'>";
 				} else if (v.ticket_status == "Pending") {
@@ -164,7 +184,11 @@ $(function() {
 				if (v.closed_at == null) {
 					v.closed_at = "";
 				}
-				html += "<td><input type='checkbox' value=" + v.id + "> </td><td>" + v.id + "</td><td>" + v.sender + "</td>" + "<td>" + v.sender_email + "</td><td>" + v.description + "</td><td>" + v.subject + "</td><td>" + v.ticket_status + "</td>" + "<td>" + v.department + "</td><td>" + v.first_name + " " + v.last_name + "</td><td>" + v.closed_by + "</td><td>" + v.created_at + "</td>" + "<td>" + v.closed_at + "</td><tr>";
+				html += "<td><input type='checkbox' value=" + v.id + "> </td><td>" + v.id + "</td><td>" + v.sender + "</td>" + "<td>" + 
+				v.sender_id + "</td><td>" + v.description + "</td><td>" + v.subject + "</td><td>" + v.ticket_status + "</td>" 
+				+ "<td>" + v.department + "</td><td>" + v.first_name + " " + v.last_name + "</td><td>" + 
+				data.closed_by[i]['first_name'] + " " + data.closed_by[i]['last_name']+"</td><td>" 
+				+ v.created_at + "</td>" + "<td>" + v.closed_at + "</td></tr>";
 			});
 			$('tbody.ticketReport').html(html);
 			$('.i-checks').iCheck({
@@ -175,6 +199,11 @@ $(function() {
 		});
 	});
 	$('button.ticketDelete').on('click', function() {
+		var tickets = ['x'];
+		$('input:checkbox:checked').each(function() {
+			tickets.push($(this).val());
+
+		});
 		console.log($('form.selectedTickets').serializeArray());
 		swal({
 			title : "Are you sure?",
@@ -196,15 +225,25 @@ $(function() {
 			}, function(inputValue) {
 				if (inputValue != "") {
 					$.ajax({
-						type : 'get',
-						url : '/checkPassword' + "/" + inputValue,
+						headers : {
+							'X-CSRF-Token' : $('input[name="_token"]').val()
+						},
+						type : 'post',
+						url : '/checkPassword',
+						data : {
+							password : inputValue
+						},
 					}).done(function(data) {
 						if (data == "true") {
 							$.ajax({
+								headers : {
+							'X-CSRF-Token' : $('input[name="_token"]').val()
+						},
 								type : "DELETE",
 								url : "/admin/deleteTicket",
-								data : $('form.selectedTickets').serializeArray(),
+								data : {tickets : tickets},
 							}).done(function(data) {
+								
 								swal({
 									title : "Deleted",
 									text : "Tickets has been deleted",
@@ -239,10 +278,11 @@ $(function() {
 				$(this).show();
 		});
 	});
-
+//create ticket
 	var createTicket = $('button.create-ticket').ladda();
 
 	createTicket.click(function(e) {
+		
 		e.preventDefault();
 
 		createTicket.ladda('start');
@@ -254,6 +294,7 @@ $(function() {
 		$('div.summary').removeClass('has-error');
 		e.preventDefault();
 
+		
 		$.ajax({
 			type : "POST",
 			url : "/admin/createTicket",
@@ -295,6 +336,8 @@ $(function() {
 
 	//Add Topic
 	$('button.addTopic').click(function(e) {
+		$('div.addTopic').removeClass('has-error');
+		$('label.addTopic').hide();
 		e.preventDefault();
 
 		$.ajax({
@@ -305,20 +348,37 @@ $(function() {
 
 			var msg = "";
 			if (data.success == false) {
-				$.each(data.errors, function(k, v) {
-					msg = v + "\n" + msg;
-				});
-				swal("Oops...", msg, "warning");
+				
 				$('div.addTopic').addClass('has-error');
-				$('div.addTopic').addClass('has-feedback');
-				$('span.addTopic').show();
+				$('label.addTopic').text('*'+data.errors['description']).show();
+				
+				
 			} else {
+				$('form.addTopic').trigger('reset');
+				var html;
 
-				$('table.topics').html(data);
+				$.each(data.response, function(i, v) {
+					if(i == 2){
+						return false;
+					}
+					if (v.status == 1) {
+						html += "<tr><td class='text-center'><input class='topic' type='checkbox' name =" + v.id + " value=" + v.id + " checked></td>";
+					} else {
+						html += "<tr><td class='text-center'><input class='topic' type='checkbox' name =" + v.id + " value=" + v.id + "></td>";
+					}
+
+					html += "<td class='text-center'>" + v.description + "</td></tr>";
+				});
+				$('tbody.topics').append(html);
 				$('span.addTopic').hide();
 				$('div.addTopic').removeClass('has-error');
 				$('div.addTopic').removeClass('has-feedback');
-				swal("Added", "New Topic has been added.", "success");
+
+				toastr.options = {
+					positionClass : "toast-top-center",
+				};
+				toastr.success('New Topic has been added.');
+
 			}
 		});
 
@@ -326,7 +386,11 @@ $(function() {
 
 	//Delete Topic
 	$('button.deleteTopic').click(function(e) {
-		$('span.addTopic').hide();
+		var deleteTopic = ['x'];
+		$('input.topic:checkbox:checked').each(function() {
+			deleteTopic.push($(this).val());
+
+		});
 
 		console.log($('form.topic').serializeArray());
 		e.preventDefault();
@@ -343,20 +407,33 @@ $(function() {
 		}, function() {
 
 			$.ajax({
+				headers : {
+					'X-CSRF-Token' : $('input[name="_token"]').val()
+				},
 				type : "DELETE",
 				url : "/admin/deleteTopic",
-				data : $('form.topic').serializeArray(),
+				data : {
+					topics : deleteTopic
+				},
 			}).done(function(data) {
-				swal("Deleted!", "Topic/s has been deleted.", "success");
-				$('table.topics').html(data);
+
+				$('input.topic:checkbox:checked').each(function() {
+					$(this).parents('tr').hide();
+				});
+
+				swal('Topics has been deleted', '', 'success');
 			});
 		});
 	});
+
 	//update topic selection
 	var updateTopic = $('button.updateTopic').ladda();
 
 	updateTopic.click(function(e) {
-		console.log($('form.topic').serializeArray());
+		var updateTopics = ['x'];
+		$('input.topic:checkbox:checked').each(function() {
+			updateTopics.push($(this).val());
+		});
 		e.preventDefault();
 		$('span.addTopic').hide();
 		$('div.addTopic').removeClass('has-error');
@@ -365,9 +442,12 @@ $(function() {
 		updateTopic.ladda('start');
 
 		$.ajax({
+			headers : {
+					'X-CSRF-Token' : $('input[name="_token"]').val()
+				},
 			type : "PUT",
 			url : "/admin/updateSelection",
-			data : $('form.topic').serializeArray(),
+			data : {topics : updateTopics},
 		}).done(function() {
 			updateTopic.ladda('stop');
 			toastr.options = {
@@ -384,14 +464,15 @@ $(function() {
 	});
 
 	//Save Restriction
-	$('input.saveRestriction').on('click', function(e) {
-		console.log($('form.restriction').serialize());
-		e.preventDefault();
+	var saveRestriction = $('button.saveRestriction').ladda();
+	saveRestriction.click(function() {
+		saveRestriction.ladda('start');
 		$.ajax({
 			type : "PUT",
 			url : "/admin/updateRestriction",
 			data : $('form.restriction').serialize(),
 		}).done(function() {
+			saveRestriction.ladda('stop');
 			swal({
 				title : "Updated!",
 				text : "Restrictions has been updated.",
@@ -400,6 +481,7 @@ $(function() {
 			});
 		});
 	});
+
 	//Admin/CLient tab controls/actions
 	$('button.clientPasswordResetLink').on('click', function(e) {
 		$('input.email').val($(this).val());
@@ -440,8 +522,14 @@ $(function() {
 		}, function(inputValue) {
 			if (inputValue != "") {
 				$.ajax({
-					type : 'get',
-					url : '/checkPassword' + "/" + inputValue,
+					headers : {
+						'X-CSRF-Token' : $('input[name="_token"]').val()
+					},
+					type : 'post',
+					url : '/checkPassword',
+					data : {
+						password : inputValue
+					},
 				}).done(function(data) {
 					if (data == "true") {
 						swal({
@@ -522,8 +610,14 @@ $(function() {
 			}, function(inputValue) {
 				if (inputValue != "") {
 					$.ajax({
-						type : 'get',
-						url : '/checkPassword' + "/" + inputValue,
+						headers : {
+							'X-CSRF-Token' : $('input[name="_token"]').val()
+						},
+						type : 'post',
+						url : '/checkPassword',
+						data : {
+							password : inputValue
+						},
 					}).done(function(data) {
 						if (data == "true") {
 							$.ajax({
@@ -612,8 +706,14 @@ $(function() {
 		}, function(inputValue) {
 			if (inputValue != "") {
 				$.ajax({
-					type : 'get',
-					url : '/checkPassword' + "/" + inputValue,
+					headers : {
+						'X-CSRF-Token' : $('input[name="_token"]').val()
+					},
+					type : 'post',
+					url : '/checkPassword',
+					data : {
+						password : inputValue
+					},
 				}).done(function(data) {
 					if (data == "true") {
 						$.ajax({
@@ -655,6 +755,9 @@ $(function() {
 
 	// create agent
 	$('button.add-account').click(function(e) {
+		$('div.form-groups').removeClass('has-error');
+		$('span.text-danger').hide();
+		$('label.text-danger').hide();
 		e.preventDefault();
 		$.ajax({
 			type : "POST",
@@ -663,29 +766,24 @@ $(function() {
 
 		}).done(function(data) {
 			if (data.response != "") {
-				var msg = "";
-				if (data.response != "") {
-					$.each(data.errors, function(k, v) {
-						msg = v + "\n" + msg;
-					});
-				}
+				console.log(data.errors);
 				if (data.errors['email']) {
 					$('div.email').addClass('has-error');
+					$('span.email').text('*' + data.errors['email']).show();
 				}
 				if (data.errors['firstname']) {
 					$('div.fname').addClass('has-error');
+					$('label.fname').text('*' + data.errors['firstname'][0]).show();
 				}
 				if (data.errors['lastname']) {
 					$('div.lname').addClass('has-error');
+					$('label.lname').text('*' + data.errors['lastname'][0]).show();
 				}
 				if (data.errors['user_type']) {
 					$('div.usertype').addClass('has-error');
+					$('span.usertype').text('*' + data.errors['user_type']).show();
 				}
-				swal({
-					type : 'warning',
-					title : 'Oops...',
-					text : msg,
-				});
+
 			} else {
 				//Validation Success Tell user to input his/her password to continue/confirm adding
 				console.log($('.agentForm').serialize());
@@ -708,8 +806,14 @@ $(function() {
 		}, function(inputValue) {
 			if (inputValue != "") {
 				$.ajax({
-					type : 'get',
-					url : '/checkPassword' + "/" + inputValue,
+					headers : {
+						'X-CSRF-Token' : $('input[name="_token"]').val()
+					},
+					type : 'post',
+					url : '/checkPassword',
+					data : {
+						password : inputValue
+					},
 				}).done(function(data) {
 					if (data == "true") {
 
@@ -1095,6 +1199,10 @@ $(function() {
 	var assignSupport = $('button.noSupport').ladda();
 
 	assignSupport.click(function(e) {
+		toastr.options = {
+				positionClass : "toast-top-center",
+
+			};
 		e.preventDefault();
 		var noSupport = [];
 		$('select.noSupport').each(function(index) {
@@ -1105,7 +1213,11 @@ $(function() {
 			};
 		});
 		console.log(noSupport);
-
+		if(noSupport[0] == null){
+			toastr.info('No Tickets Found');
+			return false;
+			
+		}
 		assignSupport.ladda('start');
 
 		$.ajax({
@@ -1120,16 +1232,13 @@ $(function() {
 		}).done(function(data) {
 			console.log(data);
 			assignSupport.ladda('stop');
-			toastr.options = {
-				positionClass : "toast-top-center",
-
-			};
-			var toast = toastr["success"]('Tickets has been assigned to their support');
+			
+			toastr.success('Tickets has been assigned to their support');
 
 		});
 	});
 
-	//Admin/Agent create acount page
+	//Admin/Agent create client acount page
 	$('button.refreshCaptcha').on('click', function() {
 		$.ajax({
 			type : "GET",
@@ -1154,14 +1263,17 @@ $(function() {
 			data : $('form.clientForm').serialize(),
 		}).done(function(data) {
 			if (data.success == false) {
+
 				registerClient.ladda('stop');
-				if (data.errors['fname']) {
+				if (data.errors['first_name']) {
 					$('div.firstname').addClass('has-error');
-					$('label.firstname').show();
+					$('label.firstname').show().text('*' + data.errors['first_name'][0]);
+					;
 				}
-				if (data.errors['lname']) {
+				if (data.errors['last_name']) {
 					$('div.lastname').addClass('has-error');
-					$('label.lastname').show();
+					$('label.lastname').show().text('*' + data.errors['last_name'][0]);
+					;
 				}
 				if (data.errors['email']) {
 					$('span.email').show().text('*' + data.errors['email']);

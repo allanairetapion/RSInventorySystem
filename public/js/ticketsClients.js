@@ -4,7 +4,9 @@
 
 $(function() {
 	$(document).ready(function() {
-		$('div.summernote').summernote();
+		$('div.summernote').summernote({
+			toolbar : [['style', ['bold', 'italic', 'underline', 'clear']], ['fontname', ['fontname']], ['fontsize', ['fontsize']], ['color', ['color']], ['para', ['ul', 'ol', 'paragraph']], ['height', ['height']]]
+		});
 		$('[data-toggle="tooltip"]').tooltip();
 
 	});
@@ -67,13 +69,13 @@ $(function() {
 		}).done(function(data) {
 			if (data.success == false) {
 				registerClient.ladda('stop');
-				if (data.errors['fname']) {
+				if (data.errors['first_name']) {
 					$('div.firstname').addClass('has-error');
-					$('label.firstname').show();
+					$('label.firstname').show().text('*' + data.errors['first_name'][0]);;
 				}
-				if (data.errors['lname']) {
+				if (data.errors['last_name']) {
 					$('div.lastname').addClass('has-error');
-					$('label.lastname').show();
+					$('label.lastname').show().text('*' + data.errors['last_name'][0]);;
 				}
 				if (data.errors['email']) {
 					$('span.email').show().text('*' + data.errors['email']);

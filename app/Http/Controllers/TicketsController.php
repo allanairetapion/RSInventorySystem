@@ -1,6 +1,6 @@
 <?php
 namespace App\Http\Controllers;
-use App\Tickets;
+use App\Tickets as Ticket;
 use App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use DB;
@@ -48,14 +48,16 @@ class TicketsController extends Controller{
         }
 		else {
 			
-			do{
-			$ida =rand(0000, 99999999);
-		}
 			
-		while (DB::table('admin')->where('id',$ida)->first() != null);		
-			sprintf('%09d', $ida);
+			$ida;
+		$tickets;
+		do{
+			$ida = mt_rand(0, 99999999);					
+		}
+		while (Ticket::where('id')->exists());
+			
 		
-			$user = Tickets::create([
+			$user = Ticket::create([
 			'id' => $ida,
             'sender' => Auth::guard('user')->user()->clientProfile ? Auth::guard('user')->user()->clientProfile->first_name.' '.Auth::guard('user')->user()->clientProfile->last_name : '',
             'sender_id' => Auth::guard('user')->user()->id,

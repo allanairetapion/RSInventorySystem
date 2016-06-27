@@ -2,41 +2,39 @@
 @section('body')
 
 <div class="  ibox animated fadeInDown">
-	<div class="col-md-offset-3 col-md-6">
+	<div class="col-md-offset-2 col-md-8">
 		<div class="ibox">
 			<div class="ibox-title">
 				<h3 class="font-bold text-info">Create New User</h3>
 			</div>
 			<div class="ibox-content">
 
-				<form class="m-t form-horizontal agentForm" role="form" method="Post" action="/checkAdmin">
+				<form class="m-t  agentForm" role="form" method="Post" action="/checkAdmin">
 					{!! csrf_field() !!}
 
 					<div class="row">
-						<div class="form-group fname {{ $errors->has('fname') ? ' has-error' : '' }}">
-							<label class="col-md-3 control-label">First Name:&nbsp;</label>
-							<div class="col-md-8">
+						<div class="form-group col-md-6 fname">
+								<label>First Name:&nbsp;</label>							
 								<input type="text" class="form-control" placeholder="First Name" name="firstname" value="{{old('firstname')}}" required="">
-
-							</div>
+								<label class="text-danger fname">r</label>
+							
 						</div>
-						<div class="form-group lname {{ $errors->has('lname') ? ' has-error' : '' }}">
-							<label class="col-md-3 control-label">Last Name:&nbsp;</label>
-							<div class="col-md-8">
+						<div class="form-group col-md-6 lname {{ $errors->has('lname') ? ' has-error' : '' }}">
+							<label>Last Name:&nbsp;</label>
+							
 								<input type="text" class="form-control" placeholder="Last Name" name="lastname" value="{{old('lastname')}}" required="">
-
-							</div>
+								<label class="text-danger lname">r</label>
+							
 						</div>
-						<div class="form-group email {{ $errors->has('email') ? ' has-error' : '' }}">
-							<label class="col-md-3 control-label">Email:&nbsp;</label>
-							<div class="col-md-8">
+						<div class="form-group col-md-12 email {{ $errors->has('email') ? ' has-error' : '' }}">
+							<label>Email: <span class="text-danger email"></span></label>
+						
 								<input type="email" class="form-control email" placeholder="Email Address" name="email" value="{{old('email')}}" required="">
-
-							</div>
+								
+						
 						</div>
-						<div class="form-group usertype">
-							<label class="col-md-3 control-label">User type: &nbsp; </label>
-							<div class="col-md-8">
+						<div class="form-group col-md-12 usertype">
+							<label>User type:  <span class="text-danger usertype"></span> </label>							
 								<select name="user_type"class="form-control">									
 									@if(Auth::guard('admin')->user()->user_type == 'agent')
 									<option value="agent"> Agent</option>
@@ -46,8 +44,8 @@
 									<option value="agent"> Agent</option>
 									@endif
 								</select>
-
-							</div>
+								
+							
 						</div>
 					</div>
 
@@ -63,5 +61,11 @@
 </div>
 </div>
 
+<script>
+	$(document).ready(function(){
+		$('span.text-danger').hide();
+		$('label.text-danger').hide();
+	});
+</script>
 
 @endsection

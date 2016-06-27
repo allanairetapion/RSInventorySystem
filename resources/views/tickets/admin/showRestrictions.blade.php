@@ -46,7 +46,7 @@
 									@endforeach									
 								</tbody>
 							</table>												
-								<center><input type="button" class="btn btn-primary saveRestriction" value="Save and Apply"></center>				
+								<center><button type="button" class="ladda-button btn btn-primary saveRestriction" data-style="zoom-in">Save and Apply</button></center>				
 				</form> 
 			
 				
