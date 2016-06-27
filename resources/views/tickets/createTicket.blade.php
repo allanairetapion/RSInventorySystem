@@ -51,30 +51,23 @@
 						</div>
 					</div>
 
-					<div class="form-group summary">
+				<div class="form-group summary">
 
-						<div class="col-md-12 ">
+							
 
-							<input type="hidden" class="form-control topic"  rows="5" name="summary">
-							<div class="ibox float-e-margins">
-								<div class="ibox-title">
-									<h5>Summary</h5>
-									<div class="ibox-tools">
-										<a class="collapse-link"> <i class="fa fa-chevron-up"></i> </a>
+							<label class="col-md-2 control-label">Summary:</label>
 
-									</div>
-
-								</div>
-								<div class="ibox-content gray-bg">
-
+							<div class="col-md-10" style="padding:0px;border: solid grey 1px;">
+								<input type="hidden" class="form-control topic"  rows="5" name="summary">
+								
 									<div class="summernote">
 
 									</div>
 
-								</div>
+
 							</div>
 						</div>
-					</div>
+						<hr>
 
 					<center>
 						<button type="button" class="btn btn-info btn-lg create-ticket">

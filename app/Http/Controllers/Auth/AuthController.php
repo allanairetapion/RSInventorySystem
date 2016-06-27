@@ -2,7 +2,8 @@
 
 namespace App\Http\Controllers\Auth;
 use App\ClientProfile;
-use App\User;
+use App\User as Users;
+use App\Admin as Admins;
 use DB;
 use Auth;
 use Validator;
@@ -60,11 +61,10 @@ class AuthController extends Controller
     {
         return Validator::make($data, [
         	'dept' => 'required|max:255',
-            'fname' => 'required|min:2|max:255|alpha',
-            'lname' => 'required|min:2|max:255|alpha',
+            'first_name' => 'required|min:3|max:255|alpha',
+            'last_name' => 'required|min:2|max:255|alpha',
             'email' => 'required|email|max:255|unique:clients|unique:admin',
-            'password' => 'required|min:6|confirmed',
-            
+            'password' => 'required|min:6|confirmed',            
             'captcha' => 'required|captcha',
         ]);
     }
@@ -79,12 +79,13 @@ class AuthController extends Controller
     {
 		$ida;
     	do{
-			$ida = rand(0, 9999);						
+			$ida = mt_rand(0, 9999);
+			$ida = Carbon::today()->year . $ida;						
 		}
-		while ((DB::table('admin')->where('id',$ida)->first() == null) && (DB::table('clients')->where('id',$ida)->first() == null));
+		while (Admins::where('id',$ida)->exists() && Clients::where('id',$ida)->exists());
 		
-		$ida = Carbon::today()->year . $ida;
-         $user = User::create([
+		
+         $user = Users::create([
          	'id' => $ida,
             'department' => $data['dept'],
             'email' => $data['email'],
@@ -94,9 +95,9 @@ class AuthController extends Controller
         ]);
 		
 		$client_profiles = ClientProfile::create([
-			'first_name' => $data['fname'],
+			'first_name' => $data['first_name'],
 			'client_id' => $ida,
-			'last_name' => $data['lname'],
+			'last_name' => $data['last_name'],
 			'date_registered' => Carbon::now(),
 		]);
 		
@@ -105,7 +106,7 @@ class AuthController extends Controller
 		Mail::send('auth.emails.activate', ['user' => $data], function (\Illuminate\Mail\Message $m) use ($data) {
            
 
-            $m->to($data['email'], $data['fname'])->subject('Activate your account');
+            $m->to($data['email'], $data['first_name'])->subject('Activate your account');
         });
 	   
 		return $user;

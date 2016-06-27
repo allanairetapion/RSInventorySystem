@@ -6,6 +6,7 @@ $ntime = date('Y-m-d');
 ?>
 
 <div class="row">
+
 	<div class="col-md-3 animated fadeInDown">
 		<div class="widget style1 navy-bg">
 			<div class="row">
@@ -15,6 +16,7 @@ $ntime = date('Y-m-d');
 				<div class="col-xs-8 text-right">
 					<span> New Tickets </span>
 					<h2 class="font-bold">{{count($newTickets)}}</h2>
+					
 					<small>Today</small>
 				</div>
 			</div>
@@ -267,7 +269,7 @@ $ntime = date('Y-m-d');
 					x : 'x',
 					columns : data,
 
-					type : 'bar',
+					type : 'spline',
 					groups : [['data1', 'data2']]
 				},
 				axis : {

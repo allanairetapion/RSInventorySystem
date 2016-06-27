@@ -38,9 +38,11 @@
 					</div>
 					
 					<div class="col-md-offset-6 col-md-3 text-right">
+						@if(Auth::guard('admin')->user()->user_type == 'admin')
 						<button class="btn btn-warning btn-sm  ticketDelete">
 							<i class="fa fa-trash"></i> Delete
 						</button>
+						@endif
 						<button class="btn btn-primary btn-sm advancedSearch">
 							Advanced Search
 						</button>
@@ -174,8 +176,11 @@
 										<td>{{$ticketStat->ticket_status}}</td>
 										<td>{{$ticketStat->department}}</td>
 										<td>{{$ticketStat->first_name.' '.$ticketStat->last_name}}</td>
-										<td>{{$ticketStat->closed_by}}</td>
-
+										@foreach($closed_by as $closed)
+											@if($closed->id == $ticketStat->id)
+										<td>{{$closed->first_name.' '.$closed->last_name}}</td>
+											@endif
+										@endforeach
 										<td>{{$ticketStat->created_at}}</td>
 										<td>{{$ticketStat->closed_at}}</td>
 									</tr>

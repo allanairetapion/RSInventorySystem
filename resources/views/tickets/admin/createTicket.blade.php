@@ -32,17 +32,29 @@
 
 							</div>
 						</div>
+						@if($restrictions[3]->agent == 1 || Auth::guard('admin')->user()->user_type == 'admin')
 						<div class="form-group assigned_support">
 							<label class="col-md-2 control-label">Assigned Support:&nbsp;</label>
 							<div class="col-md-10">
-								<select name="assigned_support" class="form-control topic">
+								<select name="assigned_support" class="form-control support">
 									<option value="" disabled selected hidden> Assign a support... </option>
-									@foreach ($agent as $agents)
-									<option value="{{$agents->id}}"> {{$agents->first_name.' '.$agents->last_name}}</option>
-									@endforeach
+									@if(Auth::guard('admin')->user()->user_type == 'admin')
+										@foreach ($agent as $agents)
+										<option value="{{$agents->id}}"> {{$agents->first_name.' '.$agents->last_name}}</option>
+										@endforeach
+									@else
+										@if($restrictions[3]->agent == 1)
+											@foreach ($agent as $agents)
+												@if($agents->user_type == 'agent')
+													<option value="{{$agents->id}}"> {{$agents->first_name.' '.$agents->last_name}}</option>
+												@endif
+											@endforeach
+										@endif
+									@endif
 								</select>
 							</div>
 						</div>
+						@endif
 						<div class="form-group topic">
 							<label class="col-md-2 control-label">Topic: &nbsp; </label>
 							<div class="col-md-10">
@@ -65,28 +77,21 @@
 
 						<div class="form-group summary">
 
-							<div class="col-md-12 ">
+							
 
+							<label class="col-md-2 control-label">Summary:</label>
+
+							<div class="col-md-10" style="padding:0px;border: solid grey 1px;">
 								<input type="hidden" class="form-control topic"  rows="5" name="summary">
-								<div class="ibox float-e-margins">
-									<div class="ibox-title">
-										<h5>Summary</h5>
-										<div class="ibox-tools">
-											<a class="collapse-link"> <i class="fa fa-chevron-up"></i> </a>
-
-										</div>
+								
+									<div class="ticketsummernote">
 
 									</div>
-									<div class="ibox-content gray-bg">
 
-										<div class="ticketsummernote">
 
-										</div>
-
-									</div>
-								</div>
 							</div>
 						</div>
+						<hr>
 						<center>
 							<button type="button" data-style="zoom-in" class="ladda-button btn btn-info btn-lg create-ticket">
 								Create

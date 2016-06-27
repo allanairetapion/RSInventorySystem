@@ -15,9 +15,11 @@
 						<li>
 							<a href="/admin/tickets-Open"><i class="fa fa-ticket"></i>Open Tickets </a>
 						</li>
+						@if(Auth::guard('admin')->user()->user_type == 'admin')
 						<li>
 							<a href="/admin/tickets-Pending"><i class="fa fa-warning"></i>Pending Tickets </a>
 						</li>
+						@endif
 						<li>
 							<a href="/admin/tickets-Closed"><i class="fa fa-thumbs-o-up"></i>Closed Tickets </a>
 						</li>					
@@ -50,7 +52,7 @@
 				<div class="input-group">
 					<input type="text" class="form-control input-sm" name="search" placeholder="Search email">
 					<div class="input-group-btn">
-						<button type="submit" class="btn btn-sm btn-primary">
+						<button type="button" class="btn btn-sm btn-primary">
 							Search
 						</button>
 					</div>
@@ -76,10 +78,12 @@
 				
 				<button class="btn btn-white btn-sm refreshBtn" data-toggle="tooltip" data-placement="left" title="Refresh inbox">
 					<i class="fa fa-refresh"></i> Refresh
-				</button>			
-				<button class="btn btn-white btn-sm ticketDelete" data-toggle="tooltip" data-placement="top" title="Move to trash">
+				</button>
+				@if(Auth::guard('admin')->user()->user_type == 'admin')			
+				<button class="btn btn-white btn-sm ticketDelete" data-toggle="tooltip" data-placement="top" title="Delete">
 					<i class="fa fa-trash-o"></i>
 				</button>
+				@endif
 
 			</div>
 		</div>
@@ -90,22 +94,22 @@
 				<tbody>
 					@foreach ($tickets as $ticket)
 					
-					<tr class="read">
+					<tr class="read" onclick="window.document.location='/admin/tickets/{{$ticket->id}}'">
 						
 						<td class="check-mail">
 						<input type="checkbox" class="i-checks" name="id" value="{{$ticket->id}}">
 						</td>
-						<td class="mail-ontact"><a href="/admin/tickets/{{$ticket->id}}">{{$ticket->sender}}</a> 
+						<td class="mail-ontact">
 						@if($ticket->priority == "High")	
-						<span class="label label-danger pull-right">{{$ticket->priority}}</span></a>						
+						<span class="label label-danger pull-right">{{$ticket->priority}}</span>						
 						@elseif($ticket->priority == "Normal")
-						<span class="label label-warning pull-right">{{$ticket->priority}}</span></a>					
+						<span class="label label-warning pull-right">{{$ticket->priority}}</span>				
 						@else
-						<span class="label label-primary pull-right">{{$ticket->priority}}</span></a>					
+						<span class="label label-primary pull-right">{{$ticket->priority}}</span>					
 						@endif
 						</td>
 						
-						<td class="mail-subject"><a href="/admin/tickets/{{$ticket->id}}"> <span class="font-bold">{{ str_limit(strip_tags($ticket->subject), $limit = 40, $end = '...') }} </span> </a> </td>
+						<td class="mail-subject"><span class="font-bold">{{ str_limit(strip_tags($ticket->subject), $limit = 40, $end = '...') }} </span> </td>
 						
 						<td class="text-right mail-date">{{$ticket->created_at}}</td>
 					</tr>
