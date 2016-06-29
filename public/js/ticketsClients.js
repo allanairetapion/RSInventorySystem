@@ -155,6 +155,7 @@ $(function() {
 			if (data.success == true) {
 				swal('Password successfully changed','', 'success');
 				editPassword.ladda('stop');
+				$('form.clientChangePassword').trigger('reset');
 			} else {
 				editPassword.ladda('stop');
 

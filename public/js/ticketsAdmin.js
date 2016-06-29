@@ -1348,6 +1348,7 @@ $(function() {
 			if (data.success == true) {
 				swal('Password successfully changed', '', 'success');
 				editPassword.ladda('stop');
+				$('form.adminChangePassword').trigger('reset');
 			} else {
 				editPassword.ladda('stop');
 
