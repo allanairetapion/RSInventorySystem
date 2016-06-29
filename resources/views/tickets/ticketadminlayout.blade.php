@@ -157,7 +157,7 @@
 									<a>{{ Auth::guard('admin')->user()->adminProfile ? Auth::guard('admin')->user()->adminProfile->first_name.' '.Auth::guard('admin')->user()->adminProfile->last_name : '' }}!</a>
 								</li>
 								<li>
-									<a class="dropdown-toggle"  data-toggle="dropdown" href="#"> <i class="fa fa-fw fa-envelope"></i> <span class="label label-info">1</span></a>
+									<a class="dropdown-toggle"  data-toggle="dropdown" href="#"> <i class="fa fa-fw fa-bell"></i> <span class="label label-info">1</span></a>
 									<ul class="dropdown-menu dropdown-messages">
 										<li>
 											<div class="dropdown-messages-box">

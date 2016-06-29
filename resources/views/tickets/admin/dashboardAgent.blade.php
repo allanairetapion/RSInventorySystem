@@ -39,7 +39,7 @@
 								<tr onclick="window.document.location='/admin/tickets/{{$ticket->id}}'">
 									
 									<td>{{$ticket->id}}</td>
-									<td>{{$ticket->topic_id}}</td>
+									<td>{{$ticket->description}}</td>
 									<td>{{$ticket->created_at}}</td>
 									
 								</tr>

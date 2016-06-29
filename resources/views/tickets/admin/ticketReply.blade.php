@@ -63,11 +63,12 @@
 
 				<form class="form-horizontal ticketReply">
 					{!! csrf_field() !!}
-					<div class="form-group">
+					<div class="form-group email">
 						<label class="col-sm-2 control-label">To:</label>
 
 						<div class="col-sm-10">
 							<input type="text" name="email" class="form-control email" value="{{Session::get('email')}}">
+							<label class="text-danger email">Label</label>
 						</div>
 					</div>
 					<div class="form-group">
@@ -100,5 +101,11 @@
 	</div>
 
 </div>
+
+<script>
+	$(document).ready(function(){
+		$('label.email').hide()
+	});
+</script>
 
 @endsection

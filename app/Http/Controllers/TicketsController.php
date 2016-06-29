@@ -130,7 +130,8 @@ class TicketsController extends Controller{
 		}else{
 		$changePersonalInfo = DB::table('clients')->leftJoin('client_profiles','clients.id','=','client_profiles.client_id')
 		->where('id',$request['id'])
-		->update(['email' => $request['email'],'first_name' => $request['fname'],'last_name' => $request['lname']]);
+		->update(['email' => $request['email'],'first_name' => $request['fname'],'last_name' => $request['lname'],
+		'clients.updated_at' => Carbon::now(),'client_profiles.updated_at' => Carbon::now()]);
 		
 		return response()->json(array('success'=> true));	
 		}
@@ -146,7 +147,7 @@ class TicketsController extends Controller{
 			if($validator->fails()){
 				return response()->json(array('success'=> false, 'errors' =>$validator->getMessageBag()->toArray()));    
 			}else{
-				$changePassword = DB::table('clients')->where('id',$request['id'])->update(['password' => bcrypt($request['password'])]);
+				$changePassword = DB::table('clients')->where('id',$request['id'])->update(['password' => bcrypt($request['password']),'updated_at' => Carbon::now()]);
 				return response()->json(array('success'=> true));
 			}
         }
