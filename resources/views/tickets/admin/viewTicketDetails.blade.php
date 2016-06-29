@@ -73,9 +73,10 @@
 				{!! csrf_field() !!}
 				<input type="hidden" name="id" value="{{Session::get('id')}}">
 				<input type="hidden" name="assignedTo" class="assignedTo" value="">
-
+				
 				<div class="row">
 					<div class="pull-right">
+						
 						<div class="form-group">
 							<label class="">Topic: </label>
 							@if(Auth::guard('admin')->user()->user_type == "agent")
@@ -243,10 +244,10 @@
 					<select name="agent" class="form-control assignAgent">
 						<option value="" selected hidden>Select agent...</option>
 						@foreach ($agent as $agents)
-						@if($agents->first_name.' '.$agents->last_name != Session::get('assigned_support'))
-						<option value="{{$agents->id}}"> {{$agents->
-							first_name.' '.$agents->last_name}}</option>
-						@endif
+							@if($agents->first_name.' '.$agents->last_name != Session::get('assigned_support'))
+							<option value="{{$agents->id}}"> {{$agents->
+								first_name.' '.$agents->last_name}}</option>
+							@endif
 						@endforeach
 					</select>
 				</form>

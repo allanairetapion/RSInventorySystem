@@ -229,7 +229,7 @@ $(function() {
 							'X-CSRF-Token' : $('input[name="_token"]').val()
 						},
 						type : 'post',
-						url : '/checkPassword',
+						url : '/admin/verifyPassword',
 						data : {
 							password : inputValue
 						},
@@ -358,7 +358,7 @@ $(function() {
 				var html;
 
 				$.each(data.response, function(i, v) {
-					if(i == 2){
+					if(i == 1){
 						return false;
 					}
 					if (v.status == 1) {
@@ -526,7 +526,7 @@ $(function() {
 						'X-CSRF-Token' : $('input[name="_token"]').val()
 					},
 					type : 'post',
-					url : '/checkPassword',
+					url : '/admin/verifyPassword',
 					data : {
 						password : inputValue
 					},
@@ -614,7 +614,7 @@ $(function() {
 							'X-CSRF-Token' : $('input[name="_token"]').val()
 						},
 						type : 'post',
-						url : '/checkPassword',
+						url : '/admin/verifyPassword',
 						data : {
 							password : inputValue
 						},
@@ -709,8 +709,8 @@ $(function() {
 					headers : {
 						'X-CSRF-Token' : $('input[name="_token"]').val()
 					},
-					type : 'post',
-					url : '/checkPassword',
+					type : 'POST',
+					url : '/admin/verifyPassword',
 					data : {
 						password : inputValue
 					},
@@ -810,7 +810,7 @@ $(function() {
 						'X-CSRF-Token' : $('input[name="_token"]').val()
 					},
 					type : 'post',
-					url : '/checkPassword',
+					url : '/admin/verifyPassword',
 					data : {
 						password : inputValue
 					},
@@ -857,9 +857,14 @@ $(function() {
 	};
 
 	var ticketReply = $('button.ticketReply').ladda();
+	$('label.email').hide();
+	$('div.email').removeClass('has-error');
+	
+	$('input[type="hidden"].ticketReply').val($('div.ticketReplySummernote').code());
+	
 	ticketReply.click(function(e) {
 		console.log($('form.ticketReply').serialize());
-		$('input[type="hidden"].ticketReply').val($('div.ticketReplySummernote').code());
+		
 
 		ticketReply.ladda('start');
 
@@ -867,9 +872,14 @@ $(function() {
 			type : "POST",
 			url : "/admin/ticketReply",
 			data : $('form.ticketReply').serialize(),
-		}).done(function() {
+		}).done(function(data) {
 			ticketReply.ladda('stop');
-			swal('Success', 'An email has been sent to ' + $('input.email').val(), 'success');
+			if(data.success != false){
+				swal('Success', 'An email has been sent to ' + $('input.email').val(), 'success');
+			}else{
+				$('label.email').text('*'+data.errors['email']).show();
+				$('div.email').addClass('has-error');
+			}
 		});
 
 	});

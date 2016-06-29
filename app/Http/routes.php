@@ -155,8 +155,7 @@ Route::get('/admin/activateSuccess','AdminAuth\PasswordController@activateSucces
 
 //Admin Pages
 Route::group(['middleware' => 'admin'], function () {
-	
-	Route::get('/checkPassword/{password}','TicketsAdmin@checkPassword');
+		
 	Route::get('/admin', 'TicketsAdmin@index');
 	Route::get('/admin/createAgent','TicketsAdmin@createAgent');
 	Route::get('/admin/createTicket','TicketsAdmin@showCreateTicket');
@@ -170,10 +169,7 @@ Route::group(['middleware' => 'admin'], function () {
 	Route::get('/admin/tickets-Pending','TicketsAdmin@showTicketsPending');
 	Route::get('/admin/tickets-Closed','TicketsAdmin@showTicketsClosed');
 	Route::get('/admin/tickets/{id}','TicketsAdmin@showTicketDetails');
-	Route::get('admin/ticketReply',function(){
-		session(['email' => ""]);
-		return view('tickets.admin.ticketReply');
-	});
+	Route::get('admin/ticketReply','TicketsAdmin@showTicketReply');
 	Route::get('/admin/ticketReply/{id}','TicketsAdmin@showTicketReply');
 	Route::get('/admin/printTicketClosed','TicketsAdmin@printTicketClosed');
 	Route::get('/admin/topIssue','TicketsAdmin@topIssue');
@@ -182,6 +178,7 @@ Route::group(['middleware' => 'admin'], function () {
 	Route::get('/admin/createClient','TicketsAdmin@showCreateClient');
 	Route::get('/admin/editAccount','TicketsAdmin@editAccount');
 	
+	Route::post('/admin/verifyPassword','TicketsAdmin@checkPassword');
 	Route::post('/admin/createTicket','TicketsAdmin@createTicket');	
 	Route::post('/checkEmail','TicketsAdmin@checkEmail');
 	Route::post('/admin/addTopic','TicketsAdmin@addTopic');		
