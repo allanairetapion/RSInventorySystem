@@ -398,21 +398,22 @@ class TicketsAdmin extends Controller
 			return view('tickets.admin.showTickets',['restrictions' => $restriction,'tickets' => $tickets]);
 		}
 	}
-	
-	public function showTicketsOpen(){
-		$restriction = DB::table('ticket_restrictions')->get();
-		if(Auth::guard('admin')->user()->user_type == "admin"){
-			$tickets = DB::table('tickets')->leftJoin('ticket_topics','tickets.topic_id','=','ticket_topics.topic_id')
-			->where('ticket_status','Open')->orderBy('created_at','desc')->simplePaginate(15);
-			
-			return view('tickets.admin.showTickets',['restrictions' => $restriction,'tickets' => $tickets]);
-		}else{
-			$tickets = DB::table('tickets')->leftJoin('ticket_topics','tickets.topic_id','=','ticket_topics.topic_id')
+	public function showTicketsAssigned(){
+		$restriction = DB::table('ticket_restrictions')->get();	
+		
+		$tickets = DB::table('tickets')->leftJoin('ticket_topics','tickets.topic_id','=','ticket_topics.topic_id')
 			->where('ticket_status','open')->where('assigned_support',Auth::guard('admin')->user()->id)
 			->orderBy('created_at','desc')->simplePaginate(15);
 			
 			return view('tickets.admin.showTickets',['restrictions' => $restriction,'tickets' => $tickets]);
-		}
+	}
+	public function showTicketsOpen(){
+		$restriction = DB::table('ticket_restrictions')->get();		
+		$tickets = DB::table('tickets')->leftJoin('ticket_topics','tickets.topic_id','=','ticket_topics.topic_id')
+			->where('ticket_status','Open')->orderBy('created_at','desc')->simplePaginate(15);
+			
+		return view('tickets.admin.showTickets',['restrictions' => $restriction,'tickets' => $tickets]);
+		
 	}
 	public function showTicketsPending(){
 		$restriction = DB::table('ticket_restrictions')->get();
@@ -440,7 +441,7 @@ class TicketsAdmin extends Controller
 	}
 	
 	public function sendReply(Request $request){
-		$validator = Validator::make($request->all(),['email' => 'required|email','summary' => 'required|min:15|max:255']);
+		$validator = Validator::make($request->all(),['email' => 'required|email','reply' => 'required|min:15|max:255']);
 		
 		if($validator->fails()){
 			return response()->json(array('success'=> false, 'errors' =>$validator->getMessageBag()->toArray()));    
@@ -705,6 +706,38 @@ class TicketsAdmin extends Controller
 	}
 	
 	
-//{!!html_entity_decode($post->body)!!}
+	public function printTicketDetails($id){
+		$topics = DB::table('ticket_topics')->get();
+		$agents = DB::table('admin')->join('admin_profiles','admin.id','=','admin_profiles.agent_id')
+		->where('user_type','agent')->orderBy('last_name')->get();
+		
+		$restriction = DB::table('ticket_restrictions')->get();
+		
+		$ticket = DB::table('tickets')
+		->leftJoin('ticket_topics','tickets.topic_id',"=",'ticket_topics.topic_id')->where('id',$id)->first();
+		
+		$sender_email = DB::table('admin')->where('id',$ticket->sender_id)->first();
+		if($sender_email == null){
+			$sender_email = DB::table('clients')->where('id',$ticket->sender_id)->first();
+		}
+		
+		$assignedTo = DB::table('tickets')->leftJoin('admin_profiles','tickets.assigned_support','=','admin_profiles.agent_id')
+		->leftJoin('ticket_topics','tickets.topic_id',"=",'ticket_topics.topic_id')->where('id',$id)->first();
+		
+		$closedBy = DB::table('tickets')->leftJoin('admin_profiles','tickets.closed_by','=','admin_profiles.agent_id')
+		->leftJoin('ticket_topics','tickets.topic_id',"=",'ticket_topics.topic_id')->where('id',$id)->first();
+		
+		session([
+		'email' => $sender_email->email,'subject' => $ticket->subject,
+		'date_sent' => $ticket->created_at,'date_modified' => $ticket->updated_at, 'summary' => $ticket->summary,
+		'topic_id' => $ticket->topic_id,'topic' => $ticket->description,
+		'id' => $ticket->id,'assigned_support' => $assignedTo->first_name.' '.$assignedTo->last_name,
+		'status' => $ticket->ticket_status,'priority' => $ticket->priority,
+		'closed_by' => $closedBy->first_name.' '.$closedBy->last_name,
+		'closing_report' => $closedBy->closing_report]);
+		
+		return view('tickets.printTicket',['topics' => $topics,'restrictions' => $restriction,'agent' => $agents]);
+		
+	}
 	
 }

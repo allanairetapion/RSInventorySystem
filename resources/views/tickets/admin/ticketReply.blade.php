@@ -78,14 +78,15 @@
 							<input type="text" name="subject" class="form-control" value="">
 						</div>
 					</div>
-					<input type="hidden" name="summary" value="" class="ticketReply">
+					
+					<input type="hidden" name="reply" value="" class="ticketReply">
 				</form>
 
 			</div>
 
 			<div class="mail-text h-200">
 				
-				<div class="ticketReplySummernote">
+				<div class="ticketReplySummernote ">
 					
 				</div>
 				<div class="clearfix"></div>

@@ -11,11 +11,14 @@
 					<ul class="folder-list m-b-md" style="padding: 0">
 						<li>
 							<a href="/admin/tickets"><i class="fa fa-inbox "></i>All Tickets </a>
-						</li>	
+						</li>
+						<li>
+							<a href="/admin/tickets-Assigned"><i class="fa fa-tasks "></i>My Tickets </a>
+						</li>
+						@if(Auth::guard('admin')->user()->user_type == 'admin')	
 						<li>
 							<a href="/admin/tickets-Open"><i class="fa fa-ticket"></i>Open Tickets </a>
-						</li>
-						@if(Auth::guard('admin')->user()->user_type == 'admin')
+						</li>						
 						<li>
 							<a href="/admin/tickets-Pending"><i class="fa fa-warning"></i>Pending Tickets </a>
 						</li>
