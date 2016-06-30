@@ -30,7 +30,7 @@
 					<button type="submit" action="" class="btn btn-primary block full-width m-b">
 						<i class="fa fa-btn fa-sign-in"></i>&nbsp;Sign in
 					</button>
-					<a href="/admin/forgotPassword"><small>Forgot password?</small></a>
+					<a href="/tickets/forgotPassword"><small>Forgot password?</small></a>
 					<p class="text-muted text-center">
 						<small>Do not have an account?</small>
 					</p>

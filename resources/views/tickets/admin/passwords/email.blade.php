@@ -23,7 +23,6 @@
 			@endif
 
 			
-				
 					<form class="m-t" role="form" action="{{ url('/admin/forgotPassword') }}" method="post">
 						{!! csrf_field() !!}
 						<div class="form-group">

@@ -104,7 +104,7 @@ Route::get('/tickets/logout','Auth\AuthController@logout');
 Route::get("/tickets/forgotPassword", 'Auth\PasswordController@getEmail');
 Route::post("/tickets/forgotPassword",'Auth\PasswordController@postEmail');
 //Client Change Password
-Route::get("/tickets/changePassword/{token}",'Auth\PasswordController@getReset');
+Route::get("/tickets/changePassword/{token}",'Auth\PasswordController@showResetForm');
 Route::post("/tickets/changePassword",'Auth\PasswordController@postReset');
 Route::get("/tickets/changePasswordSuccess","Auth\AuthController@showChangePasswordSuccess");
 //Client Activation
@@ -135,19 +135,17 @@ Route::group(['middleware' => 'user'], function () {
 Route::get('/admin/login','AdminAuth\AuthController@showLoginForm');
 Route::post('/admin/login','AdminAuth\AuthController@postLogin');
 Route::get('/admin/logout','AdminAuth\AuthController@logout');
-//Admin Registration Routes...
-Route::get('/admin/register', 'AdminAuth\AuthController@showRegistrationForm');
-Route::post('/admin/register', 'AdminAuth\AuthController@register');
+
 //Admin Forgot Password (get email)
 Route::get("/admin/forgotPassword", 'AdminAuth\PasswordController@getEmail');
 Route::post("/admin/forgotPassword",'AdminAuth\PasswordController@postEmail');
 //Admin Change Password
-Route::get("/admin/changePassword/{token}",'AdminAuth\PasswordController@getReset');
+Route::get("/admin/changePassword/{token}",'AdminAuth\PasswordController@showResetForm');
 Route::post("/admin/changePassword",'AdminAuth\PasswordController@postReset');
 Route::get("/admin/changePasswordSuccess","AdminAuth\PasswordController@showChangePasswordSuccess");
 //Admin Account Activation
 Route::post('/admin/sendActivate','AdminAuth\PasswordController@ActivatesendResetLinkEmail');
-Route::get('/admin/activate/{token}','AdminAuth\PasswordController@getActivateReset');
+Route::get('/admin/activate/{token}','AdminAuth\PasswordController@showActivateResetForm');
 Route::post('/admin/activate','AdminAuth\PasswordController@Activate');
 Route::get('/admin/activateSuccess','AdminAuth\PasswordController@activateSuccess');
 

@@ -19,7 +19,7 @@
 
 			<form class="m-t" role="form" method="post" action="{{ url('/admin/changePassword') }}"  >
 				{!! csrf_field() !!}
-				<input type="hidden" name="token" value="{{ $token }}">
+				<input type="hidden" name="token" value="{{ Session::get('token') }}">
 
 				<div class="form-group{{ $errors->has('email') ? ' has-error' : '' }}">
 
@@ -27,7 +27,7 @@
 					<span class="help-block"> <strong>{{ $errors->first() }}</strong> </span>
 					@endif
 
-					<input type="hidden" placeholder="Email Address" class="form-control" name="email" value="{{ $email or old('email') }}" required>
+					<input type="hidden" placeholder="Email Address" class="form-control" name="email" value="{{ Session::get('resetEmail') }}" required>
 
 				</div>
 

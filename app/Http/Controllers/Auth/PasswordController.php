@@ -51,6 +51,18 @@ class PasswordController extends Controller
         
     }
 	
+	public function showResetForm($token)
+    {
+    	$reset = DB::table('password_resets')->where('token',$token)->first();
+		
+		if($reset == null){
+			abort(404);
+		}
+		       
+        session(['resetEmail' => $reset->email,'token' => $token]);        
+        return view($this->resetView);       
+    }
+	
 	///For Activation :D
 	public function ActivatesendResetLinkEmail(Request $request)
     {
@@ -92,10 +104,12 @@ class PasswordController extends Controller
 	public function showActivateResetForm($token)
     {
     	$activate = DB::table('password_resets')->where('token',$token)->first();
-		
+		if(is_null($activate)){
+			abort(404);
+		}
 		$activateUser = User::where('email',$activate->email)->update(['status'=>'Activated']);
 		
-       	session(['ActivateEmail' => $activate->email]);
+       	$delete = DB::table('password_resets')->where('token',$token)->delete();
         return view('auth.passwords.activate');        
     }
 	

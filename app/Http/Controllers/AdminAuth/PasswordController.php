@@ -4,7 +4,7 @@ namespace App\Http\Controllers\AdminAuth;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\ResetsPasswords;
-
+use DB;
 use App\Admin;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
@@ -52,6 +52,22 @@ class PasswordController extends Controller
 
         
     }
+
+	public function showResetForm($token)
+    {
+    	$reset = DB::table('adminpassword_resets')->where('token',$token)->first();
+		
+        if ($reset == null) {
+            abort(404);
+        }
+
+        session(['resetEmail' => $reset->email,'token' => $token]);
+
+        
+        return view($this->resetView);
+       
+    }
+	
 	
 	///For Activation :D
 	public function ActivatesendResetLinkEmail(Request $request)
@@ -78,19 +94,17 @@ class PasswordController extends Controller
             $message->subject('Activate your account');
         };
     }
-	public function getActivateReset(Request $request, $token = null)
-    {
-        return $this->showActivateResetForm($request, $token);
-    }
 	
-	public function showActivateResetForm(Request $request, $token = null)
+	
+	public function showActivateResetForm($token = null)
     {
-        if (is_null($token)) {
-            return $this->getEmail();
-        }
-
-        $email = $request->input('email');
-
+        $activate = DB::table('adminpassword_resets')->where('token',$token)->first();
+		
+		if(is_null($activate)){
+			abort(404);
+		}
+		session(['activateEmail' => $activate->email,'token' => $token]);
+		
         return view('tickets.admin.passwords.activate')->with(compact('token', 'email'));       
     }
 	

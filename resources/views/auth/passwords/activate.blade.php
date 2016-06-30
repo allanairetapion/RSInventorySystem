@@ -2,8 +2,8 @@
 @section('title', 'Remote Staff - Sign Up')
 @section('body')
 
-   <div class=" middle-box animated fadeInDown">
-   	<center><img src="/img/remote_logo2.jpg"></center>
+   <div class=" middle-box passwordBox animated fadeInDown">
+   
         <div class="ibox">
 
             <div class="gray-bg ibox-title">
@@ -18,9 +18,14 @@
             
         </div>
         <hr/>
+        <div class="row">
+		<div class="col-md-6">
+			<strong>Copyright</strong> Remote Staff Inc
+		</div>
+		<div class="col-md-6 text-right">
+			<small>&copy;2008-<?php echo date("Y"); ?></small>
+		</div>
+	</div>
     </div>
-    <div class="footer">
-            	  <p class="pull-right">&copy;2008-<?php echo date("Y"); ?></p>
-                <p><strong>Copyright</strong> Remote Staff Inc.</p> 	            
-    </div>
+    
 @endsection    
