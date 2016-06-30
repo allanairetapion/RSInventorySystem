@@ -81,17 +81,17 @@
 							<label class="">Topic: </label>
 							@if(Auth::guard('admin')->user()->user_type == "agent")
 							<select name="topic"class="form-control topic" readonly>
-
+								<option selected  value="{{Session::get('topic_id')}}">{{Session::get('topic')}}</option>
 							@else
 							<select name="topic"class="form-control topic">
-
-							@endif
 								<option selected  value="{{Session::get('topic_id')}}">{{Session::get('topic')}}</option>
 								@foreach ($topics as $topic)}
 								@if(Session::get('topic_id') != $topic->topic_id)
 								<option value="{{$topic->topic_id}}">{{$topic->description}}</option>
 								@endif
 								@endforeach
+							@endif
+								
 							</select>
 
 						</div>
@@ -99,10 +99,9 @@
 							<label class="">Priority: </label>
 							@if(Auth::guard('admin')->user()->user_type == "agent")
 							<select name="priority" class=" form-control" readonly>
+								<option selected value="{{Session::get('priority')}}">{{Session::get('priority')}}</option>
 							@else
 							<select name="priority" class=" form-control">
-							@endif
-							
 								@if(Session::get('priority') == 'High')
 								<option value="High">High</option>
 								<option value="Normal">Normal</option>
@@ -116,6 +115,9 @@
 								<option value="Normal">Normal</option>
 								<option value="High">High</option>
 								@endif
+							@endif
+							
+								
 							</select>
 
 						</div>
@@ -124,9 +126,9 @@
 							<label class="">Status: </label>
 							@if((Session::get('status') == "Closed" || $restrictions[0]->agent == "0")&& Auth::guard('admin')->user()->user_type == "agent")
 							<select readonly name="ticket_status" class="form-control ticketStatus">
+								<option selected value="{{Session::get('status')}}">{{Session::get('status')}}</option>
 							@else
 							<select name="ticket_status" class="form-control ticketStatus">
-							@endif
 								@if(Session::get('status') == "Open")
 								<option value="Open">Open</option>
 									@if(Auth::guard('admin')->user()->user_type == 'admin')
@@ -146,6 +148,8 @@
 								<option value="Pending">Pending</option>
 									@endif
 								@endif
+							@endif
+								
 							</select>
 
 						</div>
@@ -203,9 +207,11 @@
 				<button class="btn btn-sm btn-white" onclick="window.document.location='/admin/ticketReply/{{Session::get('id')}}'"><i class="fa fa-reply"></i> Reply</button>
 				@endif
 				@if(Auth::guard('admin')->user()->user_type == 'admin')
+					@if(Session::get('status') != "Closed")
 						<a class="btn btn-sm btn-white" data-toggle="modal" data-target="#forward"><i class="fa fa-mail-forward"></i> Forward</a>
-				@else
-					@if($restrictions[4]->agent == 1 && Session::get('status') == "Closed")
+					@endif				
+				@elseif($restrictions[4]->agent == 1)
+					@if(Session::get('status') != "Closed")
 						<a class="btn btn-sm btn-white" data-toggle="modal" data-target="#forward"><i class="fa fa-mail-forward"></i> Forward</a>
 					@endif
 				@endif
