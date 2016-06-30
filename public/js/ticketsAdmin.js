@@ -317,14 +317,20 @@ $(function() {
 				createTicket.ladda('stop');
 				swal("Oops...", msg, "warning");
 			} else {
-				createTicket.ladda('stop');
-				$('.createTicket').trigger("reset");
-				$('div.ticketsummernote').code('');
-				swal("Succes!", "Your ticket has been created.", "success");
 				$('div.assigned_support').removeClass('has-error');
 				$('div.topic').removeClass('has-error');
 				$('div.subject').removeClass('has-error');
 				$('div.summary').removeClass('has-error');
+				createTicket.ladda('stop');				
+				
+				swal({
+					title:'Success!',
+					text: "Your ticket has been created.",
+					type: "success",
+					},function(){
+						window.location.href= '/admin';
+					});
+				
 			}
 		});
 	});
@@ -1157,7 +1163,7 @@ $(function() {
 			var html;
 			console.log(data);
 			$.each(data, function(index, v) {
-				html += "<tr><td>" + v.total + "</td><td>" + v.name + "</td></tr>";
+				html +="<tr><td><span class='label label-info'>" + v.total + "</span></td><td>" + v.name + "</td></tr>";
 
 			});
 
@@ -1176,7 +1182,7 @@ $(function() {
 			var html;
 			console.log(data);
 			$.each(data, function(index, v) {
-				html += "<tr><td>" + v.total + "</td><td>" + v.name + "</td></tr>";
+				html += "<tr><td><span class='label label-info'>" + v.total + "</span></td><td>" + v.name + "</td></tr>";
 
 			});
 
@@ -1195,7 +1201,7 @@ $(function() {
 			var html;
 			console.log(data);
 			$.each(data, function(index, v) {
-				html += "<tr><td>" + v.total + "</td><td>" + v.name + "</td></tr>";
+				html += "<tr><td><span class='label label-info'>" + v.total + "</span></td><td>" + v.name + "</td></tr>";
 
 			});
 
@@ -1213,19 +1219,24 @@ $(function() {
 			};
 		e.preventDefault();
 		var noSupport = [];
+		
 		$('select.noSupport').each(function(index) {
-
+			
 			noSupport[index] = {
 				id : $(this).attr('name'),
 				assigned_support : $(this).val()
 			};
+			
+			
 		});
 		console.log(noSupport);
 		if(noSupport[0] == null){
 			toastr.info('No Tickets Found');
-			return false;
-			
+			return false;			
 		}
+		
+		
+		
 		assignSupport.ladda('start');
 
 		$.ajax({
@@ -1242,7 +1253,16 @@ $(function() {
 			assignSupport.ladda('stop');
 			
 			toastr.success('Tickets has been assigned to their support');
-
+			
+			
+			$('select.noSupport').each(function(index) {						
+			
+			if($(this).val() != ''){
+				$(this).parents('tr').remove();
+			}
+			
+			
+		});
 		});
 	});
 

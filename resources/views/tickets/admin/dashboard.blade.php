@@ -152,7 +152,7 @@ $ntime = date('Y-m-d');
 								<td>{{$noSup->created_at}}</td>
 								<td>
 								<select name="{{$noSup->id}}" class="form-control noSupport">
-									<option value="" disabled selected hidden> Assign a support... </option>
+									<option value="" selected > Assign a support... </option>
 									@foreach ($agent as $agents)
 									<option value="{{$agents->id}}"> {{$agents->first_name.' '.$agents->last_name}}</option>
 									@endforeach
@@ -197,24 +197,7 @@ $ntime = date('Y-m-d');
 				<table class="table table-striped" >
 					<tbody class="topSupport">
 						<tr>
-							<td><span class="label label-info">30</span></td>
-							<td><small>Ako</small></td>
-						</tr>
-						<tr>
-							<td><span class="label label-info">25</span></td>
-							<td><small>Ako</small></td>
-						</tr>
-						<tr>
-							<td><span class="label label-info">20</span></td>
-							<td><small>Ako</small></td>
-						</tr>
-						<tr>
-							<td><span class="label label-info">15</span></td>
-							<td><small>Ako</small></td>
-						</tr>
-						<tr>
-							<td><span class="label label-info">10</span></td>
-							<td><small>Ako</small></td>
+							<td>No Support Found</td>							
 						</tr>
 					</tbody>
 				</table>
@@ -296,7 +279,7 @@ $ntime = date('Y-m-d');
 				if(index == 5){
 					return false;
 				}
-				html += "<tr><td>" + v.total + "</td><td>" + v.name + "</td></tr>";
+				html += "<tr><td><span class='label label-info'>" + v.total + "</span></td><td>" + v.name + "</td></tr>";
 
 			});
 

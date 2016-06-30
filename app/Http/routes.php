@@ -135,7 +135,8 @@ Route::group(['middleware' => 'user'], function () {
 Route::get('/admin/login','AdminAuth\AuthController@showLoginForm');
 Route::post('/admin/login','AdminAuth\AuthController@postLogin');
 Route::get('/admin/logout','AdminAuth\AuthController@logout');
-
+//Admin register
+Route::post('/admin/register','AdminAuth\AuthController@register');
 //Admin Forgot Password (get email)
 Route::get("/admin/forgotPassword", 'AdminAuth\PasswordController@getEmail');
 Route::post("/admin/forgotPassword",'AdminAuth\PasswordController@postEmail');
