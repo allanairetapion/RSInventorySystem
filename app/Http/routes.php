@@ -163,10 +163,12 @@ Route::group(['middleware' => 'admin'], function () {
 	Route::get('/admin/restrictions','TicketsAdmin@showRestriction');
 	Route::get('/admin/ticketReport','TicketsAdmin@showTicketStatus');
 	Route::get('/admin/tickets','TicketsAdmin@showTickets');
+	Route::get('/admin/tickets-Assigned','TicketsAdmin@showTicketsAssigned');
 	Route::get('/admin/tickets-Open','TicketsAdmin@showTicketsOpen');
 	Route::get('/admin/tickets-Pending','TicketsAdmin@showTicketsPending');
 	Route::get('/admin/tickets-Closed','TicketsAdmin@showTicketsClosed');
 	Route::get('/admin/tickets/{id}','TicketsAdmin@showTicketDetails');
+	Route::get('/admin/printTickets/{id}','TicketsAdmin@printTicketDetails');
 	Route::get('admin/ticketReply','TicketsAdmin@showTicketReply');
 	Route::get('/admin/ticketReply/{id}','TicketsAdmin@showTicketReply');
 	Route::get('/admin/printTicketClosed','TicketsAdmin@printTicketClosed');

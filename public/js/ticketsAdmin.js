@@ -36,15 +36,10 @@ $(function() {
 		$('table.ticketReport').dataTable({
 			"bSort" : false,
 			dom : '<"html5buttons"B>',
-			buttons : [{
-				extend : 'copy'
-			}, {
+			buttons : [ {
 				extend : 'csv'
 			}, {
 				extend : 'excel',
-				title : 'Ticket Report'
-			}, {
-				extend : 'pdf',
 				title : 'Ticket Report'
 			}, {
 				extend : 'print',
@@ -877,8 +872,13 @@ $(function() {
 			if(data.success != false){
 				swal('Success', 'An email has been sent to ' + $('input.email').val(), 'success');
 			}else{
-				$('label.email').text('*'+data.errors['email']).show();
-				$('div.email').addClass('has-error');
+				if(data.errors['email']){
+					$('label.email').text('*'+data.errors['email']).show();
+					$('div.email').addClass('has-error');
+				}
+				if(data.errors['reply']){
+					swal('Oops...',data.errors['reply'],'warning');
+				}
 			}
 		});
 
@@ -996,9 +996,7 @@ $(function() {
 
 	});
 
-	$('button.printMe').on('click', function() {
-		window.print();
-	});
+	
 
 	$('button.closeTicket').on('click', function() {
 		$('input[type="hidden"]#closing_report').val($('div.ticketsummernote').code());

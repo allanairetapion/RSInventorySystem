@@ -172,8 +172,7 @@
 
 		</div>
 
-		<div class="mail-box">
-
+		<div class="mail-box">			
 			<div class="mail-body">
 				Summary:
 				<div class="ibox-content gray-bg">
@@ -200,15 +199,17 @@
 					<i class="fa fa-save "></i> Save
 				</button>
 				@endif
+				@if(Session::get('status') != "Closed")
 				<button class="btn btn-sm btn-white" onclick="window.document.location='/admin/ticketReply/{{Session::get('id')}}'"><i class="fa fa-reply"></i> Reply</button>
+				@endif
 				@if(Auth::guard('admin')->user()->user_type == 'admin')
 						<a class="btn btn-sm btn-white" data-toggle="modal" data-target="#forward"><i class="fa fa-mail-forward"></i> Forward</a>
 				@else
-					@if($restrictions[4]->agent == 1)
+					@if($restrictions[4]->agent == 1 && Session::get('status') == "Closed")
 						<a class="btn btn-sm btn-white" data-toggle="modal" data-target="#forward"><i class="fa fa-mail-forward"></i> Forward</a>
 					@endif
 				@endif
-				<button class="btn btn-sm btn-white printMe">
+				<button class="btn btn-sm btn-white" onclick="window.open('/admin/printTickets/{{Session::get('id')}}')">
 					<i class="fa fa-print"></i> Print
 				</button>
 				@if(Auth::guard('admin')->user()->user_type == 'admin')
