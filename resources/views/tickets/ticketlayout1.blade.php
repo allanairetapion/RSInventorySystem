@@ -41,13 +41,8 @@
 		@section('body')
 		@show
 
+
 	</body>
 
-	<script>
-		$(document).ready(function() {
-
-			
-		});
-
-	</script>
+	
 </html>

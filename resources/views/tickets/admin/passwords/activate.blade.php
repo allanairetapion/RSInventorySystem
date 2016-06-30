@@ -1,18 +1,16 @@
 @extends('tickets.ticketlayout1')
 @section('title', 'Remote Staff - Change Password')
 @section('body')
-<div class="white-bg text-center">
-	<img src="/img/remote-staff-logo.jpg">
-</div>
+
 <div class="passwordBox animated fadeInDown">
 	<div class="ibox">
-		<div class="ibox-title">
+		<div class="ibox-title gray-bg">
 			<center>
 				<h2 class="font-bold">Account Activation</h2>
 			</center>
 		</div>
 
-		<div class="ibox-content text-center">
+		<div class="ibox-content text-center gray-bg">
 			<P>
 				To finish your account activation, Please setup your password.
 			</P>
@@ -20,7 +18,7 @@
 			<form class="m-t form-horizontal" role="form" method="post" action="{{ url('/admin/activate') }}"  >
 				{!! csrf_field() !!}
 
-				<input type="hidden" name="token" value="{{ $token }}">
+				<input type="hidden" name="token" value="{{ Session::get('token') }}">
 				<div class="form-group{{ $errors->has('email') ? ' has-error' : '' }}">
 
 					@if($errors->has())
@@ -28,7 +26,7 @@
 					@endif
 
 					<div class="col-md-7">
-						<input type="hidden" class=" form-control email" placeholder="Email Address" name="email" value="{{$email or old('email')}}" required="">
+						<input type="hidden" class=" form-control email" placeholder="Email Address" name="email" value="{{Session::get('activateEmail')}}" required="">
 					</div>
 
 				</div>
