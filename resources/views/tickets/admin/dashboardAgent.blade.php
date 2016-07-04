@@ -10,22 +10,37 @@
 			</div>
 			<div class="ibox-content">
 				<div class="row">
+					<div class="col-md-6  b-r">
+						<p>
+							New <span class="pull-right label label-info">Today</span>
+						</p>
+						<h2 class="font-bold newTickets"></h2>
+					</div>
+					<div class="col-md-6">
+						<p>
+							Pending <span class="pull-right label label-info">Total</span>
+						</p>
+						<h2 class="font-bold pendingTickets"></h2>
+					</div>
+					
+					<hr/>
 					
 					<div class="col-md-6  b-r">
 						<p>
-							Assigned <span class="pull-right label label-info">Total</span>
+							Overdue <span class="pull-right label label-info">Total</span>
 						</p>
-						<h2 class="font-bold">{{count($tickets)}}</h2>
+						<h2 class="font-bold overdueTickets"></h2>
 					</div>
 					<div class="col-md-6">
 						<p>
 							Closed <span class="pull-right label label-info">Today</span>
 						</p>
-						<h2 class="font-bold">{{count($closedTickets)}}</h2>
+						<h2 class="font-bold closedTickets"></h2>
 					</div>
 					
 					<div class="col-md-12">
 						<br>
+						<h4>Assigned Tickets</h4>
 						<table class="table table-bordered table-hover">
 							<thead>
 								<tr>
@@ -69,6 +84,18 @@
 
 <script>
 	$(document).ready(function(){
+		$.ajax({
+			type:'get',
+			url:'/admin/ticketCount',
+		}).done(function(data){
+			console.log(data);
+			$('h2.newTickets').text(data.newTickets);
+			$('h2.pendingTickets').text(data.pendingTickets);
+			$('h2.overdueTickets').text(data.overdueTickets);
+			$('h2.closedTickets').text(data.closedTickets);
+		});
+		
+		
 		$.ajax({
 			type : "GET",
 			url : "/admin/ticketStat"
