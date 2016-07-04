@@ -18,11 +18,13 @@
 						<li>
 							<a href="/admin/tickets-Open"><i class="fa fa-ticket"></i>Open Tickets </a>
 						</li>
-						@if(Auth::guard('admin')->user()->user_type == 'admin')
+						
 						<li>
 							<a href="/admin/tickets-Pending"><i class="fa fa-warning"></i>Pending Tickets </a>
 						</li>
-						@endif
+						<li>
+							<a href="/admin/tickets-Unresolved"><i class="fa fa-warning"></i>Unresolved Tickets <span class="pull-right label label-info unresolvedTickets">1</span></a>
+						</li>
 						<li>
 							<a href="/admin/tickets-Closed"><i class="fa fa-thumbs-o-up"></i>Closed Tickets </a>
 						</li>						
