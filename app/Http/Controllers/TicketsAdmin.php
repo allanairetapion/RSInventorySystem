@@ -283,6 +283,8 @@ class TicketsAdmin extends Controller
 		$sender_email = DB::table('admin')->where('id',$ticket->sender_id)->first();
 		if($sender_email == null){
 			$sender_email = DB::table('clients')->where('id',$ticket->sender_id)->first();
+		}else{
+			$sender_email = ['email' => ''];
 		}
 		
 		$assignedTo = DB::table('tickets')->leftJoin('admin_profiles','tickets.assigned_support','=','admin_profiles.agent_id')
