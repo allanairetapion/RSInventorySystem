@@ -143,8 +143,7 @@ class TicketsAdmin extends Controller
             'subject' => $request['subject'],
             'summary' => $request['summary'],
             'ticket_status' => $ticket_status,
-            'assigned_support' => $request['assigned_support'],
-            'priority' => 'High',
+            'assigned_support' => $request['assigned_support'],           
             'department' =>'Support',
         ]);			
 			return response()->json(['response' => '']); 			

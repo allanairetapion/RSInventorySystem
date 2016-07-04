@@ -64,8 +64,7 @@ class TicketsController extends Controller{
             'topic_id' => $request['topic'],
             'subject' => $request['subject'],
             'summary' => $request['summary'],
-            'ticket_status' => 'Pending',
-            'priority' => 'Normal',
+            'ticket_status' => 'Pending',            
             'department' =>Auth::guard('user')->user()->department,
         ]);
 			
