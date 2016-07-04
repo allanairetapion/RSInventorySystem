@@ -61,7 +61,7 @@ class AuthController extends Controller
         	'user_type' => 'required',
             'firstname' => 'required|min:3|max:255|alpha',
             'lastname' => 'required|min:2|max:255|alpha',
-            'email' => 'required|email|max:255|unique:admin|unique:clients',
+             'email' => 'required|email|max:255|unique:clients|unique:admin',
             
         ]);
     }

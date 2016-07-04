@@ -5,8 +5,8 @@
 $(function() {
 
 	$(document).ready(function() {
-		$('div#demo').toggle();
-		$('span.addTopic').hide();
+		$('div#advancedSearch').toggle();
+
 		$('.i-checks').iCheck({
 			checkboxClass : 'icheckbox_square-green',
 			radioClass : 'iradio_square-green',
@@ -23,6 +23,10 @@ $(function() {
 			"bSort" : false,
 			dom : '<"html5buttons">lTfgtip',
 		});
+		$('table.ticket_topics').dataTable({
+			"bSort" : false,
+			dom : '<"html5buttons">lTfgtip',
+		});
 
 		$('div.ticketsummernote').summernote({
 			toolbar : [['style', ['bold', 'italic', 'underline', 'clear']], ['fontname', ['fontname']], ['fontsize', ['fontsize']], ['color', ['color']], ['para', ['ul', 'ol', 'paragraph']], ['height', ['height']]]
@@ -36,7 +40,7 @@ $(function() {
 		$('table.ticketReport').dataTable({
 			"bSort" : false,
 			dom : '<"html5buttons"B>',
-			buttons : [ {
+			buttons : [{
 				extend : 'csv'
 			}, {
 				extend : 'excel',
@@ -67,7 +71,7 @@ $(function() {
 	});
 
 	$('button.advancedSearch').click(function() {
-		$('div#demo').slideToggle();
+		$('div#advancedSearch').slideToggle();
 	});
 
 	$('input.dateSent').datepicker({
@@ -100,15 +104,14 @@ $(function() {
 				if (i == 15) {
 					return false;
 				}
-				if(data.closed_by[i]['first_name'] == null){
+				if (data.closed_by[i]['first_name'] == null) {
 					data.closed_by[i]['first_name'] = '';
 				}
-				
-				if(data.closed_by[i]['last_name'] == null){
+
+				if (data.closed_by[i]['last_name'] == null) {
 					data.closed_by[i]['last_name'] = '';
 				}
-				
-				
+
 				if (v.ticket_status == "Open") {
 					html += "<tr class='bg-primary'  id='" + v.id + "'>";
 				} else if (v.ticket_status == "Pending") {
@@ -126,10 +129,7 @@ $(function() {
 				if (v.closed_at == null) {
 					v.closed_at = "";
 				}
-				html += "<td><input type='checkbox' value=" + v.id + "> </td><td>" + v.id + "</td><td>" + v.sender + "</td>" + 
-				"<td>" + v.sender_id + "</td><td>" + v.description + "</td><td>" + v.subject + "</td><td>" + v.ticket_status + 
-				"</td>" + "<td>" + v.department + "</td><td>" + v.first_name + " " + v.last_name + "</td><td>" 
-				+ data.closed_by[i]['first_name'] + " " + data.closed_by[i]['last_name'] + "</td><td>" + v.created_at + "</td>" + "<td>" + v.closed_at + "</td></tr>";
+				html += "<td><input type='checkbox' value=" + v.id + "> </td><td>" + v.id + "</td><td>" + v.sender + "</td>" + "<td>" + v.sender_id + "</td><td>" + v.description + "</td><td>" + v.subject + "</td><td>" + v.ticket_status + "</td>" + "<td>" + v.department + "</td><td>" + v.first_name + " " + v.last_name + "</td><td>" + data.closed_by[i]['first_name'] + " " + data.closed_by[i]['last_name'] + "</td><td>" + v.created_at + "</td>" + "<td>" + v.closed_at + "</td></tr>";
 			});
 			$('tbody.ticketReport').html(html);
 
@@ -154,14 +154,14 @@ $(function() {
 			var html;
 
 			$.each(data.response, function(i, v) {
-				if(data.closed_by[i]['first_name'] == null){
+				if (data.closed_by[i]['first_name'] == null) {
 					data.closed_by[i]['first_name'] = '';
 				}
-				
-				if(data.closed_by[i]['last_name'] == null){
+
+				if (data.closed_by[i]['last_name'] == null) {
 					data.closed_by[i]['last_name'] = '';
 				}
-				
+
 				if (v.ticket_status == "Open") {
 					html += "<tr class='bg-primary'  id='" + v.id + "'>";
 				} else if (v.ticket_status == "Pending") {
@@ -179,11 +179,7 @@ $(function() {
 				if (v.closed_at == null) {
 					v.closed_at = "";
 				}
-				html += "<td><input type='checkbox' value=" + v.id + "> </td><td>" + v.id + "</td><td>" + v.sender + "</td>" + "<td>" + 
-				v.sender_id + "</td><td>" + v.description + "</td><td>" + v.subject + "</td><td>" + v.ticket_status + "</td>" 
-				+ "<td>" + v.department + "</td><td>" + v.first_name + " " + v.last_name + "</td><td>" + 
-				data.closed_by[i]['first_name'] + " " + data.closed_by[i]['last_name']+"</td><td>" 
-				+ v.created_at + "</td>" + "<td>" + v.closed_at + "</td></tr>";
+				html += "<td><input type='checkbox' value=" + v.id + "> </td><td>" + v.id + "</td><td>" + v.sender + "</td>" + "<td>" + v.sender_id + "</td><td>" + v.description + "</td><td>" + v.subject + "</td><td>" + v.ticket_status + "</td>" + "<td>" + v.department + "</td><td>" + v.first_name + " " + v.last_name + "</td><td>" + data.closed_by[i]['first_name'] + " " + data.closed_by[i]['last_name'] + "</td><td>" + v.created_at + "</td>" + "<td>" + v.closed_at + "</td></tr>";
 			});
 			$('tbody.ticketReport').html(html);
 			$('.i-checks').iCheck({
@@ -197,8 +193,12 @@ $(function() {
 		var tickets = ['x'];
 		$('input:checkbox:checked').each(function() {
 			tickets.push($(this).val());
-
 		});
+		if(tickets[1] == '' || tickets[1] == null){
+			swal('Ooops...',"You haven't selected any ticket",'info');
+			return false;
+		}
+		
 		console.log($('form.selectedTickets').serializeArray());
 		swal({
 			title : "Are you sure?",
@@ -232,13 +232,15 @@ $(function() {
 						if (data == "true") {
 							$.ajax({
 								headers : {
-							'X-CSRF-Token' : $('input[name="_token"]').val()
-						},
+									'X-CSRF-Token' : $('input[name="_token"]').val()
+								},
 								type : "DELETE",
 								url : "/admin/deleteTicket",
-								data : {tickets : tickets},
+								data : {
+									tickets : tickets
+								},
 							}).done(function(data) {
-								
+
 								swal({
 									title : "Deleted",
 									text : "Tickets has been deleted",
@@ -273,11 +275,11 @@ $(function() {
 				$(this).show();
 		});
 	});
-//create ticket
+	//create ticket
 	var createTicket = $('button.create-ticket').ladda();
 
 	createTicket.click(function(e) {
-		
+
 		e.preventDefault();
 
 		createTicket.ladda('start');
@@ -289,7 +291,6 @@ $(function() {
 		$('div.summary').removeClass('has-error');
 		e.preventDefault();
 
-		
 		$.ajax({
 			type : "POST",
 			url : "/admin/createTicket",
@@ -321,16 +322,16 @@ $(function() {
 				$('div.topic').removeClass('has-error');
 				$('div.subject').removeClass('has-error');
 				$('div.summary').removeClass('has-error');
-				createTicket.ladda('stop');				
-				
+				createTicket.ladda('stop');
+
 				swal({
-					title:'Success!',
-					text: "Your ticket has been created.",
-					type: "success",
-					},function(){
-						window.location.href= '/admin';
-					});
-				
+					title : 'Success!',
+					text : "Your ticket has been created.",
+					type : "success",
+				}, function() {
+					window.location.href = '/admin';
+				});
+
 			}
 		});
 	});
@@ -338,7 +339,7 @@ $(function() {
 	//Add Topic
 	$('button.addTopic').click(function(e) {
 		$('div.addTopic').removeClass('has-error');
-		$('label.addTopic').hide();
+		$('label.text-danger').hide();
 		e.preventDefault();
 
 		$.ajax({
@@ -349,26 +350,25 @@ $(function() {
 
 			var msg = "";
 			if (data.success == false) {
-				
-				$('div.addTopic').addClass('has-error');
-				$('label.addTopic').text('*'+data.errors['description']).show();
-				
-				
+				if (data.errors['description']) {
+					$('div.addTopic').addClass('has-error');
+					$('label.addTopic').text('*' + data.errors['description']).show();
+				}
+				if (data.errors['priority']) {
+					$('div.priority').addClass('has-error');
+					$('label.priority').text('*' + data.errors['priority']).show();
+				}
+
 			} else {
 				$('form.addTopic').trigger('reset');
 				var html;
 
 				$.each(data.response, function(i, v) {
-					if(i == 1){
+					if (i == 1) {
 						return false;
 					}
-					if (v.status == 1) {
-						html += "<tr><td class='text-center'><input class='topic' type='checkbox' name =" + v.id + " value=" + v.id + " checked></td>";
-					} else {
-						html += "<tr><td class='text-center'><input class='topic' type='checkbox' name =" + v.id + " value=" + v.id + "></td>";
-					}
 
-					html += "<td class='text-center'>" + v.description + "</td></tr>";
+					html += "<tr id=" + v.topic_id + "><td class='text-center'><input class='topic' type='checkbox' name =" + v.topic_id + " value=" + v.topic_id + " checked></td>" + "<td class='text-center'>" + v.description + "</td>" + "<td><button type='button' class='btn btn-warning btn-xs editTopic' value=" + v.topic_id + ">Edit</button>" + "<button type='button' class='btn btn-danger btn-xs deleteTopic'  value=" + v.topic_id + ">Delete</button> </td></tr>";
 				});
 				$('tbody.topics').append(html);
 				$('span.addTopic').hide();
@@ -386,15 +386,10 @@ $(function() {
 	});
 
 	//Delete Topic
-	$('button.deleteTopic').click(function(e) {
-		var deleteTopic = ['x'];
-		$('input.topic:checkbox:checked').each(function() {
-			deleteTopic.push($(this).val());
-
-		});
-
+	$(document).on('click', 'button.deleteTopic', function() {
+		var deleteTopic = $(this).val();
 		console.log($('form.topic').serializeArray());
-		e.preventDefault();
+
 		swal({
 			title : "Are you sure?",
 			text : "Selected topic will be deleted. ",
@@ -414,16 +409,50 @@ $(function() {
 				type : "DELETE",
 				url : "/admin/deleteTopic",
 				data : {
-					topics : deleteTopic
+					deleteTopic : deleteTopic,
 				},
 			}).done(function(data) {
 
-				$('input.topic:checkbox:checked').each(function() {
-					$(this).parents('tr').hide();
-				});
+				$('button.deleteTopic[value=' + deleteTopic + ']').parents('tr').remove();
 
 				swal('Topics has been deleted', '', 'success');
 			});
+		});
+	});
+	// edit topic
+	$(document).on('click', 'button.editTopic', function() {
+		var editTopic = $(this).val();
+
+		$('#editTopic').modal('show');
+		$('input.editTopic').attr('disabled');
+
+		$.ajax({
+			type : 'GET',
+			url : '/admin/editTopic',
+			data : {
+				editTopic : editTopic
+			},
+		}).done(function(data) {
+			$('input.editTopic_id').val(data.editTopic['topic_id']);
+			$('input.editTopic').val(data.editTopic['description']);
+			$('select.editPriority').val(data.editTopic['priority_level']);
+
+		});
+	});
+
+	$(document).on('click', 'button.saveEditTopic', function() {
+		$.ajax({
+			type : 'PUT',
+			url : '/admin/editTopic',
+			data : $('form.editTopic').serialize(),
+		}).done(function(data) {
+			if (data.success = true) {
+				toastr.options = {
+					positionClass : "toast-top-center",
+				};
+				toastr.success('Data successfully updated.');
+			}
+
 		});
 	});
 
@@ -436,25 +465,22 @@ $(function() {
 			updateTopics.push($(this).val());
 		});
 		e.preventDefault();
-		$('span.addTopic').hide();
-		$('div.addTopic').removeClass('has-error');
-		$('div.addTopic').removeClass('has-feedback');
+
 		// Start loading
 		updateTopic.ladda('start');
 
 		$.ajax({
 			headers : {
-					'X-CSRF-Token' : $('input[name="_token"]').val()
-				},
+				'X-CSRF-Token' : $('input[name="_token"]').val()
+			},
 			type : "PUT",
 			url : "/admin/updateSelection",
-			data : {topics : updateTopics},
+			data : {
+				topics : updateTopics
+			},
 		}).done(function() {
 			updateTopic.ladda('stop');
-			toastr.options = {
-				positionClass : "toast-top-center",
-			};
-			toastr.success('Topic selection has been updated.');
+			swal('Success!', 'Ticket topics selections is updated', 'success');
 
 		});
 		// Timeout example
@@ -585,10 +611,13 @@ $(function() {
 	$('button.changeClientStatus').on('click', function() {
 		var clientId = $(this).val();
 		var clientStatus = $(this).attr('name');
+
 		if (clientStatus == "Activated") {
 			clientStatus = "Not Activated";
+			$(this).attr('name', 'Not Activated');
 		} else {
 			clientStatus = "Activated";
+			$(this).attr('name', 'Activated');
 		}
 
 		swal({
@@ -858,15 +887,14 @@ $(function() {
 	};
 
 	var ticketReply = $('button.ticketReply').ladda();
-	$('label.email').hide();
-	$('div.email').removeClass('has-error');
-	
-	$('input[type="hidden"].ticketReply').val($('div.ticketReplySummernote').code());
-	
-	ticketReply.click(function(e) {
-		console.log($('form.ticketReply').serialize());
-		
 
+	ticketReply.click(function(e) {
+
+		$('label.email').hide();
+		$('div.email').removeClass('has-error');
+
+		$('input[type="hidden"].ticketReply').val($('div.ticketReplySummernote').code());
+		console.log($('form.ticketReply').serialize());
 		ticketReply.ladda('start');
 
 		$.ajax({
@@ -875,15 +903,15 @@ $(function() {
 			data : $('form.ticketReply').serialize(),
 		}).done(function(data) {
 			ticketReply.ladda('stop');
-			if(data.success != false){
+			if (data.success != false) {
 				swal('Success', 'An email has been sent to ' + $('input.email').val(), 'success');
-			}else{
-				if(data.errors['email']){
-					$('label.email').text('*'+data.errors['email']).show();
+			} else {
+				if (data.errors['email']) {
+					$('label.email').text('*' + data.errors['email']).show();
 					$('div.email').addClass('has-error');
 				}
-				if(data.errors['reply']){
-					swal('Oops...',data.errors['reply'],'warning');
+				if (data.errors['message']) {
+					swal('Oops...', data.errors['message'], 'warning');
 				}
 			}
 		});
@@ -1001,8 +1029,6 @@ $(function() {
 		});
 
 	});
-
-	
 
 	$('button.closeTicket').on('click', function() {
 		$('input[type="hidden"]#closing_report').val($('div.ticketsummernote').code());
@@ -1163,7 +1189,7 @@ $(function() {
 			var html;
 			console.log(data);
 			$.each(data, function(index, v) {
-				html +="<tr><td><span class='label label-info'>" + v.total + "</span></td><td>" + v.name + "</td></tr>";
+				html += "<tr><td><span class='label label-info'>" + v.total + "</span></td><td>" + v.name + "</td></tr>";
 
 			});
 
@@ -1214,29 +1240,26 @@ $(function() {
 
 	assignSupport.click(function(e) {
 		toastr.options = {
-				positionClass : "toast-top-center",
+			positionClass : "toast-top-center",
 
-			};
+		};
 		e.preventDefault();
 		var noSupport = [];
-		
+
 		$('select.noSupport').each(function(index) {
-			
+
 			noSupport[index] = {
 				id : $(this).attr('name'),
 				assigned_support : $(this).val()
 			};
-			
-			
+
 		});
 		console.log(noSupport);
-		if(noSupport[0] == null){
+		if (noSupport[0] == null) {
 			toastr.info('No Tickets Found');
-			return false;			
+			return false;
 		}
-		
-		
-		
+
 		assignSupport.ladda('start');
 
 		$.ajax({
@@ -1251,18 +1274,16 @@ $(function() {
 		}).done(function(data) {
 			console.log(data);
 			assignSupport.ladda('stop');
-			
+
 			toastr.success('Tickets has been assigned to their support');
-			
-			
-			$('select.noSupport').each(function(index) {						
-			
-			if($(this).val() != ''){
-				$(this).parents('tr').remove();
-			}
-			
-			
-		});
+
+			$('select.noSupport').each(function(index) {
+
+				if ($(this).val() != '') {
+					$(this).parents('tr').remove();
+				}
+
+			});
 		});
 	});
 
@@ -1390,6 +1411,50 @@ $(function() {
 					$('label.newPassword').text(data.errors['password']).show();
 				}
 			}
+		});
+	});
+	
+	$('button.advancedEmailSearch').click(function(){
+		$.ajax({
+			type : "POST",
+			url : "/admin/advancedSearch",
+			data : $('form.advancedTicket').serialize(),
+		}).done(function(data) {
+
+			$('div.pagination').hide();
+			$('tbody.ticketReport').empty();
+			var html;
+
+			$.each(data.response, function(i, v) {
+				
+
+				html +="<tr class='read' onclick='window.document.location=/admin/tickets/"+ v.id +"'>" ;
+
+				if (v.first_name == null) {
+					v.first_name = "";
+				}
+				if (v.last_name == null) {
+					v.last_name = "";
+				}
+				
+				html += "<td> <input type='checkbox' class='i-checks' name='id' value="+ v.id +"> </td><td class='mail-ontact'>"+ v.sender +"</td><td>" + v.subject + "</td>";
+				
+				if(v.priority_level == 'High'){
+					html += "<td><span class='label label-danger'>"+ v.priority_level + "</span>";
+				}else if(v.priority_level == 'Normal'){
+					html += "<td><span class='label label-warning'>"+ v.priority_level + "</span>";
+				}else{
+					html += "<td><span class='label label-primary'>"+ v.priority_level + "</span>";
+				}
+				
+				html += "<span class='label label-default'>"+ v.description +" </span></td><td>" + v.created_at + "</td>";
+			});
+			$('tbody.ticketReport').html(html);
+			$('.i-checks').iCheck({
+				checkboxClass : 'icheckbox_square-green',
+				radioClass : 'iradio_square-green',
+			});
+
 		});
 	});
 });

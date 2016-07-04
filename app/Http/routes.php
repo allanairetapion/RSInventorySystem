@@ -162,11 +162,12 @@ Route::group(['middleware' => 'admin'], function () {
 	Route::get('/admin/clients/','TicketsAdmin@showClients');
 	Route::get('/admin/agents','TicketsAdmin@showAgents');
 	Route::get('/admin/restrictions','TicketsAdmin@showRestriction');
-	Route::get('/admin/ticketReport','TicketsAdmin@showTicketStatus');
+	Route::get('/admin/ticketReport','TicketsAdmin@showTicketReport');
 	Route::get('/admin/tickets','TicketsAdmin@showTickets');
 	Route::get('/admin/tickets-Assigned','TicketsAdmin@showTicketsAssigned');
 	Route::get('/admin/tickets-Open','TicketsAdmin@showTicketsOpen');
 	Route::get('/admin/tickets-Pending','TicketsAdmin@showTicketsPending');
+	Route::get('/admin/tickets-Unresolved','TicketsAdmin@showTicketsUnresolved');
 	Route::get('/admin/tickets-Closed','TicketsAdmin@showTicketsClosed');
 	Route::get('/admin/tickets/{id}','TicketsAdmin@showTicketDetails');
 	Route::get('/admin/printTickets/{id}','TicketsAdmin@printTicketDetails');
@@ -178,6 +179,8 @@ Route::group(['middleware' => 'admin'], function () {
 	Route::get('/admin/topSupport','TicketsAdmin@topSupport');
 	Route::get('/admin/createClient','TicketsAdmin@showCreateClient');
 	Route::get('/admin/editAccount','TicketsAdmin@editAccount');
+	Route::get('/admin/editTopic','TicketsAdmin@editTopicDetails');
+	Route::get('/admin/ticketCount','TicketsAdmin@ticketCount');
 	
 	Route::post('/admin/verifyPassword','TicketsAdmin@checkPassword');
 	Route::post('/admin/createTicket','TicketsAdmin@createTicket');	
@@ -185,8 +188,10 @@ Route::group(['middleware' => 'admin'], function () {
 	Route::post('/admin/addTopic','TicketsAdmin@addTopic');		
 	Route::post('/admin/advancedSearch','TicketsAdmin@advancedSearch');
 	Route::post('/admin/ticketReply','TicketsAdmin@sendReply');
+	Route::post('/admin/advancedEmailSearch','TicketsAdmin@advancedEmailSearch');
 	
 	Route::put('/admin/updateSelection','TicketsAdmin@updateSelection');
+	Route::put('/admin/editTopic','TicketsAdmin@editTopic');
 	Route::put('/admin/updateRestriction','TicketsAdmin@updateRestriction');
 	Route::put('/admin/ticketStatus','TicketsAdmin@changeTicketStatus');
 	Route::put('/admin/forwardTicket','TicketsAdmin@forwardTicket');

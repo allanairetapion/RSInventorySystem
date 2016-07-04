@@ -79,7 +79,7 @@
 						</div>
 					</div>
 					
-					<input type="hidden" name="reply" value="" class="ticketReply">
+					<input type="hidden" name="message" value="" class="ticketReply">
 				</form>
 
 			</div>
