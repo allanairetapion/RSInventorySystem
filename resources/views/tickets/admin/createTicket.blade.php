@@ -91,6 +91,7 @@
 
 							</div>
 						</div>
+						</form>
 						<hr>
 						<center>
 							<button type="button" data-style="zoom-in" class="ladda-button btn btn-info btn-lg create-ticket">

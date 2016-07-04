@@ -77,50 +77,8 @@
 				<div class="row">
 					<div class="pull-right">
 						
-						<div class="form-group">
-							<label class="">Topic: </label>
-							@if(Auth::guard('admin')->user()->user_type == "agent")
-							<select name="topic"class="form-control topic" readonly>
-								<option selected  value="{{Session::get('topic_id')}}">{{Session::get('topic')}}</option>
-							@else
-							<select name="topic"class="form-control topic">
-								<option selected  value="{{Session::get('topic_id')}}">{{Session::get('topic')}}</option>
-								@foreach ($topics as $topic)}
-								@if(Session::get('topic_id') != $topic->topic_id)
-								<option value="{{$topic->topic_id}}">{{$topic->description}}</option>
-								@endif
-								@endforeach
-							@endif
-								
-							</select>
-
-						</div>
-						<div class="form-group">
-							<label class="">Priority: </label>
-							@if(Auth::guard('admin')->user()->user_type == "agent")
-							<select name="priority" class=" form-control" readonly>
-								<option selected value="{{Session::get('priority')}}">{{Session::get('priority')}}</option>
-							@else
-							<select name="priority" class=" form-control">
-								@if(Session::get('priority') == 'High')
-								<option value="High">High</option>
-								<option value="Normal">Normal</option>
-								<option value="Low">Low</option>
-								@elseif(Session::get('priority') == 'Normal')
-								<option value="Normal">Normal</option>
-								<option value="Low">Low</option>
-								<option value="High">High</option>
-								@else
-								<option value="Low">Low</option>
-								<option value="Normal">Normal</option>
-								<option value="High">High</option>
-								@endif
-							@endif
-							
-								
-							</select>
-
-						</div>
+						
+					
 
 						<div class="form-group">
 							<label class="">Status: </label>
@@ -154,7 +112,7 @@
 
 						</div>
 					</div>
-					<h2> &nbsp; View Message </h2>
+					<h2> &nbsp; View Message <span class="label label-info">{{Session::get('priority')}}</span></h2>
 				</div>
 			</form>
 

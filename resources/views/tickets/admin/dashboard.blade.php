@@ -15,7 +15,7 @@ $ntime = date('Y-m-d');
 				</div>
 				<div class="col-xs-8 text-right">
 					<span> New Tickets </span>
-					<h2 class="font-bold">{{count($newTickets)}}</h2>
+					<h2 class="font-bold newTickets"></h2>
 					
 					<small>Today</small>
 				</div>
@@ -31,7 +31,7 @@ $ntime = date('Y-m-d');
 				</div>
 				<div class="col-xs-8 text-right">
 					<span> Pending Tickets </span>
-					<h2 class="font-bold">{{count($pendingTickets)}}</h2>
+					<h2 class="font-bold pendingTickets"></h2>
 					<small>Today</small>
 				</div>
 			</div>
@@ -46,7 +46,7 @@ $ntime = date('Y-m-d');
 				</div>
 				<div class="col-xs-8 text-right">
 					<span> Overdue Tickets </span>
-					<h2 class="font-bold">{{count($overdueTickets)}}</h2>
+					<h2 class="font-bold overdueTickets"></h2>
 					<small>Today</small>
 				</div>
 			</div>
@@ -61,7 +61,7 @@ $ntime = date('Y-m-d');
 				</div>
 				<div class="col-xs-8 text-right">
 					<span> Closed Tickets </span>
-					<h2 class="font-bold">{{count($closedTickets)}}</h2>
+					<h2 class="font-bold closedTickets"></h2>
 					<small>Today</small>
 				</div>
 			</div>
@@ -211,6 +211,16 @@ $ntime = date('Y-m-d');
 
 <script type="text/javascript">
 	$(document).ready(function() {
+			$.ajax({
+			type:'get',
+			url:'/admin/ticketCount',
+		}).done(function(data){
+			console.log(data);
+			$('h2.newTickets').text(data.newTickets);
+			$('h2.pendingTickets').text(data.pendingTickets);
+			$('h2.overdueTickets').text(data.overdueTickets);
+			$('h2.closedTickets').text(data.closedTickets);
+		});
 		$.ajax({
 			type : "GET",
 			url : "/admin/topIssue",
