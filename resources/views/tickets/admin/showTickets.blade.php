@@ -51,12 +51,11 @@
 	<div class="col-lg-9 animated fadeInRight mail">
 		<div class="mail-box-header">
 
-		
-				<button type="button" class="btn btn-sm btn-primary advancedSearch pull-right">
-					Advanced Search
-				</button>
-				<h2> Inbox </h2>
-		
+			<button type="button" class="btn btn-sm btn-primary advancedSearch pull-right">
+				Advanced Search
+			</button>
+			<h2> Inbox </h2>
+
 			<div id="advancedSearch" class=" gray-bg" style="padding:5px;">
 				<br>
 				<form class="advancedTicket" method="POST" action="/admin/advancedEmailSearch">
@@ -76,16 +75,16 @@
 								<input type="text" name="dateClosed" class="form-control dateClosed" value="">
 							</div>
 						</div>
-							<div class="col-md-3">
-								<label class="control-label">Topic:</label>
-								<select name="topicSearch"class="form-control topic">
+						<div class="col-md-3">
+							<label class="control-label">Topic:</label>
+							<select name="topicSearch"class="form-control topic">
 								<option value="" selected hidden> Choose a topic... </option>
-								@foreach ($topics as $topic)														
-								<option value="{{$topic->description}}"> {{$topic->description}}</option>								
+								@foreach ($topics as $topic)
+								<option value="{{$topic->description}}"> {{$topic->description}}</option>
 								@endforeach
 							</select>
-								
-							</div>
+
+						</div>
 						<div class="col-md-3">
 							<label class="control-label">Status:</label>
 							<select name="statusSearch"class="form-control statusSearch">
@@ -95,31 +94,31 @@
 								<option value="Closed">Closed</option>
 							</select>
 						</div>
-
-				
-					<div class="col-md-3">
-						<label class="control-label">Email:</label>
-						<input type="email" name="email" class="form-control email"/>
 					</div>
-					<div class="col-md-3">
-								<label class="control-label">Assigned to:</label>
-								<select name="agentSent" class="form-control agentSent">
-									<option value="" selected hidden>Select agent...</option>
-									@foreach ($agent as $agents)
-									<option value="{{$agents->id}}"> {{$agents->first_name.' '.$agents->last_name}}</option>
-									@endforeach
-								</select>
-							</div>
-							<div class="col-md-3">
-								<label class="control-label">Closed by:</label>
-								<select name="agentClosed" class="form-control agentClosed">
-									<option value="" selected hidden>Select agent...</option>
-									@foreach ($agent as $agents)
-									<option value="{{$agents->id}}"> {{$agents->first_name.' '.$agents->last_name}}</option>
-									@endforeach
-								</select>
-							</div>
-					
+					<div class="row">
+						<br>
+						<div class="col-md-3">
+							<label class="control-label">Email:</label>
+							<input type="email" name="email" class="form-control email"/>
+						</div>
+						<div class="col-md-3">
+							<label class="control-label">Assigned to:</label>
+							<select name="agentSent" class="form-control agentSent">
+								<option value="" selected hidden>Select agent...</option>
+								@foreach ($agent as $agents)
+								<option value="{{$agents->id}}"> {{$agents->first_name.' '.$agents->last_name}}</option>
+								@endforeach
+							</select>
+						</div>
+						<div class="col-md-3">
+							<label class="control-label">Closed by:</label>
+							<select name="agentClosed" class="form-control agentClosed">
+								<option value="" selected hidden>Select agent...</option>
+								@foreach ($agent as $agents)
+								<option value="{{$agents->id}}"> {{$agents->first_name.' '.$agents->last_name}}</option>
+								@endforeach
+							</select>
+						</div>
 
 						<div class="col-md-3 text-center">
 							<br>
@@ -132,8 +131,7 @@
 							</button>
 
 						</div>
-	</div>
-					
+					</div>
 
 				</form>
 				<br>

@@ -44,9 +44,8 @@ class TicketsAdmin extends Controller
         	}else{
         		
         		$tickets = DB::table('tickets')->leftJoin('ticket_topics','tickets.topic_id','=','ticket_topics.topic_id')->where('assigned_support',Auth::guard('admin')->user()->id)->where('ticket_status','!=','Closed')->get();
-        		$closedtickets = DB::table('tickets')->where('closed_by',Auth::guard('admin')->user()->id)->where('ticket_status','Closed')
-				->where('closed_at','>',Carbon::today())->get();
-        		return view('tickets.admin.dashboardAgent',['restrictions' => $restriction,'tickets' => $tickets,'closedTickets' => $closedtickets ]);
+        		
+        		return view('tickets.admin.dashboardAgent',['restrictions' => $restriction,'tickets' => $tickets]);
         	}
 		}
 		else {

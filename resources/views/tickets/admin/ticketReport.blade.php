@@ -83,7 +83,9 @@
 								<option value="Closed">Closed</option>
 							</select>
 						</div>
-
+					</div>
+					<div class="row">
+						<br>
 						<div class="col-md-3">
 							<label class="control-label">Email:</label>
 							<input type="email" name="email" class="form-control email"/>
