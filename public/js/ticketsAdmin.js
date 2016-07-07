@@ -370,7 +370,8 @@ $(function() {
 						return false;
 					}
 
-					html += "<tr id=" + v.topic_id + "><td class='text-center'><input class='topic' type='checkbox' name =" + v.topic_id + " value=" + v.topic_id + " checked></td>" + "<td class='text-center'>" + v.description + "</td>" + "<td><button type='button' class='btn btn-warning btn-xs editTopic' value=" + v.topic_id + ">Edit</button>" + "<button type='button' class='btn btn-danger btn-xs deleteTopic'  value=" + v.topic_id + ">Delete</button> </td></tr>";
+					html += "<tr id=" + v.topic_id + "><td class='text-center'><input class='topic' type='checkbox' name =" + v.topic_id + " value=" + v.topic_id + " checked></td>" +
+					"<td>"+ v.description +"</td>"+ "<td class='text-center'>" + v.priority_level + "</td>" + "<td><button type='button' class='btn btn-warning btn-xs editTopic' value=" + v.topic_id + ">Edit</button>" + "<button type='button' class='btn btn-danger btn-xs deleteTopic'  value=" + v.topic_id + ">Delete</button> </td></tr>";
 				});
 				$('tbody.topics').append(html);
 				$('span.addTopic').hide();
@@ -453,8 +454,13 @@ $(function() {
 					positionClass : "toast-top-center",
 				};
 				toastr.success('Data successfully updated.');
+				$('#editTopic').modal('hide');
+			
+			$('td.topicDescription' +data.topic['topic_id']+ '').text(data.topic['description']);
+			$('td.topicPriority' +data.topic['topic_id']+ '').text(data.topic['priority_level']);
 			}
-
+			
+			
 		});
 	});
 

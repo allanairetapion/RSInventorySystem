@@ -30,7 +30,7 @@ $ntime = date('Y-m-d');
 					<i class="glyphicon glyphicon-time  fa-5x"></i>
 				</div>
 				<div class="col-xs-8 text-right">
-					<span> Open Tickets </span>
+					<span> Pending Tickets </span>
 					<h2 class="font-bold pendingTickets"></h2>
 					<small>Today</small>
 				</div>
