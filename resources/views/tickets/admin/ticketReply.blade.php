@@ -16,18 +16,21 @@
 							<a href="/admin/tickets"><i class="fa fa-inbox "></i>All Tickets </a>
 						</li>
 						<li>
-							<a href="/admin/tickets-Open"><i class="fa fa-ticket"></i>Open Tickets </a>
+							<a href="/admin/tickets-Assigned"><i class="fa fa-tasks "></i>My Tickets <span class="pull-right label label-info assignedTickets">1</span></a>
 						</li>
-						
+
 						<li>
-							<a href="/admin/tickets-Pending"><i class="fa fa-warning"></i>Pending Tickets </a>
+							<a href="/admin/tickets-Open"><i class="fa fa-ticket"></i>Open Tickets <span class="pull-right label label-info openTickets">1</span></a>
+						</li>
+						<li>
+							<a href="/admin/tickets-Pending"><i class="fa fa-clock-o"></i>Pending Tickets <span class="pull-right label label-info pendingTickets">1</span></a>
 						</li>
 						<li>
 							<a href="/admin/tickets-Unresolved"><i class="fa fa-warning"></i>Unresolved Tickets <span class="pull-right label label-info unresolvedTickets">1</span></a>
 						</li>
 						<li>
 							<a href="/admin/tickets-Closed"><i class="fa fa-thumbs-o-up"></i>Closed Tickets </a>
-						</li>						
+						</li>				
 					</ul>
 					<h5>Priority Level</h5>
 					<ul class="category-list" style="padding: 0">
@@ -108,7 +111,18 @@
 <script>
 	$(document).ready(function(){
 		$('label.email').hide()
-	});
+		
+		$.ajax({
+				type : 'get',
+				url : '/admin/ticketCount',
+			}).done(function(data) {
+				console.log(data);
+				$('span.openTickets').text(data.newTickets);
+				$('span.pendingTickets').text(data.pendingTickets);
+				$('span.unresolvedTickets').text(data.overdueTickets);
+				$('span.assignedTickets').text(data.assignedTickets);
+			});
+	});		
 </script>
 
 @endsection

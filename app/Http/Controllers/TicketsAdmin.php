@@ -25,7 +25,7 @@ class TicketsAdmin extends Controller
 		
 		$restriction = DB::table('ticket_restrictions')->get();
 		$agents = DB::table('admin')->join('admin_profiles','admin.id','=','admin_profiles.agent_id')
-		->where('user_type','agent')->get();
+		->get();
 	
 		
 			
@@ -280,10 +280,12 @@ class TicketsAdmin extends Controller
 		$ticket = DB::table('tickets')
 		->leftJoin('ticket_topics','tickets.topic_id',"=",'ticket_topics.topic_id')->where('id',$id)->first();
 		
-		$sender_email = DB::table('admin')->where('id',$ticket->sender_id)->first();
+		$sender_email = DB::table('admin')->select('email')->where('id',$ticket->sender_id)->first();
+		
 		if($sender_email == null){
-			$sender_email = DB::table('clients')->where('id',$ticket->sender_id)->first();
-		}else{
+			$sender_email = DB::table('clients')->select('email')->where('id',$ticket->sender_id)->first();			 			 
+		}
+		if($sender_email == null){
 			$sender_email = ['email' => ''];
 		}
 		
@@ -294,7 +296,7 @@ class TicketsAdmin extends Controller
 		->leftJoin('ticket_topics','tickets.topic_id',"=",'ticket_topics.topic_id')->where('id',$id)->first();
 		
 		session([
-		'email' => $sender_email->email,'subject' => $ticket->subject,
+		'email' => reset($sender_email),'subject' => $ticket->subject,
 		'date_sent' => $ticket->created_at,'date_modified' => $ticket->updated_at, 'summary' => $ticket->summary,
 		'topic_id' => $ticket->topic_id,'topic' => $ticket->description,
 		'id' => $ticket->id,'assigned_support' => $assignedTo->first_name.' '.$assignedTo->last_name,
@@ -312,14 +314,23 @@ class TicketsAdmin extends Controller
 		}
 		$ticket = DB::table('tickets')->where('id',$id)->first();
 		
-		$sender_email = DB::table('admin')->where('id',$ticket->sender_id)->first();
+		$sender_email = DB::table('admin')->select('email')->where('id',$ticket->sender_id)->first();
+		
 		if($sender_email == null){
-			$sender_email = DB::table('clients')->where('id',$ticket->sender_id)->first();
+			$sender_email = DB::table('clients')->select('email')->where('id',$ticket->sender_id)->first();			 			 
+		}
+		if($sender_email == null){
+			$sender_email = "";
 		}
 		
-		$restriction = DB::table('ticket_restrictions')->get();
-		session(['email' => $sender_email->email,]);
-		return view('tickets.admin.ticketReply',['restrictions' => $restriction]);
+		if((Auth::guard('admin')->user()->user_type == "agent" && $restriction[1]->agent == 1) || Auth::guard('admin')->user()->user_type == 'admin'){
+			$restriction = DB::table('ticket_restrictions')->get();
+			session(['email' => $sender_email->email,]);
+			return view('tickets.admin.ticketReply',['restrictions' => $restriction]);
+		}else{
+			abort(403);
+		}
+        
 	}
 	
 	

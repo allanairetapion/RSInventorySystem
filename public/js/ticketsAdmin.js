@@ -194,11 +194,11 @@ $(function() {
 		$('input:checkbox:checked').each(function() {
 			tickets.push($(this).val());
 		});
-		if(tickets[1] == '' || tickets[1] == null){
-			swal('Ooops...',"You haven't selected any ticket",'info');
+		if (tickets[1] == '' || tickets[1] == null) {
+			swal('Ooops...', "You haven't selected any ticket", 'info');
 			return false;
 		}
-		
+
 		console.log($('form.selectedTickets').serializeArray());
 		swal({
 			title : "Are you sure?",
@@ -246,7 +246,9 @@ $(function() {
 									text : "Tickets has been deleted",
 									type : "success",
 								}, function() {
-									location.reload();
+									$('input:checkbox:checked').each(function() {
+										$(this).parents('tr').remove();
+									});
 								});
 
 							});
@@ -1247,16 +1249,16 @@ $(function() {
 		var noSupport = [];
 
 		$('select.noSupport').each(function(index) {
-
-			noSupport[index] = {
-				id : $(this).attr('name'),
-				assigned_support : $(this).val()
-			};
-
+			if ($(this).val() != "") {
+				noSupport[index] = {
+					id : $(this).attr('name'),
+					assigned_support : $(this).val()
+				};
+			}
 		});
 		console.log(noSupport);
-		if (noSupport[0] == null) {
-			toastr.info('No Tickets Found');
+		if (noSupport.length <= 0) {
+			toastr.info('No input found');
 			return false;
 		}
 
@@ -1413,8 +1415,8 @@ $(function() {
 			}
 		});
 	});
-	
-	$('button.advancedEmailSearch').click(function(){
+
+	$('button.advancedEmailSearch').click(function() {
 		$.ajax({
 			type : "POST",
 			url : "/admin/advancedSearch",
@@ -1426,9 +1428,8 @@ $(function() {
 			var html;
 
 			$.each(data.response, function(i, v) {
-				
 
-				html +="<tr class='read' onclick='window.document.location=/admin/tickets/"+ v.id +"'>" ;
+				html += "<tr class='read' data-href='/admin/tickets/" + v.id + "'>";
 
 				if (v.first_name == null) {
 					v.first_name = "";
@@ -1436,18 +1437,18 @@ $(function() {
 				if (v.last_name == null) {
 					v.last_name = "";
 				}
-				
-				html += "<td> <input type='checkbox' class='i-checks' name='id' value="+ v.id +"> </td><td class='mail-ontact'>"+ v.sender +"</td><td>" + v.subject + "</td>";
-				
-				if(v.priority_level == 'High'){
-					html += "<td><span class='label label-danger'>"+ v.priority_level + "</span>";
-				}else if(v.priority_level == 'Normal'){
-					html += "<td><span class='label label-warning'>"+ v.priority_level + "</span>";
-				}else{
-					html += "<td><span class='label label-primary'>"+ v.priority_level + "</span>";
+
+				html += "<td> <input type='checkbox' class='i-checks' name='id' value=" + v.id + "> </td><td class='mail-ontact'>" + v.sender + "</td><td>" + v.subject + "</td>";
+
+				if (v.priority_level == 'High') {
+					html += "<td><span class='label label-danger'>" + v.priority_level + "</span>";
+				} else if (v.priority_level == 'Normal') {
+					html += "<td><span class='label label-warning'>" + v.priority_level + "</span>";
+				} else {
+					html += "<td><span class='label label-primary'>" + v.priority_level + "</span>";
 				}
-				
-				html += "<span class='label label-default'>"+ v.description +" </span></td><td>" + v.created_at + "</td>";
+
+				html += "<span class='label label-default'>" + v.description + " </span></td><td>" + v.created_at + "</td>";
 			});
 			$('tbody.ticketReport').html(html);
 			$('.i-checks').iCheck({
@@ -1456,5 +1457,9 @@ $(function() {
 			});
 
 		});
+	});
+	
+	$(document).on('click','tr.read',function(){
+		window.document.location = $(this).data("href");
 	});
 });
