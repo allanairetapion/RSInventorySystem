@@ -320,7 +320,7 @@
 				url : '/admin/ticketCount',
 			}).done(function(data) {
 				console.log(data);
-				$('span.openTickets').text(data.newTickets);
+				$('span.openTickets').text(data.openTickets);
 				$('span.pendingTickets').text(data.pendingTickets);
 				$('span.unresolvedTickets').text(data.overdueTickets);
 				$('span.assignedTickets').text(data.assignedTickets);
