@@ -30,7 +30,7 @@ $ntime = date('Y-m-d');
 					<i class="glyphicon glyphicon-time  fa-5x"></i>
 				</div>
 				<div class="col-xs-8 text-right">
-					<span> Pending Tickets </span>
+					<span> Open Tickets </span>
 					<h2 class="font-bold pendingTickets"></h2>
 					<small>Today</small>
 				</div>
@@ -217,7 +217,7 @@ $ntime = date('Y-m-d');
 		}).done(function(data){
 			console.log(data);
 			$('h2.newTickets').text(data.newTickets);
-			$('h2.pendingTickets').text(data.pendingTickets);
+			$('h2.pendingTickets').text(data.pendingTickets +  data.openTickets);
 			$('h2.overdueTickets').text(data.overdueTickets);
 			$('h2.closedTickets').text(data.closedTickets);
 		});
