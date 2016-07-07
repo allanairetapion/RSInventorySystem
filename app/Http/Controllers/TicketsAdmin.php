@@ -172,8 +172,7 @@ class TicketsAdmin extends Controller
         }
 		else {
 			
-			$user = TicketTopics::create([
-			'topic_id' => DB::table('ticket_topics')->max('topic_id')+1,
+			$user = TicketTopics::create([			
             'description' =>$request['description'],
             'priority_level' =>$request['priority'],
             'status' => 1,
@@ -279,6 +278,12 @@ class TicketsAdmin extends Controller
 		
 		$ticket = DB::table('tickets')
 		->leftJoin('ticket_topics','tickets.topic_id',"=",'ticket_topics.topic_id')->where('id',$id)->first();
+		
+		if($ticket->ticket_status == 'Pending'){
+			$tickets = DB::table('tickets')->where('id',$id)->update(['ticket_status' => 'Open']);
+			$ticket = DB::table('tickets')
+			->leftJoin('ticket_topics','tickets.topic_id',"=",'ticket_topics.topic_id')->where('id',$id)->first();
+		}
 		
 		$sender_email = DB::table('admin')->select('email')->where('id',$ticket->sender_id)->first();
 		
@@ -458,7 +463,7 @@ class TicketsAdmin extends Controller
 		->orderBy('last_name')->get();
 		
 		$tickets = DB::table('tickets')->leftJoin('ticket_topics','tickets.topic_id','=','ticket_topics.topic_id')
-			->where('ticket_status','Open')->orderBy('created_at','desc')->simplePaginate(15);
+			->where('ticket_status','Open')->whereBetween('updated_at',[Carbon::yesterday(),Carbon::tomorrow()])->orderBy('created_at','desc')->simplePaginate(15);
 			
 		return view('tickets.admin.showTickets',['restrictions' => $restriction,'tickets' => $tickets,'topics'=> $topics,'closed_by' => $closed_by,
 					'agent' => $agents]);
@@ -499,7 +504,7 @@ class TicketsAdmin extends Controller
 		->orderBy('last_name')->get();
 		
 		$tickets = DB::table('tickets')->leftJoin('ticket_topics','tickets.topic_id','=','ticket_topics.topic_id')
-			->where('ticket_status','!=','Closed')->whereNotBetween('created_at',array(Carbon::yesterday(),Carbon::tomorrow()))->orderBy('created_at','desc')->simplePaginate(15);
+			->where('ticket_status','!=','Closed')->whereNotBetween('updated_at',array(Carbon::yesterday(),Carbon::tomorrow()))->orderBy('created_at','desc')->simplePaginate(15);
 			
 			
 		return view('tickets.admin.showTickets',['restrictions' => $restriction,'tickets' => $tickets,'topics'=> $topics,'closed_by' => $closed_by,
@@ -852,14 +857,18 @@ class TicketsAdmin extends Controller
 	}
 	
 	public function ticketCount(){
+		
 		$newtickets = DB::table('tickets')->where('ticket_status','Pending')
 				->where('created_at','>=',Carbon::today())->count();
+		
+		$opentickets = DB::table('tickets')->where('ticket_status','Open')
+				->whereBetween('updated_at',[Carbon::yesterday(),Carbon::tomorrow()])->count();
 				
-		$pendingtickets = DB::table('tickets')->where('ticket_status','Open')
+		$pendingtickets = DB::table('tickets')->where('ticket_status','Pending')
 				->whereBetween('created_at',array(Carbon::yesterday(),Carbon::today()->endOfDay()))->count();
 				
 		$overduetickets = DB::table('tickets')->where('ticket_status','!=','Closed')
-				->whereNotBetween('created_at',array(Carbon::yesterday(),Carbon::tomorrow()))->count();
+				->whereNotBetween('updated_at',array(Carbon::yesterday(),Carbon::tomorrow()))->count();
 				
 		$closedtickets = DB::table('tickets')->where('ticket_status','Closed')
 				->where('closed_at','>=',Carbon::today())->count();
@@ -868,7 +877,7 @@ class TicketsAdmin extends Controller
 			->where('ticket_status','open')->where('assigned_support',Auth::guard('admin')->user()->id)
 			->orderBy('created_at','desc')->count();
 				
-		return response()->json(array('success'=> true,'newTickets' => $newtickets,'pendingTickets' => $pendingtickets,'overdueTickets' => $overduetickets,'closedTickets' => $closedtickets,'assignedTickets' => $assignedtickets));
+		return response()->json(array('success'=> true,'newTickets' => $newtickets,'openTickets' => $opentickets,'pendingTickets' => $pendingtickets,'overdueTickets' => $overduetickets,'closedTickets' => $closedtickets,'assignedTickets' => $assignedtickets));
 	}
 
 	public function advancedEmailSearch(Request $request){
