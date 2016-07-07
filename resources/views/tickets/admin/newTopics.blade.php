@@ -48,8 +48,8 @@
 														<input class="topic" type="checkbox" name ="{{$topic->topic_id}}" value="{{$topic->topic_id}}">
 														@endif </td>
 
-														<td > {{$topic->description}}</td>
-														<td> {{$topic->priority_level}}</td>
+														<td class="topicDescription{{$topic->topic_id}}"> {{$topic->description}}</td>
+														<td class="topicPriority{{$topic->topic_id}}"> {{$topic->priority_level}}</td>
 														<td>
 														<button type="button" class="btn btn-warning btn-xs editTopic" value="{{$topic->topic_id}}">
 															Edit

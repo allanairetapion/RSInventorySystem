@@ -853,7 +853,8 @@ class TicketsAdmin extends Controller
 	public function editTopic(Request $request){
 		$editTopic = DB::table('ticket_topics')->where('topic_id',$request['editTopic_id'])->update(['description' => $request['description'],'priority_level' => $request['priority']]);
 		
-		return response()->json(array('success'=> true));
+		$topic = DB::table('ticket_topics')->where('topic_id',$request['editTopic_id'])->first();
+		return response()->json(array('success'=> true,'topic' => $topic));
 	}
 	
 	public function ticketCount(){
