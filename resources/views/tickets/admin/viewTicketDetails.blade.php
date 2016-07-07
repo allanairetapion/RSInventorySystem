@@ -31,14 +31,17 @@
 							<a href="/admin/tickets"><i class="fa fa-inbox "></i>All Tickets </a>
 						</li>
 						<li>
-							<a href="/admin/tickets-Open"><i class="fa fa-ticket"></i>Open Tickets </a>
+							<a href="/admin/tickets-Assigned"><i class="fa fa-tasks "></i>My Tickets <span class="pull-right label label-info assignedTickets">0</span></a>
 						</li>
-						
+
 						<li>
-							<a href="/admin/tickets-Pending"><i class="fa fa-warning"></i>Pending Tickets </a>
+							<a href="/admin/tickets-Open"><i class="fa fa-ticket"></i>Open Tickets <span class="pull-right label label-info openTickets">0</span></a>
 						</li>
 						<li>
-							<a href="/admin/tickets-Unresolved"><i class="fa fa-warning"></i>Unresolved Tickets <span class="pull-right label label-info unresolvedTickets">1</span></a>
+							<a href="/admin/tickets-Pending"><i class="fa fa-clock-o"></i>Pending Tickets <span class="pull-right label label-info pendingTickets">0</span></a>
+						</li>
+						<li>
+							<a href="/admin/tickets-Unresolved"><i class="fa fa-warning"></i>Unresolved Tickets <span class="pull-right label label-info unresolvedTickets">0</span></a>
 						</li>
 						<li>
 							<a href="/admin/tickets-Closed"><i class="fa fa-thumbs-o-up"></i>Closed Tickets </a>
@@ -66,7 +69,13 @@
 	<div class="col-lg-9 animated fadeInRight mailView">
 		@if(Carbon\Carbon::today()->subDays(2)->endOfDay()  >=  Session::get('date_modified') && Session::get('status') != "Closed")
 		<div class="alert alert-danger">
-			<i class="fa fa-warning fa-2x"></i><strong> This ticket has been unresolved for more than two days</strong>
+			<i class="fa fa-warning fa-2x"></i><strong> &emsp;This ticket has been unresolved for more than two days</strong>
+		</div>
+		@endif
+		
+		@if(Session::get('email') == '')
+		<div class="alert alert-info">
+			<i class="fa fa-exclamation fa-2x"></i><strong> &emsp;The sender no longer exists in our records</strong>
 		</div>
 		@endif
 		
@@ -77,11 +86,7 @@
 				<input type="hidden" name="assignedTo" class="assignedTo" value="">
 				
 				<div class="row">
-					<div class="pull-right">
-						
-						
-					
-
+					<div class="pull-right">																	
 						<div class="form-group">
 							<label class="">Status: </label>
 							@if((Session::get('status') == "Closed" || $restrictions[0]->agent == "0")&& Auth::guard('admin')->user()->user_type == "agent")
@@ -163,14 +168,14 @@
 					<i class="fa fa-save "></i> Save
 				</button>
 				@endif
-				@if(Session::get('status') != "Closed")
+				@if(Session::get('status') != "Closed" && Session::get('email') != "")
 				<button class="btn btn-sm btn-white" onclick="window.document.location='/admin/ticketReply/{{Session::get('id')}}'"><i class="fa fa-reply"></i> Reply</button>
 				@endif
 				@if(Auth::guard('admin')->user()->user_type == 'admin')
 					@if(Session::get('status') != "Closed")
 						<a class="btn btn-sm btn-white" data-toggle="modal" data-target="#forward"><i class="fa fa-mail-forward"></i> Forward</a>
 					@endif				
-				@elseif($restrictions[4]->agent == 1)
+				@elseif($restrictions[3]->agent == 1)
 					@if(Session::get('status') != "Closed")
 						<a class="btn btn-sm btn-white" data-toggle="modal" data-target="#forward"><i class="fa fa-mail-forward"></i> Forward</a>
 					@endif
@@ -308,4 +313,18 @@
 	</div>
 </div>
 
+<script>
+		$(document).ready(function() {
+			$.ajax({
+				type : 'get',
+				url : '/admin/ticketCount',
+			}).done(function(data) {
+				console.log(data);
+				$('span.openTickets').text(data.newTickets);
+				$('span.pendingTickets').text(data.pendingTickets);
+				$('span.unresolvedTickets').text(data.overdueTickets);
+				$('span.assignedTickets').text(data.assignedTickets);
+			});
+		});
+	</script>
 @endsection

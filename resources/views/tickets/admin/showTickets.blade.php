@@ -13,17 +13,17 @@
 							<a href="/admin/tickets"><i class="fa fa-inbox "></i>All Tickets </a>
 						</li>
 						<li>
-							<a href="/admin/tickets-Assigned"><i class="fa fa-tasks "></i>My Tickets <span class="pull-right label label-info assignedTickets">1</span></a>
+							<a href="/admin/tickets-Assigned"><i class="fa fa-tasks "></i>My Tickets <span class="pull-right label label-info assignedTickets">0</span></a>
 						</li>
 
 						<li>
-							<a href="/admin/tickets-Open"><i class="fa fa-ticket"></i>Open Tickets <span class="pull-right label label-info openTickets">1</span></a>
+							<a href="/admin/tickets-Open"><i class="fa fa-ticket"></i>Open Tickets <span class="pull-right label label-info openTickets">0</span></a>
 						</li>
 						<li>
-							<a href="/admin/tickets-Pending"><i class="fa fa-clock-o"></i>Pending Tickets <span class="pull-right label label-info pendingTickets">1</span></a>
+							<a href="/admin/tickets-Pending"><i class="fa fa-clock-o"></i>Pending Tickets <span class="pull-right label label-info pendingTickets">0</span></a>
 						</li>
 						<li>
-							<a href="/admin/tickets-Unresolved"><i class="fa fa-warning"></i>Unresolved Tickets <span class="pull-right label label-info unresolvedTickets">1</span></a>
+							<a href="/admin/tickets-Unresolved"><i class="fa fa-warning"></i>Unresolved Tickets <span class="pull-right label label-info unresolvedTickets">0</span></a>
 						</li>
 						<li>
 							<a href="/admin/tickets-Closed"><i class="fa fa-thumbs-o-up"></i>Closed Tickets </a>
@@ -58,7 +58,7 @@
 
 			<div id="advancedSearch" class=" gray-bg" style="padding:5px;">
 				<br>
-				<form class="advancedTicket" method="POST" action="/admin/advancedEmailSearch">
+				<form class="advancedTicket">
 					{!! csrf_field() !!}
 					<div class="row">
 						<div class="col-md-3">
@@ -123,10 +123,10 @@
 						<div class="col-md-3 text-center">
 							<br>
 
-							<button type="submit" class="btn btn-primary  advancedEmailSearch">
+							<button type="button" class="btn btn-primary  advancedEmailSearch">
 								<i class="fa fa-search"></i> Search
 							</button>
-							<button type="reset" class="btn btn-warning  ">
+							<button type="reset" class="btn btn-warning">
 								<i class="fa fa-refresh"></i> Reset
 							</button>
 
@@ -166,7 +166,7 @@
 					<tbody class="ticketReport">
 						@foreach ($tickets as $ticket)
 
-						<tr class="read" onclick="window.document.location='/admin/tickets/{{$ticket->id}}'">
+						<tr class="read" data-href="/admin/tickets/{{$ticket->id}}" >
 
 							<td class="check-mail">
 							<input type="checkbox" class="i-checks" name="id" value="{{$ticket->id}}">
