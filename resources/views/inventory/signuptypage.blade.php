@@ -61,11 +61,9 @@
             	</p>
             	<br>
             	<p>
-            	Note: If You Didnt Receive An Email For Verification Link Kindly Click The Button Below.</p> 
-            
-  
+
    			 <br>
-             To sign up with your new account please<a href="/inventory/login"> Click Here!</a>
+             To sign in with your new account please<a href="/inventory/login"> Click Here!</a>
              <br><br>
                 </form>
             </div>

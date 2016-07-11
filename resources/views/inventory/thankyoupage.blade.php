@@ -57,7 +57,7 @@
             	</p>
 
    
-             To sign in with your new password please<a href="/inventory/login"> click here.</a>
+             To sign in with your new password please<a href="/inventory/logout"> click here.</a>
              <br><br>
                 </form>
             </div>

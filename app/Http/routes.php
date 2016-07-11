@@ -24,7 +24,7 @@ Route::get('/inventory/index', ['middleware' => 'inventory','uses' =>'inventoryS
 /* Login */
 Route::get('/inventory/login', 'InputAuth\AuthController@showLoginForm');
 Route::post('/inventory/login', 'InputAuth\AuthController@postLogin');
-Route::get('/inventory/logout', 'InputAuth\AuthController@getLogout');
+Route::get('/inventory/logout', 'InputAuth\AuthController@logout');
 
 /* Register */
 
@@ -68,15 +68,31 @@ Route::get("/inventory/change_pass", "inventorySysController@changePass");
 
 /* Item input */
 Route::get("/inventory/addItems", 'inventorySysController@showInputItem');
+Route::post("/inventory/addItems", 'inventorySysController@createItem');
+
 
 Route::get("/inventory/manageAccounts", 'inventorySysController@showManageAccounts');
+Route::post("/inventory/manageAccounts", 'inventorySysController@postManageAccounts');
+
 
 Route::get("/inventory/borrow","inventorySysController@showBorrow");
+Route::post("/inventory/borrow","inventorySysController@postBorrow");
+Route::get("/inventory/srchUnique","inventorySysController@srchUnique");
+Route::get("/inventory/srchItemNo","inventorySysController@srchItemNo"); 
+ //*Return*/
 Route::get("/inventory/return","inventorySysController@showReturn");
+Route::post("/inventory/return","inventorySysController@postReturn");
+
 Route::get("/inventory/detailed","inventorySysController@showDetailed");
 Route::get("/inventory/issues","inventorySysController@showIssues");
 Route::get("/inventory/broken","inventorySysController@showBroken");
+Route::post("/inventory/broken","inventorySysController@postBroken");
+Route::post("/inventory/brokenUpdate","inventorySysController@updateBroken");
+
 Route::get("/inventory/summaryMonYrs","inventorySysController@showSummaryMonYrs");
+Route::get("/inventory/sparkline","inventorySysController@showSparkline");
+
+
 Route::get("/inventory/summaryAll","inventorySysController@showSummaryAll");
 	
 

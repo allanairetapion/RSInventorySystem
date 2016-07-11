@@ -62,7 +62,7 @@
             	</p>
             	
             	<p>
-            	<a href="/inventory/resend2/{{$is_users->confirmation_code}}">Resend Email >>></a>
+            	<a href="/inventory/resend2/{{$ims_users->confirmation_code}}">Resend Email >>></a>
             	</p>
 
 			 <br>   
