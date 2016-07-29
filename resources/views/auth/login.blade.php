@@ -8,12 +8,10 @@
 
 			<img class="img-center center-block img-responsive" src="/img/remote_logo2.jpg">
 
-			<h3 class="text-success">Remote Staff</h3><H3 class="text-navy">We make it work, we make it last.</h3>
+			<h2 class="text-success font-bold">Remote Staff</h2><H3 class="text-navy">Relationships You Can Rely On</h3>
 		</div>
 		<div class="col-md-6">
-			<div class="ibox-title  gray-bg text-center">
-				<h2 class="font-bold ">Sign in</h2>
-			</div>
+			
 			<div class="ibox-content text-center gray-bg">
 				<form class="m-t" role="form" method="post" action="login"  >
 					{!! csrf_field() !!}

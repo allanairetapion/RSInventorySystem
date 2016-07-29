@@ -45,7 +45,10 @@
 									</button>
 									<button type="button" class="btn btn-sm btn-danger changeClientStatus" name="{{$client->status}}" value="{{$client->id}}">
 										Change Status
-									</button></td>
+									</button>
+									<button type="button" class="btn btn-sm btn-danger btn-outline">Delete
+									</button>
+									</td>
 
 								</tr>
 								@endforeach

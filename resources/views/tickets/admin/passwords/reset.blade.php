@@ -2,69 +2,114 @@
 @section('title', 'Remote Staff - Change Password')
 @section('body')
 
+<div id="wrapper">
+	<div id="page-wrapper" class="gray-bg">
+		<div class="row border-bottom white-bg">
+			<nav class="navbar navbar-static-top" role="navigation">
+				<div class="navbar-header">
+					<button aria-controls="navbar" aria-expanded="false"
+						data-target="#navbar" data-toggle="collapse"
+						class="navbar-toggle collapsed" type="button">
+						<i class="fa fa-reorder"></i>
+					</button>
+					<a href="#" class="navbar-brand">RSITS</a>
+				</div>
 
-<div class="passwordBox animated fadeInDown">
-	<div class="ibox">
+				<ul class="nav navbar-top-links navbar-right">
+					<li><a href="/admin/login"> <i class="fa fa-sign-in"></i> Sign In</a>
+					</li>
+				</ul>
 
-		<div class="ibox-title text-center gray-bg">
-			<center>
-				<h2 class="font-bold">Reset Password</h2>
-			</center>
+
+			</nav>
 		</div>
-		<div class="ibox-content gray-bg">
-<center>
-			<P class="font-bold">
-				Enter your new password.
-			</P></center>
 
-			<form class="m-t" role="form" method="post" action="{{ url('/admin/changePassword') }}"  >
-				{!! csrf_field() !!}
-				<input type="hidden" name="token" value="{{ Session::get('token') }}">
+		<div class="wrapper wrapper-content">
+			<div class="container">
+				<div class="row">
 
-				<div class="form-group{{ $errors->has('email') ? ' has-error' : '' }}">
+					<div class="col-md-offset-3 col-md-6">
+						<div class="ibox float-e-margins">
 
-					@if ($errors->has('email'))
-					<span class="help-block"> <strong>{{ $errors->first() }}</strong> </span>
-					@endif
+							<div class="ibox-content">
+								<h2 class="font-bold">Change Password</h2>
+								<P>
+									Enter your new password for <strong>{{Session::get('resetEmail') }}</strong> and confirm your new password.
+								</P>
 
-					<input type="hidden" placeholder="Email Address" class="form-control" name="email" value="{{ Session::get('resetEmail') }}" required>
+
+								<form class="m-t" role="form" method="post"
+									action="{{ url('/admin/changePassword') }}">
+									{!! csrf_field() !!} <input type="hidden" name="token"
+										value="{{ Session::get('token') }}">
+
+									<div
+										class="form-group{{ $errors->has('email') ? ' has-error' : '' }}">
+
+										@if ($errors->has('email')) 
+										<span class="help-block"> <strong>{{$errors->first() }}</strong>
+										</span> 
+										@endif <input type="hidden"
+											placeholder="Email Address" class="form-control" name="email"
+											value="{{ Session::get('resetEmail') }}" required>
+
+									</div>
+
+									<div
+										class="form-group{{ $errors->has('password') ? ' has-error' : '' }}">
+
+										<input type="password" placeholder="New Password"
+											class="form-control" name="password" required> 
+											@if($errors->has()) 
+											<span class="help-block text-warning"> <strong>{{$errors->first() }}</strong>
+										</span>
+										 @endif
+
+									</div>
+
+									<div
+										class="form-group{{ $errors->has('password_confirmation') ? ' has-error' : '' }}">
+
+										<input type="password" placeholder="Confirm New Password"
+											class="form-control" name="password_confirmation" required>
+
+									</div>
+									<button type="submit" action=""
+										class="btn btn-primary block full-width m-b">
+										<i class="fa fa-btn fa-sign-in"></i> Confirm
+									</button>
+
+								</form>
+
+							</div>
+
+						</div>
+					</div>
 
 				</div>
-
-				<div class="form-group{{ $errors->has('password') ? ' has-error' : '' }}">
-
-					<input type="password" placeholder="New Password" class="form-control" name="password" required>
-
-					@if ($errors->has())
-					<span class="help-block text-warning"> <strong>{{ $errors->first() }}</strong> </span>
-					@endif
-
-				</div>
-
-				<div class="form-group{{ $errors->has('password_confirmation') ? ' has-error' : '' }}">
-
-					<input type="password" placeholder="Confirm New Password" class="form-control" name="password_confirmation" required>					
-
-				</div>
-				<button type="submit" action="" class="btn btn-primary block full-width m-b">
-					<i class="fa fa-btn fa-sign-in"></i> Confirm
-				</button>
-
-			</form>
-
+			</div>
 		</div>
+
+
+
+
+		<div class="footer">
+			<div class="col-md-6">
+				<strong>Copyright</strong> Remote Staff Inc.
+			</div>
+			<div class="col-md-6 text-right"> &copy; 2008-<?php echo date("Y");?>
+		</div>
+		</div>
+
 
 	</div>
-	<hr/>
-	<div class="row">
-		<div class="col-md-6">
-			<strong>Copyright</strong> Remote Staff Inc.
-		</div>
-		<div class="col-md-6 text-right">
-			&copy; 2008-<?php echo date("Y");?>
-		</div>
-	</div>
-
 </div>
 
+
+<script type="text/javascript">
+	$(document).ready(function() {
+		$('input[type="email"]').hide();
+
+	}); 
+</script>
 @endsection

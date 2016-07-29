@@ -12,12 +12,12 @@
 */
 use App\Tickets as Tickets;
 
- Route::get('/inventory', 'inventorySysController@showInventory');
+ Route::get('/inventory', 'inventoryController@showInventory');
  
  
 //Route::get('/', "UserController@showDashboard");
 
-Route::get('/inventory/index', ['middleware' => 'inventory','uses' =>'inventorySysController@showIndex']);
+Route::get('/inventory/index', ['middleware' => 'inventory','uses' =>'inventoryController@showIndex']);
 
 
 
@@ -30,7 +30,7 @@ Route::get('/inventory/logout', 'InputAuth\AuthController@getLogout');
 
 
 Route::get('/inventory/register', 'InputAuth\AuthController@showRegistrationForm');
-Route::get('/register', 'inventorySysController@refereshCapcha');
+Route::get('/register', 'inventoryController@refereshCapcha');
 Route::post('/inventory/register', "InputAuth\AuthController@register");
 Route::get('/inventory/signuptypage', 'InputAuth\AuthController@showRegisterty');
 
@@ -60,26 +60,32 @@ Route::get("/inventory/forgotPassword", 'InputAuth\PasswordController@getEmail')
 Route::post("/inventory/forgotPassword",'InputAuth\PasswordController@postEmail');
 Route::get("/inventory/forgotPassword/Thankyou", "InputAuth\PasswordController@forgotpassTypage");
 
-Route::get("inventory/changePassword/{token}",'InputAuth\PasswordController@getReset');
+Route::get("inventory/changePassword/{token}",'InputAuth\PasswordController@showResetForm');
 Route::post("inventory/changePassword",'InputAuth\PasswordController@postReset');
-Route::get("/inventory/thankyoupage", "inventorySysController@showNewPassTy");
-Route::get("/inventory/change_pass", "inventorySysController@changePass");
+Route::get("/inventory/thankyoupage", "inventoryController@showNewPassTy");
+
 
 
 /* Item input */
-Route::get("/inventory/addItems", 'inventorySysController@showInputItem');
 
-Route::get("/inventory/manageAccounts", 'inventorySysController@showManageAccounts');
-
-Route::get("/inventory/borrow","inventorySysController@showBorrow");
-Route::get("/inventory/return","inventorySysController@showReturn");
-Route::get("/inventory/detailed","inventorySysController@showDetailed");
-Route::get("/inventory/issues","inventorySysController@showIssues");
-Route::get("/inventory/broken","inventorySysController@showBroken");
-Route::get("/inventory/summaryMonYrs","inventorySysController@showSummaryMonYrs");
-Route::get("/inventory/summaryAll","inventorySysController@showSummaryAll");
 	
-
+Route::group(['middleware' => 'inventory'], function () {
+	Route::get("/uniqueId",'HomeController@uniqueId');
+	Route::get("/inventory/itemInfo",'inventoryController@itemInfo');
+	Route::get("/inventory/addItems", 'inventoryController@showAddItem');
+	Route::get("/inventory/manageAccounts", 'inventoryController@showManageAccounts');
+	Route::get("/inventory/borrow","inventoryController@showBorrow");
+	Route::get("/inventory/return","inventoryController@showReturn");
+	Route::get("/inventory/detailed","inventoryController@showDetailed");
+	Route::get("/inventory/issues","inventoryController@showIssues");
+	Route::get("/inventory/broken","inventoryController@showBroken");
+	Route::get("/inventory/summaryMonYrs","inventoryController@showSummaryMonYrs");
+	Route::get("/inventory/summaryAll","inventoryController@showSummaryAll");
+	
+	
+	Route::post("/inventory/addItem","inventoryController@addItem");
+	Route::post("/inventory/borrowItem","inventoryController@borrowItem");
+});
 
 
 
@@ -175,12 +181,13 @@ Route::group(['middleware' => 'admin'], function () {
 	Route::get('/admin/ticketReply/{id}','TicketsAdmin@showTicketReply');
 	Route::get('/admin/printTicketClosed','TicketsAdmin@printTicketClosed');
 	Route::get('/admin/topIssue','TicketsAdmin@topIssue');
-	Route::get('/admin/ticketStat','TicketsAdmin@ticketStat');
+	Route::get('/admin/ticketSummary','TicketsAdmin@ticketSummary');
 	Route::get('/admin/topSupport','TicketsAdmin@topSupport');
 	Route::get('/admin/createClient','TicketsAdmin@showCreateClient');
 	Route::get('/admin/editAccount','TicketsAdmin@editAccount');
 	Route::get('/admin/editTopic','TicketsAdmin@editTopicDetails');
 	Route::get('/admin/ticketCount','TicketsAdmin@ticketCount');
+	Route::get('/admin/ticketStatus','TicketsAdmin@ticketStatus');
 	
 	Route::post('/admin/verifyPassword','TicketsAdmin@checkPassword');
 	Route::post('/admin/createTicket','TicketsAdmin@createTicket');	

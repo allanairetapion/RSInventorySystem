@@ -2,12 +2,38 @@
 @section('title', 'Remote Staff - Sign Up')
 
 @section('body')
-<br>
-<div class="ibox  float-e-margins col-md-offset-3 col-md-6  animated fadeInDown">
-	<div class="gray-bg ibox-title ">
+<div id="wrapper">
+	<div id="page-wrapper" class="gray-bg">
+		<div class="row border-bottom white-bg">
+			<nav class="navbar navbar-static-top" role="navigation">
+				<div class="navbar-header">
+					<button aria-controls="navbar" aria-expanded="false"
+						data-target="#navbar" data-toggle="collapse"
+						class="navbar-toggle collapsed" type="button">
+						<i class="fa fa-reorder"></i>
+					</button>
+					<a href="#" class="navbar-brand">RSITS</a>
+				</div>
+
+				<ul class="nav navbar-top-links navbar-right">
+					<li><a href="/inventory/login"> <i class="fa fa-sign-in"></i> Sign
+							In
+					</a></li>
+				</ul>
+
+
+			</nav>
+		</div>
+
+		<div class="wrapper wrapper-content">
+			<div class="container">
+				<div class="row">
+
+					<div class="ibox  float-e-margins col-md-offset-3 col-md-6  animated fadeInDown">
+	<div class="ibox-title ">
 		<h3 class=" font-bold">Create an Account</h3>
 	</div>
-	<div class="gray-bg ibox-content">
+	<div class="ibox-content">
 		<form class="clientForm" method="Post" action="/tickets/signUp">
 			{!! csrf_field() !!}
 			<div class="row">
@@ -59,17 +85,34 @@
 			</div>
 			<hr/>
 			<div class="text-center">
-				<button type="button" class="ladda-button btn btn-primary registerClient btn-lg" data-style="zoom-in">
+				<button type="button" class="ladda-button btn btn-primary registerClient" data-style="zoom-in">
 					Register
 				</button>
-				<br>
-				<span class="text-muted">Already have an account?</span>
-
-				<a href="/tickets/login">Login here</a>
+				
 			</div>
 		</form>
 	</div>
 </div>
+
+				</div>
+			</div>
+		</div>
+
+
+
+
+		<div class="footer">
+			<div class="col-md-6">
+				<strong>Copyright</strong> Remote Staff Inc.
+			</div>
+			<div class="col-md-6 text-right"> &copy; 2008-<?php echo date("Y");?>
+		</div>
+		</div>
+
+
+	</div>
+</div>
+
 
 <script>
 	$(document).ready(function() {

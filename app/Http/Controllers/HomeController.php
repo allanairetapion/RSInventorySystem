@@ -44,5 +44,15 @@ class HomeController extends Controller {
 		if($data->ticket_status == 'New')
 		return Response::json("true");
 	}
+	
+	public function uniqueId(Request $request){
+		$term = Input::get('term');
+		$data = DB::table("items") -> select('unique_id') -> where('unique_id', 'LIKE','%' .$term . '%')->distinct() -> get();
+		$return_array = array();
+		foreach ($data as $v) {
+			$return_array[] = ['value' => $v->unique_id];
+		}
+		return $return_array;
+	}
 
 }

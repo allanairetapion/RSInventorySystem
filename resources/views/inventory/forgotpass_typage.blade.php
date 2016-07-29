@@ -25,18 +25,7 @@
 
 			<div class="row">
 				<div class="col-lg-6 col-sm-6 col-md-4 col-md-offset-3" align="center">
-					<?php
-					// the message
-					$msg = "First line of text\nSecond line of text";
-
-					// use wordwrap() if lines are longer than 70 characters
-					$msg = wordwrap($msg, 70);
-
-					// send email
-					mail("someone@example.com", "My subject", $msg);
-					?>
-
-					<br>
+					
 
 					<img class="logo-img" src="/img/remote-staff-logo.jpg" alt="">
 					<div class="account-wall">

@@ -5,11 +5,9 @@
 <div class="passwordBox animated fadeInDown">
 	<div class="ibox">
 
-		<div class="ibox-title gray-bg">
-			<center>
-				<h2 class="font-bold">Forgot password</h2><center>
-		</div>
+		
 		<div class="ibox-content gray-bg">
+		<h2 class="font-bold">Reset Password</h2>
 			<p>
 				Enter your email address and we will send a reset link to reset your password.
 			</p>

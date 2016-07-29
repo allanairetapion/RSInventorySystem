@@ -16,7 +16,7 @@
 							<a href="/admin/tickets"><i class="fa fa-inbox "></i>All Tickets </a>
 						</li>
 						<li>
-							<a href="/admin/tickets-Assigned"><i class="fa fa-tasks "></i>My Tickets <span class="pull-right label label-info assignedTickets">1</span></a>
+							<a href="/admin/tickets-Assigned"><i class="fa fa-tasks "></i>Assigned Tickets <span class="pull-right label label-info assignedTickets">1</span></a>
 						</li>
 
 						<li>

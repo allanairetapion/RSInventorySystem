@@ -1,89 +1,55 @@
-<!doctype html>
-<html lang = "en">
-	<head>
-		<title>Login</title>
-		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<link rel="stylesheet" href="/css/mystyle.css">
-		<link href="/css/bootstrap.min.css" rel="stylesheet">
+@extends('tickets.ticketlayout1') @section('title', 'Remote Staff - Log
+In') @section('body')
+<div class="loginColumns animated fadeInDown">
+	<div class="row">
 
-		<link href="/css/bootstrap-theme.min.css" rel="stylesheet">
-		<script src="/js/jquery-latest.min.js" type="text/javascript"></script>
-		<script src="/js/bootstrap.min.js"></script>
-		<script src="/js/jquery.min.js"></script>
-		<script src="/script.js"></script>
-		<script src="/js/bootstrap.js"></script>
+		<div class="col-md-6 text-center">
 
-	</head>
 
-	<header>
+			<img class="img-center center-block img-responsive"
+				src="/img/remote_logo2.jpg">
 
-	</header>
-	<body>
-
-		<div class="container">
-
-			<div class="row">
-				<div class="col-lg-4 col-md-4 col-sm-8 col-xs-12 col-md-offset-4 col-lg-offset-4 col-sm-offset-2 ">
-
-					<div align="center">
-						<img align="center" class="logo-imgimg-responsive left-block" src="/img/remote-staff-logo.jpg" alt="">
-					</div>
-					<div class="account-wall">
-						<div class="container-fluid">
-							<h1 align="center" class="login-title">Sign in</h1>
-							<img id="profile-img" class=" img-responsive center-block" src="/img/1.png" alt="">
-							<br>
-
-							<form class="form-signin" role="form" method="post" action="/inventory/login">
-								{!! csrf_field() !!}
-								<div class="form-group{{ $errors->has('email') ? ' has-error' : '' }}">
-
-									<input type="email" class="form-control" placeholder="Email" value="{{ old('email') }}"name="email" required="" autofocus="">
-
-								</div>
-								<div class="form-group{{ $errors->has('password') ? ' has-error' : '' }}">
-
-									<input type="password" class="form-control" placeholder="Password" name="password" required="">
-
-								</div>
-
-								
-
-									@if (Session::has('message'))
-								
-								<div class="alert alert-danger">
-									{{ Session::get('message') }}
-								</div>
-									@endif
-									
-								
-								<div align="center">
-
-									<button type="submit" action="" class="btn btn-lg btn-primary btn-block">
-										Sign in
-									</button>
-								</div>
-								<br>
-								<a href="/inventory/forgotPassword" class="pull-right need-help">Forgot Password? </a>
-								<a href="/inventory/register" class="pull-left need-help">Create an account</a>
-								<br>
-								<br>
-							</form>
-						</div>
-					</div>
-				</div>
-			</div>
-
+			<h2 class="text-success font-bold">Remote Staff</h2>
+			<H3 class="text-navy">Relationships You Can Rely On</h3>
 		</div>
+		<div class="col-md-6">
+<br><br>
+			<div class="ibox-content text-center gray-bg">
+				<form class="m-t" role="form" method="post" action="login">
+					{!! csrf_field() !!}
+					<h4 class="text-warning ">{{ Session::get('message') }}</h4>
+					@if ($errors->has('email'))
+					<h4 class="text-warning">{{$errors->first()}}</h4>
+					@endif
+					<div
+						class="form-group{{ $errors->has('email') ? ' has-error' : '' }}">
+						<input type="email" class="form-control" placeholder="Enter email"
+							value="{{ old('email') }}" name="email" required="">
+					</div>
+					<div
+						class="form-group{{ $errors->has('password') ? ' has-error' : '' }}">
+						<input type="password" class="form-control" placeholder="Password"
+							name="password" required="">
+					</div>
+					<button type="submit" action=""
+						class="btn btn-primary block full-width m-b">
+						<i class="fa fa-btn fa-sign-in"></i>&nbsp;Sign in
+					</button>
+					<a href="/inventory/forgotPassword"><small>Forgot password?</small></a>
 
-		<footer>
-			<hr width="800">
-			<p align="center">
-				Copyright 2016 Remote Staff Inc. All rights reserved.
-			</p>
-			<br>
-		</footer>
+				</form>
 
-	</body>
-</html>
+			</div>
+		</div>
+	</div>
+	<hr />
+	<div class="row">
+		<div class="col-md-6">
+			<strong>Copyright</strong> Remote Staff Inc.
+		</div>
+		<div class="col-md-6 text-right">
+			<small>© 2008-2016</small>
+		</div>
+	</div>
+</div>
+@endsection

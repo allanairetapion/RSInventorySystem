@@ -3,14 +3,11 @@
 @section('body')
 
 <div class="passwordBox animated fadeInDown">
-	<div class="ibox-title gray-bg">
-
-		<h2 class="font-bold">Forgot password</h2>
-
-	</div>
+	
 	<div class="ibox-content gray-bg">
+	<h2 class="font-bold">Forgot password</h2>
 		<p>
-			Enter your email address and we will send a verification code to reset your password.
+			Enter your email address below and we will send a reset link to reset your password.
 		</p>
 
 		@if (session('status'))

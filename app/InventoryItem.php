@@ -10,5 +10,11 @@ class InventoryItem extends Model
      *
      * @var string
      */
-    protected $table = 'inventory_items';
+	public $timestamps = false;
+    protected $table = 'items';
+    protected $fillable = [
+    		'unique_id','itemNo','company', 'stationNo','itemType','model','brand','morningClient','nightClient','arrivalDate','itemStatus'
+    ];
+    
+    
 }
