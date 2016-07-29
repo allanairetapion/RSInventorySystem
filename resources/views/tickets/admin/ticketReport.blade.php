@@ -4,10 +4,7 @@
 <div class="row">
 
 	<div class="ibox float-e-margins">
-		<div class="ibox-title">
-
-			<h2 class="font-bold">Tickets</h2>
-		</div>
+		
 
 		<div class="ibox-content">
 			<ul class="nav nav-tabs">
@@ -15,25 +12,18 @@
 					<a data-toggle="tab" href="#home">Home</a>
 				</li>
 				<li>
-					<a data-toggle="tab" href="#menu1">Open</a>
+					<a data-toggle="tab" href="#menu1">Top Issues</a>
 				</li>
-				<li>
-					<a data-toggle="tab" href="#menu2">Pending</a>
-				</li>
-				<li>
-					<a data-toggle="tab" href="#menu3">Closed</a>
-				</li>
+				
 			</ul>
 
-			<div class="row">
+			<div class="tab-content">
+				<div id="home" class="tab-pane fade in active">
+						<div class="row">
 				<br>
-				<div class="col-sm-3">
+				
 
-					<input type="text" placeholder="Search" class="input-sm form-control ticketSearch">
-
-				</div>
-
-				<div class="col-md-offset-6 col-md-3 text-right">
+				<div class="col-md-offset-9 col-md-3 text-right">
 					@if(Auth::guard('admin')->user()->user_type == 'admin')
 					<button class="btn btn-warning btn-sm  ticketDelete">
 						<i class="fa fa-trash"></i> Delete
@@ -54,20 +44,20 @@
 							<label class="control-label">Date Sent:</label>
 							<div class="input-group">
 								<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-								<input type="text" name="dateSent" class="form-control dateSent" value="">
+								<input type="text" name="dateSent" data-mask="9999-99-99" class="form-control dateSent input-sm" value="">
 							</div>
 						</div>
 						<div class="col-md-3">
 							<label class="control-label">Date Closed:</label>
 							<div class="input-group">
 								<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-								<input type="text" name="dateClosed" class="form-control dateClosed" value="">
+								<input type="text" name="dateClosed" data-mask="9999-99-99" class="form-control dateClosed input-sm" value="">
 							</div>
 						</div>
 						<div class="col-md-3">
 							<label class="control-label">Topic:</label>
-							<select name="topicSearch"class="form-control topic">
-								<option value="" selected hidden> Choose a topic... </option>
+							<select name="topicSearch"class="form-control topic input-sm">
+								<option value="" selected>  </option>
 								@foreach ($topics as $topic)
 								<option value="{{$topic->description}}"> {{$topic->description}}</option>
 								@endforeach
@@ -76,8 +66,8 @@
 						</div>
 						<div class="col-md-3">
 							<label class="control-label">Status:</label>
-							<select name="statusSearch"class="form-control statusSearch">
-								<option value="" selected hidden>Search by status...</option>
+							<select name="statusSearch"class="form-control statusSearch input-sm">
+								<option value="" selected > </option>
 								<option value="Open">Open</option>
 								<option value="Pending">Pending</option>
 								<option value="Closed">Closed</option>
@@ -87,13 +77,17 @@
 					<div class="row">
 						<br>
 						<div class="col-md-3">
-							<label class="control-label">Email:</label>
-							<input type="email" name="email" class="form-control email"/>
+						<label class="control-label">Date Range:</label>
+						<div class="input-daterange input-group" id="datepicker">
+                                    <input type="text" class="input-sm form-control" data-mask="9999-99-99" name="start" value=""/>
+                                    <span class="input-group-addon">to</span>
+                                    <input type="text" class="input-sm form-control" data-mask="9999-99-99" name="end" value="" />
+                                </div>
 						</div>
 						<div class="col-md-3">
 							<label class="control-label">Assigned to:</label>
-							<select name="agentSent" class="form-control agentSent">
-								<option value="" selected hidden>Select agent...</option>
+							<select name="agentSent" class="form-control agentSent input-sm">
+								<option value="" selected> </option>
 								@foreach ($agent as $agents)
 								<option value="{{$agents->id}}"> {{$agents->first_name.' '.$agents->last_name}}</option>
 								@endforeach
@@ -101,8 +95,8 @@
 						</div>
 						<div class="col-md-3">
 							<label class="control-label">Closed by:</label>
-							<select name="agentClosed" class="form-control agentClosed">
-								<option value="" selected hidden>Select agent...</option>
+							<select name="agentClosed" class="form-control agentClosed input-sm">
+								<option value="" selected > </option>
 								@foreach ($agent as $agents)
 								<option value="{{$agents->id}}"> {{$agents->first_name.' '.$agents->last_name}}</option>
 								@endforeach
@@ -125,10 +119,6 @@
 				</form>
 				<br>
 			</div>
-
-			<div class="tab-content">
-				<div id="home" class="tab-pane fade in active">
-
 					<br>
 
 					<div class="table-responsive">
@@ -148,10 +138,10 @@
 										<th>Subject</th>
 										<th>Status</th>
 										<th>Department</th>
-										<th>Assigned_Support</th>
-										<th>Closed_By</th>
+										<th>Assigned Support</th>
+										<th>Closed By</th>
 										<th>Date Sent</th>
-										<th>Date Closed</th>
+										<th>Date Updated</th>
 									</tr>
 								</thead>
 								<tbody class="ticketReport">
@@ -175,14 +165,18 @@
 
 										<td>{{$ticketStat->ticket_status}}</td>
 										<td>{{$ticketStat->department}}</td>
-										<td>{{$ticketStat->first_name.' '.$ticketStat->last_name}}</td>
+										@foreach($assigned_to as $assigned)
+										@if($assigned->id == $ticketStat->id)
+										<td>{{$assigned->first_name.' '.$assigned->last_name}}</td>
+										@endif
+										@endforeach
 										@foreach($closed_by as $closed)
 										@if($closed->id == $ticketStat->id)
 										<td>{{$closed->first_name.' '.$closed->last_name}}</td>
 										@endif
 										@endforeach
 										<td>{{$ticketStat->created_at}}</td>
-										<td>{{$ticketStat->closed_at}}</td>
+										<td>{{$ticketStat->updated_at}}</td>
 									</tr>
 
 									@endforeach
@@ -190,200 +184,56 @@
 								</tbody>
 							</table>
 						</form>
-					</div>
-					<div class="row">
+						
 						<div class="pagination pull-right">
 							<?php echo $tickets -> render(); ?>
 						</div>
 					</div>
+					
+					
 				</div>
-				<div id="menu1" class="tab-pane fade">
-					<br>
-					<div class="table-responsive">
-						<form class="selectedTickets">
-							{!! csrf_field() !!}
-							<table class="table table-bordered  ticketOpenReport"
-							style="font-size: small;">
-								<thead>
-									<tr>
-										<th>
-										<input type="checkbox" class=" ticketOpenCB" >
-										</th>
-										<th>Ticket No. </th>
-										<th>Sender </th>
-										<th>Sender Id</th>
-										<th>Topic </th>
-										<th>Subject</th>
-										<th>Status</th>
-										<th>Department</th>
-										<th>Assigned_Support</th>
-										<th>Closed_By</th>
-										<th>Date Sent</th>
-										<th>Date Closed</th>
-									</tr>
-								</thead>
-								<tbody class="ticketOpenReport">
-
-									@foreach($tickets as $ticketStat)
-									@if($ticketStat->ticket_status == "Open")
-
-									<tr class="bg-primary" id="{{$ticketStat->id}}">
-
-										<td>
-										<input type="checkbox" id="openTicket"name="{{$ticketStat->id}}"  value="{{$ticketStat->id}}">
-										</td>
-										<td>{{$ticketStat->id}}</td>
-										<td>{{$ticketStat->sender}}</td>
-										<td>{{$ticketStat->sender_id}}</td>
-										<td>{{$ticketStat->description}}</td>
-										<td>{{$ticketStat->subject}}</td>
-
-										<td>{{$ticketStat->ticket_status}}</td>
-										<td>{{$ticketStat->department}}</td>
-										<td>{{$ticketStat->assigned_support}}</td>
-										<td>{{$ticketStat->closed_by}}</td>
-
-										<td>{{$ticketStat->created_at}}</td>
-										<td>{{$ticketStat->closed_at}}</td>
-									</tr>
-									@endif
-									@endforeach
-
-								</tbody>
-							</table>
-						</form>
-
-					</div>
+				
+				<div id="menu1" class="tab-pane fade in">
+				<br>
 					<div class="row">
-						<div class="pagination pull-right">
-							<?php echo $tickets -> render(); ?>
+						<div class="col-md-12 b-r">
+							<div class="panel panel-default">
+							<div class="panel-heading">Top Issues
+								<div class="pull-right">
+									<div class="btn-group">
+										<button type="button" class="btn btn-xs btn-default topIssueWeek ">
+											This Week
+										</button>
+										<button type="button" class="btn btn-xs btn-default topIssueMonth">
+											This Month
+										</button>
+										<button type="button" class="btn btn-xs btn-default topIssueYear">
+											This Year
+										</button>
+									</div>
+								</div>
+							</div>
+							<div class="panel-body">
+								<div class="row">
+									<div class="col-md-6">
+										<h4 class="text-center">Top Issues</h4> 
+										<div id="pie"></div>
+                                     </div>
+                                     <div class="col-md-6">
+										<h4 class="text-center">Ticket Source</h4> 
+										<div id="pie"></div>
+                                     </div>
+                                 </div>
+                                         
+							</div>
+							
 						</div>
+						
 					</div>
+						
+					
 				</div>
-				<div id="menu2" class="tab-pane fade">
-					<br>
-					<div class="table-responsive">
-						<form class="selectedTickets">
-							{!! csrf_field() !!}
-							<table class="table table-bordered ticketPendingReport"
-							style="font-size: small;">
-								<thead>
-									<tr>
-										<th>
-										<input type="checkbox" id="pendingTicket" class=" ticketPendingCB" >
-										</th>
-										<th>Ticket No. </th>
-										<th>Sender </th>
-										<th>Sender Id </th>
-										<th>Topic </th>
-										<th>Subject</th>
-										<th>Status</th>
-										<th>Department</th>
-										<th>Assigned_Support</th>
-										<th>Closed_By</th>
-										<th>Date Sent</th>
-										<th>Date Closed</th>
-									</tr>
-								</thead>
-								<tbody class="ticketPendingReport">
-
-									@foreach($tickets as $ticketStat)
-									@if($ticketStat->ticket_status == "Pending")
-
-									<tr style="background-color: #F2F256;" id="{{$ticketStat->id}}">
-
-										<td>
-										<input type="checkbox" id="pendingTicket" name="{{$ticketStat->id}}"  value="{{$ticketStat->id}}">
-										</td>
-										<td>{{$ticketStat->id}}</td>
-										<td>{{$ticketStat->sender}}</td>
-										<td>{{$ticketStat->sender_id}}</td>
-										<td>{{$ticketStat->description}}</td>
-										<td>{{$ticketStat->subject}}</td>
-
-										<td>{{$ticketStat->ticket_status}}</td>
-										<td>{{$ticketStat->department}}</td>
-										<td>{{$ticketStat->assigned_support}}</td>
-										<td>{{$ticketStat->closed_by}}</td>
-
-										<td>{{$ticketStat->created_at}}</td>
-										<td>{{$ticketStat->closed_at}}</td>
-									</tr>
-									@endif
-									@endforeach
-
-								</tbody>
-							</table>
-						</form>
-					</div>
-					<div class="row">
-						<div class="pagination pull-right">
-							<?php echo $tickets -> render(); ?>
-						</div>
-					</div>
-				</div>
-				<div id="menu3" class="tab-pane fade">
-					<br>
-					<div class="table-responsive">
-						<form class="selectedTickets">
-							{!! csrf_field() !!}
-							<table class="table table-bordered ticketClosedReport" style="font-size: small;">
-								<thead>
-									<tr>
-										<th>
-										<input type="checkbox"  class=" ticketClosedCB">
-										</th>
-										<th>Ticket No. </th>
-										<th>Sender </th>
-										<th>Sender Id </th>
-										<th>Topic </th>
-										<th>Subject</th>
-										<th>Status</th>
-										<th>Department</th>
-										<th>Assigned_Support</th>
-										<th>Closed_By</th>
-										<th>Date Sent</th>
-										<th>Date Closed</th>
-									</tr>
-								</thead>
-								<tbody class="ticketClosedReport">
-
-									@foreach($tickets as $ticketStat)
-									@if($ticketStat->ticket_status == "Closed")
-
-									<tr class="navy-bg" id="{{$ticketStat->id}}">
-
-										<td>
-										<input type="checkbox" id="closedTicket" name="{{$ticketStat->id}}" value="{{$ticketStat->id}}">
-										</td>
-										<td>{{$ticketStat->id}}</td>
-										<td>{{$ticketStat->sender}}</td>
-										<td>{{$ticketStat->sender_id}}</td>
-										<td>{{$ticketStat->description}}</td>
-										<td>{{$ticketStat->subject}}</td>
-
-										<td>{{$ticketStat->ticket_status}}</td>
-										<td>{{$ticketStat->department}}</td>
-										<td>{{$ticketStat->assigned_support}}</td>
-										<td>{{$ticketStat->closed_by}}</td>
-
-										<td>{{$ticketStat->created_at}}</td>
-										<td>{{$ticketStat->closed_at}}</td>
-									</tr>
-									@endif
-									@endforeach
-
-								</tbody>
-							</table>
-						</form>
-
-					</div>
-					<div class="row">
-						<div class="pagination pull-right">
-							<?php echo $tickets -> render(); ?>
-						</div>
-					</div>
-				</div>
+				
 			</div>
 
 		</div>

@@ -8,6 +8,7 @@ $ntime = date('Y-m-d');
 <div class="row">
 
 	<div class="col-md-3 animated fadeInDown">
+	<a href="/admin/tickets-Open">
 		<div class="widget style1 navy-bg">
 			<div class="row">
 				<div class="col-xs-4">
@@ -21,9 +22,11 @@ $ntime = date('Y-m-d');
 				</div>
 			</div>
 		</div>
+		</a>
 	</div>
 
 	<div class="col-md-3 animated fadeInDown">
+	<a href="/admin/tickets-Pending">
 		<div class="widget style1 yellow-bg">
 			<div class="row">
 				<div class="col-xs-4">
@@ -36,24 +39,28 @@ $ntime = date('Y-m-d');
 				</div>
 			</div>
 		</div>
+		</a>
 	</div>
 
 	<div class="col-md-3 animated fadeInDown">
+	<a href="/admin/tickets-Unresolved">
 		<div class="widget style1 red-bg">
 			<div class="row">
 				<div class="col-xs-4">
 					<i class="fa fa-warning fa-5x"></i>
 				</div>
 				<div class="col-xs-8 text-right">
-					<span> Overdue Tickets </span>
+					<span> Unresolved Tickets </span>
 					<h2 class="font-bold overdueTickets"></h2>
 					<small>Today</small>
 				</div>
 			</div>
 		</div>
+		</a>
 	</div>
 
 	<div class="col-md-3 animated fadeInDown">
+	<a href="/admin/tickets-Closed">
 		<div class="widget style1 lazur-bg">
 			<div class="row">
 				<div class="col-xs-4">
@@ -67,13 +74,15 @@ $ntime = date('Y-m-d');
 			</div>
 		</div>
 	</div>
+	</a>
 </div>
 
 <div class="row">
+
 	<div class="col-md-6">
 		<div class="ibox animated fadeInDown float-e-margins">
 			<div class="ibox-title">
-				<h5>Ticket Stats</h5>
+				<h5>Ticket Summary</h5>
 			</div>
 			<div class="ibox-content">
 				<div id="stocked"></div>
@@ -86,20 +95,7 @@ $ntime = date('Y-m-d');
 	<div class="col-md-6">
 		<div class="ibox animated fadeInDown float-e-margins">
 			<div class="ibox-title">
-				<h5>Top Issues</h5>
-				<div class="pull-right">
-					<div class="btn-group">
-						<button type="button" class="btn btn-xs btn-default topIssueWeek ">
-							This Week
-						</button>
-						<button type="button" class="btn btn-xs btn-default topIssueMonth">
-							This Month
-						</button>
-						<button type="button" class="btn btn-xs btn-default topIssueYear">
-							This Year
-						</button>
-					</div>
-				</div>
+				<h5>Tickets By Status</h5>
 			</div>
 			<div class="ibox-content">
 				<br>
@@ -223,10 +219,8 @@ $ntime = date('Y-m-d');
 		});
 		$.ajax({
 			type : "GET",
-			url : "/admin/topIssue",
-			data : {
-				topIssue : "Week"
-			},
+			url : "/admin/ticketStatus",
+			
 		}).done(function(data) {
 			console.log(data);
 			c3.generate({
@@ -250,10 +244,10 @@ $ntime = date('Y-m-d');
 			});
 
 		});
-
+		
 		$.ajax({
 			type : "GET",
-			url : "/admin/ticketStat"
+			url : "/admin/ticketSummary"
 		}).done(function(data) {
 			console.log(data);
 			c3.generate({

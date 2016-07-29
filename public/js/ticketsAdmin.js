@@ -1,62 +1,93 @@
 /**
- * @author ITojt01 Luis Philip M. Castañeda
+ * @author ITojt01 Luis Philip M. CastaÃƒÆ’Ã‚Â±eda
  */
 
 $(function() {
 
-	$(document).ready(function() {
-		$('div#advancedSearch').toggle();
+	$(document).ready(
+			function() {
+				$('div#advancedSearch').toggle();
 
-		$('.i-checks').iCheck({
-			checkboxClass : 'icheckbox_square-green',
-			radioClass : 'iradio_square-green',
-		});
-		$('[data-toggle="tooltip"]').tooltip({
-			selector : "[data-toggle=tooltip]",
-			container : "body"
-		});
-		$('table.agentPassword').dataTable({
-			"bSort" : false,
-			dom : '<"html5buttons">lTfgtip',
-		});
-		$('table.clientTable').dataTable({
-			"bSort" : false,
-			dom : '<"html5buttons">lTfgtip',
-		});
-		$('table.ticket_topics').dataTable({
-			"bSort" : false,
-			dom : '<"html5buttons">lTfgtip',
-		});
+				$('.i-checks').iCheck({
+					checkboxClass : 'icheckbox_square-green',
+					radioClass : 'iradio_square-green',
+				});
+				$('[data-toggle="tooltip"]').tooltip({
+					selector : "[data-toggle=tooltip]",
+					container : "body"
+				});
+				$('table.agentPassword').dataTable({
+					"bSort" : false,
+					dom : '<"html5buttons">lTfgtip',
+				});
+				$('table.clientTable').dataTable({
+					"bSort" : false,
+					dom : '<"html5buttons">lTfgtip',
+				});
+				$('table.ticket_topics').dataTable({
+					"bSort" : false,
+					dom : '<"html5buttons">lTfgtip',
+				});
 
-		$('div.ticketsummernote').summernote({
-			toolbar : [['style', ['bold', 'italic', 'underline', 'clear']], ['fontname', ['fontname']], ['fontsize', ['fontsize']], ['color', ['color']], ['para', ['ul', 'ol', 'paragraph']], ['height', ['height']]]
-		});
-		$('div.ticketReplySummernote').summernote({
-			toolbar : [['style', ['bold', 'italic', 'underline', 'clear']], ['fontname', ['fontname']], ['fontsize', ['fontsize']], ['color', ['color']], ['para', ['ul', 'ol', 'paragraph']], ['height', ['height']]]
-		});
-		$('table.noSupport').dataTable({
-			"bSort" : false,
-		});
-		$('table.ticketReport').dataTable({
-			"bSort" : false,
-			dom : '<"html5buttons"B>',
-			buttons : [{
-				extend : 'csv'
-			}, {
-				extend : 'excel',
-				title : 'Ticket Report'
-			}, {
-				extend : 'print',
-				customize : function(win) {
-					$(win.document.body).addClass('white-bg');
-					$(win.document.body).css('font-size', '10px');
-					$(win.document.body).find('table').addClass('compact').css('font-size', 'inherit');
-				}
-			}]
+				$('div.ticketsummernote').summernote(
+						{
+							toolbar : [
+									[
+											'style',
+											[ 'bold', 'italic', 'underline',
+													'clear' ] ],
+									[ 'fontname', [ 'fontname' ] ],
+									[ 'fontsize', [ 'fontsize' ] ],
+									[ 'color', [ 'color' ] ],
+									[ 'para', [ 'ul', 'ol', 'paragraph' ] ],
+									[ 'height', [ 'height' ] ] ]
+						});
+				$('div.ticketReplySummernote').summernote(
+						{
+							toolbar : [
+									[
+											'style',
+											[ 'bold', 'italic', 'underline',
+													'clear' ] ],
+									[ 'fontname', [ 'fontname' ] ],
+									[ 'fontsize', [ 'fontsize' ] ],
+									[ 'color', [ 'color' ] ],
+									[ 'para', [ 'ul', 'ol', 'paragraph' ] ],
+									[ 'height', [ 'height' ] ] ]
+						});
+				$('table.noSupport').dataTable({
+					"bSort" : false,
+				});
+				$('table.ticketReport').dataTable(
+						{
+							"bSort" : false,
+							dom : '<"html5buttons"B>',
+							buttons : [
+									{
+										extend : 'csv'
+									},
+									{
+										extend : 'excel',
+										title : 'Ticket Report'
+									},
+									{
+										extend : 'print',
+										customize : function(win) {
+											$(win.document.body).addClass(
+													'white-bg');
+											$(win.document.body).css(
+													'font-size', '10px');
+											$(win.document.body).find('table')
+													.addClass('compact').css(
+															'font-size',
+															'inherit');
+										}
+									} ]
 
-		});
+						});
 
-	});
+			});
+
 	$("input.ticketReportCB").change(function() {
 		$("input#reportTicket").prop('checked', $(this).prop("checked"));
 	});
@@ -74,6 +105,10 @@ $(function() {
 		$('div#advancedSearch').slideToggle();
 	});
 
+	$('.input-daterange').datepicker({
+
+		format : 'yyyy-mm-dd',
+	});
 	$('input.dateSent').datepicker({
 		format : 'yyyy-mm-dd',
 	});
@@ -82,202 +117,358 @@ $(function() {
 		format : 'yyyy-mm-dd',
 	});
 
-	$('button.advancedTicketReset').click(function() {
-		$('select').val("");
-		$('input.dateSent').val("");
-		$('input.dateClosed').val("");
-		$('input.agentSent').val("");
-		$('input.agentClosed').val("");
-		$('input.ticketSearch').val("");
-		console.log($('form.advancedTicket').serialize());
-		$.ajax({
-			type : "POST",
-			url : "/admin/advancedSearch",
-			data : $('form.advancedTicket').serialize(),
-		}).done(function(data) {
+	$('button.advancedTicketReset')
+			.click(
+					function() {
+						$('select').val("");
+						$('input.dateSent').val("");
+						$('input.dateClosed').val("");
+						$('input.agentSent').val("");
+						$('input.agentClosed').val("");
+						$('input.ticketSearch').val("");
+						console.log($('form.advancedTicket').serialize());
+						$
+								.ajax(
+										{
+											type : "POST",
+											url : "/admin/advancedSearch",
+											data : $('form.advancedTicket')
+													.serialize(),
+										})
+								.done(
+										function(data) {
 
-			$('div.pagination').show();
-			$('tbody.ticketReport').empty();
-			var html;
+											$('div.pagination').show();
+											$('tbody.ticketReport').empty();
+											var html;
 
-			$.each(data.response, function(i, v) {
-				if (i == 15) {
-					return false;
-				}
-				if (data.closed_by[i]['first_name'] == null) {
-					data.closed_by[i]['first_name'] = '';
-				}
+											$
+													.each(
+															data.response,
+															function(i, v) {
 
-				if (data.closed_by[i]['last_name'] == null) {
-					data.closed_by[i]['last_name'] = '';
-				}
+																if ((data.closed[i]['first_name'] == null)
+																		|| (data.closed[i]['closed_by'] == 0)) {
+																	data.closed[i]['first_name'] = '';
+																}
 
-				if (v.ticket_status == "Open") {
-					html += "<tr class='bg-primary'  id='" + v.id + "'>";
-				} else if (v.ticket_status == "Pending") {
-					html += "<tr style='background-color: #F2F256;' id='" + v.id + "'>";
-				} else if (v.ticket_status == "Closed") {
-					html += "<tr class='navy-bg' id='" + v.id + "'>";
-				}
+																if ((data.closed[i]['last_name'] == null)
+																		|| (data.closed[i]['closed_by'] == 0)) {
+																	data.closed[i]['last_name'] = '';
+																}
 
-				if (v.first_name == null) {
-					v.first_name = "";
-				}
-				if (v.last_name == null) {
-					v.last_name = "";
-				}
-				if (v.closed_at == null) {
-					v.closed_at = "";
-				}
-				html += "<td><input type='checkbox' value=" + v.id + "> </td><td>" + v.id + "</td><td>" + v.sender + "</td>" + "<td>" + v.sender_id + "</td><td>" + v.description + "</td><td>" + v.subject + "</td><td>" + v.ticket_status + "</td>" + "<td>" + v.department + "</td><td>" + v.first_name + " " + v.last_name + "</td><td>" + data.closed_by[i]['first_name'] + " " + data.closed_by[i]['last_name'] + "</td><td>" + v.created_at + "</td>" + "<td>" + v.closed_at + "</td></tr>";
-			});
-			$('tbody.ticketReport').html(html);
+																if ((data.assigned[i]['first_name'] == null)
+																		|| (data.assigned[i]['assigned_support'] == 0)) {
+																	data.assigned[i]['first_name'] = '';
+																}
 
-			$('.i-checks').iCheck({
-				checkboxClass : 'icheckbox_square-green',
-				radioClass : 'iradio_square-green',
-			});
+																if ((data.assigned[i]['last_name'] == null)
+																		|| (data.assigned[i]['assigned_support'] == 0)) {
+																	data.assigned[i]['last_name'] = '';
+																}
 
-		});
-	});
+																if (v.ticket_status == "Open") {
+																	html += "<tr class='bg-primary'  id='"
+																			+ v.id
+																			+ "'>";
+																} else if (v.ticket_status == "Pending") {
+																	html += "<tr style='background-color: #F2F256;' id='"
+																			+ v.id
+																			+ "'>";
+																} else if (v.ticket_status == "Closed") {
+																	html += "<tr class='navy-bg' id='"
+																			+ v.id
+																			+ "'>";
+																}
 
-	$('button.advancedTicketSearch').click(function() {
-		console.log($('form.advancedTicket').serialize());
-		$.ajax({
-			type : "POST",
-			url : "/admin/advancedSearch",
-			data : $('form.advancedTicket').serialize(),
-		}).done(function(data) {
+																if (v.first_name == null) {
+																	v.first_name = "";
+																}
+																if (v.last_name == null) {
+																	v.last_name = "";
+																}
+																if (v.closed_at == null) {
+																	v.closed_at = "";
+																}
+																html += "<td><input type='checkbox' value="
+																		+ v.id
+																		+ "> </td><td>"
+																		+ v.id
+																		+ "</td><td>"
+																		+ v.sender
+																		+ "</td>"
+																		+ "<td>"
+																		+ v.sender_id
+																		+ "</td><td>"
+																		+ v.description
+																		+ "</td><td>"
+																		+ v.subject
+																		+ "</td><td>"
+																		+ v.ticket_status
+																		+ "</td>"
+																		+ "<td>"
+																		+ v.department
+																		+ "</td><td>"
+																		+ data.assigned[i]['first_name']
+																		+ " "
+																		+ data.assigned[i]['last_name']
+																		+ "</td><td>"
+																		+ data.closed[i]['first_name']
+																		+ " "
+																		+ data.closed[i]['last_name']
+																		+ "</td><td>"
+																		+ v.created_at
+																		+ "</td>"
+																		+ "<td>"
+																		+ v.updated_at
+																		+ "</td></tr>";
+															});
+											$('tbody.ticketReport').html(html);
 
-			$('div.pagination').hide();
-			$('tbody.ticketReport').empty();
-			var html;
+											$('.i-checks')
+													.iCheck(
+															{
+																checkboxClass : 'icheckbox_square-green',
+																radioClass : 'iradio_square-green',
+															});
 
-			$.each(data.response, function(i, v) {
-				if (data.closed_by[i]['first_name'] == null) {
-					data.closed_by[i]['first_name'] = '';
-				}
+										});
+					});
 
-				if (data.closed_by[i]['last_name'] == null) {
-					data.closed_by[i]['last_name'] = '';
-				}
+	$('button.advancedTicketSearch')
+			.click(
+					function() {
+						console.log($('form.advancedTicket').serialize());
+						$
+								.ajax(
+										{
+											type : "POST",
+											url : "/admin/advancedSearch",
+											data : $('form.advancedTicket')
+													.serialize(),
+										})
+								.done(
+										function(data) {
 
-				if (v.ticket_status == "Open") {
-					html += "<tr class='bg-primary'  id='" + v.id + "'>";
-				} else if (v.ticket_status == "Pending") {
-					html += "<tr style='background-color: #F2F256;' id='" + v.id + "'>";
-				} else if (v.ticket_status == "Closed") {
-					html += "<tr class='navy-bg' id='" + v.id + "'>";
-				}
+											$('div.pagination').hide();
+											$('tbody.ticketReport').empty();
+											var html;
 
-				if (v.first_name == null) {
-					v.first_name = "";
-				}
-				if (v.last_name == null) {
-					v.last_name = "";
-				}
-				if (v.closed_at == null) {
-					v.closed_at = "";
-				}
-				html += "<td><input type='checkbox' value=" + v.id + "> </td><td>" + v.id + "</td><td>" + v.sender + "</td>" + "<td>" + v.sender_id + "</td><td>" + v.description + "</td><td>" + v.subject + "</td><td>" + v.ticket_status + "</td>" + "<td>" + v.department + "</td><td>" + v.first_name + " " + v.last_name + "</td><td>" + data.closed_by[i]['first_name'] + " " + data.closed_by[i]['last_name'] + "</td><td>" + v.created_at + "</td>" + "<td>" + v.closed_at + "</td></tr>";
-			});
-			$('tbody.ticketReport').html(html);
-			$('.i-checks').iCheck({
-				checkboxClass : 'icheckbox_square-green',
-				radioClass : 'iradio_square-green',
-			});
+											$
+													.each(
+															data.response,
+															function(i, v) {
 
-		});
-	});
-	$('button.ticketDelete').on('click', function() {
-		var tickets = ['x'];
-		$('input:checkbox:checked').each(function() {
-			tickets.push($(this).val());
-		});
-		if (tickets[1] == '' || tickets[1] == null) {
-			swal('Ooops...', "You haven't selected any ticket", 'info');
-			return false;
-		}
+																if ((data.closed[i]['first_name'] == null)
+																		|| (data.closed[i]['closed_by'] == 0)) {
+																	data.closed[i]['first_name'] = '';
+																}
 
-		console.log($('form.selectedTickets').serializeArray());
-		swal({
-			title : "Are you sure?",
-			text : "This action can't be undone",
-			type : "warning",
-			showCancelButton : true,
-			closeOnConfirm : false,
-			confirmButtonText : "Yes",
-		}, function() {
-			swal({
-				title : "Password Required!",
-				text : "If you are sure, Please enter your password.",
-				type : "input",
-				inputType : "password",
-				showCancelButton : true,
-				closeOnConfirm : false,
-				showLoaderOnConfirm : true,
-				disableButtonsOnConfirm : true,
-			}, function(inputValue) {
-				if (inputValue != "") {
-					$.ajax({
-						headers : {
-							'X-CSRF-Token' : $('input[name="_token"]').val()
-						},
-						type : 'post',
-						url : '/admin/verifyPassword',
-						data : {
-							password : inputValue
-						},
-					}).done(function(data) {
-						if (data == "true") {
-							$.ajax({
-								headers : {
-									'X-CSRF-Token' : $('input[name="_token"]').val()
-								},
-								type : "DELETE",
-								url : "/admin/deleteTicket",
-								data : {
-									tickets : tickets
-								},
-							}).done(function(data) {
+																if ((data.closed[i]['last_name'] == null)
+																		|| (data.closed[i]['closed_by'] == 0)) {
+																	data.closed[i]['last_name'] = '';
+																}
 
-								swal({
-									title : "Deleted",
-									text : "Tickets has been deleted",
-									type : "success",
-								}, function() {
-									$('input:checkbox:checked').each(function() {
-										$(this).parents('tr').remove();
-									});
-								});
+																if ((data.assigned[i]['first_name'] == null)
+																		|| (data.assigned[i]['assigned_support'] == 0)) {
+																	data.assigned[i]['first_name'] = '';
+																}
 
-							});
-						} else {
-							swal.showInputError("Wrong Password");
+																if ((data.assigned[i]['last_name'] == null)
+																		|| (data.assigned[i]['assigned_support'] == 0)) {
+																	data.assigned[i]['last_name'] = '';
+																}
+
+																if (v.ticket_status == "Open") {
+																	html += "<tr class='bg-primary'  id='"
+																			+ v.id
+																			+ "'>";
+																} else if (v.ticket_status == "Pending") {
+																	html += "<tr style='background-color: #F2F256;' id='"
+																			+ v.id
+																			+ "'>";
+																} else if (v.ticket_status == "Closed") {
+																	html += "<tr class='navy-bg' id='"
+																			+ v.id
+																			+ "'>";
+																}
+
+																if (v.first_name == null) {
+																	v.first_name = "";
+																}
+																if (v.last_name == null) {
+																	v.last_name = "";
+																}
+																if (v.closed_at == null) {
+																	v.closed_at = "";
+																}
+																html += "<td><input type='checkbox' value="
+																		+ v.id
+																		+ "> </td><td>"
+																		+ v.id
+																		+ "</td><td>"
+																		+ v.sender
+																		+ "</td>"
+																		+ "<td>"
+																		+ v.sender_id
+																		+ "</td><td>"
+																		+ v.description
+																		+ "</td><td>"
+																		+ v.subject
+																		+ "</td><td>"
+																		+ v.ticket_status
+																		+ "</td>"
+																		+ "<td>"
+																		+ v.department
+																		+ "</td><td>"
+																		+ data.assigned[i]['first_name']
+																		+ " "
+																		+ data.assigned[i]['last_name']
+																		+ "</td><td>"
+																		+ data.closed[i]['first_name']
+																		+ " "
+																		+ data.closed[i]['last_name']
+																		+ "</td><td>"
+																		+ v.created_at
+																		+ "</td>"
+																		+ "<td>"
+																		+ v.updated_at
+																		+ "</td></tr>";
+															});
+											$('tbody.ticketReport').html(html);
+											$('.i-checks')
+													.iCheck(
+															{
+																checkboxClass : 'icheckbox_square-green',
+																radioClass : 'iradio_square-green',
+															});
+
+										});
+					});
+	$('button.ticketDelete')
+			.on(
+					'click',
+					function() {
+						var tickets = [ 'x' ];
+						$('input:checkbox:checked').each(function() {
+							tickets.push($(this).val());
+						});
+						if (tickets[1] == '' || tickets[1] == null) {
+							swal('Ooops...', "You haven't selected any ticket",
+									'info');
 							return false;
 						}
+
+						console.log($('form.selectedTickets').serializeArray());
+						swal(
+								{
+									title : "Are you sure?",
+									text : "This action can't be undone",
+									type : "warning",
+									showCancelButton : true,
+									closeOnConfirm : false,
+									confirmButtonText : "Yes",
+								},
+								function() {
+									swal(
+											{
+												title : "Password Required!",
+												text : "If you are sure, Please enter your password.",
+												type : "input",
+												inputType : "password",
+												showCancelButton : true,
+												closeOnConfirm : false,
+												showLoaderOnConfirm : true,
+												disableButtonsOnConfirm : true,
+											},
+											function(inputValue) {
+												if (inputValue != "") {
+													$
+															.ajax(
+																	{
+																		headers : {
+																			'X-CSRF-Token' : $(
+																					'input[name="_token"]')
+																					.val()
+																		},
+																		type : 'post',
+																		url : '/admin/verifyPassword',
+																		data : {
+																			password : inputValue
+																		},
+																	})
+															.done(
+																	function(
+																			data) {
+																		if (data == "true") {
+																			$
+																					.ajax(
+																							{
+																								headers : {
+																									'X-CSRF-Token' : $(
+																											'input[name="_token"]')
+																											.val()
+																								},
+																								type : "DELETE",
+																								url : "/admin/deleteTicket",
+																								data : {
+																									tickets : tickets
+																								},
+																							})
+																					.done(
+																							function(
+																									data) {
+
+																								swal(
+																										{
+																											title : "Deleted",
+																											text : "Tickets has been deleted",
+																											type : "success",
+																										},
+																										function() {
+																											$(
+																													'input:checkbox:checked')
+																													.each(
+																															function() {
+																																$(
+																																		this)
+																																		.parents(
+																																				'tr')
+																																		.remove();
+																															});
+																										});
+
+																							});
+																		} else {
+																			swal
+																					.showInputError("Wrong Password");
+																			return false;
+																		}
+																	});
+												} else {
+													swal
+															.showInputError("You need to type in your password in order to do this!");
+													return false;
+												}
+											});
+
+								});
 					});
-				} else {
-					swal.showInputError("You need to type in your password in order to do this!");
-					return false;
-				}
+
+	$("input.ticketSearch").keyup(
+			function() {
+				// split the current value of searchInput
+				_this = this;
+				// Show only matching TR, hide rest of them
+				$.each($("tbody tr"), function() {
+					if ($(this).text().toLowerCase().indexOf(
+							$(_this).val().toLowerCase()) === -1)
+						$(this).hide();
+					else
+						$(this).show();
+				});
 			});
-
-		});
-	});
-
-	$("input.ticketSearch").keyup(function() {
-		//split the current value of searchInput
-		_this = this;
-		// Show only matching TR, hide rest of them
-		$.each($("tbody tr"), function() {
-			if ($(this).text().toLowerCase().indexOf($(_this).val().toLowerCase()) === -1)
-				$(this).hide();
-			else
-				$(this).show();
-		});
-	});
-	//create ticket
+	// create ticket
 	var createTicket = $('button.create-ticket').ladda();
 
 	createTicket.click(function(e) {
@@ -338,90 +529,136 @@ $(function() {
 		});
 	});
 
-	//Add Topic
-	$('button.addTopic').click(function(e) {
-		$('div.addTopic').removeClass('has-error');
-		$('label.text-danger').hide();
-		e.preventDefault();
+	// Add Topic
+	$('button.addTopic')
+			.click(
+					function(e) {
+						$('div.addTopic').removeClass('has-error');
+						$('label.text-danger').hide();
+						e.preventDefault();
 
-		$.ajax({
-			type : "POST",
-			url : "/admin/addTopic",
-			data : $('form.addTopic').serialize(),
-		}).done(function(data) {
+						$
+								.ajax({
+									type : "POST",
+									url : "/admin/addTopic",
+									data : $('form.addTopic').serialize(),
+								})
+								.done(
+										function(data) {
 
-			var msg = "";
-			if (data.success == false) {
-				if (data.errors['description']) {
-					$('div.addTopic').addClass('has-error');
-					$('label.addTopic').text('*' + data.errors['description']).show();
-				}
-				if (data.errors['priority']) {
-					$('div.priority').addClass('has-error');
-					$('label.priority').text('*' + data.errors['priority']).show();
-				}
+											var msg = "";
+											if (data.success == false) {
+												if (data.errors['description']) {
+													$('div.addTopic').addClass(
+															'has-error');
+													$('label.addTopic')
+															.text(
+																	'*'
+																			+ data.errors['description'])
+															.show();
+												}
+												if (data.errors['priority']) {
+													$('div.priority').addClass(
+															'has-error');
+													$('label.priority')
+															.text(
+																	'*'
+																			+ data.errors['priority'])
+															.show();
+												}
 
-			} else {
-				$('form.addTopic').trigger('reset');
-				var html;
+											} else {
+												$('form.addTopic').trigger(
+														'reset');
+												var html;
 
-				$.each(data.response, function(i, v) {
-					if (i == 1) {
-						return false;
-					}
+												$
+														.each(
+																data.response,
+																function(i, v) {
+																	if (i == 1) {
+																		return false;
+																	}
 
-					html += "<tr id=" + v.topic_id + "><td class='text-center'><input class='topic' type='checkbox' name =" + v.topic_id + " value=" + v.topic_id + " checked></td>" +
-					"<td>"+ v.description +"</td>"+ "<td class='text-center'>" + v.priority_level + "</td>" + "<td><button type='button' class='btn btn-warning btn-xs editTopic' value=" + v.topic_id + ">Edit</button>" + "<button type='button' class='btn btn-danger btn-xs deleteTopic'  value=" + v.topic_id + ">Delete</button> </td></tr>";
+																	html += "<tr id="
+																			+ v.topic_id
+																			+ "><td class='text-center'><input class='topic' type='checkbox' name ="
+																			+ v.topic_id
+																			+ " value="
+																			+ v.topic_id
+																			+ " checked></td>"
+																			+ "<td>"
+																			+ v.description
+																			+ "</td>"
+																			+ "<td class='text-center'>"
+																			+ v.priority_level
+																			+ "</td>"
+																			+ "<td><button type='button' class='btn btn-warning btn-xs editTopic' value="
+																			+ v.topic_id
+																			+ ">Edit</button>"
+																			+ "<button type='button' class='btn btn-danger btn-xs deleteTopic'  value="
+																			+ v.topic_id
+																			+ ">Delete</button> </td></tr>";
+																});
+												$('tbody.topics').append(html);
+												$('span.addTopic').hide();
+												$('div.addTopic').removeClass(
+														'has-error');
+												$('div.addTopic').removeClass(
+														'has-feedback');
+
+												toastr.options = {
+													positionClass : "toast-top-center",
+												};
+												toastr
+														.success('New Topic has been added.');
+
+											}
+										});
+
+					});
+
+	// Delete Topic
+	$(document).on(
+			'click',
+			'button.deleteTopic',
+			function() {
+				var deleteTopic = $(this).val();
+				console.log($('form.topic').serializeArray());
+
+				swal({
+					title : "Are you sure?",
+					text : "Selected topic will be deleted. ",
+					type : "warning",
+					showCancelButton : true,
+					confirmButtonColor : "#DD6B55",
+					confirmButtonText : "Yes",
+					closeOnConfirm : false,
+					showLoaderOnConfirm : true,
+					disableButtonsOnConfirm : true,
+				}, function() {
+
+					$.ajax({
+						headers : {
+							'X-CSRF-Token' : $('input[name="_token"]').val()
+						},
+						type : "DELETE",
+						url : "/admin/deleteTopic",
+						data : {
+							deleteTopic : deleteTopic,
+						},
+					}).done(
+							function(data) {
+
+								$(
+										'button.deleteTopic[value='
+												+ deleteTopic + ']').parents(
+										'tr').remove();
+
+								swal('Topics has been deleted', '', 'success');
+							});
 				});
-				$('tbody.topics').append(html);
-				$('span.addTopic').hide();
-				$('div.addTopic').removeClass('has-error');
-				$('div.addTopic').removeClass('has-feedback');
-
-				toastr.options = {
-					positionClass : "toast-top-center",
-				};
-				toastr.success('New Topic has been added.');
-
-			}
-		});
-
-	});
-
-	//Delete Topic
-	$(document).on('click', 'button.deleteTopic', function() {
-		var deleteTopic = $(this).val();
-		console.log($('form.topic').serializeArray());
-
-		swal({
-			title : "Are you sure?",
-			text : "Selected topic will be deleted. ",
-			type : "warning",
-			showCancelButton : true,
-			confirmButtonColor : "#DD6B55",
-			confirmButtonText : "Yes",
-			closeOnConfirm : false,
-			showLoaderOnConfirm : true,
-			disableButtonsOnConfirm : true,
-		}, function() {
-
-			$.ajax({
-				headers : {
-					'X-CSRF-Token' : $('input[name="_token"]').val()
-				},
-				type : "DELETE",
-				url : "/admin/deleteTopic",
-				data : {
-					deleteTopic : deleteTopic,
-				},
-			}).done(function(data) {
-
-				$('button.deleteTopic[value=' + deleteTopic + ']').parents('tr').remove();
-
-				swal('Topics has been deleted', '', 'success');
 			});
-		});
-	});
 	// edit topic
 	$(document).on('click', 'button.editTopic', function() {
 		var editTopic = $(this).val();
@@ -443,32 +680,41 @@ $(function() {
 		});
 	});
 
-	$(document).on('click', 'button.saveEditTopic', function() {
-		$.ajax({
-			type : 'PUT',
-			url : '/admin/editTopic',
-			data : $('form.editTopic').serialize(),
-		}).done(function(data) {
-			if (data.success = true) {
-				toastr.options = {
-					positionClass : "toast-top-center",
-				};
-				toastr.success('Data successfully updated.');
-				$('#editTopic').modal('hide');
-			
-			$('td.topicDescription' +data.topic['topic_id']+ '').text(data.topic['description']);
-			$('td.topicPriority' +data.topic['topic_id']+ '').text(data.topic['priority_level']);
-			}
-			
-			
-		});
-	});
+	$(document).on(
+			'click',
+			'button.saveEditTopic',
+			function() {
+				$.ajax({
+					type : 'PUT',
+					url : '/admin/editTopic',
+					data : $('form.editTopic').serialize(),
+				}).done(
+						function(data) {
+							if (data.success = true) {
+								toastr.options = {
+									positionClass : "toast-top-center",
+								};
+								toastr.success('Data successfully updated.');
+								$('#editTopic').modal('hide');
 
-	//update topic selection
+								$(
+										'td.topicDescription'
+												+ data.topic['topic_id'] + '')
+										.text(data.topic['description']);
+								$(
+										'td.topicPriority'
+												+ data.topic['topic_id'] + '')
+										.text(data.topic['priority_level']);
+							}
+
+						});
+			});
+
+	// update topic selection
 	var updateTopic = $('button.updateTopic').ladda();
 
 	updateTopic.click(function(e) {
-		var updateTopics = ['x'];
+		var updateTopics = [ 'x' ];
 		$('input.topic:checkbox:checked').each(function() {
 			updateTopics.push($(this).val());
 		});
@@ -498,7 +744,7 @@ $(function() {
 		$("input.topic:checkbox").prop('checked', $(this).prop("checked"));
 	});
 
-	//Save Restriction
+	// Save Restriction
 	var saveRestriction = $('button.saveRestriction').ladda();
 	saveRestriction.click(function() {
 		saveRestriction.ladda('start');
@@ -517,185 +763,249 @@ $(function() {
 		});
 	});
 
-	//Admin/CLient tab controls/actions
-	$('button.clientPasswordResetLink').on('click', function(e) {
-		$('input.email').val($(this).val());
+	// Admin/CLient tab controls/actions
+	$('button.clientPasswordResetLink').on(
+			'click',
+			function(e) {
+				$('input.email').val($(this).val());
 
-		swal({
-			title : "Are You Sure?",
-			type : 'info',
-			showCancelButton : true,
-			closeOnConfirm : false,
-			confirmButtonText : "Yes",
-			showLoaderOnConfirm : true,
-			disableButtonsOnConfirm : true,
-		}, function() {
-			$.ajax({
-				headers : {
-					'X-CSRF-Token' : $('input[name="_token"]').val()
-				},
-				type : "POST",
-				url : "/tickets/forgotPassword",
-				data : $('form.clientPassword').serialize(),
-			}).done(function() {
-				swal('Success', 'Password Reset Link has been sent!', 'success');
-			});
-		});
-	});
-
-	$('button.clientChangePassword').on('click', function(e) {
-		var clientId = $(this).val();
-		swal({
-			title : "Password Required!",
-			text : "Please enter your password to continue",
-			type : "input",
-			inputType : "password",
-			showCancelButton : true,
-			closeOnConfirm : false,
-			showLoaderOnConfirm : true,
-			disableButtonsOnConfirm : true,
-		}, function(inputValue) {
-			if (inputValue != "") {
-				$.ajax({
-					headers : {
-						'X-CSRF-Token' : $('input[name="_token"]').val()
-					},
-					type : 'post',
-					url : '/admin/verifyPassword',
-					data : {
-						password : inputValue
-					},
-				}).done(function(data) {
-					if (data == "true") {
-						swal({
-							title : "Client change password",
-							text : "Enter Client's new Password",
-							type : "input",
-							inputType : "password",
-							showCancelButton : true,
-							closeOnConfirm : false,
-							showLoaderOnConfirm : true,
-							disableButtonsOnConfirm : true,
-						}, function(inputValue) {
-							if (inputValue != "") {
-								$.ajax({
-									headers : {
-										'X-CSRF-Token' : $('input[name="_token"]').val()
-									},
-									type : 'PUT',
-									url : '/admin/changeClientPassword',
-									data : {
-										id : clientId,
-										password : inputValue
-									}
-								}).done(function(data) {
-									if (data.success != true) {
-										console.log(data.errors);
-										swal.showInputError(data.errors['password']);
-										return false;
-									} else {
-										swal('Success!', 'Password has been changed', 'success');
-									}
-								});
-
-							} else {
-								swal.showInputError("Please enter a password");
-								return false;
-							}
-						});
-
-					} else {
-						swal.showInputError("Wrong Password");
-						return false;
-					}
-				});
-			} else {
-				swal.showInputError("You need to type in your password in order to do this!");
-				return false;
-			}
-		});
-	});
-
-	$('button.changeClientStatus').on('click', function() {
-		var clientId = $(this).val();
-		var clientStatus = $(this).attr('name');
-
-		if (clientStatus == "Activated") {
-			clientStatus = "Not Activated";
-			$(this).attr('name', 'Not Activated');
-		} else {
-			clientStatus = "Activated";
-			$(this).attr('name', 'Activated');
-		}
-
-		swal({
-			title : 'Are you sure?',
-			type : 'warning',
-			showCancelButton : true,
-			closeOnConfirm : false,
-			confirmButtonText : "Yes",
-
-		}, function() {
-			swal({
-				title : "Password Required!",
-				text : "If you are sure, Please enter your password.",
-				type : "input",
-				inputType : "password",
-				showCancelButton : true,
-				closeOnConfirm : false,
-				showLoaderOnConfirm : true,
-				disableButtonsOnConfirm : true,
-			}, function(inputValue) {
-				if (inputValue != "") {
+				swal({
+					title : "Are You Sure?",
+					type : 'info',
+					showCancelButton : true,
+					closeOnConfirm : false,
+					confirmButtonText : "Yes",
+					showLoaderOnConfirm : true,
+					disableButtonsOnConfirm : true,
+				}, function() {
 					$.ajax({
 						headers : {
 							'X-CSRF-Token' : $('input[name="_token"]').val()
 						},
-						type : 'post',
-						url : '/admin/verifyPassword',
-						data : {
-							password : inputValue
-						},
-					}).done(function(data) {
-						if (data == "true") {
-							$.ajax({
-								headers : {
-									'X-CSRF-Token' : $('input[name="_token"]').val()
-								},
-								type : 'PUT',
-								url : '/admin/changeClientStatus',
-								data : {
-									id : clientId,
-									status : clientStatus
-								}
-							}).done(function(data) {
-								if (data.success != true) {
-									swal.showInputError(data.errors['id']);
-									return false;
-								} else {
-									swal({
-										title : 'Success!',
-										text : 'Status has been changed',
-										type : 'success'
-									}, function() {
-										$('td#' + clientId).text(clientStatus);
-									});
-								}
+						type : "POST",
+						url : "/tickets/forgotPassword",
+						data : $('form.clientPassword').serialize(),
+					}).done(
+							function() {
+								swal('Success',
+										'Password Reset Link has been sent!',
+										'success');
 							});
-
-						} else {
-							swal.showInputError("There's something wrong try again later");
-							return false;
-						}
-					});
-				} else {
-					swal.showInputError("You need to type in your password in order to do this!");
-					return false;
-				}
+				});
 			});
-		});
-	});
-	//Admin Agent tab controls/actions
+
+	$('button.clientChangePassword')
+			.on(
+					'click',
+					function(e) {
+						var clientId = $(this).val();
+						swal(
+								{
+									title : "Password Required!",
+									text : "Please enter your password to continue",
+									type : "input",
+									inputType : "password",
+									showCancelButton : true,
+									closeOnConfirm : false,
+									showLoaderOnConfirm : true,
+									disableButtonsOnConfirm : true,
+								},
+								function(inputValue) {
+									if (inputValue != "") {
+										$
+												.ajax(
+														{
+															headers : {
+																'X-CSRF-Token' : $(
+																		'input[name="_token"]')
+																		.val()
+															},
+															type : 'post',
+															url : '/admin/verifyPassword',
+															data : {
+																password : inputValue
+															},
+														})
+												.done(
+														function(data) {
+															if (data == "true") {
+																swal(
+																		{
+																			title : "Client change password",
+																			text : "Enter Client's new Password",
+																			type : "input",
+																			inputType : "password",
+																			showCancelButton : true,
+																			closeOnConfirm : false,
+																			showLoaderOnConfirm : true,
+																			disableButtonsOnConfirm : true,
+																		},
+																		function(
+																				inputValue) {
+																			if (inputValue != "") {
+																				$
+																						.ajax(
+																								{
+																									headers : {
+																										'X-CSRF-Token' : $(
+																												'input[name="_token"]')
+																												.val()
+																									},
+																									type : 'PUT',
+																									url : '/admin/changeClientPassword',
+																									data : {
+																										id : clientId,
+																										password : inputValue
+																									}
+																								})
+																						.done(
+																								function(
+																										data) {
+																									if (data.success != true) {
+																										console
+																												.log(data.errors);
+																										swal
+																												.showInputError(data.errors['password']);
+																										return false;
+																									} else {
+																										swal(
+																												'Success!',
+																												'Password has been changed',
+																												'success');
+																									}
+																								});
+
+																			} else {
+																				swal
+																						.showInputError("Please enter a password");
+																				return false;
+																			}
+																		});
+
+															} else {
+																swal
+																		.showInputError("Wrong Password");
+																return false;
+															}
+														});
+									} else {
+										swal
+												.showInputError("You need to type in your password in order to do this!");
+										return false;
+									}
+								});
+					});
+
+	$('button.changeClientStatus')
+			.on(
+					'click',
+					function() {
+						var clientId = $(this).val();
+						var clientStatus = $(this).attr('name');
+
+						if (clientStatus == "Activated") {
+							clientStatus = "Not Activated";
+							$(this).attr('name', 'Not Activated');
+						} else {
+							clientStatus = "Activated";
+							$(this).attr('name', 'Activated');
+						}
+
+						swal(
+								{
+									title : 'Are you sure?',
+									type : 'warning',
+									showCancelButton : true,
+									closeOnConfirm : false,
+									confirmButtonText : "Yes",
+
+								},
+								function() {
+									swal(
+											{
+												title : "Password Required!",
+												text : "If you are sure, Please enter your password.",
+												type : "input",
+												inputType : "password",
+												showCancelButton : true,
+												closeOnConfirm : false,
+												showLoaderOnConfirm : true,
+												disableButtonsOnConfirm : true,
+											},
+											function(inputValue) {
+												if (inputValue != "") {
+													$
+															.ajax(
+																	{
+																		headers : {
+																			'X-CSRF-Token' : $(
+																					'input[name="_token"]')
+																					.val()
+																		},
+																		type : 'post',
+																		url : '/admin/verifyPassword',
+																		data : {
+																			password : inputValue
+																		},
+																	})
+															.done(
+																	function(
+																			data) {
+																		if (data == "true") {
+																			$
+																					.ajax(
+																							{
+																								headers : {
+																									'X-CSRF-Token' : $(
+																											'input[name="_token"]')
+																											.val()
+																								},
+																								type : 'PUT',
+																								url : '/admin/changeClientStatus',
+																								data : {
+																									id : clientId,
+																									status : clientStatus
+																								}
+																							})
+																					.done(
+																							function(
+																									data) {
+																								if (data.success != true) {
+																									swal
+																											.showInputError(data.errors['id']);
+																									return false;
+																								} else {
+																									swal(
+																											{
+																												title : 'Success!',
+																												text : 'Status has been changed',
+																												type : 'success'
+																											},
+																											function() {
+																												$(
+																														'td#'
+																																+ clientId)
+																														.text(
+																																clientStatus);
+																											});
+																								}
+																							});
+
+																		} else {
+																			swal
+																					.showInputError("There's something wrong try again later");
+																			return false;
+																		}
+																	});
+												} else {
+													swal
+															.showInputError("You need to type in your password in order to do this!");
+													return false;
+												}
+											});
+								});
+					});
+	// Admin Agent tab controls/actions
 	$('button.agentPasswordResetLink').on('click', function(e) {
 		$('input.email').val($(this).val());
 		swal({
@@ -722,151 +1032,194 @@ $(function() {
 
 	});
 
-	$('button.agentChangeUserType').on('click', function() {
-		var agentId = $(this).val();
-		var agentUserType = $(this).attr('name');
+	$('button.agentChangeUserType')
+			.on(
+					'click',
+					function() {
+						var agentId = $(this).val();
+						var agentUserType = $(this).attr('name');
 
-		if (agentUserType == 'agent') {
-			agentUserType = 'admin';
-		} else {
-			agentUserType = 'agent';
-		}
+						if (agentUserType == 'agent') {
+							agentUserType = 'admin';
+						} else {
+							agentUserType = 'agent';
+						}
 
-		swal({
-			title : "Password Required!",
-			text : "Please enter your password to continue",
-			type : "input",
-			inputType : "password",
-			showCancelButton : true,
-			closeOnConfirm : false,
-			showLoaderOnConfirm : true,
-			disableButtonsOnConfirm : true,
-		}, function(inputValue) {
-			if (inputValue != "") {
-				$.ajax({
-					headers : {
-						'X-CSRF-Token' : $('input[name="_token"]').val()
-					},
-					type : 'POST',
-					url : '/admin/verifyPassword',
-					data : {
-						password : inputValue
-					},
-				}).done(function(data) {
-					if (data == "true") {
-						$.ajax({
-							headers : {
-								'X-CSRF-Token' : $('input[name="_token"]').val()
-							},
-							type : 'PUT',
-							url : '/admin/changeAgentUserType',
-							data : {
-								id : agentId,
-								userType : agentUserType
-							}
-						}).done(function(data) {
-							if (data.success != true) {
-								swal.showInputError(data.errors['id']);
-								return false;
-							} else {
-								swal({
-									title : 'Success!',
-									text : 'User type has been changed',
-									type : 'success'
-								}, function() {
-									$('td#' + agentId).text(agentUserType);
+						swal(
+								{
+									title : "Password Required!",
+									text : "Please enter your password to continue",
+									type : "input",
+									inputType : "password",
+									showCancelButton : true,
+									closeOnConfirm : false,
+									showLoaderOnConfirm : true,
+									disableButtonsOnConfirm : true,
+								},
+								function(inputValue) {
+									if (inputValue != "") {
+										$
+												.ajax(
+														{
+															headers : {
+																'X-CSRF-Token' : $(
+																		'input[name="_token"]')
+																		.val()
+															},
+															type : 'POST',
+															url : '/admin/verifyPassword',
+															data : {
+																password : inputValue
+															},
+														})
+												.done(
+														function(data) {
+															if (data == "true") {
+																$
+																		.ajax(
+																				{
+																					headers : {
+																						'X-CSRF-Token' : $(
+																								'input[name="_token"]')
+																								.val()
+																					},
+																					type : 'PUT',
+																					url : '/admin/changeAgentUserType',
+																					data : {
+																						id : agentId,
+																						userType : agentUserType
+																					}
+																				})
+																		.done(
+																				function(
+																						data) {
+																					if (data.success != true) {
+																						swal
+																								.showInputError(data.errors['id']);
+																						return false;
+																					} else {
+																						swal(
+																								{
+																									title : 'Success!',
+																									text : 'User type has been changed',
+																									type : 'success'
+																								},
+																								function() {
+																									$(
+																											'td#'
+																													+ agentId)
+																											.text(
+																													agentUserType);
+																								});
+																					}
+																				});
+															} else {
+																swal
+																		.showInputError("There's something wrong try again later");
+																return false;
+															}
+
+														});
+									} else {
+										swal
+												.showInputError("You need to type in your password in order to do this!");
+										return false;
+									}
 								});
+					});
+
+	// create agent
+	$('button.add-account').click(
+			function(e) {
+				$('div.form-groups').removeClass('has-error');
+				$('span.text-danger').hide();
+				$('label.text-danger').hide();
+				e.preventDefault();
+				$.ajax({
+					type : "POST",
+					url : "/checkEmail",
+					data : $('.agentForm').serialize(),
+
+				}).done(
+						function(data) {
+							if (data.response != "") {
+								console.log(data.errors);
+								if (data.errors['email']) {
+									$('div.email').addClass('has-error');
+									$('span.email').text(
+											'*' + data.errors['email']).show();
+								}
+								if (data.errors['firstname']) {
+									$('div.fname').addClass('has-error');
+									$('label.fname').text(
+											'*' + data.errors['firstname'][0])
+											.show();
+								}
+								if (data.errors['lastname']) {
+									$('div.lname').addClass('has-error');
+									$('label.lname').text(
+											'*' + data.errors['lastname'][0])
+											.show();
+								}
+								if (data.errors['user_type']) {
+									$('div.usertype').addClass('has-error');
+									$('span.usertype').text(
+											'*' + data.errors['user_type'])
+											.show();
+								}
+
+							} else {
+								// Validation Success Tell user to input his/her
+								// password to continue/confirm adding
+								console.log($('.agentForm').serialize());
+								validateSuccess();
+							}
+
+						});
+			});
+
+	function validateSuccess() {
+		swal(
+				{
+					title : "Are you sure you want to create new agent?",
+					text : "If you are sure, Please enter your password.",
+					type : "input",
+					inputType : "password",
+					showCancelButton : true,
+					closeOnConfirm : false,
+					showLoaderOnConfirm : true,
+					disableButtonsOnConfirm : true,
+				},
+				function(inputValue) {
+					if (inputValue != "") {
+						$.ajax(
+								{
+									headers : {
+										'X-CSRF-Token' : $(
+												'input[name="_token"]').val()
+									},
+									type : 'post',
+									url : '/admin/verifyPassword',
+									data : {
+										password : inputValue
+									},
+								}).done(function(data) {
+							if (data == "true") {
+
+								addNew();
+							} else {
+								swal.showInputError("Wrong Password");
+								return false;
 							}
 						});
 					} else {
-						swal.showInputError("There's something wrong try again later");
-						return false;
-					}
-
-				});
-			} else {
-				swal.showInputError("You need to type in your password in order to do this!");
-				return false;
-			}
-		});
-	});
-
-	// create agent
-	$('button.add-account').click(function(e) {
-		$('div.form-groups').removeClass('has-error');
-		$('span.text-danger').hide();
-		$('label.text-danger').hide();
-		e.preventDefault();
-		$.ajax({
-			type : "POST",
-			url : "/checkEmail",
-			data : $('.agentForm').serialize(),
-
-		}).done(function(data) {
-			if (data.response != "") {
-				console.log(data.errors);
-				if (data.errors['email']) {
-					$('div.email').addClass('has-error');
-					$('span.email').text('*' + data.errors['email']).show();
-				}
-				if (data.errors['firstname']) {
-					$('div.fname').addClass('has-error');
-					$('label.fname').text('*' + data.errors['firstname'][0]).show();
-				}
-				if (data.errors['lastname']) {
-					$('div.lname').addClass('has-error');
-					$('label.lname').text('*' + data.errors['lastname'][0]).show();
-				}
-				if (data.errors['user_type']) {
-					$('div.usertype').addClass('has-error');
-					$('span.usertype').text('*' + data.errors['user_type']).show();
-				}
-
-			} else {
-				//Validation Success Tell user to input his/her password to continue/confirm adding
-				console.log($('.agentForm').serialize());
-				validateSuccess();
-			}
-
-		});
-	});
-
-	function validateSuccess() {
-		swal({
-			title : "Are you sure you want to create new agent?",
-			text : "If you are sure, Please enter your password.",
-			type : "input",
-			inputType : "password",
-			showCancelButton : true,
-			closeOnConfirm : false,
-			showLoaderOnConfirm : true,
-			disableButtonsOnConfirm : true,
-		}, function(inputValue) {
-			if (inputValue != "") {
-				$.ajax({
-					headers : {
-						'X-CSRF-Token' : $('input[name="_token"]').val()
-					},
-					type : 'post',
-					url : '/admin/verifyPassword',
-					data : {
-						password : inputValue
-					},
-				}).done(function(data) {
-					if (data == "true") {
-
-						addNew();
-					} else {
-						swal.showInputError("Wrong Password");
+						swal
+								.showInputError("You need to type in your password in order to do this!");
 						return false;
 					}
 				});
-			} else {
-				swal.showInputError("You need to type in your password in order to do this!");
-				return false;
-			}
-		});
-	};
+	}
+	;
 	function addNew() {
 		$.ajax({
 			type : "POST",
@@ -876,7 +1229,8 @@ $(function() {
 			sendActivation();
 		});
 
-	};
+	}
+	;
 	function sendActivation() {
 		$.ajax({
 			type : "POST",
@@ -892,7 +1246,8 @@ $(function() {
 			});
 
 		});
-	};
+	}
+	;
 
 	var ticketReply = $('button.ticketReply').ladda();
 
@@ -901,7 +1256,8 @@ $(function() {
 		$('label.email').hide();
 		$('div.email').removeClass('has-error');
 
-		$('input[type="hidden"].ticketReply').val($('div.ticketReplySummernote').code());
+		$('input[type="hidden"].ticketReply').val(
+				$('div.ticketReplySummernote').code());
 		console.log($('form.ticketReply').serialize());
 		ticketReply.ladda('start');
 
@@ -909,20 +1265,23 @@ $(function() {
 			type : "POST",
 			url : "/admin/ticketReply",
 			data : $('form.ticketReply').serialize(),
-		}).done(function(data) {
-			ticketReply.ladda('stop');
-			if (data.success != false) {
-				swal('Success', 'An email has been sent to ' + $('input.email').val(), 'success');
-			} else {
-				if (data.errors['email']) {
-					$('label.email').text('*' + data.errors['email']).show();
-					$('div.email').addClass('has-error');
-				}
-				if (data.errors['message']) {
-					swal('Oops...', data.errors['message'], 'warning');
-				}
-			}
-		});
+		}).done(
+				function(data) {
+					ticketReply.ladda('stop');
+					if (data.success != false) {
+						swal('Success', 'An email has been sent to '
+								+ $('input.email').val(), 'success');
+					} else {
+						if (data.errors['email']) {
+							$('label.email').text('*' + data.errors['email'])
+									.show();
+							$('div.email').addClass('has-error');
+						}
+						if (data.errors['message']) {
+							swal('Oops...', data.errors['message'], 'warning');
+						}
+					}
+				});
 
 	});
 
@@ -930,14 +1289,17 @@ $(function() {
 		location.reload();
 	});
 
-	//View Ticket Details
-	$('select.ticketStatus').change(function() {
-		if ($(this).val() == "Open" && $('input.assignedTo').val() == "") {
-			$('#assign').modal('show');
-		} else if ($(this).val() == "Closed" && $('input#closing_report').val() == "") {
-			$('#closedBy').modal('show');
-		}
-	});
+	// View Ticket Details
+	$('select.ticketStatus').change(
+			function() {
+				if ($(this).val() == "Open"
+						&& $('input.assignedTo').val() == "") {
+					$('#assign').modal('show');
+				} else if ($(this).val() == "Closed"
+						&& $('input#closing_report').val() == "") {
+					$('#closedBy').modal('show');
+				}
+			});
 
 	$('button.cancelOpen').on('click', function() {
 		$('select.ticketStatus').prop('selectedIndex', 0);
@@ -972,27 +1334,32 @@ $(function() {
 		console.log($('input.assignedTo').val());
 	});
 
-	$('button.ticketSave').on('click', function() {
-		console.log($('form.ticketStatus').serialize());
-		if ($('select.ticketStatus').val() == "Pending" && $('input.assignedTo').val() != "") {
-			swal({
-				title : "Are you sure?",
-				text : 'Ticket status will be change to "Pending" which means it will be removed from the assigned support',
-				type : 'warning',
-				showCancelButton : true,
-				confirmButtonText : "Yes",
-				closeOnConfirm : false,
-				showLoaderOnConfirm : true,
-				disableButtonsOnConfirm : true,
-			}, function() {
-				changeStatus();
-			});
+	$('button.ticketSave')
+			.on(
+					'click',
+					function() {
+						console.log($('form.ticketStatus').serialize());
+						if ($('select.ticketStatus').val() == "Pending"
+								&& $('input.assignedTo').val() != "") {
+							swal(
+									{
+										title : "Are you sure?",
+										text : 'Ticket status will be change to "Pending" which means it will be removed from the assigned support',
+										type : 'warning',
+										showCancelButton : true,
+										confirmButtonText : "Yes",
+										closeOnConfirm : false,
+										showLoaderOnConfirm : true,
+										disableButtonsOnConfirm : true,
+									}, function() {
+										changeStatus();
+									});
 
-		} else {
-			changeStatus();
-		}
+						} else {
+							changeStatus();
+						}
 
-	});
+					});
 
 	function changeStatus() {
 		$.ajax({
@@ -1011,58 +1378,72 @@ $(function() {
 
 			}
 		});
-	};
+	}
+	;
 
 	$('#forward').on('hidden.bs.modal', function() {
 		$('form.forwardTo').trigger("reset");
 	});
 
-	$('button.saveForwardTo').on('click', function() {
-		$.ajax({
-			type : "PUT",
-			url : "/admin/forwardTicket",
-			data : $('form.forwardTo').serialize(),
-		}).done(function(data) {
-			if (data.success == true) {
-				swal({
-					title : "Success!",
-					text : "Ticket is now assigned to a new agent",
-					type : "success",
-				}, function() {
-					location.reload();
+	$('button.saveForwardTo')
+			.on(
+					'click',
+					function() {
+						$
+								.ajax({
+									type : "PUT",
+									url : "/admin/forwardTicket",
+									data : $('form.forwardTo').serialize(),
+								})
+								.done(
+										function(data) {
+											if (data.success == true) {
+												swal(
+														{
+															title : "Success!",
+															text : "Ticket is now assigned to a new agent",
+															type : "success",
+														}, function() {
+															location.reload();
+														});
+											} else {
+												swal(
+														'Oopss...',
+														'Something went wrong please try again',
+														'error');
+											}
+										});
+
+					});
+
+	$('button.closeTicket').on(
+			'click',
+			function() {
+				$('input[type="hidden"]#closing_report').val(
+						$('div.ticketsummernote').code());
+
+				$.ajax({
+					type : "PUT",
+					url : "/admin/closeTicket",
+					data : $('form.closeTicket').serialize(),
+				}).done(function(data) {
+					if (data.success == true) {
+						swal({
+							title : "Success!",
+							text : "Ticket status has been changed",
+							type : "success",
+						}, function() {
+							location.reload();
+						});
+					} else {
+						toastr.options = {
+							positionClass : "toast-top-center",
+						};
+						toastr.error(data.errors['closing_report']);
+					}
 				});
-			} else {
-				swal('Oopss...', 'Something went wrong please try again', 'error');
-			}
-		});
 
-	});
-
-	$('button.closeTicket').on('click', function() {
-		$('input[type="hidden"]#closing_report').val($('div.ticketsummernote').code());
-
-		$.ajax({
-			type : "PUT",
-			url : "/admin/closeTicket",
-			data : $('form.closeTicket').serialize(),
-		}).done(function(data) {
-			if (data.success == true) {
-				swal({
-					title : "Success!",
-					text : "Ticket status has been changed",
-					type : "success",
-				}, function() {
-					location.reload();
-				});
-			} else {
-				toastr.options = {
-					positionClass : "toast-top-center",
-				};
-				toastr.error(data.errors['closing_report']);
-			}
-		});
-
-	});
+			});
 
 	$('button.deleteViewedTicket').on('click', function() {
 		swal({
@@ -1092,7 +1473,7 @@ $(function() {
 
 		});
 	});
-	//Dashboard Buttons
+	// Dashboard Buttons
 	$('button.topIssueMonth').on('click', function() {
 		$.ajax({
 			type : "GET",
@@ -1186,64 +1567,103 @@ $(function() {
 		});
 	});
 
-	$('button.topSupportWeek').on('click', function() {
-		$.ajax({
-			type : "GET",
-			url : "/admin/topSupport",
-			data : {
-				topSupport : "Week"
-			},
-		}).done(function(data) {
-			var html;
-			console.log(data);
-			$.each(data, function(index, v) {
-				html += "<tr><td><span class='label label-info'>" + v.total + "</span></td><td>" + v.name + "</td></tr>";
+	$('button.topSupportWeek')
+			.on(
+					'click',
+					function() {
+						$
+								.ajax({
+									type : "GET",
+									url : "/admin/topSupport",
+									data : {
+										topSupport : "Week"
+									},
+								})
+								.done(
+										function(data) {
+											var html;
+											console.log(data);
+											$
+													.each(
+															data,
+															function(index, v) {
+																html += "<tr><td><span class='label label-info'>"
+																		+ v.total
+																		+ "</span></td><td>"
+																		+ v.name
+																		+ "</td></tr>";
 
-			});
+															});
 
-			$('tbody.topSupport').html(html);
-		});
-	});
+											$('tbody.topSupport').html(html);
+										});
+					});
 
-	$('button.topSupportMonth').on('click', function() {
-		$.ajax({
-			type : "GET",
-			url : "/admin/topSupport",
-			data : {
-				topSupport : "Month"
-			},
-		}).done(function(data) {
-			var html;
-			console.log(data);
-			$.each(data, function(index, v) {
-				html += "<tr><td><span class='label label-info'>" + v.total + "</span></td><td>" + v.name + "</td></tr>";
+	$('button.topSupportMonth')
+			.on(
+					'click',
+					function() {
+						$
+								.ajax({
+									type : "GET",
+									url : "/admin/topSupport",
+									data : {
+										topSupport : "Month"
+									},
+								})
+								.done(
+										function(data) {
+											var html;
+											console.log(data);
+											$
+													.each(
+															data,
+															function(index, v) {
+																html += "<tr><td><span class='label label-info'>"
+																		+ v.total
+																		+ "</span></td><td>"
+																		+ v.name
+																		+ "</td></tr>";
 
-			});
+															});
 
-			$('tbody.topSupport').html(html);
-		});
-	});
+											$('tbody.topSupport').html(html);
+										});
+					});
 
-	$('button.topSupportYear').on('click', function() {
-		$.ajax({
-			type : "GET",
-			url : "/admin/topSupport",
-			data : {
-				topSupport : "Year"
-			},
-		}).done(function(data) {
-			var html;
-			console.log(data);
-			$.each(data, function(index, v) {
-				html += "<tr><td><span class='label label-info'>" + v.total + "</span></td><td>" + v.name + "</td></tr>";
+	$('button.topSupportYear')
+			.on(
+					'click',
+					function() {
+						$
+								.ajax({
+									type : "GET",
+									url : "/admin/topSupport",
+									data : {
+										topSupport : "Year"
+									},
+								})
+								.done(
+										function(data) {
+											var html;
+											console.log(data);
+											$
+													.each(
+															data,
+															function(index, v) {
+																html += "<tr><td><span class='label label-info'>"
+																		+ v.total
+																		+ "</span></td><td>"
+																		+ v.name
+																		+ "</td></tr>";
 
-			});
+															});
 
-			$('tbody.topSupport').html(html);
-		});
-	});
+											$('tbody.topSupport').html(html);
+										});
+					});
 
-	//Assign Support section @ admin dashboard
+	// Assign Support section @ admin dashboard
 	var assignSupport = $('button.noSupport').ladda();
 
 	assignSupport.click(function(e) {
@@ -1295,7 +1715,7 @@ $(function() {
 		});
 	});
 
-	//Admin/Agent create client acount page
+	// Admin/Agent create client acount page
 	$('button.refreshCaptcha').on('click', function() {
 		$.ajax({
 			type : "GET",
@@ -1318,54 +1738,60 @@ $(function() {
 			type : "POST",
 			url : "/tickets/signUp",
 			data : $('form.clientForm').serialize(),
-		}).done(function(data) {
-			if (data.success == false) {
+		}).done(
+				function(data) {
+					if (data.success == false) {
 
-				registerClient.ladda('stop');
-				if (data.errors['first_name']) {
-					$('div.firstname').addClass('has-error');
-					$('label.firstname').show().text('*' + data.errors['first_name'][0]);
-					;
-				}
-				if (data.errors['last_name']) {
-					$('div.lastname').addClass('has-error');
-					$('label.lastname').show().text('*' + data.errors['last_name'][0]);
-					;
-				}
-				if (data.errors['email']) {
-					$('span.email').show().text('*' + data.errors['email']);
-					$('div.email').addClass('has-error');
-				}
-				if (data.errors['dept']) {
-					$('span.department').show().text('*' + data.errors['dept']);
-					$('div.department').addClass('has-error');
-				}
-				if (data.errors['password']) {
-					$('span.password').show().text('*' + data.errors['password']);
-					$('div.password').addClass('has-error');
-				}
-				if (data.errors['captcha']) {
-					$('div.captcha').addClass('has-error');
-					$('label.captcha').show();
-					$.ajax({
-						type : "GET",
-						url : "/captcha-test",
-					}).done(function(data) {
-						$('img.captcha_img').attr('src', data);
-					});
-				}
-			} else {
-				toastr.options = {
-					positionClass : "toast-top-center",
-				};
-				toastr.success('Account succesfully created');
-				registerClient.ladda('stop');
-				$('form.clientForm').trigger("reset");
-			}
+						registerClient.ladda('stop');
+						if (data.errors['first_name']) {
+							$('div.firstname').addClass('has-error');
+							$('label.firstname').show().text(
+									'*' + data.errors['first_name'][0]);
+							;
+						}
+						if (data.errors['last_name']) {
+							$('div.lastname').addClass('has-error');
+							$('label.lastname').show().text(
+									'*' + data.errors['last_name'][0]);
+							;
+						}
+						if (data.errors['email']) {
+							$('span.email').show().text(
+									'*' + data.errors['email']);
+							$('div.email').addClass('has-error');
+						}
+						if (data.errors['dept']) {
+							$('span.department').show().text(
+									'*' + data.errors['dept']);
+							$('div.department').addClass('has-error');
+						}
+						if (data.errors['password']) {
+							$('span.password').show().text(
+									'*' + data.errors['password']);
+							$('div.password').addClass('has-error');
+						}
+						if (data.errors['captcha']) {
+							$('div.captcha').addClass('has-error');
+							$('label.captcha').show();
+							$.ajax({
+								type : "GET",
+								url : "/captcha-test",
+							}).done(function(data) {
+								$('img.captcha_img').attr('src', data);
+							});
+						}
+					} else {
+						toastr.options = {
+							positionClass : "toast-top-center",
+						};
+						toastr.success('Account succesfully created');
+						registerClient.ladda('stop');
+						$('form.clientForm').trigger("reset");
+					}
 
-		});
+				});
 	});
-	//Admin Edit Account Page
+	// Admin Edit Account Page
 	var editPersonalInfo = $('button.editPersonalInfo').ladda();
 	var editPassword = $('button.editPassword').ladda();
 
@@ -1401,71 +1827,104 @@ $(function() {
 			type : 'PUT',
 			url : '/admin/changePassword',
 			data : $('form.adminChangePassword').serialize(),
-		}).done(function(data) {
-			if (data.success == true) {
-				swal('Password successfully changed', '', 'success');
-				editPassword.ladda('stop');
-				$('form.adminChangePassword').trigger('reset');
-			} else {
-				editPassword.ladda('stop');
+		}).done(
+				function(data) {
+					if (data.success == true) {
+						swal('Password successfully changed', '', 'success');
+						editPassword.ladda('stop');
+						$('form.adminChangePassword').trigger('reset');
+					} else {
+						editPassword.ladda('stop');
 
-				if (data.errors['oldPassword']) {
-					$('div.oldPassword').addClass('has-error');
-					$('label.oldPassword').text(data.errors['oldPassword']).show();
-				}
+						if (data.errors['oldPassword']) {
+							$('div.oldPassword').addClass('has-error');
+							$('label.oldPassword').text(
+									data.errors['oldPassword']).show();
+						}
 
-				if (data.errors['password']) {
-					$('div.newPassword').addClass('has-error');
-					$('label.newPassword').text(data.errors['password']).show();
-				}
-			}
-		});
+						if (data.errors['password']) {
+							$('div.newPassword').addClass('has-error');
+							$('label.newPassword')
+									.text(data.errors['password']).show();
+						}
+					}
+				});
 	});
 
-	$('button.advancedEmailSearch').click(function() {
-		$.ajax({
-			type : "POST",
-			url : "/admin/advancedSearch",
-			data : $('form.advancedTicket').serialize(),
-		}).done(function(data) {
+	$('button.advancedEmailSearch')
+			.click(
+					function() {
+						$
+								.ajax(
+										{
+											type : "POST",
+											url : "/admin/advancedSearch",
+											data : $('form.advancedTicket')
+													.serialize(),
+										})
+								.done(
+										function(data) {
 
-			$('div.pagination').hide();
-			$('tbody.ticketReport').empty();
-			var html;
+											$('div.pagination').hide();
+											$('tbody.ticketReport').empty();
+											var html;
 
-			$.each(data.response, function(i, v) {
+											$
+													.each(
+															data.response,
+															function(i, v) {
 
-				html += "<tr class='read' data-href='/admin/tickets/" + v.id + "'>";
+																html += "<tr class='read' data-href='/admin/tickets/"
+																		+ v.id
+																		+ "'>";
 
-				if (v.first_name == null) {
-					v.first_name = "";
-				}
-				if (v.last_name == null) {
-					v.last_name = "";
-				}
+																if (v.first_name == null) {
+																	v.first_name = "";
+																}
+																if (v.last_name == null) {
+																	v.last_name = "";
+																}
 
-				html += "<td> <input type='checkbox' class='i-checks' name='id' value=" + v.id + "> </td><td class='mail-ontact'>" + v.sender + "</td><td>" + v.subject + "</td>";
+																html += "<td> <input type='checkbox' class='i-checks' name='id' value="
+																		+ v.id
+																		+ "> </td><td class='mail-ontact'>"
+																		+ v.sender
+																		+ "</td><td>"
+																		+ v.subject
+																		+ "</td>";
 
-				if (v.priority_level == 'High') {
-					html += "<td><span class='label label-danger'>" + v.priority_level + "</span>";
-				} else if (v.priority_level == 'Normal') {
-					html += "<td><span class='label label-warning'>" + v.priority_level + "</span>";
-				} else {
-					html += "<td><span class='label label-primary'>" + v.priority_level + "</span>";
-				}
+																if (v.priority_level == 'High') {
+																	html += "<td><span class='label label-danger'>"
+																			+ v.priority_level
+																			+ "</span>";
+																} else if (v.priority_level == 'Normal') {
+																	html += "<td><span class='label label-warning'>"
+																			+ v.priority_level
+																			+ "</span>";
+																} else {
+																	html += "<td><span class='label label-primary'>"
+																			+ v.priority_level
+																			+ "</span>";
+																}
 
-				html += "<span class='label label-default'>" + v.description + " </span></td><td>" + v.created_at + "</td>";
-			});
-			$('tbody.ticketReport').html(html);
-			$('.i-checks').iCheck({
-				checkboxClass : 'icheckbox_square-green',
-				radioClass : 'iradio_square-green',
-			});
+																html += "<span class='label label-default'>"
+																		+ v.description
+																		+ " </span></td><td>"
+																		+ v.created_at
+																		+ "</td>";
+															});
+											$('tbody.ticketReport').html(html);
+											$('.i-checks')
+													.iCheck(
+															{
+																checkboxClass : 'icheckbox_square-green',
+																radioClass : 'iradio_square-green',
+															});
 
-		});
-	});
-	
-	$(document).on('click','tr.read',function(){
+										});
+					});
+
+	$(document).on('click', 'tr.read', function() {
 		window.document.location = $(this).data("href");
 	});
 });

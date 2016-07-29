@@ -5,7 +5,7 @@
 
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 		<title>@yield('title')</title>
 
 		<link href="/css/bootstrap.min.css" rel="stylesheet">
@@ -20,7 +20,7 @@
 
 	</head>
 
-	<body class="white-bg" >
+	<body class="white-bg top-navigation" >
 		<script src="/js/jquery-2.1.1.js"></script>
 		<script src="/js/bootstrap.min.js"></script>
 

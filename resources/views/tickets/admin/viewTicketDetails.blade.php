@@ -31,7 +31,7 @@
 							<a href="/admin/tickets"><i class="fa fa-inbox "></i>All Tickets </a>
 						</li>
 						<li>
-							<a href="/admin/tickets-Assigned"><i class="fa fa-tasks "></i>My Tickets <span class="pull-right label label-info assignedTickets">0</span></a>
+							<a href="/admin/tickets-Assigned"><i class="fa fa-tasks "></i>Assigned Tickets <span class="pull-right label label-info assignedTickets">0</span></a>
 						</li>
 
 						<li>
@@ -119,14 +119,14 @@
 
 						</div>
 					</div>
-					<h2> &nbsp; View Message <span class="label label-info">{{Session::get('priority')}}</span></h2>
+					<h2> &nbsp; Ticket ID: {{Session::get('id')}} - {{Session::get('status')}}</span></h2>
 				</div>
 			</form>
 
 			<div class="mail-tools tooltip-demo m-t-md">
 
-				<h5><span class="pull-right"><span class="font-noraml">Ticket id:</span> {{Session::get('id')}}</span></h5><h3><span class="font-noraml">Subject: </span>{{Session::get('subject')}}</h3>
-				<h5><span class="pull-right"><span class="font-noraml">Date sent:</span> {{Session::get('date_sent')}}</span><span class="font-noraml">From: </span>{{Session::get('email')}} </h5>
+				<h5><span class="pull-right"><span class="font-noraml">Topic:</span> {{Session::get('topic')}}</span></h5><h3><span class="font-noraml">Subject: </span>{{Session::get('subject')}}</h3>
+				<h5><span class="pull-right"><span class="font-noraml">Priority:</span> {{Session::get('priority')}}</span><span class="font-noraml">Department: </span>{{Session::get('department')}} </h5>
 				
 				
 				
@@ -143,12 +143,18 @@
 
 		<div class="mail-box">			
 			<div class="mail-body">
-				Summary:
-				<div class="ibox-content gray-bg">
-				 <p>
+				<div  class="panel panel-default ">
+					<div class="panel-heading"> 
+						Created at: {{Session::get('date_sent')}} <span class="pull-right">By: {{Session::get('email')}}</span>
+					</div>
+					<div class="panel-body">
+						 <p>
 					{!!html_entity_decode(Session::get('summary'))!!}
 				 </p>
+					</div>
+					
 				</div>
+				
 				
 				@if(Session::get('status') == "Closed")
 				<br>

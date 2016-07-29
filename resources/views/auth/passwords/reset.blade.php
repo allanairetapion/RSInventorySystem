@@ -5,20 +5,16 @@
 <div class="passwordBox animated fadeInDown">
 	<div class="ibox">
 
-		<div class="ibox-title gray-bg">
-			<center>
-				<h2 class="font-bold">Reset password</h2><center>
-		</div>
-		<div class="ibox-content text-center gray-bg">
-
+		<div class="ibox-content gray-bg">
+<h2 class="font-bold">Change Password</h2>
 			<P>
-				Enter your new password and confirm your new password.
+				Enter your new password for <strong>{{ Session::get('resetEmail') }}</strong> and confirm your new password.
 			</P>
 
 			<div class="row">
 
 				<div class="col-lg-12">
-					<form class="m-t" role="form" method="post" action="{{ url('/password/reset') }}"  >
+					<form class="m-t" role="form" method="post" action="{{ url('/tickets/changePassword') }}"  >
 						{!! csrf_field() !!}
 						<input type="hidden" name="token" value="{{ Session::get('token') }}">
 

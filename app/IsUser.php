@@ -12,14 +12,28 @@ use Illuminate\Auth\Passwords\CanResetPassword as ResetPassword;
 	class IsUser extends Authenticatable{
 		
 		public $timestamps = false;
-		protected $table = "is_users";
-	
-		protected $fillable = ['first_name','last_name','email','password','phone_number','date_created','confirmation_code'];
-		
-		
-		    protected $hidden = [
+	protected $table = "admin";
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+         'id','uid','email', 'password','user_type','date_registered'
+    ];
+
+    /**
+     * The attributes that should be hidden for arrays.
+     *
+     * @var array
+     */
+    protected $hidden = [
         'password', 'remember_token',
     ];
+	
+	public function adminProfile(){
+		return $this->hasOne("App\AdminProfile",'agent_id');
+	}
 		
 
 			
