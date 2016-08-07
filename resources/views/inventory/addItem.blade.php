@@ -85,12 +85,13 @@
 							<div class="form-group col-lg-7 dateArrived">
 								<label class="control-label col-lg-3 "> Date Arrived:</label>
 								<div class="col-lg-9">
-									<div class="input-group date">
-										<span class="input-group-addon"><i class="fa fa-calendar"></i></span><input
-											type="text" class="form-control dateArrived"
-											name="dateArrived" required>
+								<div class="input-group date dateArrived">
+									<span class="input-group-addon"><i class="fa fa-calendar"></i></span><input
+										type="text" class="form-control dateArrived"
+										name="dateArrived">
 
-									</div>
+								</div>
+									
 									<span class="help-block text-danger dateArrived">192.168.100.200</span>
 								</div>
 

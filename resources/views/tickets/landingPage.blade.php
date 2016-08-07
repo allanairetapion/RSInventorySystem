@@ -51,18 +51,19 @@
 	<div class="ibox ">
 		<div class="ibox-title">
 			<div class="pull-right">
-				<a href="/tickets/ticketStatus" class="btn btn-primary"> View All </a>
+				<a href="/tickets/ticketStatus" class="btn btn-primary btn-sm"> View All </a>
 				</div>
 			<h3 class="font-bold">Your recent tickets</h3>
 		</div>
 		<div class="ibox-content">
-			<table class="table table-bordered">
+			<table class="table table-hover issue-tracker">
 				<thead>
 					<tr>
+					<th>Status</th>
 						<th>Ticket No:</th>
 						<th>Topic</th>
 						
-						<th>Status</th>
+						
 						<th>Date Sent</th>
 						<th>Assigned to:</th>
 
@@ -71,18 +72,23 @@
 				<tbody>
 					
 						@foreach ($tickets as $ticket)
-						@if ($ticket->ticket_status == "Pending")
-						<tr style="background-color: #F2F256;" id="{{$ticket->id}}">
-							@elseif ($ticket->ticket_status == "Open")
-						<tr class="bg-primary" id="{{$ticket->id}}">
-							@else
-						<tr class="navy-bg" id="{{$ticket->id}}">
-							@endif
+						
+						<tr class="read" data-href="/tickets/{{$ticket->id}}" >
+							<td class="text-center">@if($ticket->ticket_status == "Open") <span
+								class="label label-success">{{$ticket->ticket_status}}</span>
+								@elseif($ticket->ticket_status == "Pending") <span
+								class="label label-warning">{{$ticket->ticket_status}}</span>
+								@elseif($ticket->ticket_status == "Closed") <span
+								class="label label-primary">{{$ticket->ticket_status}}</span>
+								@elseif($ticket->ticket_status == "Unresolved") <span
+								class="label label-danger">{{$ticket->ticket_status}}</span>
+								@endif
+							</td>
 
 
 						<td>{{$ticket->id}}</td>
 						<td>{{$ticket->description}}</td>
-						<td>{{$ticket->ticket_status}}</td>
+						
 						<td >{{$ticket->created_at}}</td>
 						<td>{{$ticket->first_name.' '.$ticket->last_name}}</td>
 					</tr>

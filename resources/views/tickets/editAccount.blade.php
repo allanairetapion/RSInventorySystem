@@ -51,10 +51,11 @@
 											</div>
 										</div>
 										<hr>
-										<button type="button "class="ladda-button btn btn-primary pull-right editPersonalInfo" data-style="zoom-in">
+										
+									</form>
+									<button type="button "class="ladda-button btn btn-primary pull-right editPersonalInfo" data-style="zoom-in">
 											Save
 										</button>
-									</form>
 								</div>
 							</div>
 

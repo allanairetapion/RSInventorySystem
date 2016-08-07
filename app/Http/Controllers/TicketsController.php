@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers;
 use App\Tickets as Ticket;
+use App\TicketLogs as TicketLogs;
 use App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use DB;
@@ -23,6 +24,8 @@ class TicketsController extends Controller{
 	public function landingPage(Request $request){
 	 	if(Auth::guard('user')->check()){
 	 		$tickets = DB::table('tickets')->leftJoin('ticket_topics','tickets.topic_id','=','ticket_topics.topic_id')->leftJoin('admin_profiles','tickets.assigned_support','=','admin_profiles.agent_id')->where('sender_id',Auth::guard('user')->user()->id)->take(11)->get();
+	 		
+	 		
 	 		$pendingTickets = DB::table('tickets')->where('ticket_status',"!=",'Closed')->where('sender_id',Auth::guard('user')->user()->id)->get();
 	 		$users = DB::table('ticket_topics')->where('status',1)->get();	
 			return view("tickets.landingPage",['topics' => $users,'tickets' => $tickets,'pendingTickets' => $pendingTickets]);
@@ -75,8 +78,9 @@ class TicketsController extends Controller{
 	}
 	public function showTicketStatus(){
 		$tickets = DB::table('tickets')->leftJoin('ticket_topics','tickets.topic_id','=','ticket_topics.topic_id')->leftJoin('admin_profiles','tickets.assigned_support','=','admin_profiles.agent_id')->where('sender_id',Auth::guard('user')->user()->id)->paginate(15);
+		$closedby = DB::table('tickets')->leftJoin('ticket_topics','tickets.topic_id','=','ticket_topics.topic_id')->leftJoin('admin_profiles','tickets.closed_by','=','admin_profiles.agent_id')->where('sender_id',Auth::guard('user')->user()->id)->paginate(15);
 		
-		return view('tickets.ticketStatus',['tickets' => $tickets]);
+		return view('tickets.ticketStatus',['tickets' => $tickets,'closedby' => $closedby]);
 		
 	}
 	
@@ -122,17 +126,20 @@ class TicketsController extends Controller{
 		}
 		
 	public function changePersonalInfo(Request $request){
-		$validator = Validator::make($request->all(),['id' => 'exists:clients']);
+		$validator = Validator::make($request->all(),
+				['id' => 'exists:clients']);
 		
 		if($validator->fails()){
 			return response()->json(array('success'=> false, 'errors' =>$validator->getMessageBag()->toArray()));    
 		}else{
+			
 		$changePersonalInfo = DB::table('clients')->leftJoin('client_profiles','clients.id','=','client_profiles.client_id')
 		->where('id',$request['id'])
 		->update(['email' => $request['email'],'first_name' => $request['fname'],'last_name' => $request['lname'],
 		'clients.updated_at' => Carbon::now(),'client_profiles.updated_at' => Carbon::now()]);
 		
 		return response()->json(array('success'=> true));	
+		
 		}
 		
 	}
@@ -153,6 +160,46 @@ class TicketsController extends Controller{
 		else{
 			return response()->json(array('success'=> false,'errors' => ['oldPassword' => 'Wrong Password. Please try again.']));
 		}
+	}
+	
+	public function ticketDetails($id) {
+		$ticket = DB::table ( 'tickets' )->leftJoin ( 'ticket_topics', 'tickets.topic_id', "=", 'ticket_topics.topic_id' )->where ( 'id', $id )->where('sender_id',Auth::guard('user')->user()->id)->first ();
+		
+		if($ticket == null){
+			abort(404);
+		}
+		if ($ticket->ticket_status != 'Open') {
+			$messages = TicketLogs::where('ticket_id',$id)->get();
+				
+			foreach($messages as $message){
+				$name = DB::table('admin_profiles')->where('agent_id', $message['sender'])->first();
+				if($name == null){
+					$name = DB::table('client_profiles')->where('client_id', $message['sender'])->first();
+				}
+				$message['sender'] = $name->first_name.' '.$name->last_name;
+			}
+				
+				
+		}
+		$assignedTo = DB::table ( 'tickets' )->leftJoin ( 'admin_profiles', 'tickets.assigned_support', '=', 'admin_profiles.agent_id' )->leftJoin ( 'ticket_topics', 'tickets.topic_id', "=", 'ticket_topics.topic_id' )->where ( 'id', $id )->first ();
+		
+		$closedBy = DB::table ( 'tickets' )->leftJoin ( 'admin_profiles', 'tickets.closed_by', '=', 'admin_profiles.agent_id' )->leftJoin ( 'ticket_topics', 'tickets.topic_id', "=", 'ticket_topics.topic_id' )->where ( 'id', $id )->first ();
+		session ( [
+				'subject' => $ticket->subject,
+				'department' => $ticket->department,
+				'date_sent' => $ticket->created_at,
+				'date_modified' => $ticket->updated_at,
+				'summary' => $ticket->summary,
+				'topic_id' => $ticket->topic_id,
+				'topic' => $ticket->description,
+				'id' => $ticket->id,
+				'assigned_support' => $assignedTo->first_name . ' ' . $assignedTo->last_name,
+				'status' => $ticket->ticket_status,
+				'priority' => $ticket->priority_level,
+				'closed_by' => $closedBy->first_name . ' ' . $closedBy->last_name,
+				'closing_report' => $closedBy->closing_report
+		] );
+		return view('tickets.viewTicketDetails',['messages'=> $messages ]);
 	}
 }
 

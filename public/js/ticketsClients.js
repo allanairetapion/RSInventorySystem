@@ -1,5 +1,5 @@
 /**
- * @author ITojt01 Luis Philip M. Castañeda
+ * @author ITojt01 Luis Philip M. CastaÃƒÂ±eda
  */
 
 $(function() {
@@ -171,5 +171,8 @@ $(function() {
 			}
 		});
 	});
-
+	
+	$(document).on('click', 'tr.read', function() {
+		window.document.location = $(this).data("href");
+	});
 });

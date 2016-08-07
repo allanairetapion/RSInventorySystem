@@ -75,9 +75,7 @@ $ntime = date('Y-m-d');
 		</div>
 	</div>
 	</a>
-</div>
 
-<div class="row">
 
 	<div class="col-md-6">
 		<div class="ibox animated fadeInDown float-e-margins">
@@ -92,21 +90,33 @@ $ntime = date('Y-m-d');
 
 	</div>
 
-	<div class="col-md-6">
+	<div class="col-md-3">
 		<div class="ibox animated fadeInDown float-e-margins">
 			<div class="ibox-title">
-				<h5>Tickets By Status</h5>
+				<h5>Ticket Share Per Status</h5>
 			</div>
 			<div class="ibox-content">
-				<br>
+				
 				<div id="pie"></div>
 
 			</div>
 		</div>
 	</div>
+	<div class="col-md-3">
+		<div class="ibox animated fadeInDown float-e-margins">
+			<div class="ibox-title">
+				<h5>Ticket Share Per Topic</h5>
+				
+			</div>
+			<div class="ibox-content">
+				
+				<div id="pie2"></div>
 
-</div>
-<div class="row">
+			</div>
+		</div>
+	</div>
+
+@if(Auth::guard('admin')->user()->user_type == 'admin')
 	<div class="col-lg-9">
 		<div class="ibox animated fadeInDown ">
 			<div class="ibox-title">
@@ -200,6 +210,7 @@ $ntime = date('Y-m-d');
 			</div>
 		</div>
 	</div>
+	@endif
 </div>
 
 
@@ -215,7 +226,7 @@ $ntime = date('Y-m-d');
 			$('h2.newTickets').text(data.newTickets);
 			$('h2.pendingTickets').text(data.pendingTickets +  data.openTickets);
 			$('h2.overdueTickets').text(data.overdueTickets);
-			$('h2.closedTickets').text(data.closedTickets);
+			$('h2.closedTickets').text(data.closedTicketsToday);
 		});
 		$.ajax({
 			type : "GET",
@@ -225,9 +236,7 @@ $ntime = date('Y-m-d');
 			console.log(data);
 			c3.generate({
 				bindto : '#pie',
-				size : {
-					height : 302
-				},
+				
 
 				data : {
 					json : data,
@@ -243,6 +252,31 @@ $ntime = date('Y-m-d');
 
 			});
 
+		});
+
+		$.ajax({
+			type : "GET",
+			url : "/admin/topIssue",
+			
+		}).done(function(data) {
+			console.log(data);
+			c3.generate({
+				bindto : '#pie2',
+				
+				data : {
+					json : data,
+
+					type : 'pie'
+				},
+				pie : {
+					label : {
+						format : function(value, ratio, id) {
+							return value;
+						}
+					}
+				}
+
+			});
 		});
 		
 		$.ajax({

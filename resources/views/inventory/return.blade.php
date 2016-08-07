@@ -20,25 +20,14 @@
 	@endsection	
 @section('content')
 				
-				<div class="wrapper wrapper-content animated fadeInRight">
+				
 					<div class="row">
 						<div class="col-lg-12">
 							<div class="ibox float-e-margins">
 								<div class="ibox-title">
 
-									<div class="ibox-tools">
-										<a class="collapse-link"> <i class="fa fa-chevron-up"></i> </a>
-										<a class="dropdown-toggle" data-toggle="dropdown" href="#"> <i class="fa fa-wrench"></i> </a>
-										<ul class="dropdown-menu dropdown-user">
-											<li>
-												<a href="#">Config option 1</a>
-											</li>
-											<li>
-												<a href="#">Config option 2</a>
-											</li>
-										</ul>
-										<a class="close-link"> <i class="fa fa-times"></i> </a>
-									</div>
+									<button type="button" class="btn btn-primary" data-toggle="modal"
+						data-target="#myModal">Report</button>
 								</div>
 								<div class="ibox-content">
 
@@ -46,57 +35,36 @@
 										<table class="table table-striped table-bordered table-hover dataTables-example" >
 											<thead>
 												<tr>
-													<th>Item</th>
-													<th>Model</th>
+													<th>Item Type</th>
+													
 													<th>Brand</th>
+													<th>Model</th>
 													<th>Unique Identifier</th>
 													<th>Item No.</th>
-													<th>Morning Shift</th>
-													<th>Night Shift</th>
-													<th>Lent</th>
 													<th>Borrower</th>
-													<th>Date Borrowed</th>
+													<th>Receiver</th>
+													<th>Date Returned</th>
 													<th>Action</th>
 												</tr>
 											</thead>
-											<tbody>
-												<tr>
-													<td>Laptop</td>
-													<td>Dell i3</td>
-													<td>Dell</td>
-													<td>DELLDC4A2C</td>
-													<td class="center">30</td>
-													<td class="center">X</td>
+											<tbody class="returnItem">
+												
+													@foreach($returnedItems as $return)
+													<tr>
+													<td>{{$return->itemType}}</td>
+													<td>{{$return->brand}}</td>
+													<td>{{$return->model}}</td>
+													<td>{{$return->unique_id}}</td>
+													<td>{{$return->itemNo}}</td>
+													<td>{{$return->borrower}}</td>													
+													<td>{{$return->first_name.' '.$return->last_name}}</td>
+													<td>{{$return->dateReturned}}</td>
 													<td></td>
-													<td></td>
-													<td>James Monreal</td>
-													<td>4/20</td>
-													<td>
-													<button>
-														Update
-													</button> &nbsp;
-													<button>
-														Delete
-													</button></td>
-												</tr>
+													</tr>
+													@endforeach
 
 											</tbody>
-											<tfoot>
-												<tr>
-													<th>Item</th>
-													
-													<th>Model</th>
-													<th>Brand</th>
-													<th>Unique Identifier</th>
-													<th>Item No.</th>
-													<th>Morning Shift</th>
-													<th>Night Shift</th>
-													<th>Lent</th>
-													<th>Borrower</th>
-													<th>Date Borrowed</th>
-													<th>Action</th>
-												</tr>
-											</tfoot>
+											
 										</table>
 									</div>
 
@@ -105,23 +73,168 @@
 						</div>
 					</div>
 					
+<div id="myModal" class="modal fade" role="dialog">
+	<div class="modal-dialog modal-lg">
 
-						<!--
-<script src="/js/jquery-2.1.1.js"></script>
-<script src="/js/bootstrap.min.js"></script>
-<script src="/js/plugins/metisMenu/jquery.metisMenu.js"></script>
-<script src="/js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
-<script src="/js/plugins/jeditable/jquery.jeditable.js"></script>
+		<!-- Modal content-->
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+				<h4 class="modal-title">Borrow Report</h4>
+			</div>
 
-<script src="/js/plugins/dataTables/datatables.min.js"></script>
+			<div class="ibox-content">
+				<form class="form-horizontal returnItem" id="returnItem">
+				{!! csrf_field() !!}
+					<div class="row">
+						<div class="form-group col-lg-7 unique_id">
+							<label class="control-label col-lg-4"> Unique Identifier:</label>
+							<div class="col-lg-8">
+								<input type="text" class="form-control borrowUniqueId"
+									placeholder="Unique Identifier" name="unique_id">
+									<span class="help-block text-danger unique_id">192.168.100.200</span>
+							</div>
+						</div>
+						<div class="form-group col-lg-5 itemNo">
+							<label class="control-label col-lg-4"> Item No:</label>
+							<div class="col-lg-8">
+								<input type="text" class="form-control infoItemNo" placeholder="Item No."
+									name="itemNo" readonly>
+									<span class="help-block text-danger itemNo">192.168.100.200</span>
+							</div>
+						</div>
+						<div class="form-group col-lg-7 dateReturned">
+							<label class="control-label col-lg-4"> Date Received:</label>
+							<div class="col-lg-8">
+								<div class="input-group date dateReturned">
+										<span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control dateReturned" placeholder="Name"
+									name="dateReturned">
 
-<script src="/js/inspinia.js"></script>
-<script src="/js/plugins/pace/pace.min.js"></script>
--->
-						<script>
+									</div>
+									<span class="help-block text-danger dateReturned">192.168.100.200</span>
+							</div>
+						</div>
 						
-						</script>
-Remote Staff Inventory Management System
+					</div>
 
+				</form>
+				<center>
+					<i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i> <span
+						class="sr-only">Loading...</span>
+					
+					</center>
+					<div class="itemNotfound">
+					<hr>
+					<h2 class="text-center">Item Not Found</h2>
+					</div>
+					<form class="form-horizontal borrowInfo">
+						<hr>hello
+						
+						<div class="row">
+							<div class="form-group col-lg-7">
+								<label class="control-label col-lg-4"> Unique Identifier :</label>
+								<div class="col-lg-8">
+									<input type="text" class="form-control infoId"
+										value="Unique Identifier" readonly>
+								</div>
+							</div>
+							<div class="form-group col-lg-5">
+								<label class="control-label col-lg-4"> Item No :</label>
+								<div class="col-lg-8">
+									<input type="text" class="form-control infoItemNo"
+										value="Item No." readonly>
+								</div>
+							</div>
+							<div class="form-group col-lg-7">
+								<label class="control-label col-lg-4"> Borrower :</label>
+								<div class="col-lg-8">
+									<input type="text" class="form-control infoBorrower"
+										value="Borrower" readonly>
+								</div>
+							</div>
+							<div class="form-group col-lg-5">
+								<label class="control-label col-lg-4"> Station No :</label>
+								<div class="col-lg-8">
+									<input type="text" class="form-control infoStationNo"
+										value="Station No." readonly>
+								</div>
+							</div>
+							<div class="form-group col-lg-7">
+								<label class="control-label col-lg-4"> Brand :</label>
+								<div class="col-lg-8">
+									<input type="text" class="form-control infoBrand" value="Brand"
+										readonly>
+								</div>
+							</div>
+							<div class="form-group col-lg-5">
+								<label class="control-label col-lg-4"> Model :</label>
+								<div class="col-lg-8">
+									<input type="text" class="form-control infoModel" value="Model"
+										readonly>
+								</div>
+							</div>
+							<div class="form-group col-lg-7">
+								<label class="control-label col-lg-4"> Item Type :</label>
+								<div class="col-lg-8">
+									<input type="text" class="form-control infoItemType"
+										value="Item Type" readonly>
+								</div>
+							</div>
+							<div class="form-group col-lg-7">
+							<label class="control-label col-lg-4"> Date Borrowed:</label>
+							<div class="col-lg-8">
+								<div class="input-group date">
+										<span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control infodateBorrowed" readonly>
+
+									</div>
+									
+							</div>
+						</div>
+							
+
+
+						</div>
+					</form>
+				
+			</div>
+
+			<div class="modal-footer">
+				<button class="ladda-button btn btn-w-m btn-primary returnItem" type="button">
+					<strong>Save</strong>
+				</button>
+				<button type="button" class="btn btn-w-m btn-danger"
+					data-dismiss="modal">
+					<strong>Cancel</strong>
+				</button>
+			</div>
+		</div>
+
+	</div>
+</div>
+
+<script>
+$(document).ready(function() {
+	$('form.borrowInfo').hide();
+	$('i.fa-pulse').hide();
+	$('div.itemNotfound').hide();
+	$('span.text-danger').hide();
+
+	$('.input-group.date.dateReturned').datepicker({
+	    format : 'yyyy-mm-dd',
+	    todayBtn: "linked"
+		});
+});
+
+$(function() {
+	$("input.uniqueId").keyup(function() {
+		$("input.uniqueId").autocomplete({
+			source : "{{URL('/uniqueId')}}",
+			minLength : 1,
+			appendTo: "#returnItem"
+		});
+		
+	});
+}); 
+</script>		
 @endsection
 

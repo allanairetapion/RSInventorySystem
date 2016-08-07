@@ -70,8 +70,10 @@ Route::get("/inventory/thankyoupage", "inventoryController@showNewPassTy");
 
 	
 Route::group(['middleware' => 'inventory'], function () {
+	
 	Route::get("/uniqueId",'HomeController@uniqueId');
 	Route::get("/inventory/itemInfo",'inventoryController@itemInfo');
+	Route::get("/inventory/borrowInfo",'inventoryController@borrowInfo');
 	Route::get("/inventory/addItems", 'inventoryController@showAddItem');
 	Route::get("/inventory/manageAccounts", 'inventoryController@showManageAccounts');
 	Route::get("/inventory/borrow","inventoryController@showBorrow");
@@ -85,6 +87,8 @@ Route::group(['middleware' => 'inventory'], function () {
 	
 	Route::post("/inventory/addItem","inventoryController@addItem");
 	Route::post("/inventory/borrowItem","inventoryController@borrowItem");
+	Route::post("/inventory/returnItem","inventoryController@returnItem");
+	
 });
 
 
@@ -127,6 +131,7 @@ Route::group(['middleware' => 'user'], function () {
 	Route::get('/tickets/ticketStatus','TicketsController@showTicketStatus');
 	Route::get('/tickets/topIssue','TicketsController@topIssue');
 	Route::get('/tickets/editAccount','TicketsController@editAccount');
+	Route::get('/tickets/{id}','TicketsController@ticketDetails');
 
 	Route::post('/tickets/createTicket','TicketsController@createTicket');
 	
@@ -195,7 +200,7 @@ Route::group(['middleware' => 'admin'], function () {
 	Route::post('/admin/addTopic','TicketsAdmin@addTopic');		
 	Route::post('/admin/advancedSearch','TicketsAdmin@advancedSearch');
 	Route::post('/admin/ticketReply','TicketsAdmin@sendReply');
-	Route::post('/admin/advancedEmailSearch','TicketsAdmin@advancedEmailSearch');
+	Route::get('/admin/ticketSearch','TicketsAdmin@ticketSearch');
 	
 	Route::put('/admin/updateSelection','TicketsAdmin@updateSelection');
 	Route::put('/admin/editTopic','TicketsAdmin@editTopic');

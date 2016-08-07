@@ -17,8 +17,7 @@
 					</div>
 @endsection	
 @section('content')
-				</div>
-				<div class="wrapper wrapper-content animated fadeInRight">
+				
 					<div class="row">
 						<div class="col-lg-12">
 							<div class="ibox float-e-margins">
@@ -55,9 +54,9 @@
 													<th>Night Shift</th>
 													<th>Issue</th>
 													<th>Broken</th>
-													<th>Date Arrival</th>
-													<th>Date Borrowed</th>
-													<th>Date Return</th>
+													<th>Date Arrived</th>
+													<th>Last Borrowed</th>
+													<th>Last Returned</th>
 													<th>Action</th>
 												</tr>
 											</thead>
@@ -87,25 +86,7 @@
 												</tr>
 
 											</tbody>
-											<tfoot>
-												<tr>
-													<th>Station No.</th>
-													<th>Company</th>
-													<th>Item</th>
-													<th>Model</th>
-													<th>Brand</th>
-													<th>Unique Identifier</th>
-													<th>Item No.</th>
-													<th>Morning Shift</th>
-													<th>Night Shift</th>
-													<th>Issue</th>
-													<th>Broken</th>
-													<th>Date Arrival</th>
-													<th>Date Borrowed</th>
-													<th>Date Return</th>
-													<th>Action</th>
-												</tr>
-											</tfoot>
+											
 										</table>
 									</div>
 
@@ -114,21 +95,5 @@
 						</div>
 					</div>
 					
-<!--
-<script src="/js/jquery-2.1.1.js"></script>
-<script src="/js/bootstrap.min.js"></script>
-<script src="/js/plugins/metisMenu/jquery.metisMenu.js"></script>
-<script src="/js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
-<script src="/js/plugins/jeditable/jquery.jeditable.js"></script>
-
-<script src="/js/plugins/dataTables/datatables.min.js"></script>
-
-<script src="/js/inspinia.js"></script>
-<script src="/js/plugins/pace/pace.min.js"></script>
--->
-						<script>
-							
-						</script>
-Remote Staff Inventory Management System
 
 @endsection

@@ -103,50 +103,36 @@
 										<li>
 											<a href="/admin/tickets">All Tickets</a>
 										</li>
-										<li>
-											<a href="/admin/createTicket">Submit a Ticket</a>
-										</li>
-										@if (Auth::guard('admin')->user()->user_type == "agent")
-										@if($restrictions[2]->agent == 1)
-										<li>
-											<a href="/admin/topics">Add new topic</a>
-										</li>
-										@endif
-										@else
-										<li>
-											<a href="/admin/topics">Add new topic</a>
-										</li>
-										@endif
+										
+										
 										<li>
 											<a href="/admin/ticketReport">Ticket Report</a>
 										</li>
 									</ul>
 								</li>
-								@if(Auth::guard('admin')->user()->user_type == 'admin')
-								<li class="dropdown">
-									<a aria-expanded="false" role="button" href="#" class="dropdown-toggle" data-toggle="dropdown"> Agents <span class="caret"></span></a>
-									<ul role="menu" class="dropdown-menu">									
-										<li>
-											<a href="/admin/agents"> Agents</a>
-										</li>								
-										<li>
-											<a href="/admin/createAgent">Create New User</a>
-										</li>
-										
-									</ul>
-								</li>
-								@else
+								
 								<li class="dropdown">
 									<a href="/admin/agents"> Agents </a>
 								</li>
-								@endif
+								
 
 								<li class="dropdown">
 									<a href="/admin/clients"> Clients </a>
 								</li>
 								@if(Auth::guard('admin')->user()->user_type == 'admin')
 								<li class="dropdown">
+									<a aria-expanded="false" role="button" href="#" class="dropdown-toggle" data-toggle="dropdown"> Settings<span class="caret"></span></a>
+									<ul role="menu" class="dropdown-menu">
+									
+									<li>
 									<a href="/admin/restrictions"> Restrictions </a>
+									</li>
+									
+										<li>
+											<a href="/admin/topics">Topics</a>
+										</li>
+									
+									</ul>
 								</li>
 								@endif
 

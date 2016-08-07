@@ -4,7 +4,8 @@
 		<div class="ibox float-e-margins">
 			<div class="ibox-content mailbox-content">
 				<div class="file-manager">
-					
+					<a class="btn btn-block btn-primary compose-mail" href="/admin/createTicket">Create Ticket</a>
+                            <div class="space-25"></div>
 					
 					<h5>Folders</h5>
 					<ul class="folder-list m-b-md" style="padding: 0">
@@ -14,7 +15,6 @@
 								Tickets <span
 								class="pull-right label label-info assignedTickets">0</span></a>
 						</li>
-
 						<li><a href="/admin/tickets-Open"><i class="fa fa-ticket"></i>Open
 								Tickets <span class="pull-right label label-info openTickets">0</span></a>
 						</li>
@@ -26,7 +26,8 @@
 								class="pull-right label label-info unresolvedTickets">0</span></a>
 						</li>
 						<li><a href="/admin/tickets-Closed"><i class="fa fa-thumbs-o-up"></i>Closed
-								Tickets </a></li>
+								Tickets <span class="pull-right label label-info closedTickets">0</span</a>
+						</li>
 					</ul>
 					<h5>Categories</h5>
 					<ul class="category-list" style="padding: 0">					
@@ -55,25 +56,10 @@
 
 			<div id="advancedSearch" class=" gray-bg" style="padding: 5px;">
 				<br>
-				<form class="advancedTicket">
+				<form class="advancedTicket" method="GET" action="/admin/ticketSearch">
 					{!! csrf_field() !!}
 					<div class="row">
-						<div class="col-md-3">
-							<label class="control-label">Date Sent:</label>
-							<div class="input-group">
-								<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-								<input type="text" name="dateSent" class="form-control dateSent"
-									value="">
-							</div>
-						</div>
-						<div class="col-md-3">
-							<label class="control-label">Date Closed:</label>
-							<div class="input-group">
-								<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-								<input type="text" name="dateClosed"
-									class="form-control dateClosed" value="">
-							</div>
-						</div>
+						
 						<div class="col-md-3">
 							<label class="control-label">Topic:</label> <select
 								name="topicSearch" class="form-control topic">
@@ -91,39 +77,37 @@
 								<option value="Open">Open</option>
 								<option value="Pending">Pending</option>
 								<option value="Closed">Closed</option>
+								<option value="Unresolved">Unresolved</option>
 							</select>
 						</div>
-					</div>
-					<div class="row">
-						<br>
-						<div class="col-md-3">
-							<label class="control-label">Email:</label> <input type="email"
-								name="email" class="form-control email" />
+						
 						</div>
+						<div class="row">
 						<div class="col-md-3">
-							<label class="control-label">Assigned to:</label> <select
-								name="agentSent" class="form-control agentSent">
-								<option value="" selected hidden>Select agent...</option>
-								@foreach ($agent as $agents)
-								<option value="{{$agents->id}}">{{$agents->first_name.'
-									'.$agents->last_name}}</option> @endforeach
+							<label class="control-label">Sort By:</label>
+							<select name="dateSort"class="form-control topic">
+								<option value="1">Date Sent  </option>
+								<option value="2">Date Updated  </option>
 							</select>
+							
 						</div>
-						<div class="col-md-3">
-							<label class="control-label">Closed by:</label> <select
-								name="agentClosed" class="form-control agentClosed">
-								<option value="" selected hidden>Select agent...</option>
-								@foreach ($agent as $agents)
-								<option value="{{$agents->id}}">{{$agents->first_name.'
-									'.$agents->last_name}}</option> @endforeach
-							</select>
+						<div class="col-md-6">
+						<label class="control-label">Date Range:</label>
+						<div class="input-daterange input-group" id="datepicker">
+									<span class="input-group-addon">From</span>
+                                    <input type="text" class=" form-control" data-mask="9999-99-99" name="dateStart" value=""/>
+                                    <span class="input-group-addon">to</span>
+                                    <input type="text" class=" form-control" data-mask="9999-99-99" name="dateEnd" value="" />
+                                </div>
 						</div>
-
+					
+						
+						
 						<div class="col-md-3 text-center">
 							<br>
 
-							<button type="button"
-								class="btn btn-primary  advancedEmailSearch">
+							<button type="submit"
+								class="btn btn-primary">
 								<i class="fa fa-search"></i> Search
 							</button>
 							<button type="reset" class="btn btn-warning">
@@ -167,21 +151,28 @@
 			<form class="selectedTickets">
 				{!! csrf_field() !!}
 				<table class="table table-hover issue-tracker">
-					<tbody class="ticketReport">
-						<tr>
+					<thead>
+					<tr>
+						@if(Auth::guard('admin')->user()->user_type == "admin")
 							<th></th>
-							<th>Status</th>
+							@endif
+							<th class="text-center">Status</th>
 							<th>Topic & Subject</th>
 							<th>Sender</th>
-							<th>Priority</th>
-							<th>Date</th>
+							<th class="text-center">Priority</th>
+							<th>Date Updated</th>
 						</tr>
+					</thead>
+					<tbody class="ticketReport">
+						
 						@foreach ($tickets as $ticket)
 
 						<tr class="read" data-href="/admin/tickets/{{$ticket->id}}">
-
+							@if(Auth::guard('admin')->user()->user_type == "admin")
 							<td class="check-mail"><input type="checkbox" class="i-checks"
 								name="id" value="{{$ticket->id}}"></td>
+							@endif
+							
 							<td class="text-center">@if($ticket->ticket_status == "Open") <span
 								class="label label-success">{{$ticket->ticket_status}}</span>
 								@elseif($ticket->ticket_status == "Pending") <span
@@ -196,11 +187,11 @@
 							<td class="issue-info"><span class="font-bold">{{$ticket->description}}</span>
 								<small>{{$ticket->subject}}</small></td>
 
-							<td>{{$ticket->sender}}</td>
+							<td>{{$ticket->sender_id}}</td>
 
 							<td class="text-center"><span class="label label-default">{{$ticket->priority_level}}</span>
 							</td>
-							<td>{{ $ticket->created_at }}</td>
+							<td>{{ $ticket->updated_at }}</td>
 						</tr>
 						@endforeach
 
@@ -222,6 +213,7 @@
 				$('span.pendingTickets').text(data.pendingTickets);
 				$('span.unresolvedTickets').text(data.overdueTickets);
 				$('span.assignedTickets').text(data.assignedTickets);
+				$('span.closedTickets').text(data.closedTickets);
 			});
 		});
 	</script>
