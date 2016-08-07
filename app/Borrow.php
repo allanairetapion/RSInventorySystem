@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Model;
   public $timestamps = false;
   protected $table = "borrow_logs";
  
-  protected $fillable = ['unique_id','borrowee','borrower','dateBorrowed'];
+  protected $fillable = ['unique_id','borrowee','borrowerStationNo','borrower','dateBorrowed'];
   
  }
  ?>

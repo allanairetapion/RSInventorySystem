@@ -4,6 +4,8 @@ namespace App\Console;
 
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
+use Carbon\Carbon;
+use DB;
 
 class Kernel extends ConsoleKernel
 {
@@ -26,5 +28,12 @@ class Kernel extends ConsoleKernel
     {
         // $schedule->command('inspire')
         //          ->hourly();
+        
+    	$schedule->call(function () {
+    		DB::table ( 'tickets' )->where ( 'ticket_status', '!=', 'Closed' )->whereNotBetween ( 'updated_at', array (
+				Carbon::yesterday (),
+				Carbon::tomorrow () 
+		) )->update (['ticket_status' => 'Unresolved']);
+    	})->daily();
     }
 }

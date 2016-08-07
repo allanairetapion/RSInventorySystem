@@ -23,8 +23,8 @@
 		<div class="ibox float-e-margins">
 			<div class="ibox-content mailbox-content">
 				<div class="file-manager">
-					<a class="btn btn-block btn-primary compose-mail" href="/admin/ticketReply">Compose Mail</a>
-					<div class="space-25"></div>
+					<a class="btn btn-block btn-primary compose-mail" href="/admin/createTicket">Create Ticket</a>
+                            <div class="space-25"></div>
 					<h5>Folders</h5>
 					<ul class="folder-list m-b-md" style="padding: 0">
 						<li>
@@ -47,18 +47,16 @@
 							<a href="/admin/tickets-Closed"><i class="fa fa-thumbs-o-up"></i>Closed Tickets </a>
 						</li>
 					</ul>
-					<h5>Priority Level</h5>
-					<ul class="category-list" style="padding: 0">
-
-						<li>
-							<a href="#"> <i class="fa fa-circle text-danger"></i> High</a>
-						</li>
-						<li>
-							<a href=""> <i class="fa fa-circle text-warning"></i> Normal</a>
-						</li>
-						<li>
-							<a href="#"> <i class="fa fa-circle text-navy"></i> Low </a>
-						</li>
+					<h5>Categories</h5>
+					<ul class="category-list" style="padding: 0">					
+						<li><a href="#"> <i class="fa fa-circle text-primary"></i> Open
+						</a></li>
+						<li><a href=""> <i class="fa fa-circle text-warning"></i> Pending
+						</a></li>
+						<li><a href="#"> <i class="fa fa-circle text-navy"></i> Closed
+						</a></li>
+						<li><a href="#"> <i class="fa fa-circle text-danger"></i> Unresolved
+						</a></li>
 					</ul>
 
 					<div class="clearfix"></div>
@@ -96,22 +94,15 @@
 							<select name="ticket_status" class="form-control ticketStatus">
 								@if(Session::get('status') == "Open")
 								<option value="Open">Open</option>
-									@if(Auth::guard('admin')->user()->user_type == 'admin')
 								<option value="Pending">Pending</option>
-									@endif
 								<option value="Closed">Closed</option>
-								@elseif(Session::get('status') == "Pending")
-									@if(Auth::guard('admin')->user()->user_type == 'admin')
+								@elseif(Session::get('status') == "Pending")	
 								<option value="Pending">Pending</option>
-									@endif
-								<option value="Open">Open</option>
 								<option value="Closed">Closed</option>
 								@else
+								<option value="Unresolved">Unresolved</option>
 								<option value="Closed">Closed</option>
-								<option value="Open">Open</option>
-									@if(Auth::guard('admin')->user()->user_type == 'admin')
 								<option value="Pending">Pending</option>
-									@endif
 								@endif
 							@endif
 								
@@ -143,9 +134,10 @@
 
 		<div class="mail-box">			
 			<div class="mail-body">
+			<h4>Description:</h4>
 				<div  class="panel panel-default ">
 					<div class="panel-heading"> 
-						Created at: {{Session::get('date_sent')}} <span class="pull-right">By: {{Session::get('email')}}</span>
+						By: {{Session::get('email')}} <span class="pull-right"> {{Session::get('date_sent')}}</span>
 					</div>
 					<div class="panel-body">
 						 <p>
@@ -154,16 +146,40 @@
 					</div>
 					
 				</div>
-				
+				@if(Session::get('status') != "Open" && $messages != null)
+					
+					@foreach($messages as $message)
+					
+				<div  class="panel panel-default ">
+					<div class="panel-heading"> 
+						By: {{$message->sender}}  <span class="pull-right"> {{$message->created_at}}</span>
+					</div>
+					<div class="panel-body">
+						 <p>
+					{!!html_entity_decode($message->message)!!}
+				 </p>
+					</div>
+					
+				</div>
+					@endforeach
+					
+				@endif
 				
 				@if(Session::get('status') == "Closed")
-				<br>
-				Closing Report:
-				<div class="ibox-content gray-bg">
-				 <p>
+				<h4>Closing Report:</h4>
+				<div  class="panel panel-default ">
+					<div class="panel-heading"> 
+						By: {{Session::get('closed_by')}}  <span class="pull-right"> {{Session::get('date_modified')}}</span>
+					</div>
+					<div class="panel-body">
+						 <p>
 					{!!html_entity_decode(Session::get('closing_report'))!!}
 				 </p>
-				 </div>
+					</div>
+					
+				</div>
+				
+				
 				 @endif
 				
 			</div>
@@ -190,7 +206,7 @@
 					<i class="fa fa-print"></i> Print
 				</button>
 				@if(Auth::guard('admin')->user()->user_type == 'admin')
-				<button title="" data-placement="top" data-toggle="tooltip" data-original-title="Delete Ticket" class="btn btn-sm btn-white deleteViewedTicket">
+				<button title="" data-placement="top" data-toggle="tooltip" data-original-title="Delete Ticket" class="btn btn-sm btn-white ticketDelete">
 					<i class="fa fa-trash-o"></i> Delete
 				</button>
 				@endif
@@ -331,6 +347,8 @@
 				$('span.unresolvedTickets').text(data.overdueTickets);
 				$('span.assignedTickets').text(data.assignedTickets);
 			});
+
+			
 		});
 	</script>
 @endsection

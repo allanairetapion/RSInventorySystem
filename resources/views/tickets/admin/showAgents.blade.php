@@ -1,4 +1,6 @@
-@extends('tickets.ticketadminlayout') @section('body')
+@extends('tickets.ticketadminlayout') 
+
+@section('body')
 
 <div class="row">
 	<div class="col-md-12">
@@ -6,7 +8,11 @@
 
 			<div class="ibox">
 				<div class="ibox-title">
-
+				@if(Auth::guard('admin')->user()->user_type == 'admin')
+<div class="pull-right">
+					<a href="/admin/createAgent" class="btn btn-sm btn-primary"><i class="fa fa-user-plus"></i> Create New User </a>
+					</div>
+					@endif
 					<h2 class="font-bold ">Agents</h2>
 				</div>
 

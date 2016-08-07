@@ -45,6 +45,7 @@
 									
 									<th>Borrowee</th>
 									<th>Borrower</th>
+									<th>Station No </th>
 									<th>Date Borrowed</th>
 									<th>Action</th>
 								</tr>
@@ -53,17 +54,16 @@
 							@foreach($borrowedItems as $borrow)
 							<tr>
 									<td>{{$borrow->itemType}}</td>
-									
 									<td>{{$borrow->brand}}</td>
 									<td>{{$borrow->model}}</td>
 									<td>{{$borrow->unique_id}}</td>
 									<td>{{$borrow->itemNo}}</td>
-									
 									<td>{{$borrow->first_name.' '.$borrow->last_name}} </td>
 									<td>{{$borrow->borrower}}</td>
+									<td>{{$borrow->borrowerStationNo}}</td>
 									<td>{{$borrow->dateBorrowed}}</td>
 									<td></td>
-									</tr>
+							</tr>
 							@endforeach
 
 
@@ -123,6 +123,20 @@
 									<span class="help-block text-danger stationNo">192.168.100.200</span>
 							</div>
 						</div>
+						<div class="form-group col-lg-7 dateBorrowed">
+							<label class="control-label col-lg-4"> Date Borrowed:</label>
+							<div class="col-lg-8">
+							<div class="input-group date dateBorrowed">
+										<span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control dateBorrowed" placeholder="Name"
+									name="dateBorrowed">
+
+									</div>
+							
+                   
+									<span class="help-block text-danger dateBorrowed">192.168.100.200</span>
+									
+							</div>
+						</div>
 					</div>
 
 				</form>
@@ -167,26 +181,27 @@
 								</div>
 							</div>
 							<div class="form-group col-lg-7">
-								<label class="control-label col-lg-4"> Item Type :</label>
-								<div class="col-lg-8">
-									<input type="text" class="form-control infoItemType"
-										value="Item Type" readonly>
-								</div>
-							</div>
-							<div class="form-group col-lg-7">
 								<label class="control-label col-lg-4"> Brand :</label>
 								<div class="col-lg-8">
 									<input type="text" class="form-control infoBrand" value="Brand"
 										readonly>
 								</div>
 							</div>
-							<div class="form-group col-lg-7">
+							<div class="form-group col-lg-5">
 								<label class="control-label col-lg-4"> Model :</label>
 								<div class="col-lg-8">
 									<input type="text" class="form-control infoModel" value="Model"
 										readonly>
 								</div>
 							</div>
+							<div class="form-group col-lg-7">
+								<label class="control-label col-lg-4"> Item Type :</label>
+								<div class="col-lg-8">
+									<input type="text" class="form-control infoItemType"
+										value="Item Type" readonly>
+								</div>
+							</div>
+							
 
 
 						</div>
@@ -219,7 +234,11 @@ $(document).ready(function() {
 	$('i.fa-pulse').hide();
 	$('div.itemNotfound').hide();
 	$('span.text-danger').hide();
-	
+
+	$('.input-group.date.dateBorrowed').datepicker({
+	    format : 'yyyy-mm-dd',
+	    todayBtn: "linked"
+		});
 });
 $(function() {
 	$("input.uniqueId").keyup(function() {

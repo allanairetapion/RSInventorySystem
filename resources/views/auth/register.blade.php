@@ -75,7 +75,7 @@
 				<div class="col-md-6 text-center captcha_img">
 					<br>
 
-					<img class="captcha_img"src="{{captcha_src()}}"> &nbsp;
+					<img class="captcha_img "src="{{captcha_src()}}"> &nbsp;
 
 					<button type="button" class="btn  btn-default refreshCaptcha " data-toggle="tooltip" data-placement="top" title="Refresh CAPTCHA">
 						<i class="fa fa-refresh"></i>

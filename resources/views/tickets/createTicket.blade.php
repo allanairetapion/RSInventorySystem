@@ -4,33 +4,14 @@
 	<div class="col-md-offset-1 col-md-10">
 		<div class="ibox">
 			<div class="ibox-title">
-				<h2 class="font-bold">Ticket Form</h2>
+				<h3 class="font-bold">Create Ticket</h3>
 			</div>
 			<div class="ibox-content">
 
 				<form class="m-t form-horizontal createTicket" role="form" method="Post" action="/checkAdmin">
 					{!! csrf_field() !!}
 
-					<div class="form-group {{ $errors->has('email') ? ' has-error' : '' }}">
-						<label class="col-md-2 control-label">Email:&nbsp;</label>
-						<div class="col-md-10">
-							<input type="email" class="form-control email" placeholder="Email Address"  disabled name="Email" value="{{ Auth::guard('user')->user()->email   }}" required="">
-						</div>
-					</div>
-					<div class="form-group ">
-						<label class="col-md-2 control-label">Name:&nbsp;</label>
-						<div class="col-md-10">
-							<input type="text" disabled class="form-control"  name="Fullname"
-							value="{{ Auth::guard('user')->user()->clientProfile ? Auth::guard('user')->user()->clientProfile->first_name.' '.Auth::guard('user')->user()->clientProfile->last_name : '' }}" required="">
-						</div>
-					</div>
-					<div class="form-group">
-						<label class="col-md-2 control-label">Department:&nbsp;</label>
-						<div class="col-md-10">
-							<input type="text" disabled class="form-control email" placeholder="Email Address" name="department" value="{{ Auth::guard('user')->user()->department   }}" required="">
-
-						</div>
-					</div>
+					
 					<div class="form-group topic">
 						<label class="col-md-2 control-label">Topic: &nbsp; </label>
 						<div class="col-md-10">

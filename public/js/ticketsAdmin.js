@@ -1,92 +1,246 @@
 /**
- * @author ITojt01 Luis Philip M. CastaÃƒÆ’Ã‚Â±eda
+ * @author ITojt01 Luis Philip M.
+ *         CastaÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â‚¬Å¾Ã‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¾Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Â¦Ãƒâ€šÃ‚Â¡ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â±eda
  */
 
 $(function() {
 
-	$(document).ready(
-			function() {
-				$('div#advancedSearch').toggle();
+	$(document)
+			.ready(
+					function() {
+						$('div#advancedSearch').toggle();
 
-				$('.i-checks').iCheck({
-					checkboxClass : 'icheckbox_square-green',
-					radioClass : 'iradio_square-green',
-				});
-				$('[data-toggle="tooltip"]').tooltip({
-					selector : "[data-toggle=tooltip]",
-					container : "body"
-				});
-				$('table.agentPassword').dataTable({
-					"bSort" : false,
-					dom : '<"html5buttons">lTfgtip',
-				});
-				$('table.clientTable').dataTable({
-					"bSort" : false,
-					dom : '<"html5buttons">lTfgtip',
-				});
-				$('table.ticket_topics').dataTable({
-					"bSort" : false,
-					dom : '<"html5buttons">lTfgtip',
-				});
-
-				$('div.ticketsummernote').summernote(
-						{
-							toolbar : [
-									[
-											'style',
-											[ 'bold', 'italic', 'underline',
-													'clear' ] ],
-									[ 'fontname', [ 'fontname' ] ],
-									[ 'fontsize', [ 'fontsize' ] ],
-									[ 'color', [ 'color' ] ],
-									[ 'para', [ 'ul', 'ol', 'paragraph' ] ],
-									[ 'height', [ 'height' ] ] ]
+						$('.i-checks').iCheck({
+							checkboxClass : 'icheckbox_square-green',
+							radioClass : 'iradio_square-green',
 						});
-				$('div.ticketReplySummernote').summernote(
-						{
-							toolbar : [
-									[
-											'style',
-											[ 'bold', 'italic', 'underline',
-													'clear' ] ],
-									[ 'fontname', [ 'fontname' ] ],
-									[ 'fontsize', [ 'fontsize' ] ],
-									[ 'color', [ 'color' ] ],
-									[ 'para', [ 'ul', 'ol', 'paragraph' ] ],
-									[ 'height', [ 'height' ] ] ]
+						$('[data-toggle="tooltip"]').tooltip({
+							selector : "[data-toggle=tooltip]",
+							container : "body"
 						});
-				$('table.noSupport').dataTable({
-					"bSort" : false,
-				});
-				$('table.ticketReport').dataTable(
-						{
+						$('table.agentPassword').dataTable({
 							"bSort" : false,
-							dom : '<"html5buttons"B>',
-							buttons : [
-									{
-										extend : 'csv'
-									},
-									{
-										extend : 'excel',
-										title : 'Ticket Report'
-									},
-									{
-										extend : 'print',
-										customize : function(win) {
-											$(win.document.body).addClass(
-													'white-bg');
-											$(win.document.body).css(
-													'font-size', '10px');
-											$(win.document.body).find('table')
-													.addClass('compact').css(
-															'font-size',
-															'inherit');
-										}
-									} ]
-
+							dom : '<"html5buttons">lTfgtip',
+						});
+						$('table.clientTable').dataTable({
+							"bSort" : false,
+							dom : '<"html5buttons">lTfgtip',
+						});
+						$('table.ticket_topics').dataTable({
+							"bSort" : false,
+							dom : '<"html5buttons">lTfgtip',
 						});
 
-			});
+						$('div.ticketsummernote')
+								.summernote(
+										{
+											toolbar : [
+													[
+															'style',
+															[
+																	'bold',
+																	'italic',
+																	'underline',
+																	'clear' ] ],
+													[ 'fontname',
+															[ 'fontname' ] ],
+													[ 'fontsize',
+															[ 'fontsize' ] ],
+													[ 'color', [ 'color' ] ],
+													[
+															'para',
+															[ 'ul', 'ol',
+																	'paragraph' ] ],
+													[ 'height', [ 'height' ] ] ]
+										});
+						$('div.ticketReplySummernote')
+								.summernote(
+										{
+											toolbar : [
+													[
+															'style',
+															[
+																	'bold',
+																	'italic',
+																	'underline',
+																	'clear' ] ],
+													[ 'fontname',
+															[ 'fontname' ] ],
+													[ 'fontsize',
+															[ 'fontsize' ] ],
+													[ 'color', [ 'color' ] ],
+													[
+															'para',
+															[ 'ul', 'ol',
+																	'paragraph' ] ],
+													[ 'height', [ 'height' ] ] ]
+										});
+						$('table.noSupport').dataTable({
+							"bSort" : false,
+						});
+						
+						$('table.ticketReport2')
+								.dataTable(
+										{
+											"bSort" : false,
+											dom : '<"html5buttons"B>lTfgtip',
+											buttons : [
+													{
+														text : '<i class="fa fa-trash"></i> Delete',
+														action : function() {
+															var tickets = [ 'x' ];
+															$(
+																	'input:checkbox:checked')
+																	.each(
+																			function() {
+																				tickets
+																						.push($(
+																								this)
+																								.val());
+																			});
+															if (tickets[1] == ''
+																	|| tickets[1] == null) {
+																swal(
+																		'Ooops...',
+																		"You haven't selected any ticket",
+																		'info');
+																return false;
+															}
+
+															console
+																	.log($(
+																			'form.selectedTickets')
+																			.serializeArray());
+															swal(
+																	{
+																		title : "Are you sure?",
+																		text : "This action can't be undone",
+																		type : "warning",
+																		showCancelButton : true,
+																		closeOnConfirm : false,
+																		confirmButtonText : "Yes",
+																	},
+																	function() {
+																		swal(
+																				{
+																					title : "Password Required!",
+																					text : "If you are sure, Please enter your password.",
+																					type : "input",
+																					inputType : "password",
+																					showCancelButton : true,
+																					closeOnConfirm : false,
+																					showLoaderOnConfirm : true,
+																					disableButtonsOnConfirm : true,
+																				},
+																				function(
+																						inputValue) {
+																					if (inputValue != "") {
+																						$
+																								.ajax(
+																										{
+																											headers : {
+																												'X-CSRF-Token' : $(
+																														'input[name="_token"]')
+																														.val()
+																											},
+																											type : 'post',
+																											url : '/admin/verifyPassword',
+																											data : {
+																												password : inputValue
+																											},
+																										})
+																								.done(
+																										function(
+																												data) {
+																											if (data == "true") {
+																												$
+																														.ajax(
+																																{
+																																	headers : {
+																																		'X-CSRF-Token' : $(
+																																				'input[name="_token"]')
+																																				.val()
+																																	},
+																																	type : "DELETE",
+																																	url : "/admin/deleteTicket",
+																																	data : {
+																																		tickets : tickets
+																																	},
+																																})
+																														.done(
+																																function(
+																																		data) {
+
+																																	swal(
+																																			{
+																																				title : "Deleted",
+																																				text : "Tickets has been deleted",
+																																				type : "success",
+																																			},
+																																			function() {
+																																				$(
+																																						'input:checkbox:checked')
+																																						.each(
+																																								function() {
+																																									$(
+																																											this)
+																																											.parents(
+																																													'tr')
+																																											.remove();
+																																								});
+																																			});
+
+																																});
+																											} else {
+																												swal
+																														.showInputError("Wrong Password");
+																												return false;
+																											}
+																										});
+																					} else {
+																						swal
+																								.showInputError("You need to type in your password in order to do this!");
+																						return false;
+																					}
+																				});
+
+																	});
+
+														}
+													},
+													{
+														extend : 'csv'
+													},
+													{
+														extend : 'excel',
+														title : 'Ticket Report'
+													},
+
+													{
+														extend : 'print',
+														customize : function(
+																win) {
+															$(win.document.body)
+																	.addClass(
+																			'white-bg');
+															$(win.document.body)
+																	.css(
+																			'font-size',
+																			'10px');
+															$(win.document.body)
+																	.find(
+																			'table')
+																	.addClass(
+																			'compact')
+																	.css(
+																			'font-size',
+																			'inherit');
+														}
+													} ]
+
+										});
+
+					});
 
 	$("input.ticketReportCB").change(function() {
 		$("input#reportTicket").prop('checked', $(this).prop("checked"));
@@ -101,10 +255,6 @@ $(function() {
 		$("input#closedTicket").prop('checked', $(this).prop("checked"));
 	});
 
-	$('button.advancedSearch').click(function() {
-		$('div#advancedSearch').slideToggle();
-	});
-
 	$('.input-daterange').datepicker({
 
 		format : 'yyyy-mm-dd',
@@ -117,123 +267,9 @@ $(function() {
 		format : 'yyyy-mm-dd',
 	});
 
-	$('button.advancedTicketReset')
-			.click(
-					function() {
-						$('select').val("");
-						$('input.dateSent').val("");
-						$('input.dateClosed').val("");
-						$('input.agentSent').val("");
-						$('input.agentClosed').val("");
-						$('input.ticketSearch').val("");
-						console.log($('form.advancedTicket').serialize());
-						$
-								.ajax(
-										{
-											type : "POST",
-											url : "/admin/advancedSearch",
-											data : $('form.advancedTicket')
-													.serialize(),
-										})
-								.done(
-										function(data) {
-
-											$('div.pagination').show();
-											$('tbody.ticketReport').empty();
-											var html;
-
-											$
-													.each(
-															data.response,
-															function(i, v) {
-
-																if ((data.closed[i]['first_name'] == null)
-																		|| (data.closed[i]['closed_by'] == 0)) {
-																	data.closed[i]['first_name'] = '';
-																}
-
-																if ((data.closed[i]['last_name'] == null)
-																		|| (data.closed[i]['closed_by'] == 0)) {
-																	data.closed[i]['last_name'] = '';
-																}
-
-																if ((data.assigned[i]['first_name'] == null)
-																		|| (data.assigned[i]['assigned_support'] == 0)) {
-																	data.assigned[i]['first_name'] = '';
-																}
-
-																if ((data.assigned[i]['last_name'] == null)
-																		|| (data.assigned[i]['assigned_support'] == 0)) {
-																	data.assigned[i]['last_name'] = '';
-																}
-
-																if (v.ticket_status == "Open") {
-																	html += "<tr class='bg-primary'  id='"
-																			+ v.id
-																			+ "'>";
-																} else if (v.ticket_status == "Pending") {
-																	html += "<tr style='background-color: #F2F256;' id='"
-																			+ v.id
-																			+ "'>";
-																} else if (v.ticket_status == "Closed") {
-																	html += "<tr class='navy-bg' id='"
-																			+ v.id
-																			+ "'>";
-																}
-
-																if (v.first_name == null) {
-																	v.first_name = "";
-																}
-																if (v.last_name == null) {
-																	v.last_name = "";
-																}
-																if (v.closed_at == null) {
-																	v.closed_at = "";
-																}
-																html += "<td><input type='checkbox' value="
-																		+ v.id
-																		+ "> </td><td>"
-																		+ v.id
-																		+ "</td><td>"
-																		+ v.sender
-																		+ "</td>"
-																		+ "<td>"
-																		+ v.sender_id
-																		+ "</td><td>"
-																		+ v.description
-																		+ "</td><td>"
-																		+ v.subject
-																		+ "</td><td>"
-																		+ v.ticket_status
-																		+ "</td>"
-																		+ "<td>"
-																		+ v.department
-																		+ "</td><td>"
-																		+ data.assigned[i]['first_name']
-																		+ " "
-																		+ data.assigned[i]['last_name']
-																		+ "</td><td>"
-																		+ data.closed[i]['first_name']
-																		+ " "
-																		+ data.closed[i]['last_name']
-																		+ "</td><td>"
-																		+ v.created_at
-																		+ "</td>"
-																		+ "<td>"
-																		+ v.updated_at
-																		+ "</td></tr>";
-															});
-											$('tbody.ticketReport').html(html);
-
-											$('.i-checks')
-													.iCheck(
-															{
-																checkboxClass : 'icheckbox_square-green',
-																radioClass : 'iradio_square-green',
-															});
-
-										});
-					});
+	$('button.advancedTicketReset').click(function() {
+		location.reload();
+	});
 
 	$('button.advancedTicketSearch')
 			.click(
@@ -1269,8 +1305,15 @@ $(function() {
 				function(data) {
 					ticketReply.ladda('stop');
 					if (data.success != false) {
-						swal('Success', 'An email has been sent to '
-								+ $('input.email').val(), 'success');
+						swal({
+							title : 'Success',
+							text : 'A reply has been added successfully',
+							type : 'success'
+						}, function() {
+							window.location.href = "/admin/tickets/"
+									+ $('input.ticket_id').val();
+						});
+
 					} else {
 						if (data.errors['email']) {
 							$('label.email').text('*' + data.errors['email'])
@@ -1292,10 +1335,7 @@ $(function() {
 	// View Ticket Details
 	$('select.ticketStatus').change(
 			function() {
-				if ($(this).val() == "Open"
-						&& $('input.assignedTo').val() == "") {
-					$('#assign').modal('show');
-				} else if ($(this).val() == "Closed"
+				if ($(this).val() == "Closed"
 						&& $('input#closing_report').val() == "") {
 					$('#closedBy').modal('show');
 				}
@@ -1445,127 +1485,7 @@ $(function() {
 
 			});
 
-	$('button.deleteViewedTicket').on('click', function() {
-		swal({
-			title : "Are you sure?",
-			text : "This action can't be undone",
-			type : "warning",
-			showCancelButton : true,
-			confirmButtonText : "Yes",
-			closeOnConfirm : false,
-			showLoaderOnConfirm : true,
-			disableButtonsOnConfirm : true,
-		}, function() {
-			$.ajax({
-				type : "DELETE",
-				url : "/admin/deleteViewedTicket",
-				data : $('form.ticketStatus').serialize(),
-			}).done(function() {
-
-				swal({
-					title : 'Deleted!',
-					text : 'Ticket has been deleted.',
-					type : 'success',
-				}, function() {
-					window.location.href = "/admin/tickets";
-				});
-			});
-
-		});
-	});
 	// Dashboard Buttons
-	$('button.topIssueMonth').on('click', function() {
-		$.ajax({
-			type : "GET",
-			url : "/admin/topIssue",
-			data : {
-				topIssue : "Month"
-			},
-		}).done(function(data) {
-			c3.generate({
-				bindto : '#pie',
-				size : {
-					height : 302
-				},
-
-				data : {
-					json : data,
-
-					type : 'pie'
-				},
-
-				pie : {
-					label : {
-						format : function(value, ratio, id) {
-							return value;
-						}
-					}
-				}
-
-			});
-		});
-	});
-	$('button.topIssueYear').on('click', function() {
-
-		$.ajax({
-			type : "GET",
-			url : "/admin/topIssue",
-			data : {
-				topIssue : "Year"
-			},
-		}).done(function(data) {
-			console.log(data);
-			c3.generate({
-				bindto : '#pie',
-				size : {
-					height : 302
-				},
-				data : {
-					json : data,
-
-					type : 'pie'
-				},
-				pie : {
-					label : {
-						format : function(value, ratio, id) {
-							return value;
-						}
-					}
-				}
-
-			});
-		});
-	});
-	$('button.topIssueWeek').on('click', function() {
-		$.ajax({
-			type : "GET",
-			url : "/admin/topIssue",
-			data : {
-				topIssue : "Week"
-			},
-		}).done(function(data) {
-			console.log(data);
-			c3.generate({
-				bindto : '#pie',
-				size : {
-					height : 302
-				},
-				data : {
-					json : data,
-
-					type : 'pie'
-				},
-				pie : {
-					label : {
-						format : function(value, ratio, id) {
-							return value;
-						}
-					}
-				}
-
-			});
-		});
-	});
 
 	$('button.topSupportWeek')
 			.on(
@@ -1795,7 +1715,8 @@ $(function() {
 	var editPersonalInfo = $('button.editPersonalInfo').ladda();
 	var editPassword = $('button.editPassword').ladda();
 
-	editPersonalInfo.click(function() {
+	editPersonalInfo.click(function(e) {
+		e.preventDefault();
 		editPersonalInfo.ladda('start');
 		swal({
 			title : 'Are you sure?',
@@ -1850,80 +1771,6 @@ $(function() {
 					}
 				});
 	});
-
-	$('button.advancedEmailSearch')
-			.click(
-					function() {
-						$
-								.ajax(
-										{
-											type : "POST",
-											url : "/admin/advancedSearch",
-											data : $('form.advancedTicket')
-													.serialize(),
-										})
-								.done(
-										function(data) {
-
-											$('div.pagination').hide();
-											$('tbody.ticketReport').empty();
-											var html;
-
-											$
-													.each(
-															data.response,
-															function(i, v) {
-
-																html += "<tr class='read' data-href='/admin/tickets/"
-																		+ v.id
-																		+ "'>";
-
-																if (v.first_name == null) {
-																	v.first_name = "";
-																}
-																if (v.last_name == null) {
-																	v.last_name = "";
-																}
-
-																html += "<td> <input type='checkbox' class='i-checks' name='id' value="
-																		+ v.id
-																		+ "> </td><td class='mail-ontact'>"
-																		+ v.sender
-																		+ "</td><td>"
-																		+ v.subject
-																		+ "</td>";
-
-																if (v.priority_level == 'High') {
-																	html += "<td><span class='label label-danger'>"
-																			+ v.priority_level
-																			+ "</span>";
-																} else if (v.priority_level == 'Normal') {
-																	html += "<td><span class='label label-warning'>"
-																			+ v.priority_level
-																			+ "</span>";
-																} else {
-																	html += "<td><span class='label label-primary'>"
-																			+ v.priority_level
-																			+ "</span>";
-																}
-
-																html += "<span class='label label-default'>"
-																		+ v.description
-																		+ " </span></td><td>"
-																		+ v.created_at
-																		+ "</td>";
-															});
-											$('tbody.ticketReport').html(html);
-											$('.i-checks')
-													.iCheck(
-															{
-																checkboxClass : 'icheckbox_square-green',
-																radioClass : 'iradio_square-green',
-															});
-
-										});
-					});
-
 	$(document).on('click', 'tr.read', function() {
 		window.document.location = $(this).data("href");
 	});
