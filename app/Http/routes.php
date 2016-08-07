@@ -217,7 +217,7 @@ Route::group(['middleware' => 'admin'], function () {
 	
 	Route::delete('/admin/deleteTopic','TicketsAdmin@deleteTopic');
 	Route::delete('/admin/deleteTicket','TicketsAdmin@deleteTicket');
-	Route::delete('/admin/deleteViewedTicket','TicketsAdmin@deleteViewedTicket');	
+	Route::delete('/admin/clientDelete','TicketsAdmin@clientDelete');
 
 });
 

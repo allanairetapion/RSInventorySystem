@@ -87,7 +87,7 @@ class TicketsAdmin extends Controller {
 			$validator = Validator::make ( $request->all (), [ 
 					'topic' => 'required',
 					'subject' => 'required|min:6|max:255',
-					'summary' => 'required|min:10|max:500' 
+					'summary' => 'required|min:10|max:10000' 
 			] );
 		
 		if ($validator->fails ()) {
@@ -109,7 +109,6 @@ class TicketsAdmin extends Controller {
 			
 			$user = Ticket::create ( [ 
 					'id' => $ida,
-					'sender' => Auth::guard ( 'admin' )->user ()->adminProfile ? Auth::guard ( 'admin' )->user ()->adminProfile->first_name . ' ' . Auth::guard ( 'admin' )->user ()->adminProfile->last_name : '',
 					'sender_id' => Auth::guard ( 'admin' )->user ()->id,
 					'topic_id' => $request ['topic'],
 					'subject' => $request ['subject'],
@@ -124,8 +123,9 @@ class TicketsAdmin extends Controller {
 		}
 	}
 	public function showTopics() {
+		$topics = DB::table ( 'ticket_topics' )->get ();
 		if (Auth::guard ( 'admin' )->user ()->user_type == 'admin') {
-			return view ( 'tickets.admin.newTopics', ['topics' => $users] );
+			return view ( 'tickets.admin.newTopics', ['topics' => $topics] );
 		} else {
 			abort ( 403 );
 		}
@@ -349,24 +349,32 @@ class TicketsAdmin extends Controller {
 		$tickets = DB::table ( 'tickets' )->leftJoin ( 'ticket_topics', 'tickets.topic_id', '=', 'ticket_topics.topic_id' );
 		$topics = DB::table ( 'ticket_topics' )->get ();
 		
-		if ($dateSort != "") {
-			if($dateSort == 1){
-				$tickets->whereBetween ( 'tickets.created_at', [$request['dateStart'],$request['dateEnd']]);
-				
-			}elseif ($dateSort == 2){
-				$tickets->whereBetween ( 'tickets.updated_at', [$request['dateStart'],$request['dateEnd']]);
-				
-			}
-		}
 		if ($status != "") {
 			$tickets->where ( 'ticket_status', $status );
 		}
 		if ($topic != "") {
 			$tickets->where ( 'description', $topic );
 		}
+		
+		
+			if($dateSort == 1  && ($request['dateStart'] != null && $request['dateEnd'] != null  )){
+				$tickets->whereBetween ( 'tickets.created_at', [$request['dateStart'],$request['dateEnd']]);
 	
+			}elseif ($dateSort == 2  && ($request['dateStart'] != null && $request['dateEnd'] != null  )){
+				$tickets->whereBetween ( 'tickets.updated_at', [$request['dateStart'],$request['dateEnd']]);
 	
-		return view ( 'tickets.admin.showTickets', [ 'tickets' => $tickets->orderBy ( 'updated_at', 'desc' )->simplePaginate ( 15 ),'topics' => $topics] );
+			}
+		
+			$tickets = $tickets->orderBy ( 'updated_at', 'desc' )->simplePaginate ( 15 );
+			foreach($tickets as $ticket){
+				$name = DB::table('admin_profiles')->where('agent_id', $ticket->sender_id)->first();
+				if($name == null){
+					$name = DB::table('client_profiles')->where('client_id', $ticket->sender_id)->first();
+				}
+				$ticket->sender_id = $name->first_name.' '.$name->last_name;
+			}
+	
+		return view ( 'tickets.admin.showTickets', [ 'tickets' => $tickets,'topics' => $topics] );
 	}
 	
 	public function advancedSearch(Request $request) {
@@ -382,17 +390,6 @@ class TicketsAdmin extends Controller {
 		
 		$closed_by = DB::table ( 'tickets' )->leftJoin ( 'ticket_topics', 'tickets.topic_id', '=', 'ticket_topics.topic_id' )->leftJoin ( 'admin_profiles', 'tickets.closed_by', '=', 'admin_profiles.agent_id' );
 		
-		if ($dateSort != "") {
-			if($dateSort == 1){
-				$tickets->whereBetween ( 'tickets.created_at', [$request['dateStart'],$request['dateEnd']]);
-				$assigned_to->whereBetween ( 'tickets.created_at', [$request['dateStart'],$request['dateEnd']]);
-				$closed_by->whereBetween ( 'tickets.created_at', [$request['dateStart'],$request['dateEnd']]);
-			}elseif ($dateSort == 2){
-				$tickets->whereBetween ( 'tickets.updated_at', [$request['dateStart'],$request['dateEnd']]);
-				$assigned_to->whereBetween ( 'tickets.updated_at', [$request['dateStart'],$request['dateEnd']]);
-				$closed_by->whereBetween ( 'tickets.updated_at', [$request['dateStart'],$request['dateEnd']]);
-			}	
-		}
 		
 		if ($status != "") {
 			$tickets->where ( 'ticket_status', $status );
@@ -405,12 +402,12 @@ class TicketsAdmin extends Controller {
 			$closed_by->where ( 'description', $topic );
 		}
 		if ($agentSent != "") {
-			
+				
 			$tickets->where('assigned_support',$agentSent);
 			$assigned_to->where('assigned_support',$agentSent);
 			$closed_by->where('assigned_support',$agentSent);
-			
-			
+				
+				
 		}
 		if ($agentClosed != "") {
 			$tickets->where ( 'closed_by', $agentClosed );
@@ -418,8 +415,30 @@ class TicketsAdmin extends Controller {
 			$closed_by->where ( 'closed_by', $agentClosed );
 		}
 		
+		
+			if($dateSort == 1 && ($request['dateStart'] != null && $request['dateEnd'] != null  )) {
+				$tickets->whereBetween ( 'tickets.created_at', [$request['dateStart'],$request['dateEnd']]);
+				$assigned_to->whereBetween ( 'tickets.created_at', [$request['dateStart'],$request['dateEnd']]);
+				$closed_by->whereBetween ( 'tickets.created_at', [$request['dateStart'],$request['dateEnd']]);
+			}elseif ($dateSort == 2  && ($request['dateStart'] != null && $request['dateEnd'] != null  )){
+				$tickets->whereBetween ( 'tickets.updated_at', [$request['dateStart'],$request['dateEnd']]);
+				$assigned_to->whereBetween ( 'tickets.updated_at', [$request['dateStart'],$request['dateEnd']]);
+				$closed_by->whereBetween ( 'tickets.updated_at', [$request['dateStart'],$request['dateEnd']]);
+			}	
+		
+		
+		$tickets = $tickets->get();
+		
+		foreach($tickets as $ticket){
+			$name = DB::table('admin_profiles')->where('agent_id', $ticket->sender_id)->first();
+			if($name == null){
+				$name = DB::table('client_profiles')->where('client_id', $ticket->sender_id)->first();
+			}
+			$ticket->sender_id = $name->first_name.' '.$name->last_name;
+		}
+		
 		return response ()->json ( array (
-				'response' => $tickets->get(),
+				'response' => $tickets,
 				'assigned' => $assigned_to->get(),
 				'closed' => $closed_by->get() 
 		) );
@@ -623,9 +642,6 @@ class TicketsAdmin extends Controller {
 					'success' => false 
 			) );
 		}
-	}
-	public function deleteViewedTicket(Request $request) {
-		$deleteTicket = DB::table ( 'tickets' )->where ( 'id', $request ['id'] )->delete ();
 	}
 	public function ticketStatus(){
 		$status = ['x','Open','Pending','Closed','Unresolved'];
@@ -898,16 +914,34 @@ class TicketsAdmin extends Controller {
 		}
 	}
 	public function printTicketDetails($id) {
-		$topics = DB::table ( 'ticket_topics' )->get ();
-		$agents = DB::table ( 'admin' )->join ( 'admin_profiles', 'admin.id', '=', 'admin_profiles.agent_id' )->where ( 'user_type', 'agent' )->orderBy ( 'last_name' )->get ();
-		
-		$restriction = DB::table ( 'ticket_restrictions' )->get ();
-		
 		$ticket = DB::table ( 'tickets' )->leftJoin ( 'ticket_topics', 'tickets.topic_id', "=", 'ticket_topics.topic_id' )->where ( 'id', $id )->first ();
 		
-		$sender_email = DB::table ( 'admin' )->where ( 'id', $ticket->sender_id )->first ();
+		if ($ticket->ticket_status == 'Open') {
+			$tickets = DB::table ( 'tickets' )->where ( 'id', $id )->update ( ['ticket_status' => 'Pending']);
+			$ticket = DB::table ( 'tickets' )->leftJoin ( 'ticket_topics', 'tickets.topic_id', "=", 'ticket_topics.topic_id' )->where ( 'id', $id )->first ();
+		}
+		if ($ticket->ticket_status != 'Open') {
+			$messages = TicketLogs::where('ticket_id',$id)->get();
+			
+			foreach($messages as $message){
+				$name = DB::table('admin_profiles')->where('agent_id', $message['sender'])->first();
+				if($name == null){
+					$name = DB::table('admin_profiles')->where('client_id', $message['sender'])->first();
+				}
+				$message['sender'] = $name->first_name.' '.$name->last_name;
+			}	
+			
+			
+		}
+		
+		$sender_email = DB::table ( 'admin' )->select ( 'email' )->where ( 'id', $ticket->sender_id )->first ();
 		if ($sender_email == null) {
-			$sender_email = DB::table ( 'clients' )->where ( 'id', $ticket->sender_id )->first ();
+			$sender_email = DB::table ( 'clients' )->select ( 'email' )->where ( 'id', $ticket->sender_id )->first ();
+		}
+		if ($sender_email == null) {
+			$sender_email = [ 
+					'email' => '' 
+			];
 		}
 		
 		$assignedTo = DB::table ( 'tickets' )->leftJoin ( 'admin_profiles', 'tickets.assigned_support', '=', 'admin_profiles.agent_id' )->leftJoin ( 'ticket_topics', 'tickets.topic_id', "=", 'ticket_topics.topic_id' )->where ( 'id', $id )->first ();
@@ -915,8 +949,9 @@ class TicketsAdmin extends Controller {
 		$closedBy = DB::table ( 'tickets' )->leftJoin ( 'admin_profiles', 'tickets.closed_by', '=', 'admin_profiles.agent_id' )->leftJoin ( 'ticket_topics', 'tickets.topic_id', "=", 'ticket_topics.topic_id' )->where ( 'id', $id )->first ();
 		
 		session ( [ 
-				'email' => $sender_email->email,
+				'email' => reset ( $sender_email ),
 				'subject' => $ticket->subject,
+				'department' => $ticket->department,
 				'date_sent' => $ticket->created_at,
 				'date_modified' => $ticket->updated_at,
 				'summary' => $ticket->summary,
@@ -925,15 +960,12 @@ class TicketsAdmin extends Controller {
 				'id' => $ticket->id,
 				'assigned_support' => $assignedTo->first_name . ' ' . $assignedTo->last_name,
 				'status' => $ticket->ticket_status,
-				'priority' => $ticket->priority,
+				'priority' => $ticket->priority_level,
 				'closed_by' => $closedBy->first_name . ' ' . $closedBy->last_name,
 				'closing_report' => $closedBy->closing_report 
 		] );
-		
 		return view ( 'tickets.printTicket', [ 
-				'topics' => $topics,
-				'restrictions' => $restriction,
-				'agent' => $agents 
+				'messages' => $messages
 		] );
 	}
 	public function editTopicDetails(Request $request) {
@@ -989,6 +1021,23 @@ class TicketsAdmin extends Controller {
 				'closedTickets' => $closedtickets,
 				'assignedTickets' => $assignedtickets 
 		) );
+	}
+	
+	public function clientDelete(Request $request){
+		if(DB::table ( 'clients' )->where ( 'id', $request ['id'] )->exists()){
+			$deleteClient = DB::table ( 'clients' )->where ( 'id', $request ['id'] )->delete ();
+			
+			return response ()->json ( array (
+					'success' => true,
+					
+			) );
+		}else{
+			return response ()->json ( array (
+					'success' => false,
+					
+			) );
+		}
+		
 	}
 	
 }

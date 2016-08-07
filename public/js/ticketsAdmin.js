@@ -79,166 +79,7 @@ $(function() {
 							"bSort" : false,
 						});
 						
-						$('table.ticketReport2')
-								.dataTable(
-										{
-											"bSort" : false,
-											dom : '<"html5buttons"B>lTfgtip',
-											buttons : [
-													{
-														text : '<i class="fa fa-trash"></i> Delete',
-														action : function() {
-															var tickets = [ 'x' ];
-															$(
-																	'input:checkbox:checked')
-																	.each(
-																			function() {
-																				tickets
-																						.push($(
-																								this)
-																								.val());
-																			});
-															if (tickets[1] == ''
-																	|| tickets[1] == null) {
-																swal(
-																		'Ooops...',
-																		"You haven't selected any ticket",
-																		'info');
-																return false;
-															}
-
-															console
-																	.log($(
-																			'form.selectedTickets')
-																			.serializeArray());
-															swal(
-																	{
-																		title : "Are you sure?",
-																		text : "This action can't be undone",
-																		type : "warning",
-																		showCancelButton : true,
-																		closeOnConfirm : false,
-																		confirmButtonText : "Yes",
-																	},
-																	function() {
-																		swal(
-																				{
-																					title : "Password Required!",
-																					text : "If you are sure, Please enter your password.",
-																					type : "input",
-																					inputType : "password",
-																					showCancelButton : true,
-																					closeOnConfirm : false,
-																					showLoaderOnConfirm : true,
-																					disableButtonsOnConfirm : true,
-																				},
-																				function(
-																						inputValue) {
-																					if (inputValue != "") {
-																						$
-																								.ajax(
-																										{
-																											headers : {
-																												'X-CSRF-Token' : $(
-																														'input[name="_token"]')
-																														.val()
-																											},
-																											type : 'post',
-																											url : '/admin/verifyPassword',
-																											data : {
-																												password : inputValue
-																											},
-																										})
-																								.done(
-																										function(
-																												data) {
-																											if (data == "true") {
-																												$
-																														.ajax(
-																																{
-																																	headers : {
-																																		'X-CSRF-Token' : $(
-																																				'input[name="_token"]')
-																																				.val()
-																																	},
-																																	type : "DELETE",
-																																	url : "/admin/deleteTicket",
-																																	data : {
-																																		tickets : tickets
-																																	},
-																																})
-																														.done(
-																																function(
-																																		data) {
-
-																																	swal(
-																																			{
-																																				title : "Deleted",
-																																				text : "Tickets has been deleted",
-																																				type : "success",
-																																			},
-																																			function() {
-																																				$(
-																																						'input:checkbox:checked')
-																																						.each(
-																																								function() {
-																																									$(
-																																											this)
-																																											.parents(
-																																													'tr')
-																																											.remove();
-																																								});
-																																			});
-
-																																});
-																											} else {
-																												swal
-																														.showInputError("Wrong Password");
-																												return false;
-																											}
-																										});
-																					} else {
-																						swal
-																								.showInputError("You need to type in your password in order to do this!");
-																						return false;
-																					}
-																				});
-
-																	});
-
-														}
-													},
-													{
-														extend : 'csv'
-													},
-													{
-														extend : 'excel',
-														title : 'Ticket Report'
-													},
-
-													{
-														extend : 'print',
-														customize : function(
-																win) {
-															$(win.document.body)
-																	.addClass(
-																			'white-bg');
-															$(win.document.body)
-																	.css(
-																			'font-size',
-																			'10px');
-															$(win.document.body)
-																	.find(
-																			'table')
-																	.addClass(
-																			'compact')
-																	.css(
-																			'font-size',
-																			'inherit');
-														}
-													} ]
-
-										});
+					
 
 					});
 
@@ -327,6 +168,10 @@ $(function() {
 																	html += "<tr class='navy-bg' id='"
 																			+ v.id
 																			+ "'>";
+																}else{
+																	html += "<tr class='red-bg' id='"
+																		+ v.id
+																		+ "'>";
 																}
 
 																if (v.first_name == null) {
@@ -342,12 +187,8 @@ $(function() {
 																		+ v.id
 																		+ "> </td><td>"
 																		+ v.id
-																		+ "</td><td>"
-																		+ v.sender
 																		+ "</td>"
-																		+ "<td>"
-																		+ v.sender_id
-																		+ "</td><td>"
+																		+ "<td>"+ v.sender_id + "</td><td>"
 																		+ v.description
 																		+ "</td><td>"
 																		+ v.subject
@@ -504,6 +345,10 @@ $(function() {
 						$(this).show();
 				});
 			});
+	
+	$('button.advancedSearch').click(function() {
+		$('div#advancedSearch').slideToggle();
+	});
 	// create ticket
 	var createTicket = $('button.create-ticket').ladda();
 
@@ -569,7 +414,10 @@ $(function() {
 	$('button.addTopic')
 			.click(
 					function(e) {
-						$('div.addTopic').removeClass('has-error');
+						$('span.addTopic').hide();
+						$('div.form-group').removeClass(
+								'has-error');
+						
 						$('label.text-danger').hide();
 						e.preventDefault();
 
@@ -637,11 +485,8 @@ $(function() {
 																			+ ">Delete</button> </td></tr>";
 																});
 												$('tbody.topics').append(html);
-												$('span.addTopic').hide();
-												$('div.addTopic').removeClass(
-														'has-error');
-												$('div.addTopic').removeClass(
-														'has-feedback');
+												
+												
 
 												toastr.options = {
 													positionClass : "toast-top-center",
@@ -947,16 +792,7 @@ $(function() {
 							$(this).attr('name', 'Activated');
 						}
 
-						swal(
-								{
-									title : 'Are you sure?',
-									type : 'warning',
-									showCancelButton : true,
-									closeOnConfirm : false,
-									confirmButtonText : "Yes",
-
-								},
-								function() {
+					
 									swal(
 											{
 												title : "Password Required!",
@@ -1039,8 +875,89 @@ $(function() {
 													return false;
 												}
 											});
-								});
+								
 					});
+	
+	$('button.clientDelete').click(function(){
+		var clientId = $(this).val();
+		swal(
+				{
+					title : "Password Required!",
+					text : "If you are sure, Please enter your password.",
+					type : "input",
+					inputType : "password",
+					showCancelButton : true,
+					closeOnConfirm : false,
+					showLoaderOnConfirm : true,
+					disableButtonsOnConfirm : true,
+				},
+				function(inputValue) {
+					if (inputValue != "") {
+						$
+								.ajax(
+										{
+											headers : {
+												'X-CSRF-Token' : $(
+														'input[name="_token"]')
+														.val()
+											},
+											type : 'post',
+											url : '/admin/verifyPassword',
+											data : {
+												password : inputValue
+											},
+										})
+								.done(
+										function(
+												data) {
+											if (data == "true") {
+												$
+														.ajax(
+																{
+																	headers : {
+																		'X-CSRF-Token' : $(
+																				'input[name="_token"]')
+																				.val()
+																	},
+																	type : 'DELETE',
+																	url : '/admin/clientDelete',
+																	data : {
+																		id : clientId,
+																	}
+																})
+														.done(
+																function(
+																		data) {
+																	if (data.success != true) {
+																		swal('Oops...','Something went wrong','error');
+																		return false;
+																	} else {
+																		swal(
+																				{
+																					title : 'Success!',
+																					text : 'Status has been changed',
+																					type : 'success'
+																				},
+																				function() {
+																					$('button.clientDelete[value=' + clientId + ']').parents('tr').remove();
+																				});
+																	}
+																});
+
+											} else {
+												swal
+														.showInputError("There's something wrong try again later");
+												return false;
+											}
+										});
+					} else {
+						swal
+								.showInputError("You need to type in your password in order to do this!");
+						return false;
+					}
+				});
+		
+	});
 	// Admin Agent tab controls/actions
 	$('button.agentPasswordResetLink').on('click', function(e) {
 		$('input.email').val($(this).val());

@@ -44,7 +44,7 @@
 							<a href="/admin/tickets-Unresolved"><i class="fa fa-warning"></i>Unresolved Tickets <span class="pull-right label label-info unresolvedTickets">0</span></a>
 						</li>
 						<li>
-							<a href="/admin/tickets-Closed"><i class="fa fa-thumbs-o-up"></i>Closed Tickets </a>
+							<a href="/admin/tickets-Closed"><i class="fa fa-thumbs-o-up"></i>ClosedTickets <span class="pull-right label label-info closedTickets">0</span</a>
 						</li>
 					</ul>
 					<h5>Categories</h5>
@@ -121,7 +121,7 @@
 				
 				
 				
-				@if(Session::get('status') != "Pending")
+				@if(Session::get('status') != "Open")
 				<h5>
 					@if(Session::get('status') == "Closed")
 					<span class="pull-right"><span class="font-noraml">Closed by: </span>{{Session::get('closed_by')}} </span>
@@ -135,7 +135,7 @@
 		<div class="mail-box">			
 			<div class="mail-body">
 			<h4>Description:</h4>
-				<div  class="panel panel-default ">
+				<div  class="panel panel-info ">
 					<div class="panel-heading"> 
 						By: {{Session::get('email')}} <span class="pull-right"> {{Session::get('date_sent')}}</span>
 					</div>
@@ -167,7 +167,7 @@
 				
 				@if(Session::get('status') == "Closed")
 				<h4>Closing Report:</h4>
-				<div  class="panel panel-default ">
+				<div  class="panel panel-success ">
 					<div class="panel-heading"> 
 						By: {{Session::get('closed_by')}}  <span class="pull-right"> {{Session::get('date_modified')}}</span>
 					</div>
@@ -190,18 +190,18 @@
 					<i class="fa fa-save "></i> Save
 				</button>
 				@endif
-				@if(Session::get('status') != "Closed" && Session::get('email') != "")
+				@if(Session::get('status') != "Closed")
+					@if($restrictions[1]->agent == 1 || Auth::guard('admin')->user()->user_type == 'admin')
 				<button class="btn btn-sm btn-white" onclick="window.document.location='/admin/ticketReply/{{Session::get('id')}}'"><i class="fa fa-reply"></i> Reply</button>
-				@endif
-				@if(Auth::guard('admin')->user()->user_type == 'admin')
-					@if(Session::get('status') != "Closed")
-						<a class="btn btn-sm btn-white" data-toggle="modal" data-target="#forward"><i class="fa fa-mail-forward"></i> Forward</a>
-					@endif				
-				@elseif($restrictions[3]->agent == 1)
-					@if(Session::get('status') != "Closed")
-						<a class="btn btn-sm btn-white" data-toggle="modal" data-target="#forward"><i class="fa fa-mail-forward"></i> Forward</a>
 					@endif
 				@endif
+				
+				@if(Session::get('status') != "Closed")
+					@if(Auth::guard('admin')->user()->user_type == 'admin' || $restrictions[2]->agent == 1)
+						<a class="btn btn-sm btn-white" data-toggle="modal" data-target="#forward"><i class="fa fa-mail-forward"></i> Forward</a>
+					@endif
+				@endif				
+				
 				<button class="btn btn-sm btn-white" onclick="window.open('/admin/printTickets/{{Session::get('id')}}')">
 					<i class="fa fa-print"></i> Print
 				</button>
@@ -346,6 +346,7 @@
 				$('span.pendingTickets').text(data.pendingTickets);
 				$('span.unresolvedTickets').text(data.overdueTickets);
 				$('span.assignedTickets').text(data.assignedTickets);
+				$('span.closedTickets').text(data.closedTickets);
 			});
 
 			

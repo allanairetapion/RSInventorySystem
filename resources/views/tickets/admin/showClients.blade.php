@@ -38,7 +38,7 @@
 									<td id="{{$client->id}}">{{$client->status}}</td>
 									<td class="text-center">
 									<button type="button" class="btn btn-sm btn-primary clientPasswordResetLink" value="{{$client->email}}">
-										Send Password Reset Link
+										Send Reset Link
 									</button>
 									<button type="button" class="btn btn-sm btn-warning clientChangePassword" value="{{$client->id}}">
 										Change Password
@@ -46,7 +46,7 @@
 									<button type="button" class="btn btn-sm btn-danger changeClientStatus" name="{{$client->status}}" value="{{$client->id}}">
 										Change Status
 									</button>
-									<button type="button" class="btn btn-sm btn-danger btn-outline">Delete
+									<button type="button" class="btn btn-sm btn-danger btn-outline clientDelete" name="clientDelete" value="{{$client->id}}" >Delete
 									</button>
 									</td>
 
