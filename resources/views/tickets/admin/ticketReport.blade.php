@@ -111,8 +111,6 @@
 				</form>
 				<br>
 			</div>
-					<br>
-
 					<div class="table-responsive">
 						<form class="selectedTickets">
 							{!! csrf_field() !!}
@@ -645,75 +643,50 @@ $('table.ticketReport')
 
 		});
 
-$('table.ticketReport2')
-.dataTable(
-		{
+$('table.ticketReport2').dataTable({
 			"bSort" : false,
 			dom : '<"html5buttons"B>lTfgtip',
-			buttons : [
-					{
+			buttons : [{
 						text : '<i class="fa fa-trash"></i> Delete',
 						action : function() {
 							var tickets = [ 'x' ];
+							
 							var usrtype = <?php echo json_encode(Auth::guard('admin')->user()->user_type); ?>;
 							if(usrtype == "agent"){
 								swal('Oops...','Action not allowed','info');
 								return false;
 								}
-							$(
-									'input:checkbox:checked')
-									.each(
-											function() {
-												tickets
-														.push($(
-																this)
-																.val());
-											});
-							if (tickets[1] == ''
-									|| tickets[1] == null) {
-								swal(
-										'Ooops...',
-										"You haven't selected any ticket",
-										'info');
+							$('input:checkbox:checked').each(function() {
+												tickets.push($(this).val());
+							});
+							
+							if (tickets[1] == '' || tickets[1] == null) {
+								swal('Ooops...',"You haven't selected any ticket",'info');
 								return false;
 							}
 
-							console
-									.log($(
-											'form.selectedTickets')
-											.serializeArray());
-							swal(
-									{
-										title : "Are you sure?",
-										text : "This action can't be undone",
-										type : "warning",
-										showCancelButton : true,
-										closeOnConfirm : false,
-										confirmButtonText : "Yes",
-									},
-									function() {
-										swal(
-												{
-													title : "Password Required!",
-													text : "If you are sure, Please enter your password.",
-													type : "input",
-													inputType : "password",
-													showCancelButton : true,
-													closeOnConfirm : false,
-													showLoaderOnConfirm : true,
-													disableButtonsOnConfirm : true,
-												},
-												function(
-														inputValue) {
+							console.log($('form.selectedTickets').serializeArray());
+							swal({
+									title : "Are you sure?",
+									text : "This action can't be undone",
+									type : "warning",
+									showCancelButton : true,
+									closeOnConfirm : false,
+									confirmButtonText : "Yes",
+									},function() {
+										swal({
+												title : "Password Required!",
+												text : "If you are sure, Please enter your password.",
+												type : "input",
+												inputType : "password",
+												showCancelButton : true,
+												closeOnConfirm : false,
+												showLoaderOnConfirm : true,
+												disableButtonsOnConfirm : true,
+												},function(inputValue) {
 													if (inputValue != "") {
-														$
-																.ajax(
-																		{
-																			headers : {
-																				'X-CSRF-Token' : $(
-																						'input[name="_token"]')
-																						.val()
-																			},
+														$.ajax({
+																headers : {'X-CSRF-Token' : $('input[name="_token"]').val()},
 																			type : 'post',
 																			url : '/admin/verifyPassword',
 																			data : {
