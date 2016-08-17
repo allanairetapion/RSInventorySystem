@@ -2,6 +2,7 @@
 namespace App\Http\Controllers;
 use App\Tickets as Ticket;
 use App\TicketLogs as TicketLogs;
+use App\TicketTopics as TicketTopics;
 use App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use DB;
@@ -42,7 +43,7 @@ class TicketsController extends Controller{
 		$validator = Validator::make($request->all(),[
         	'topic' => 'required',
         	'subject'  => 'required|min:6|max:255',    
-            'summary' =>'required|min:10',            
+            'summary' =>'required|min:15',            
         ]);
 
         if ($validator->fails()) {
@@ -62,7 +63,6 @@ class TicketsController extends Controller{
 		
 			$user = Ticket::create([
 			'id' => $ida,
-            'sender' => Auth::guard('user')->user()->clientProfile ? Auth::guard('user')->user()->clientProfile->first_name.' '.Auth::guard('user')->user()->clientProfile->last_name : '',
             'sender_id' => Auth::guard('user')->user()->id,
             'topic_id' => $request['topic'],
             'subject' => $request['subject'],
@@ -168,26 +168,22 @@ class TicketsController extends Controller{
 		if($ticket == null){
 			abort(404);
 		}
-		if ($ticket->ticket_status != 'Open') {
-			$messages = TicketLogs::where('ticket_id',$id)->get();
-				
-			foreach($messages as $message){
-				$name = DB::table('admin_profiles')->where('agent_id', $message['sender'])->first();
-				if($name == null){
-					$name = DB::table('client_profiles')->where('client_id', $message['sender'])->first();
-				}
-				$message['sender'] = $name->first_name.' '.$name->last_name;
-			}
-				
-				
-		}
 		$assignedTo = DB::table ( 'tickets' )->leftJoin ( 'admin_profiles', 'tickets.assigned_support', '=', 'admin_profiles.agent_id' )->leftJoin ( 'ticket_topics', 'tickets.topic_id', "=", 'ticket_topics.topic_id' )->where ( 'id', $id )->first ();
 		
 		$closedBy = DB::table ( 'tickets' )->leftJoin ( 'admin_profiles', 'tickets.closed_by', '=', 'admin_profiles.agent_id' )->leftJoin ( 'ticket_topics', 'tickets.topic_id', "=", 'ticket_topics.topic_id' )->where ( 'id', $id )->first ();
+		
+		
+		$sendername = DB::table('admin_profiles')->where('agent_id', $ticket->sender_id)->first();
+		if($sendername == null){
+			$sendername = DB::table('client_profiles')->where('client_id', $ticket->sender_id)->first();
+		}
+		$ticket->sender_id = $sendername->first_name.' '.$sendername->last_name;
+		
 		session ( [
 				'subject' => $ticket->subject,
 				'department' => $ticket->department,
 				'date_sent' => $ticket->created_at,
+				'sender' => $ticket->sender_id,
 				'date_modified' => $ticket->updated_at,
 				'summary' => $ticket->summary,
 				'topic_id' => $ticket->topic_id,
@@ -199,7 +195,78 @@ class TicketsController extends Controller{
 				'closed_by' => $closedBy->first_name . ' ' . $closedBy->last_name,
 				'closing_report' => $closedBy->closing_report
 		] );
-		return view('tickets.viewTicketDetails',['messages'=> $messages ]);
+		if ($ticket->ticket_status != 'Open') {
+			$messages = TicketLogs::where('ticket_id',$id)->get();
+		
+			foreach($messages as $message){
+				$name = DB::table('admin_profiles')->where('agent_id', $message['sender'])->first();
+				if($name == null){
+					$name = DB::table('client_profiles')->where('client_id', $message['sender'])->first();
+				}
+				$message['sender'] = $name->first_name.' '.$name->last_name;
+			}
+		
+			return view('tickets.viewTicketDetails',['messages'=> $messages ]);
+		}
+		return view('tickets.viewTicketDetails');
+	}
+	
+	public function suggestTopic(Request $request){
+		$validator = Validator::make ( $request->all (), [
+				'topic' => 'required|min:5|max:30|unique:ticket_topics,description',
+		] );
+		
+		if ($validator->fails ()) {
+			return response ()->json ( array (
+					'success' => false,
+					'errors' => $validator->getMessageBag ()->toArray ()
+			) );
+		} else {
+				
+			$user = TicketTopics::create ( [
+					'description' => $request ['topic'],
+					'status' => 0,
+					'date_created' => Carbon::now (),
+					'date_updated' => Carbon::now ()
+			] );
+			
+			$topics = TicketTopics::where('description',$request['topic'])->first();
+			return response ()->json ( array (
+					'success' => true,
+					'response' => $topics
+			) );
+		}
+	}
+	
+	public function ticketReply(Request $request){
+		$validator = Validator::make ( $request->all (), [
+				'ticket_id' => 'required|exists:tickets,id',
+				'email' => 'required|email',
+				'message' => 'required|min:15'
+		] );
+		
+		if ($validator->fails ()) {
+			return response ()->json ( array (
+					'success' => false,
+					'errors' => $validator->getMessageBag ()->toArray ()
+			) );
+		} else {
+			/*Mail::raw ( html_entity_decode ( $request ['message'] ), function (\Illuminate\Mail\Message $message) use($request) {
+			 $message->subject ( $request ['subject'] );
+			 $message->replyTo ( Auth::guard ( 'admin' )->user ()->email );
+			 $message->to ( $request ['email'] );
+			} );
+			*/
+			$message = new TicketLogs;
+			$message->ticket_id = $request ['ticket_id'];
+			$message->message = $request ['message'];
+			$message->sender = Auth::guard('user')->user()->id;
+			$message->save();
+				
+			return response ()->json ( array (
+					'success' => true
+			) );
+		}
 	}
 }
 

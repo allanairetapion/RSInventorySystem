@@ -44,7 +44,7 @@
 							<a href="/admin/tickets-Unresolved"><i class="fa fa-warning"></i>Unresolved Tickets <span class="pull-right label label-info unresolvedTickets">0</span></a>
 						</li>
 						<li>
-							<a href="/admin/tickets-Closed"><i class="fa fa-thumbs-o-up"></i>ClosedTickets <span class="pull-right label label-info closedTickets">0</span</a>
+							<a href="/admin/tickets-Closed"><i class="fa fa-thumbs-o-up"></i>ClosedTickets <span class="pull-right label label-info closedTickets">0</span></a>
 						</li>
 					</ul>
 					<h5>Categories</h5>
@@ -137,7 +137,7 @@
 			<h4>Description:</h4>
 				<div  class="panel panel-info ">
 					<div class="panel-heading"> 
-						By: {{Session::get('email')}} <span class="pull-right"> {{Session::get('date_sent')}}</span>
+						By: {{Session::get('sender')}} <span class="pull-right"> {{Session::get('date_sent')}}</span>
 					</div>
 					<div class="panel-body">
 						 <p>
@@ -307,7 +307,6 @@
 				<button type="button" class="close" data-dismiss="modal">
 					<span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
 				</button>
-				<i class="fa fa-thumbs-o-up modal-icon"></i>
 				<h4 class="modal-title">Closed ticket:</h4>
 
 			</div>

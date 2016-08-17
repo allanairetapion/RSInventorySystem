@@ -34,6 +34,6 @@ class Kernel extends ConsoleKernel
 				Carbon::yesterday (),
 				Carbon::tomorrow () 
 		) )->update (['ticket_status' => 'Unresolved']);
-    	})->daily();
+    	})->everyMinute();
     }
 }

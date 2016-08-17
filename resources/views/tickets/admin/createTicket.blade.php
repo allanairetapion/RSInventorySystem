@@ -45,31 +45,26 @@
 								<input type="text" class="form-control" placeholder="What's the problem?" name="subject" required>
 
 							</div>
-						</div>
-
-						<div class="form-group summary">
-
-							
-
+						</div>				
 							<label class="col-md-2 control-label">Summary:</label>
 
-							<div class="col-md-10" style="padding:0px;border: solid grey 1px;">
-								<input type="hidden" class="form-control topic"  rows="5" name="summary">
-								
-									<div class="ticketsummernote">
-
-									</div>
-
-
+							<div class="col-md-10">
+								<input type="hidden" class="form-control topic" name="summary">								
+									<div class="ticketsummernote"></div>
 							</div>
-						</div>
+						
 						</form>
 						<hr>
-						<center>
-							<button type="button" data-style="zoom-in" class="ladda-button btn btn-info btn-lg create-ticket">
-								Create
-							</button>
-						</center>
+						<div class="row">
+					<div class="pull-right">
+						<button type="button"
+							class="btn btn-w-m btn-primary  create-ticket">Create</button>
+						<a href="/admin/" class="btn btn-w-m btn-danger btn-outline ">Cancel</a>
+
+					</div>
+				</div>
+						
+						
 				</div>
 			</div>
 		</div>

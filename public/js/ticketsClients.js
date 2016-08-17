@@ -1,10 +1,11 @@
 /**
- * @author ITojt01 Luis Philip M. CastaÃƒÂ±eda
+ * @author ITojt01 Luis Philip M. CastaÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â±eda
  */
 
 $(function() {
 	$(document).ready(function() {
 		$('div.summernote').summernote({
+			height: 200,
 			toolbar : [['style', ['bold', 'italic', 'underline', 'clear']], ['fontname', ['fontname']], ['fontsize', ['fontsize']], ['color', ['color']], ['para', ['ul', 'ol', 'paragraph']], ['height', ['height']]]
 		});
 		$('[data-toggle="tooltip"]').tooltip();
@@ -46,7 +47,7 @@ $(function() {
 					text : "Your ticket has been created.",
 					type : "success",
 				}, function() {
-					window.location.href = "/tickets/landingPage";
+					window.location.href = "/tickets";
 				});
 
 			}
@@ -174,5 +175,90 @@ $(function() {
 	
 	$(document).on('click', 'tr.read', function() {
 		window.document.location = $(this).data("href");
+	});
+	// Suggest Topic
+	$('button.suggestTopic').click(function(){
+		$.ajax({
+			type: 'POST',
+			url: '/tickets/suggestTopic',
+			data: $('form.suggestTopic').serialize()
+		}).done(function(data){
+			if(data.success == false){
+				if(data.errors['topic']){
+					$('div.suggestTopic').addClass('has-error');
+					$('span.suggestTopic').text(data.errors['topic']).show();
+				}
+			}else{
+				
+				swal({
+					title : "Success",
+					text : 'New topic has been added. Do you want to use this?',
+					type : 'info',
+					showCancelButton : true,
+					confirmButtonText : "Yes",
+					closeOnConfirm : true,
+					
+				}, function(isConfirm) {
+					if(isConfirm){
+						$('select.topic').append($('<option>', {
+						    value: data.response['topic_id'],
+						    text: data.response['description']
+						}));
+						
+						$('select.topic').val(data.response['topic_id']).change();
+						$('form.suggestTopic').trigger('reset');
+						$('div#myModal').modal('hide');
+					}else{
+						$('div#myModal').modal('hide');
+					}
+					
+				});
+			}
+			
+		});
+	});
+	// Reply
+	
+	var ticketReply = $('button.ticketReply').ladda();
+
+	ticketReply.click(function(e) {
+
+		$('label.email').hide();
+		$('div.email').removeClass('has-error');
+
+		$('input[type="hidden"].ticketReply').val(
+				$('div.summernote').code());
+		console.log($('form.ticketReply').serialize());
+		ticketReply.ladda('start');
+
+		$.ajax({
+			type : "POST",
+			url : "/tickets/ticketReply",
+			data : $('form.ticketReply').serialize(),
+		}).done(
+				function(data) {
+					ticketReply.ladda('stop');
+					if (data.success != false) {
+						swal({
+							title : 'Success',
+							text : 'A reply has been added successfully',
+							type : 'success'
+						}, function() {
+							window.location.href = "/tickets/"
+									+ $('input.ticket_id').val();
+						});
+
+					} else {
+						if (data.errors['email']) {
+							$('label.email').text('*' + data.errors['email'])
+									.show();
+							$('div.email').addClass('has-error');
+						}
+						if (data.errors['message']) {
+							swal('Oops...', data.errors['message'], 'warning');
+						}
+					}
+				});
+
 	});
 });

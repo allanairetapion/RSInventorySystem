@@ -102,6 +102,7 @@ class AuthController extends Controller
 		
 		return $user;
     }
+    
 	public function register(Request $request)
     {
         $validator = $this->validator($request->all());
@@ -182,4 +183,5 @@ class AuthController extends Controller
 
         return $this->sendFailedLoginResponse($request);
     } 
+    
 }

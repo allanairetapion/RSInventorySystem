@@ -68,7 +68,7 @@
 							<button aria-controls="navbar" aria-expanded="false" data-target="#navbar" data-toggle="collapse" class="navbar-toggle collapsed"type="button">
 								<i class="fa fa-reorder"></i>
 							</button>
-							<a href="/tickets/landingPage" class="navbar-brand">Remote Staff</a>
+							<a href="/tickets" class="navbar-brand">Remote Staff</a>
 						</div>
 						<div class="navbar-collapse collapse" id="navbar">
 							<ul class="nav navbar-nav">

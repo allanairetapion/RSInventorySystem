@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>@yield('title')</title>
 
-
+ <link href="/css/plugins/chosen/chosen.css" rel="stylesheet">
 <link href="/css/bootstrap.min.css" rel="stylesheet">
 <link href="/font-awesome/css/font-awesome.css" rel="stylesheet">
 <link href="/css/plugins/iCheck/custom.css" rel="stylesheet">
@@ -18,8 +18,9 @@
 <link href="/css/plugins/iCheck/custom.css" rel="stylesheet">
 <link href="/css/plugins/datapicker/datepicker3.css" rel="stylesheet">
 <link href="/css/plugins/summernote/summernote.css" rel="stylesheet">
-<link rel="stylesheet" type="text/css"
-	href="/css/plugins/jQueryUI/jquery-ui.css" />
+<link rel="stylesheet" type="text/css"href="/css/plugins/jQueryUI/jquery-ui.css" />
+<!-- FooTable -->
+<link href="/css/plugins/footable/footable.core.css" rel="stylesheet">
 
 <!-- c3 Charts -->
 <link href="/css/plugins/c3/c3.min.css" rel="stylesheet">
@@ -51,6 +52,8 @@
 	<!-- Custom and plugin javascript -->
 	<script src="/js/inspinia.js"></script>
 	<script src="/js/plugins/pace/pace.min.js"></script>
+	<!-- FooTable -->
+    <script src="/js/plugins/footable/footable.all.min.js"></script>
 	<!-- Toastr script -->
 	<script src="/js/plugins/toastr/toastr.min.js"></script>
 	<script type="text/javascript" src="/js/jquery-ui-1.10.4.min.js"></script>
@@ -59,7 +62,8 @@
 	<script src="/js/plugins/dataTables/datatables.min.js"></script>
 	<!-- SUMMERNOTE -->
 	<script src="/js/plugins/summernote/summernote.min.js"></script>
-
+	<!-- Chosen -->
+    <script src="/js/plugins/chosen/chosen.jquery.js"></script>
 	<!-- Sweet Alert -->
 	<script src="/js/plugins/sweetalert/sweetalert.min.js"></script>
 	<!-- Input Mask -->
@@ -128,11 +132,8 @@
 					</li>
 					
 					<li>
-						<a href="#"> <i class="fa fa-user"></i><span class="nav-label">Agents</span> <span class="fa arrow"></span></a>
-						<ul class="nav nav-second-level">
-							<li><a href="/inventory/addItems">Agents</a></li>
-							<li><a href="/inventory/borrow">Add New User</a></li>
-						</ul>
+						<a href="/inventory/agents"> <i class="fa fa-user"></i><span class="nav-label">Agents</span> </a>
+						
 					</li>
 
 
