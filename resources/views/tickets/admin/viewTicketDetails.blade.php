@@ -137,7 +137,7 @@
 			<h4>Description:</h4>
 				<div  class="panel panel-info ">
 					<div class="panel-heading"> 
-						By: {{Session::get('email')}} <span class="pull-right"> {{Session::get('date_sent')}}</span>
+						By: {{Session::get('sender')}} <span class="pull-right"> {{Session::get('date_sent')}}</span>
 					</div>
 					<div class="panel-body">
 						 <p>

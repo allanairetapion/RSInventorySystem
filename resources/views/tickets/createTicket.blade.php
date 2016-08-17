@@ -5,10 +5,6 @@
 <div class="col-md-offset-1 col-md-10">
 	<div class="ibox float-e-margins animated fadeInDown">
 		<div class="ibox-title">
-			<button class="pull-right btn btn-primary btn-xs" data-toggle="modal"
-						data-target="#myModal">
-				<i class="fa fa-plus-circle"></i> Add new topic
-			</button>
 			<h3 class="font-bold">Create Ticket</h3>
 		</div>
 		<div class="ibox-content ">
@@ -27,7 +23,8 @@
 							<option value="{{$topic->topic_id}}">{{$topic->description}}</option>
 							@endforeach
 						</select>
-
+						<span class="help-block m-b-none"><a href="#"data-toggle="modal"
+						data-target="#myModal" >Click here to suggest a new topic</a></span>
 					</div>
 				</div>
 				<div class="form-group subject">
@@ -76,18 +73,20 @@
 		<div class="modal-content">
 			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal">&times;</button>
-				<h4 class="modal-title">Add Topic</h4>
+				<h4 class="modal-title">Suggest a topic</h4>
 			</div>
 
 			<div class="ibox-content">
-				<form class="form-horizontal borrowItem" id="borrowItem">
+				<form class="form-horizontal suggestTopic">
 				{!! csrf_field() !!}
 				
-				<div class="form-group">
+				<div class="form-group suggestTopic">
 					<label class="col-md-2 control-label">Topic:</label>
 					<div class="col-md-10">
 					<input type="text" class="form-control" name="topic">
+					<span class="help-block m-b-none text-danger suggestTopic"></span>
 					</div>
+					
 				</div>
 
 				</form>
@@ -97,7 +96,7 @@
 			</div>
 
 			<div class="modal-footer">
-				<button class="ladda-button btn btn-w-m btn-primary borrowItem" type="button">
+				<button class="ladda-button btn btn-w-m btn-primary suggestTopic" type="button">
 					<strong>Save</strong>
 				</button>
 				<button type="button" class="btn btn-w-m btn-danger"

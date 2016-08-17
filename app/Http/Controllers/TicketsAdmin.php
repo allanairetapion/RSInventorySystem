@@ -135,7 +135,7 @@ class TicketsAdmin extends Controller {
 	public function addTopic(Request $request) {
 		
 		$validator = Validator::make ( $request->all (), [ 
-				'description' => 'required|min:5|max:30|unique:ticket_topics',
+				'description' => 'required|min:5|max:30|unique:ticket_topics,description',
 				'priority' => 'required' 
 		] );
 		if ($validator->fails ()) {
@@ -267,45 +267,25 @@ class TicketsAdmin extends Controller {
 		
 		$ticket = DB::table ( 'tickets' )->leftJoin ( 'ticket_topics', 'tickets.topic_id', "=", 'ticket_topics.topic_id' )->where ( 'id', $id )->first ();
 		
-		if ($ticket->ticket_status == 'Open') {
-			$tickets = DB::table ( 'tickets' )->where ( 'id', $id )->update ( ['ticket_status' => 'Pending','assigned_support' => Auth::guard('admin')->user()->id,
-					'updated_at'=> Carbon::now()
-			]);
-			$ticket = DB::table ( 'tickets' )->leftJoin ( 'ticket_topics', 'tickets.topic_id', "=", 'ticket_topics.topic_id' )->where ( 'id', $id )->first ();
+		if($ticket == null){
+			abort(404);
 		}
-		if ($ticket->ticket_status != 'Open') {
-			$messages = TicketLogs::where('ticket_id',$id)->get();
-			
-			foreach($messages as $message){
-				$name = DB::table('admin_profiles')->where('agent_id', $message['sender'])->first();
-				if($name == null){
-					$name = DB::table('admin_profiles')->where('client_id', $message['sender'])->first();
-				}
-				$message['sender'] = $name->first_name.' '.$name->last_name;
-			}	
-			
-			
-		}
-		
-		$sender_email = DB::table ( 'admin' )->select ( 'email' )->where ( 'id', $ticket->sender_id )->first ();
-		if ($sender_email == null) {
-			$sender_email = DB::table ( 'clients' )->select ( 'email' )->where ( 'id', $ticket->sender_id )->first ();
-		}
-		if ($sender_email == null) {
-			$sender_email = [ 
-					'email' => '' 
-			];
-		}
-		
 		$assignedTo = DB::table ( 'tickets' )->leftJoin ( 'admin_profiles', 'tickets.assigned_support', '=', 'admin_profiles.agent_id' )->leftJoin ( 'ticket_topics', 'tickets.topic_id', "=", 'ticket_topics.topic_id' )->where ( 'id', $id )->first ();
 		
 		$closedBy = DB::table ( 'tickets' )->leftJoin ( 'admin_profiles', 'tickets.closed_by', '=', 'admin_profiles.agent_id' )->leftJoin ( 'ticket_topics', 'tickets.topic_id', "=", 'ticket_topics.topic_id' )->where ( 'id', $id )->first ();
 		
-		session ( [ 
-				'email' => reset ( $sender_email ),
+		
+		$sendername = DB::table('admin_profiles')->where('agent_id', $ticket->sender_id)->first();
+		if($sendername == null){
+			$sendername = DB::table('client_profiles')->where('client_id', $ticket->sender_id)->first();
+		}
+		$ticket->sender_id = $sendername->first_name.' '.$sendername->last_name;
+		
+		session ( [
 				'subject' => $ticket->subject,
 				'department' => $ticket->department,
 				'date_sent' => $ticket->created_at,
+				'sender' => $ticket->sender_id,
 				'date_modified' => $ticket->updated_at,
 				'summary' => $ticket->summary,
 				'topic_id' => $ticket->topic_id,
@@ -315,10 +295,23 @@ class TicketsAdmin extends Controller {
 				'status' => $ticket->ticket_status,
 				'priority' => $ticket->priority_level,
 				'closed_by' => $closedBy->first_name . ' ' . $closedBy->last_name,
-				'closing_report' => $closedBy->closing_report 
+				'closing_report' => $closedBy->closing_report
 		] );
+		if ($ticket->ticket_status != 'Open') {
+			$messages = TicketLogs::where('ticket_id',$id)->get();
 		
-		return view ( 'tickets.admin.viewTicketDetails', [ 'restrictions' => $restriction,'agent' => $agents,'messages'=> $messages ] );
+			foreach($messages as $message){
+				$name = DB::table('admin_profiles')->where('agent_id', $message['sender'])->first();
+				if($name == null){
+					$name = DB::table('client_profiles')->where('client_id', $message['sender'])->first();
+				}
+				$message['sender'] = $name->first_name.' '.$name->last_name;
+			}
+		
+			return view ( 'tickets.admin.viewTicketDetails', [ 'restrictions' => $restriction,'agent' => $agents,'messages'=> $messages ] );
+		}
+		
+		return view ( 'tickets.admin.viewTicketDetails', [ 'restrictions' => $restriction,'agent' => $agents ] );
 	}
 	public function showTicketReply($id = null) {
 		if ($id == null) {

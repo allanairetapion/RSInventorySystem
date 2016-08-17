@@ -137,6 +137,8 @@ Route::group(['middleware' => 'user'], function () {
 	Route::get('/tickets/{id}','TicketsController@ticketDetails');
 
 	Route::post('/tickets/createTicket','TicketsController@createTicket');
+	Route::post('/tickets/suggestTopic','TicketsController@suggestTopic');
+	Route::post('/tickets/ticketReply','TicketsController@ticketReply');
 	
 	Route::put('/tickets/changePersonalInfo','TicketsController@changePersonalInfo');
 	Route::put('/tickets/changePassword','TicketsController@changePassword');

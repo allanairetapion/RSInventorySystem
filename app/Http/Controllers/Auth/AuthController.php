@@ -132,10 +132,9 @@ class AuthController extends Controller
 	
 	public function showLoginForm(){
 		if(Auth::guard('user')->check()){
-			return redirect('/tickets/landingPage');
+			return redirect('/tickets');
 		}
-			return view("auth.login");
-		
+			return view("auth.login");	
 	}
 	
 	public function showRegistrationForm()
