@@ -1,10 +1,11 @@
 /**
- * @author ITojt01 Luis Philip M. CastaÃƒÂ±eda
+ * @author ITojt01 Luis Philip M. CastaÃƒÆ’Ã‚Â±eda
  */
 
 $(function() {
 	$(document).ready(function() {
 		$('div.summernote').summernote({
+			height: 200,
 			toolbar : [['style', ['bold', 'italic', 'underline', 'clear']], ['fontname', ['fontname']], ['fontsize', ['fontsize']], ['color', ['color']], ['para', ['ul', 'ol', 'paragraph']], ['height', ['height']]]
 		});
 		$('[data-toggle="tooltip"]').tooltip();

@@ -28,10 +28,7 @@
 
 			<div class="tab-content">
 				<div id="home" class="tab-pane fade in active">
-						<div class="row">
-				<br>
-				
-			</div>
+						<br>
 			<div id="advancedSearch" class=" gray-bg" style="padding:5px;">
 				<br>
 				<form class="advancedTicket" class="form-horizontal" >
@@ -177,9 +174,7 @@
 							</table>
 						</form>
 						
-						<div class="pagination pull-right">
-							<?php echo $tickets -> render(); ?>
-						</div>
+						
 					</div>
 					
 					
@@ -473,8 +468,17 @@ $('table.ticketReport')
 .dataTable(
 		{
 			"bSort" : false,
-			dom : '<"html5buttons"B>',
+			dom : '<"html5buttons"B>lTfgtip',
 			buttons : [
+					
+					{
+						text : 'Advanced Search',
+						action : function() {
+							$(
+									'div#advancedSearch')
+									.slideToggle();
+						}
+					},
 					{
 						text : '<i class="fa fa-trash"></i> Delete',
 						action : function() {
@@ -517,99 +521,40 @@ $('table.ticketReport')
 									},
 									function() {
 
-										swal(
-												{
-													title : "Password Required!",
-													text : "If you are sure, Please enter your password.",
-													type : "input",
-													inputType : "password",
-													showCancelButton : true,
-													closeOnConfirm : false,
-													showLoaderOnConfirm : true,
-													disableButtonsOnConfirm : true,
-												},
-												function(
-														inputValue) {
-													if (inputValue != "") {
-														$
-																.ajax(
-																		{
-																			headers : {
-																				'X-CSRF-Token' : $(
-																						'input[name="_token"]')
-																						.val()
-																			},
-																			type : 'post',
-																			url : '/admin/verifyPassword',
-																			data : {
-																				password : inputValue
-																			},
-																		})
-																.done(
-																		function(
-																				data) {
-																			if (data == "true") {
-																				$
-																						.ajax(
-																								{
-																									headers : {
-																										'X-CSRF-Token' : $(
-																												'input[name="_token"]')
-																												.val()
-																									},
-																									type : "DELETE",
-																									url : "/admin/deleteTicket",
-																									data : {
-																										tickets : tickets
-																									},
-																								})
-																						.done(
-																								function(
-																										data) {
+										swal({
+											title : 'Are you sure?',
+											text : "This Action can't be undone",
+											type : 'warning',
+											showCancelButton : true,
+											showCancelButton : true,
+											closeOnConfirm : false,
+											showLoaderOnConfirm : true,
+											disableButtonsOnConfirm : true,
+										}, function() {
+											
 
-																									swal(
-																											{
-																												title : "Deleted",
-																												text : "Tickets has been deleted",
-																												type : "success",
-																											},
-																											function() {
-																												$(
-																														'input:checkbox:checked')
-																														.each(
-																																function() {
-																																	$(
-																																			this)
-																																			.parents(
-																																					'tr')
-																																			.remove();
-																																});
-																											});
-
-																								});
-																			} else {
-																				swal
-																						.showInputError("Wrong Password");
-																				return false;
-																			}
-																		});
-													} else {
-														swal
-																.showInputError("You need to type in your password in order to do this!");
-														return false;
-													}
-												});
+											$.ajax({
+													headers : {'X-CSRF-Token' : $('input[name="_token"]').val()},
+													type : "DELETE",
+													url : "/admin/deleteTicket",
+													data : {tickets : tickets},
+													}).done(function(data) {
+															swal({
+																	title : "Deleted",
+																	text : "Tickets has been deleted",
+																	type : "success",
+																},function() {
+																	$('input:checkbox:checked').each(function() {
+																			$(this).parents('tr').remove();
+																});
+													});
+											
+										});
 
 									});
 
-						}
-					},
-					{
-						text : 'Advanced Search',
-						action : function() {
-							$(
-									'div#advancedSearch')
-									.slideToggle();
+									});
+
 						}
 					},
 					{
@@ -650,103 +595,75 @@ $('table.ticketReport2').dataTable({
 						text : '<i class="fa fa-trash"></i> Delete',
 						action : function() {
 							var tickets = [ 'x' ];
-							
 							var usrtype = <?php echo json_encode(Auth::guard('admin')->user()->user_type); ?>;
 							if(usrtype == "agent"){
 								swal('Oops...','Action not allowed','info');
 								return false;
 								}
-							$('input:checkbox:checked').each(function() {
-												tickets.push($(this).val());
-							});
-							
-							if (tickets[1] == '' || tickets[1] == null) {
-								swal('Ooops...',"You haven't selected any ticket",'info');
+							$(
+									'input:checkbox:checked')
+									.each(
+											function() {
+												tickets
+														.push($(
+																this)
+																.val());
+											});
+							if (tickets[1] == ''
+									|| tickets[1] == null) {
+								swal(
+										'Ooops...',
+										"You haven't selected any ticket",
+										'info');
 								return false;
 							}
 
-							console.log($('form.selectedTickets').serializeArray());
-							swal({
-									title : "Are you sure?",
-									text : "This action can't be undone",
-									type : "warning",
-									showCancelButton : true,
-									closeOnConfirm : false,
-									confirmButtonText : "Yes",
-									},function() {
+							console
+									.log($(
+											'form.selectedTickets')
+											.serializeArray());
+							swal(
+									{
+										title : "Are you sure?",
+										text : "This action can't be undone",
+										type : "warning",
+										showCancelButton : true,
+										closeOnConfirm : false,
+										confirmButtonText : "Yes",
+									},
+									function() {
+
 										swal({
-												title : "Password Required!",
-												text : "If you are sure, Please enter your password.",
-												type : "input",
-												inputType : "password",
-												showCancelButton : true,
-												closeOnConfirm : false,
-												showLoaderOnConfirm : true,
-												disableButtonsOnConfirm : true,
-												},function(inputValue) {
-													if (inputValue != "") {
-														$.ajax({
-																headers : {'X-CSRF-Token' : $('input[name="_token"]').val()},
-																			type : 'post',
-																			url : '/admin/verifyPassword',
-																			data : {
-																				password : inputValue
-																			},
-																		})
-																.done(
-																		function(
-																				data) {
-																			if (data == "true") {
-																				$
-																						.ajax(
-																								{
-																									headers : {
-																										'X-CSRF-Token' : $(
-																												'input[name="_token"]')
-																												.val()
-																									},
-																									type : "DELETE",
-																									url : "/admin/deleteTicket",
-																									data : {
-																										tickets : tickets
-																									},
-																								})
-																						.done(
-																								function(
-																										data) {
+											title : 'Are you sure?',
+											text : "This Action can't be undone",
+											type : 'warning',
+											showCancelButton : true,
+											showCancelButton : true,
+											closeOnConfirm : false,
+											showLoaderOnConfirm : true,
+											disableButtonsOnConfirm : true,
+										}, function() {
+											
 
-																									swal(
-																											{
-																												title : "Deleted",
-																												text : "Tickets has been deleted",
-																												type : "success",
-																											},
-																											function() {
-																												$(
-																														'input:checkbox:checked')
-																														.each(
-																																function() {
-																																	$(
-																																			this)
-																																			.parents(
-																																					'tr')
-																																			.remove();
-																																});
-																											});
+											$.ajax({
+													headers : {'X-CSRF-Token' : $('input[name="_token"]').val()},
+													type : "DELETE",
+													url : "/admin/deleteTicket",
+													data : {tickets : tickets},
+													}).done(function(data) {
+															swal({
+																	title : "Deleted",
+																	text : "Tickets has been deleted",
+																	type : "success",
+																},function() {
+																	$('input:checkbox:checked').each(function() {
+																			$(this).parents('tr').remove();
+																});
+													});
+											
+										});
 
-																								});
-																			} else {
-																				swal
-																						.showInputError("Wrong Password");
-																				return false;
-																			}
-																		});
-													} else {
-														swal
-																.showInputError("You need to type in your password in order to do this!");
-														return false;
-													}
-												});
+									});
 
 									});
 

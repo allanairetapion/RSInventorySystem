@@ -42,7 +42,7 @@ class TicketsController extends Controller{
 		$validator = Validator::make($request->all(),[
         	'topic' => 'required',
         	'subject'  => 'required|min:6|max:255',    
-            'summary' =>'required|min:10',            
+            'summary' =>'required|min:15',            
         ]);
 
         if ($validator->fails()) {

@@ -20,7 +20,8 @@
 		<link href="/css/plugins/datapicker/datepicker3.css" rel="stylesheet">
 		<link href="/css/plugins/summernote/summernote.css" rel="stylesheet">
 		<link rel="stylesheet" type="text/css" href="/css/plugins/jQueryUI/jquery-ui.css" />
-
+		<!-- FooTable -->
+   		 <link href="/css/plugins/footable/footable.core.css" rel="stylesheet">
 		<!-- c3 Charts -->
 		<link href="/css/plugins/c3/c3.min.css" rel="stylesheet">
 
@@ -37,6 +38,8 @@
 		<!-- Custom and plugin javascript -->
 		<script src="/js/inspinia.js"></script>
 		<script src="/js/plugins/pace/pace.min.js"></script>
+		<!-- FooTable -->
+    	<script src="/js/plugins/footable/footable.all.min.js"></script>
 		<!-- Toastr script -->
 		<script src="/js/plugins/toastr/toastr.min.js"></script>
 		<script type="text/javascript" src="/js/jquery-ui-1.10.4.min.js"></script>
@@ -123,9 +126,9 @@
 								<li class="dropdown">
 									<a aria-expanded="false" role="button" href="#" class="dropdown-toggle" data-toggle="dropdown"> Settings<span class="caret"></span></a>
 									<ul role="menu" class="dropdown-menu">
-									
+									<li><a href="/admin/department">Department</a></li>
 									<li>
-									<a href="/admin/restrictions"> Restrictions </a>
+									<a href="/admin/restrictions">Restrictions</a>
 									</li>
 									
 										<li>

@@ -1,5 +1,7 @@
-@extends('tickets.ticketlayout1') @section('title', 'Remote Staff - Log
-In') @section('body')
+@extends('tickets.ticketlayout1') 
+@section('title', 'Remote Staff - LogIn') 
+
+@section('body')
 <div class="loginColumns animated fadeInDown">
 	<div class="row">
 
@@ -16,7 +18,7 @@ In') @section('body')
 <br><br>
 			<div class="ibox-content text-center gray-bg">
 			
-				<form class="m-t" role="form" method="post" action="login">
+				<form class="m-t" role="form" method="post" action="/admin/login">
 					{!! csrf_field() !!}
 					<h4 class="text-warning ">{{ Session::get('message') }}</h4>
 					@if ($errors->has('email'))
@@ -49,7 +51,7 @@ In') @section('body')
 			<strong>Copyright</strong> Remote Staff Inc.
 		</div>
 		<div class="col-md-6 text-right">
-			<small>© 2008-2016</small>
+			<small><small>&copy; 2008-<?php echo date("Y"); ?></small>
 		</div>
 	</div>
 </div>

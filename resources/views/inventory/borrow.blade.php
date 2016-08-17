@@ -30,10 +30,80 @@
 				</div>
 
 				<div class="ibox-content">
+<div id="advancedSearch" class=" gray-bg" style="padding: 5px;">
+				<br>
+				<form class="advancedTicket" method="GET" action="/inventory/borrow/search">
+					{!! csrf_field() !!}
+					<div class="row">
+						<div class="col-md-3">
+							<label class="control-label">Unique Id:</label> 
+							<input type="text" class="form-control" name="unique_id">
+
+						</div>
+						<div class="col-md-3">
+							<label class="control-label">Brand:</label> <select
+								name="brand" class="form-control brand">
+								<option value="" selected ></option>
+								<option value="Hua" selected >Hua</option>
+								
+							</select>
+
+						</div>
+						<div class="col-md-3">
+							<label class="control-label">Borrowee:</label> 
+							<select class="form-control chosen-select" name="borrowee">
+							<option value="" selected ></option>
+								@foreach($clients as $client)
+									<option value="{{$client->id}}"> {{$client->first_name.' '.$client->last_name}}</option>
+								@endforeach
+							</select>
+						</div>
+						<div class="col-md-3">
+							<label class="control-label">Borrower:</label> 
+							<select class="form-control chosen-select" name="borrower">
+								<option value="" selected ></option>
+								@foreach($clients as $client)
+									<option value="{{$client->id}}"> {{$client->first_name.' '.$client->last_name}}</option>
+								@endforeach
+							</select>
+						</div>
+						
+						</div>
+						<div class="row">
+						<div class="col-md-6">
+						<label class="control-label">Date Range:</label>
+						<div class="input-daterange input-group" id="datepicker">
+									<span class="input-group-addon">From</span>
+                                    <input type="text" class=" form-control" data-mask="9999-99-99" name="dateStart" value=""/>
+                                    <span class="input-group-addon">to</span>
+                                    <input type="text" class=" form-control" data-mask="9999-99-99" name="dateEnd" value="" />
+                                </div>
+						</div>
+					
+						
+						
+						<div class="col-md-offset-3 col-md-3 text-center">
+							<br>
+
+							<button type="submit"
+								class="btn btn-primary">
+								<i class="fa fa-search"></i> Search
+							</button>
+							<button type="reset" class="btn btn-warning">
+								<i class="fa fa-refresh"></i> Reset
+							</button>
+
+						</div>
+					</div>
+
+				</form>
+				<br>
+			</div>
 
 					<div class="table-responsive">
+					
 						<table
-							class="table table-striped table-bordered table-hover dataTables-example">
+							class="table table-bordered table-hover borrow">
 							<thead>
 								<tr>
 									<th>Item Type</th>
@@ -47,7 +117,7 @@
 									<th>Borrower</th>
 									<th>Station No </th>
 									<th>Date Borrowed</th>
-									<th>Action</th>
+									
 								</tr>
 							</thead>
 							<tbody class="borrowItem">
@@ -62,7 +132,7 @@
 									<td>{{$borrow->borrower}}</td>
 									<td>{{$borrow->borrowerStationNo}}</td>
 									<td>{{$borrow->dateBorrowed}}</td>
-									<td></td>
+									
 							</tr>
 							@endforeach
 
@@ -110,8 +180,12 @@
 						<div class="form-group col-lg-7 borrower">
 							<label class="control-label col-lg-4"> Borrower:</label>
 							<div class="col-lg-8">
-								<input type="text" class="form-control" placeholder="Name"
-									name="borrower">
+							<select class="form-control chosen-select" name="borrower">
+								@foreach($clients as $client)
+									<option value="{{$client->id}}"> {{$client->first_name.' '.$client->last_name}}</option>
+								@endforeach
+							</select>
+								
 									<span class="help-block text-danger borrower">192.168.100.200</span>
 							</div>
 						</div>
@@ -239,7 +313,30 @@ $(document).ready(function() {
 	    format : 'yyyy-mm-dd',
 	    todayBtn: "linked"
 		});
+
+	$('table.borrow').dataTable({
+		"bSort" : false,
+		dom : '<"html5buttons"B>lTfgtip',
+		buttons : [{
+			text : 'Advanced Search',
+			action : function() {
+				$(
+						'div#advancedSearch')
+						.slideToggle();
+			}
+		},
+			],
+	});
+
+	
 });
+
+$('div#advancedSearch').slideToggle();
+
+$('#myModal').on('shown.bs.modal', function () {
+	  $('.chosen-select', this).chosen();
+	});
+
 $(function() {
 	$("input.uniqueId").keyup(function() {
 		$("input.uniqueId").autocomplete({

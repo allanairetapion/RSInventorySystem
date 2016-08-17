@@ -6,7 +6,7 @@
 			<h3 class=" font-bold">Create an Account</h3>
 		</div>
 		<div class="ibox-content">
-			<form class="clientForm" method="Post" action="/tickets/signUp">
+			<form class="clientForm">
 				{!! csrf_field() !!}
 
 				<div class="row">
@@ -35,27 +35,6 @@
 					<div class="form-group col-md-12">
 						<label>Confirm Password:</label>
 						<input type="password" class="form-control" placeholder="Re-Type Password" name="password_confirmation" required=""  >
-					</div>
-
-					<div class="form-group col-md-6 captcha">
-
-						<label class="">Enter CAPTCHA code:</label>
-
-						<input type="text" class="form-control" name="captcha">
-						<label class="text-danger captcha"> *Captcha code did not match</label>
-					</div>
-
-					<div class="col-md-6 text-center captcha_img">
-						<br>
-						<label class="text-danger captcha">
-							<br>
-						</label>
-
-						<img class="captcha_img"src="{{captcha_src()}}"> &nbsp;
-
-						<button type="button" class="btn  btn-default refreshCaptcha " data-toggle="tooltip" data-placement="top" title="Refresh CAPTCHA">
-							<i class="fa fa-refresh"></i>
-						</button>
 					</div>
 
 				</div>

@@ -83,6 +83,9 @@ Route::group(['middleware' => 'inventory'], function () {
 	Route::get("/inventory/broken","inventoryController@showBroken");
 	Route::get("/inventory/summaryMonYrs","inventoryController@showSummaryMonYrs");
 	Route::get("/inventory/summaryAll","inventoryController@showSummaryAll");
+	Route::get("/inventory/borrow/search","inventoryController@borrowSearch");
+	Route::get("/inventory/return/search","inventoryController@returnSearch");
+	Route::get("/inventory/agents","inventoryController@showAgents");
 	
 	
 	Route::post("/inventory/addItem","inventoryController@addItem");
@@ -126,7 +129,7 @@ Route::post('/tickets/activate','Auth\PasswordController@Activate');
 
 //Client Pages
 Route::group(['middleware' => 'user'], function () {
-	Route::get("/tickets/landingPage","TicketsController@landingPage");
+	Route::get("/tickets/","TicketsController@landingPage");
 	Route::get("/tickets/createTicket",'TicketsController@showCreateTicket');
 	Route::get('/tickets/ticketStatus','TicketsController@showTicketStatus');
 	Route::get('/tickets/topIssue','TicketsController@topIssue');
@@ -190,9 +193,14 @@ Route::group(['middleware' => 'admin'], function () {
 	Route::get('/admin/topSupport','TicketsAdmin@topSupport');
 	Route::get('/admin/createClient','TicketsAdmin@showCreateClient');
 	Route::get('/admin/editAccount','TicketsAdmin@editAccount');
-	Route::get('/admin/editTopic','TicketsAdmin@editTopicDetails');
+	Route::get('/admin/topicInfo','TicketsAdmin@editTopicDetails');
 	Route::get('/admin/ticketCount','TicketsAdmin@ticketCount');
 	Route::get('/admin/ticketStatus','TicketsAdmin@ticketStatus');
+	Route::get('/admin/department','TicketsAdmin@showDepartment');
+	Route::get('/admin/ticketSearch','TicketsAdmin@ticketSearch');
+	Route::get('/admin/departmentInfo','TicketsAdmin@departmentInfo');
+	Route::get('/admin/ticketStatus/info','TicketsAdmin@ticketStatusInfo');
+	Route::get('/admin/topIssue/info','TicketsAdmin@topIssueInfo');
 	
 	Route::post('/admin/verifyPassword','TicketsAdmin@checkPassword');
 	Route::post('/admin/createTicket','TicketsAdmin@createTicket');	
@@ -200,10 +208,12 @@ Route::group(['middleware' => 'admin'], function () {
 	Route::post('/admin/addTopic','TicketsAdmin@addTopic');		
 	Route::post('/admin/advancedSearch','TicketsAdmin@advancedSearch');
 	Route::post('/admin/ticketReply','TicketsAdmin@sendReply');
-	Route::get('/admin/ticketSearch','TicketsAdmin@ticketSearch');
+	Route::post('/admin/createClient','Auth\AuthController@createClient');
+	Route::post('/admin/addDepartment','TicketsAdmin@addDepartment');
 	
 	Route::put('/admin/updateSelection','TicketsAdmin@updateSelection');
 	Route::put('/admin/editTopic','TicketsAdmin@editTopic');
+	Route::put('/admin/editDepartment','TicketsAdmin@editDepartment');
 	Route::put('/admin/updateRestriction','TicketsAdmin@updateRestriction');
 	Route::put('/admin/ticketStatus','TicketsAdmin@changeTicketStatus');
 	Route::put('/admin/forwardTicket','TicketsAdmin@forwardTicket');
@@ -214,6 +224,7 @@ Route::group(['middleware' => 'admin'], function () {
 	Route::put('/admin/closeTicket','TicketsAdmin@closeTicket');
 	Route::put('/admin/changePersonalInfo','TicketsAdmin@changePersonalInfo');
 	Route::put('/admin/changePassword','TicketsAdmin@changePassword');
+	Route::put('/admin/updateDepartment','TicketsAdmin@updateDepartment');
 	
 	Route::delete('/admin/deleteTopic','TicketsAdmin@deleteTopic');
 	Route::delete('/admin/deleteTicket','TicketsAdmin@deleteTicket');

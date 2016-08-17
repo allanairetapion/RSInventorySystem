@@ -10,17 +10,12 @@
 
 		<link href="/css/bootstrap.min.css" rel="stylesheet">
 		<link href="/font-awesome/css/font-awesome.css" rel="stylesheet">
-		<link href="/css/plugins/iCheck/custom.css" rel="stylesheet">
+		
 		<link href="/css/animate.css" rel="stylesheet">
 		<link href="/css/style.css" rel="stylesheet">
-		<link href="/css/plugins/summernote/summernote.css" rel="stylesheet">
-		<link href="/css/plugins/summernote/summernote-bs3.css" rel="stylesheet">
 		<link href="/css/plugins/ladda/ladda-themeless.min.css" rel="stylesheet">
 		<link rel="stylesheet" type="text/css" href="/css/plugins/jQueryUI/jquery-ui.css" />
-
-	</head>
-
-	<body class="white-bg top-navigation" >
+		
 		<script src="/js/jquery-2.1.1.js"></script>
 		<script src="/js/bootstrap.min.js"></script>
 
@@ -35,9 +30,13 @@
 		<script src="/js/plugins/ladda/ladda.min.js"></script>
 		<script src="/js/plugins/ladda/ladda.jquery.min.js"></script>
 
-		<script src="/js/plugins/summernote/summernote.min.js"></script>
 		<script type="text/javascript" src="/js/jquery-ui-1.10.4.min.js"></script>
 		<script src="/js/ticketsClients.js"></script>
+
+	</head>
+
+	<body class="white-bg top-navigation" >
+		
 
 		@section('body')
 		@show

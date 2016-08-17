@@ -36,7 +36,7 @@ class AuthController extends Controller
      * @var string
      */
 	protected $guard ='user';
-    protected $redirectTo = 'tickets/landingPage';
+    protected $redirectTo = 'tickets/';
     protected $loginPath = '/login';
 	protected $redirectAfterLogout = '/tickets/login';
 	protected $loginView ="/tickets/login";
@@ -114,7 +114,7 @@ class AuthController extends Controller
 	
 	public function register(Request $request)
     {
-         $validator = $this->validator($request->all());
+        $validator = $this->validator($request->all());
 
         if ($validator->fails()) {
            return response()->json(array('success'=> false, 'errors' =>$validator->getMessageBag()->toArray())); 
@@ -201,6 +201,28 @@ class AuthController extends Controller
 	public function showSignUpSuccess(Request $request){
 	   		Auth::guard('user')->logout();
 			return view("tickets.signUpSuccess");	
+	}
+	
+	public function createClient(Request $request){
+		
+		$validator= Validator::make($request->all (), [
+				'dept' => 'required|max:255',
+				'first_name' => 'required|min:3|max:255|alpha',
+				'last_name' => 'required|min:2|max:255|alpha',
+				'email' => 'required|email|max:255|unique:clients|unique:admin',
+				'password' => 'required|min:6|confirmed',
+		]);
+		
+		if ($validator->fails()) {
+			return response()->json(array('success'=> false, 'errors' =>$validator->getMessageBag()->toArray()));
+		
+		}else{
+			 
+			$this->create($request->all());
+		
+		
+			return response()->json(array('success'=> true));
+		}
 	}
     
 }

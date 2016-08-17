@@ -1,6 +1,26 @@
-@extends('tickets.ticketlayout1')
-@section('title', 'Remote Staff - Log In')
-@section('body')
+<!DOCTYPE html>
+<html>
+
+	<head>
+
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<title>Remote Staff Ticketing | Login</title>
+
+		<link href="/css/bootstrap.min.css" rel="stylesheet">
+		<link href="/font-awesome/css/font-awesome.css" rel="stylesheet">
+		
+		<link href="/css/animate.css" rel="stylesheet">
+		<link href="/css/style.css" rel="stylesheet">
+		<link href="/css/plugins/ladda/ladda-themeless.min.css" rel="stylesheet">
+		<link rel="stylesheet" type="text/css" href="/css/plugins/jQueryUI/jquery-ui.css" />
+		
+
+	</head>
+
+	<body class="white-bg top-navigation" >
+		
 <div class="loginColumns animated fadeInDown">
 	<div class="row">
 
@@ -13,7 +33,7 @@
 		<div class="col-md-6">
 			
 			<div class="ibox-content text-center gray-bg">
-				<form class="m-t" role="form" method="post" action="login"  >
+				<form class="m-t" role="form" method="post" action="/tickets/login"  >
 					{!! csrf_field() !!}
 					<h4 class="text-warning ">{{ Session::get('message') }}</h4>
 					@if ($errors->has('email'))
@@ -49,4 +69,8 @@
 	</div>
 </div>
 
-@endsection
+
+	</body>
+
+	
+</html>

@@ -3,7 +3,9 @@
  */
 
 $(function() {
-	
+	$('button.advancedSearch').click(function() {
+		$('div#advancedSearch').slideToggle();
+	});
 	$('.input-group.date.dateArrived').datepicker({
 	    
 	    format : 'yyyy-mm-dd',
@@ -205,7 +207,7 @@ $(function() {
 				$('input.infoId').val(data.info['unique_id']);
 				$('input.infoItemNo').val(data.info['itemNo']);
 				$('input.infoBorrower').val(data.borrow['borrower']);
-				$('input.infoStationNo').val(data.borrow['stationNo']);
+				$('input.infoStationNo').val(data.borrow['borrowerStationNo']);
 				$('input.infoItemType').val(data.info['itemType']);
 				$('input.infoBrand').val(data.info['brand']);
 				$('input.infoModel').val(data.info['model']);

@@ -29,7 +29,7 @@
 								class="pull-right label label-info unresolvedTickets">1</span></a>
 						</li>
 						<li><a href="/admin/tickets-Closed"><i class="fa fa-thumbs-o-up"></i>Closed
-								Tickets </a></li>
+								Tickets <span class="pull-right label label-info closedTickets">0</span> </a></li>
 					</ul>
 					<h5>Categories</h5>
 					<ul class="category-list" style="padding: 0">
@@ -102,6 +102,7 @@
 				$('span.pendingTickets').text(data.pendingTickets);
 				$('span.unresolvedTickets').text(data.overdueTickets);
 				$('span.assignedTickets').text(data.assignedTickets);
+				$('span.closedTickets').text(data.closedTickets);
 			});
 	});		
 </script>
