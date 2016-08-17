@@ -29,8 +29,7 @@
 			<div class="tab-content">
 				<div id="home" class="tab-pane fade in active">
 						<br>
-			<div id="advancedSearch" class=" gray-bg" style="padding:5px;">
-				<br>
+			
 				<form class="advancedTicket" class="form-horizontal" >
 					{!! csrf_field() !!}
 
@@ -107,7 +106,7 @@
 
 				</form>
 				<br>
-			</div>
+			
 					<div class="table-responsive">
 						<form class="selectedTickets">
 							{!! csrf_field() !!}
@@ -470,15 +469,6 @@ $('table.ticketReport')
 			"bSort" : false,
 			dom : '<"html5buttons"B>lTfgtip',
 			buttons : [
-					
-					{
-						text : 'Advanced Search',
-						action : function() {
-							$(
-									'div#advancedSearch')
-									.slideToggle();
-						}
-					},
 					{
 						text : '<i class="fa fa-trash"></i> Delete',
 						action : function() {

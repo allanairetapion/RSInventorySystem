@@ -381,11 +381,12 @@ $ntime = date ( 'Y-m-d' );
 							
 						$('tbody.ticketStatusInfo').html(html);
 						$('table.ticketStatusInfo').trigger('footable_initialize');	
-						
-						});
 						$('div.spiner').hide();
+						
 						$('table.ticketStatusInfo').show();
 						$('div#myModal').modal('show');
+						});
+					
 						console.log(d);
 						
 						}
@@ -447,11 +448,11 @@ $ntime = date ( 'Y-m-d' );
 							
 						$('tbody.topIssueInfo').html(html);
 						$('table.topeIssueInfo').trigger('footable_initialize');	
-						
-						});
 						$('div.spiner').hide();
 						$('table.topIssueInfo').show();
 						$('div#myModal2').modal('show');
+						});
+						
 						console.log(d);
 						
 						}

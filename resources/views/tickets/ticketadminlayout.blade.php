@@ -145,28 +145,8 @@
 								<li class="active">
 									<a>{{ Auth::guard('admin')->user()->adminProfile ? Auth::guard('admin')->user()->adminProfile->first_name.' '.Auth::guard('admin')->user()->adminProfile->last_name : '' }}!</a>
 								</li>
-								<li>
-									<a class="dropdown-toggle"  data-toggle="dropdown" href="#"> <i class="fa fa-fw fa-bell"></i> <span class="label label-info">1</span></a>
-									<ul class="dropdown-menu dropdown-messages">
-										<li>
-											<div class="dropdown-messages-box">
-												<a href="profile.html" class="pull-left"> <img alt="image" class="img-circle" src="/img/a7.jpg"> </a>
-												<div class="media-body">
-													<small class="pull-right">46h ago</small>
-													<strong>Mike Loreipsum</strong> started following <strong>Monica Smith</strong>.
-													<br>
-													<small class="text-muted">3 days ago at 7:58 pm - 10.06.2014</small>
-												</div>
-											</div>
-										<li class="divider"></li>
-										<li>
-											<div class="text-center link-block">
-												<a href="/admin/tickets"> <i class="fa fa-envelope"></i> <strong>Read All Messages</strong> </a>
-											</div>
-										</li>
-								</li>
-							</ul>
-							</li>
+								
+							
 							<li class="dropdown">
 									<a aria-expanded="false" role="button" href="#" class="dropdown-toggle" data-toggle="dropdown"> <i class="fa fa-cog"></i> <span class="caret"></span></a>
 									<ul role="menu" class="dropdown-menu">
@@ -179,6 +159,8 @@
 										
 									</ul>
 								</li>
+							</li>
+							
 								
 							</ul>
 						</div>
