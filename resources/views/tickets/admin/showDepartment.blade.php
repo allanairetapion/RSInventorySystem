@@ -83,7 +83,7 @@
 
 					</div>
 					<div class="form-group addDepartmentHead">
-						<label class="col-md-3 control-label">Head:</label>
+						<label class="col-md-3 control-label">Dept. Head:</label>
 						<div class="col-md-9">
 							<input type="text" class="form-control input-sm addDepartmentHead"
 								name="head"> <label

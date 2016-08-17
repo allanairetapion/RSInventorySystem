@@ -1,7 +1,9 @@
 @extends('tickets.ticketadminlayout')
 @section('body')
 <div class="row">
-	<div class="ibox col-md-offset-3 col-md-6  animated fadeInDown">
+<div class="col-md-offset-2 col-md-8">
+	<div class="ibox  animated fadeInDown">
+		
 		<div class="ibox-title ">
 			<h3 class=" font-bold">Create an Account</h3>
 		</div>
@@ -36,20 +38,19 @@
 						<label>Confirm Password:</label>
 						<input type="password" class="form-control" placeholder="Re-Type Password" name="password_confirmation" required=""  >
 					</div>
-
 				</div>
-				<hr/>
-				<div class="text-center">
-					<button type="button" class="ladda-button btn btn-primary registerClient btn-lg" data-style="zoom-in">
+				<hr>
+					<div class="text-right">
+					<button type="button" class="ladda-button btn btn-primary btn-w-m registerClient" data-style="zoom-in">
 						Create
 					</button>
-					<br>
+					<a href="/admin/clients" class="btn btn-white btn-w-m">Cancel</a>
 
 				</div>
 			</form>
 		</div>
-	</div>
-</div>
+	</div></div></div>
+
 
 <script>
 	$(document).ready(function() {

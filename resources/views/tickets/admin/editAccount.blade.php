@@ -50,11 +50,14 @@
 												<input type="email" name="email" class="form-control" value="{{Auth::guard('admin')->user()->email}}">
 											</div>
 										</div>
-										<hr>
-										<button type="button "class="ladda-button btn btn-primary pull-right editPersonalInfo" data-style="zoom-in">
+										
+									</form>
+								</div>
+								<div class="panel-footer text-right">
+								<button type="button "class="ladda-button btn btn-primary  btn-w-m editPersonalInfo" data-style="zoom-in">
 											Save
 										</button>
-									</form>
+										<a href="/admin" class="btn btn-default btn-w-m">Cancel</a>
 								</div>
 							</div>
 
@@ -92,11 +95,15 @@
 											</div>
 										</div>
 
-										<hr>
-										<button type="button" class="ladda-button btn btn-primary pull-right editPassword" data-style="zoom-in">
+									
+										
+									</form>
+								</div>
+								<div class="panel-footer text-right">
+								<button type="button" class="ladda-button btn btn-primary btn-w-m editPassword" data-style="zoom-in">
 											Save
 										</button>
-									</form>
+										<a href="/admin" class="btn btn-default btn-w-m">Cancel</a>
 								</div>
 							</div>
 

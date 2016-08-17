@@ -1,9 +1,9 @@
 @extends('tickets.ticketadminlayout')
 @section('body')
 
-<div class="  ibox animated fadeInDown">
+
 	<div class="col-md-offset-2 col-md-8">
-		<div class="ibox">
+		<div class="ibox animated fadeInDown">
 			<div class="ibox-title">
 				<h3 class="font-bold text-info">Create New User</h3>
 			</div>
@@ -43,23 +43,23 @@
 									<option value="admin"> Admin</option>
 									<option value="agent"> Agent</option>
 									@endif
-								</select>
-								
-							
+								</select>		
 						</div>
 					</div>
 
-					<center>
-						<button type="button" class="btn btn-info btn-lg add-account">
+					<hr>
+					<div class="text-right">
+						<button type="button" class="btn btn-primary btn-w-m add-account">
 							Create
 						</button>
-					</center>
+						<a href="/admin/agents" class="btn btn-white btn-w-m">Cancel</a>
+					</div>
 				</form>
 			</div>
 		</div>
 	</div>
 </div>
-</div>
+
 
 <script>
 	$(document).ready(function(){
