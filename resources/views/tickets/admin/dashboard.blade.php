@@ -122,10 +122,6 @@ $ntime = date ( 'Y-m-d' );
 		<div class="ibox animated fadeInDown ">
 			<div class="ibox-title">
 				<div class="pull-right">
-
-					<button type="button"
-						class="ladda-button btn btn-primary btn-sm noSupport">Apply</button>
-
 				</div>
 				<h3 class="font-bold">Assign a Support</h3>
 
@@ -140,6 +136,7 @@ $ntime = date ( 'Y-m-d' );
 								<tr>
 
 									<th>Ticket Id</th>
+									<th>Status</th>
 									<th>Topic</th>
 									<th>Subject</th>
 									<th>Date</th>
@@ -148,11 +145,23 @@ $ntime = date ( 'Y-m-d' );
 								</tr>
 							</thead>
 							<tbody>
-								@foreach($noSupport as $noSup) @if($noSup->assigned_support ==
-								0)
+								@foreach($noSupport as $noSup) 
+								@if($noSup->assigned_support == 0 && $noSup->ticket_status != "Closed")
 								<tr>
 
-									<td>{{$noSup->id}}</td>
+									<td><a href="/admin/tickets/{{$noSup->id}}">{{$noSup->id}}</a></td>
+									<td class="text-center">
+							@if($noSup->ticket_status == "Open") 
+								<span class="label label-success">{{$noSup->ticket_status}}</span>
+							@elseif($noSup->ticket_status == "Pending") 
+								<span class="label label-warning">{{$noSup->ticket_status}}</span>
+							@elseif($noSup->ticket_status == "Closed") 
+								<span class="label label-primary">{{$noSup->ticket_status}}</span>
+							@elseif($noSup->ticket_status == "Unresolved") 
+								<span class="label label-danger">{{$noSup->ticket_status}}</span>
+							@endif
+
+							</td>
 									<td>{{$noSup->description}}</td>
 									<td>{{$noSup->subject}}</td>
 									<td>{{$noSup->created_at}}</td>
@@ -411,6 +420,9 @@ $ntime = date ( 'Y-m-d' );
 		}).done(function(data) {
 			console.log(data);
 			c3.generate({
+				legend: {
+			        show: false
+			    },
 				bindto : '#pie2',	
 				data : {
 					json : data,

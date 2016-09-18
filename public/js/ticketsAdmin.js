@@ -25,14 +25,11 @@ $(function() {
 							"bSort" : false,
 							dom : '<"html5buttons">lTfgtip',
 						});
-						$('table.ticket_topics').dataTable({
-							"bSort" : false,
-							dom : '<"html5buttons">lTfgtip',
-						});
+						
 
 						$('div.ticketsummernote')
 								.summernote(
-										{height: 100,
+										{
 											toolbar : [
 													[
 															'style',
@@ -83,16 +80,19 @@ $(function() {
 					});
 
 	$("input.ticketReportCB").change(function() {
-		$("input#reportTicket").prop('checked', $(this).prop("checked"));
+		$("input.ticketReport").prop('checked', $(this).prop("checked"));
 	});
 	$("input.ticketOpenCB").change(function() {
-		$("input#openTicket").prop('checked', $(this).prop("checked"));
+		$("input.Open").prop('checked', $(this).prop("checked"));
 	});
 	$("input.ticketPendingCB").change(function() {
-		$("input#pendingTicket").prop('checked', $(this).prop("checked"));
+		$("input.Pending").prop('checked', $(this).prop("checked"));
 	});
 	$("input.ticketClosedCB").change(function() {
-		$("input#closedTicket").prop('checked', $(this).prop("checked"));
+		$("input.Closed").prop('checked', $(this).prop("checked"));
+	});
+	$("input.ticketUnresolvedCB").change(function() {
+		$("input.Unresolved").prop('checked', $(this).prop("checked"));
 	});
 
 	$('.input-daterange').datepicker({
@@ -107,12 +107,8 @@ $(function() {
 		format : 'yyyy-mm-dd',
 	});
 
-	$('button.advancedTicketReset').click(function() {
-		location.reload();
-	});
-
-	$('button.advancedTicketSearch')
-			.click(
+	// ticket report
+	$('button.advancedTicketSearch').click(
 					function() {
 						console.log($('form.advancedTicket').serialize());
 						$
@@ -126,98 +122,45 @@ $(function() {
 								.done(
 										function(data) {
 
-											
 											$('tbody.ticketReport').empty();
 											var html;
-
+											var table = $('table.ticketReport').DataTable();
+											table.clear();
 											$.each(data.response,function(i, v) {
 
-																if ((data.closed[i]['first_name'] == null)
-																		|| (data.closed[i]['closed_by'] == 0)) {
-																	data.closed[i]['first_name'] = '';
-																}
+												if ((data.closed[i]['first_name'] == null)
+														|| (data.closed[i]['closed_by'] == 0)) {
+													data.closed[i]['first_name'] = '';
+												}
 
-																if ((data.closed[i]['last_name'] == null)
-																		|| (data.closed[i]['closed_by'] == 0)) {
-																	data.closed[i]['last_name'] = '';
-																}
+												if ((data.closed[i]['last_name'] == null)
+														|| (data.closed[i]['closed_by'] == 0)) {
+													data.closed[i]['last_name'] = '';
+												}
 
-																if ((data.assigned[i]['first_name'] == null)
-																		|| (data.assigned[i]['assigned_support'] == 0)) {
-																	data.assigned[i]['first_name'] = '';
-																}
+												if ((data.assigned[i]['first_name'] == null)
+														|| (data.assigned[i]['assigned_support'] == 0)) {
+													data.assigned[i]['first_name'] = '';
+												}
 
-																if ((data.assigned[i]['last_name'] == null)
-																		|| (data.assigned[i]['assigned_support'] == 0)) {
-																	data.assigned[i]['last_name'] = '';
-																}
-
-																if (v.ticket_status == "Open") {
-																	html += "<tr class='bg-primary'  id='"
-																			+ v.id
-																			+ "'>";
-																} else if (v.ticket_status == "Pending") {
-																	html += "<tr style='background-color: #F2F256;' id='"
-																			+ v.id
-																			+ "'>";
-																} else if (v.ticket_status == "Closed") {
-																	html += "<tr class='navy-bg' id='"
-																			+ v.id
-																			+ "'>";
-																}else{
-																	html += "<tr class='red-bg' id='"
-																		+ v.id
-																		+ "'>";
-																}
-
-																if (v.first_name == null) {
-																	v.first_name = "";
-																}
-																if (v.last_name == null) {
-																	v.last_name = "";
-																}
-																if (v.closed_at == null) {
-																	v.closed_at = "";
-																}
-																html += "<td><input type='checkbox' value="
-																		+ v.id
-																		+ "> </td><td>"
-																		+ v.id
-																		+ "</td>"
-																		+ "<td>"+ v.sender_id + "</td><td>"
-																		+ v.description
-																		+ "</td><td>"
-																		+ v.subject
-																		+ "</td><td>"
-																		+ v.ticket_status
-																		+ "</td>"
-																		+ "<td>"
-																		+ v.department
-																		+ "</td><td>"
-																		+ data.assigned[i]['first_name']
-																		+ " "
-																		+ data.assigned[i]['last_name']
-																		+ "</td><td>"
-																		+ data.closed[i]['first_name']
-																		+ " "
-																		+ data.closed[i]['last_name']
-																		+ "</td><td>"
-																		+ v.created_at
-																		+ "</td>"
-																		+ "<td>"
-																		+ v.updated_at
-																		+ "</td></tr>";
+												if ((data.assigned[i]['last_name'] == null)
+														|| (data.assigned[i]['assigned_support'] == 0)) {
+													data.assigned[i]['last_name'] = '';
+												}
+												
+												var rowNode = table.row.add(['', v.id, v.description,
+																               v.description, v.subject,v.ticket_status,
+																               v.department, data.assigned[i]['first_name']+ " "+ data.assigned[i]['last_name'],
+																               data.closed[i]['first_name'] +" "+ data.closed[i]['last_name'],
+																               v.created_at, v.updated_at] ).draw();															
 															});
-											$('tbody.ticketReport').html(html);
-											$('.i-checks')
-													.iCheck(
-															{
-																checkboxClass : 'icheckbox_square-green',
-																radioClass : 'iradio_square-green',
-															});
-
 										});
 					});
+	
+	
+	
+	
+	// end ticket report
 	$('button.ticketDelete').on('click',function() {
 						var tickets = [ 'x' ];
 						$('input:checkbox:checked').each(function() {
@@ -282,69 +225,10 @@ $(function() {
 		$('div#advancedSearch').slideToggle();
 	});
 	// create ticket
-	var createTicket = $('button.create-ticket').ladda();
 
-	createTicket.click(function(e) {
-
-		e.preventDefault();
-
-		createTicket.ladda('start');
-
-		$('input[type="hidden"].topic').val($('div.ticketsummernote').code());
-		console.log($('div.ticketsummernote').code());
-		$('div.topic').removeClass('has-error');
-		$('div.subject').removeClass('has-error');
-		$('div.summary').removeClass('has-error');
-		e.preventDefault();
-
-		$.ajax({
-			type : "POST",
-			url : "/admin/createTicket",
-			data : $('.createTicket').serialize(),
-		}).done(function(data) {
-			console.log($('.createTicket').serialize());
-			var msg = "";
-			if (data.response != "") {
-				$.each(data.errors, function(k, v) {
-					msg = v + "\n" + msg;
-				});
-
-				if (data.errors['topic']) {
-					$('div.topic').addClass('has-error');
-				}
-				if (data.errors['assigned_support']) {
-					$('div.assigned_support').addClass('has-error');
-				}
-				if (data.errors['subject']) {
-					$('div.subject').addClass('has-error');
-				}
-				if (data.errors['summary']) {
-					$('div.summary').addClass('has-error');
-				}
-				createTicket.ladda('stop');
-				swal("Oops...", msg, "warning");
-			} else {
-				$('div.assigned_support').removeClass('has-error');
-				$('div.topic').removeClass('has-error');
-				$('div.subject').removeClass('has-error');
-				$('div.summary').removeClass('has-error');
-				createTicket.ladda('stop');
-
-				swal({
-					title : 'Success!',
-					text : "Your ticket has been created.",
-					type : "success",
-				}, function() {
-					window.location.href = '/admin';
-				});
-
-			}
-		});
-	});
 
 	// Add Topic
-	$('button.addTopic')
-			.click(
+	$('button.addTopic').click(
 					function(e) {
 						$('span.addTopic').hide();
 						$('div.form-group').removeClass(
@@ -386,44 +270,32 @@ $(function() {
 												$('form.addTopic').trigger(
 														'reset');
 												var html;
+												var table = $('table.ticket_topics').data('footable');
+												
 
-												$
-														.each(
-																data.response,
-																function(i, v) {
-																	if (i == 1) {
-																		return false;
-																	}
-
-																	html += "<tr id="
-																			+ v.topic_id
-																			+ "><td class='text-center'><input class='topic' type='checkbox' name ="
-																			+ v.topic_id
+												html += "<tr id=" + data.response['topic_id'] + "><td class='text-center'><input class='topic' type='checkbox' name ="
+																			+ data.response['topic_id']
 																			+ " value="
-																			+ v.topic_id
+																			+ data.response['topic_id']
 																			+ " checked></td>"
 																			+ "<td>"
-																			+ v.description
+																			+ data.response['description']
 																			+ "</td>"
 																			+ "<td class='text-center'>"
-																			+ v.priority_level
+																			+ data.response['default_priority']
 																			+ "</td>"
 																			+ "<td><button type='button' class='btn btn-warning btn-xs editTopic' value="
-																			+ v.topic_id
+																			+ data.response['topic_id']
 																			+ ">Edit</button>"
 																			+ "<button type='button' class='btn btn-danger btn-xs deleteTopic'  value="
-																			+ v.topic_id
+																			+ data.response['topic_id']
 																			+ ">Delete</button> </td></tr>";
-																});
+																
 												$('tbody.topics').append(html);
-												
-												
-
-												toastr.options = {
-													positionClass : "toast-top-center",
-												};
-												toastr
-														.success('New Topic has been added.');
+												$('table').trigger('footable_redraw');
+												$('div#myModal').modal('hide');
+								
+												toastr.success('New Topic has been added.');
 
 											}
 										});
@@ -461,9 +333,8 @@ $(function() {
 						},
 					}).done(
 							function(data) {
-
-								$('button.deleteTopic[value='+ deleteTopic + ']').parents('tr').remove();
-
+								$('button.deleteTopic[value=' + deleteTopic + ']').parents('tr').remove();
+								$('table').trigger('footable_redraw');
 								swal('Topics has been deleted', '', 'success');
 							});
 				});
@@ -572,10 +443,10 @@ $(function() {
 	});
 
 	// Admin/CLient tab controls/actions
-	$('button.clientPasswordResetLink').on(
+	$('a#clientPasswordResetLink').on(
 			'click',
 			function(e) {
-				$('input.email').val($(this).val());
+				$('input.email').val($(this).attr('value'));
 
 				swal({
 					title : "Are You Sure?",
@@ -602,15 +473,13 @@ $(function() {
 				});
 			});
 
-	$('button.clientChangePassword')
-			.on(
-					'click',
-					function(e) {
-						var clientId = $(this).val();
+	$('a#clientChangePassword').on('click',function(e) {
+						var clientId = $(this).attr('value');
+						
 						swal(
 								{
-									title : "Password Required!",
-									text : "Please enter your password to continue",
+									title : "Client change password",
+									text : "Enter Client's new Password",
 									type : "input",
 									inputType : "password",
 									showCancelButton : true,
@@ -618,97 +487,38 @@ $(function() {
 									showLoaderOnConfirm : true,
 									disableButtonsOnConfirm : true,
 								},
-								function(inputValue) {
-									if (inputValue != "") {
-										$
-												.ajax(
-														{
-															headers : {
-																'X-CSRF-Token' : $(
-																		'input[name="_token"]')
-																		.val()
-															},
-															type : 'post',
-															url : '/admin/verifyPassword',
-															data : {
-																password : inputValue
-															},
-														})
-												.done(
-														function(data) {
-															if (data == "true") {
-																swal(
-																		{
-																			title : "Client change password",
-																			text : "Enter Client's new Password",
-																			type : "input",
-																			inputType : "password",
-																			showCancelButton : true,
-																			closeOnConfirm : false,
-																			showLoaderOnConfirm : true,
-																			disableButtonsOnConfirm : true,
-																		},
-																		function(
-																				inputValue) {
-																			if (inputValue != "") {
-																				$
-																						.ajax(
-																								{
-																									headers : {
-																										'X-CSRF-Token' : $(
-																												'input[name="_token"]')
-																												.val()
-																									},
-																									type : 'PUT',
-																									url : '/admin/changeClientPassword',
-																									data : {
-																										id : clientId,
-																										password : inputValue
-																									}
-																								})
-																						.done(
-																								function(
-																										data) {
-																									if (data.success != true) {
-																										console
-																												.log(data.errors);
-																										swal
-																												.showInputError(data.errors['password']);
-																										return false;
-																									} else {
-																										swal(
-																												'Success!',
-																												'Password has been changed',
-																												'success');
-																									}
-																								});
-
-																			} else {
-																				swal
-																						.showInputError("Please enter a password");
-																				return false;
-																			}
-																		});
-
-															} else {
-																swal
-																		.showInputError("Wrong Password");
-																return false;
-															}
-														});
-									} else {
-										swal
-												.showInputError("You need to type in your password in order to do this!");
-										return false;
-									}
-								});
+								function(inputValue){
+									$.ajax({
+										headers : {'X-CSRF-Token' : $(
+													'input[name="_token"]').val()},
+										type : 'PUT',
+										url : '/admin/changeClientPassword',
+										data : {
+												id : clientId,
+												password : inputValue
+												}
+										}).done(function(
+														data) {
+													if (data.success != true) {
+														console
+																.log(data.errors);
+														swal
+																.showInputError(data.errors['password']);
+														return false;
+													} else {
+														swal(
+																'Success!',
+																'Password has been changed',
+																'success');
+													}
+												});
+								
+						});
+						
 					});
 
-	$('button.changeClientStatus')
-			.on(
-					'click',
-					function() {
-						var clientId = $(this).val();
+	$('a#changeClientStatus').on('click',function() {
+						var clientId = $(this).attr('value');
 						var clientStatus = $(this).attr('name');
 
 						if (clientStatus == "Activated") {
@@ -805,8 +615,8 @@ $(function() {
 								
 					});
 	
-	$('button.clientDelete').click(function(){
-		var clientId = $(this).val();
+	$('a#clientDelete').click(function(){
+		var clientId = $(this).attr('value');
 		swal(
 				{
 					title : "Password Required!",
@@ -872,8 +682,7 @@ $(function() {
 																});
 
 											} else {
-												swal
-														.showInputError("There's something wrong try again later");
+												swal.showInputError("There's something wrong try again later");
 												return false;
 											}
 										});
@@ -886,8 +695,10 @@ $(function() {
 		
 	});
 	// Admin Agent tab controls/actions
-	$('button.agentPasswordResetLink').on('click', function(e) {
-		$('input.email').val($(this).val());
+	$('#agentPasswordResetLink').on('click', function(e) {
+		
+		$('input.email').val($(this).attr('value'));
+		
 		swal({
 			title : "Are You Sure?",
 			type : 'info',
@@ -898,23 +709,20 @@ $(function() {
 			disableButtonsOnConfirm : true,
 		}, function() {
 			$.ajax({
-				headers : {
-					'X-CSRF-Token' : $('input[name="_token"]').val()
-				},
 				type : "POST",
 				url : "/admin/forgotPassword",
 				data : $('form.agentPassword').serialize(),
 			}).done(function() {
-				swal('Password Reset Link has been sent!', '', 'success');
+				swal('','Password Reset Link has been sent!', 'success');
 			});
 
 		});
 
 	});
 
-	$('button.agentChangeUserType').on('click',
+	$('a#agentChangeUserType').on('click',
 					function() {
-						var agentId = $(this).val();
+						var agentId = $(this).attr('value');
 						var agentUserType = $(this).attr('name');
 
 						if (agentUserType == 'agent') {
@@ -940,8 +748,7 @@ $(function() {
 						function(
 								data) {
 							if (data.success != true) {
-								swal
-										.showInputError(data.errors['id']);
+								swal('',data.errors['id'],'warning');
 								return false;
 							} else {
 								swal(
@@ -1034,7 +841,7 @@ $(function() {
 										password : inputValue
 									},
 								}).done(function(data) {
-							if (data == "true") {
+							if (data.success == true) {
 
 								addNew();
 							} else {
@@ -1072,7 +879,7 @@ $(function() {
 				text : 'New user has been added',
 				type : 'success'
 			}, function() {
-				location.reload();
+				window.location.href = "/admin/agents";
 			});
 
 		});
@@ -1134,11 +941,6 @@ $(function() {
 					$('#closedBy').modal('show');
 				}
 			});
-
-	$('button.cancelOpen').on('click', function() {
-		$('select.ticketStatus').prop('selectedIndex', 0);
-	});
-
 	$('#assign').on('hidden.bs.modal', function() {
 		if ($('select#assignTo').val() == "") {
 			$('select.ticketStatus').prop('selectedIndex', 0);
@@ -1151,22 +953,6 @@ $(function() {
 
 	});
 
-	$('button.saveOpen').click(function() {
-
-		if ($('select#assignTo').val() == "") {
-			toastr.options = {
-				positionClass : "toast-top-center",
-			};
-			toastr.error('Please choose an agent to continue');
-			$('div.assignAgent').addClass('has-error');
-		} else {
-			$('input.assignedTo').val($('select#assignTo').val());
-			$('div.assignAgent').removeClass('has-error');
-			$('#assign').modal('toggle');
-		}
-
-		console.log($('input.assignedTo').val());
-	});
 
 	$('button.ticketSave')
 			.on(
@@ -1361,8 +1147,7 @@ $(function() {
 										function(data) {
 											var html;
 											console.log(data);
-											$
-													.each(
+											$.each(
 															data,
 															function(index, v) {
 																html += "<tr><td><span class='label label-info'>"
@@ -1378,32 +1163,9 @@ $(function() {
 					});
 
 	// Assign Support section @ admin dashboard
-	var assignSupport = $('button.noSupport').ladda();
-
-	assignSupport.click(function(e) {
-		toastr.options = {
-			positionClass : "toast-top-center",
-
-		};
-		e.preventDefault();
-		var noSupport = [];
-
-		$('select.noSupport').each(function(index) {
-			if ($(this).val() != "") {
-				noSupport[index] = {
-					id : $(this).attr('name'),
-					assigned_support : $(this).val()
-				};
-			}
-		});
-		console.log(noSupport);
-		if (noSupport.length <= 0) {
-			toastr.info('No input found');
-			return false;
-		}
-
-		assignSupport.ladda('start');
-
+	
+	$('select.noSupport').change(function(){
+		
 		$.ajax({
 			headers : {
 				'X-CSRF-Token' : $('input[name="_token"]').val()
@@ -1411,23 +1173,20 @@ $(function() {
 			type : 'PUT',
 			url : '/admin/assignSupport',
 			data : {
-				support : noSupport
+				id : $(this).attr('name'),
+				support : $(this).val()
 			},
 		}).done(function(data) {
+			if(data.success == true){
+				toastr.success('Ticket succesfully assigned to support');
+			}else{
+				toastr.error(data.errors['id']);
+			}
 			console.log(data);
-			assignSupport.ladda('stop');
-
-			toastr.success('Tickets has been assigned to their support');
-
-			$('select.noSupport').each(function(index) {
-
-				if ($(this).val() != '') {
-					$(this).parents('tr').remove();
-				}
-
-			});
 		});
+		
 	});
+	
 
 	// Admin/Agent create client acount page
 	$('button.refreshCaptcha').on('click', function() {
@@ -1508,7 +1267,7 @@ $(function() {
 	// Admin Edit Account Page
 	var editPersonalInfo = $('button.editPersonalInfo').ladda();
 	var editPassword = $('button.editPassword').ladda();
-
+	var editProfilePicture = $('button.editProfilePicture').ladda();
 	editPersonalInfo.click(function(e) {
 		e.preventDefault();
 		editPersonalInfo.ladda('start');
@@ -1564,6 +1323,31 @@ $(function() {
 						}
 					}
 				});
+	});
+	
+	editProfilePicture.click(function(){
+		var $image = $(".image-crop > img");
+		$('input.editProfilePicture').val($image.cropper("getDataURL"));
+		console.log($('form.editProfilePicture').serialize());
+		$.ajax({
+			type : 'PUT',
+			url : '/admin/changeProfilePicture',
+			data : $('form.editProfilePicture').serialize(),
+			success: function(data){
+				if(data.success == true){
+					swal({
+						title: '',
+						text: 'Success',
+						type: 'success',
+					},function(){
+						$('div#uploadPicture').modal('hide');
+						$('img#profilePicture').attr('src',$image.cropper("getDataURL"));
+					});
+					
+					
+				}
+			}
+		});
 	});
 	
 	// All tickets Advanced Search

@@ -23,7 +23,7 @@
 					<form class="topic form-horizontal">
 						{!! csrf_field() !!}
 						<div>
-							<table class="table table-striped table-bordered ticket_topics">
+							<table class="table table-bordered ticket_topics" data-sort="false">
 								<thead>
 									<tr>
 										<th class="text-center"><input type="checkbox" class="topicCB">
@@ -47,7 +47,7 @@
 										<td class="topicDescription{{$topic->topic_id}}">
 											{{$topic->description}}</td>
 										<td class="topicPriority{{$topic->topic_id}}">
-											{{$topic->priority_level}}</td>
+											{{$topic->default_priority}}</td>
 										<td>
 										<div class="btn-group">
                                <button type="button"
@@ -62,6 +62,13 @@
 									</tr>
 									@endforeach
 								</tbody>
+								<tfoot>
+						<tr>
+							<td colspan="4">
+								<ul class="pagination pull-right"></ul>
+							</td>
+						</tr>
+					</tfoot>
 							</table>
 
 						</div>
@@ -150,8 +157,8 @@
 
 					{!! csrf_field() !!}
 					<div class="form-group addTopic">
-						<label class="col-md-3 control-label">Topic:</label>
-						<div class="col-md-9">
+						<label class="col-md-4 control-label">Topic:</label>
+						<div class="col-md-8">
 							<input type="text" class="form-control input-sm addTopic"
 								name="description"> <label
 								class="text-danger help-block addTopic"></label>
@@ -159,10 +166,10 @@
 
 					</div>
 					<div class="form-group priority">
-						<label class="col-md-3 control-label">Priority Level:</label>
-						<div class="col-md-9">
+						<label class="col-md-4 control-label">Default Priority Level:</label>
+						<div class="col-md-8">
 							<select class="form-control" name="priority">
-								<option selected value="">Select Priority Level...</option>
+								<option selected value=""></option>
 								<option value="High">High</option>
 								<option value="Normal">Normal</option>
 								<option value="Low">Low</option>
@@ -190,6 +197,7 @@
 </div>
 <script>
 	$(document).ready(function() {
+		$('table.ticket_topics').footable();
 		$('label.text-danger').hide();
 		$('div.spiner').hide();
 	}); 

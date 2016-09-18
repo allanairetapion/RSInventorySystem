@@ -154,11 +154,15 @@ class PasswordController extends Controller
     }
 	public function activateSuccess(){
 		Auth::guard('admin')->logout();
+		Auth::guard ('inventory')->logout ();
+		
 		return view('tickets.admin.activateSuccess');
 		
 	}
 	public function showChangePasswordSuccess (){
 		Auth::guard('admin')->logout();
+		Auth::guard ('inventory')->logout ();
+		
 		return view('tickets.admin.changePasswordSuccess');
 	}
 	protected function getResetFailureResponse(Request $request, $response)

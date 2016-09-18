@@ -35,7 +35,7 @@ class AuthController extends Controller
      * @var string
      */
 	protected $guard ='admin';
-    protected $redirectTo = '/admin';
+    protected $redirectTo = '/admin/index';
     protected $loginPath = '/admin/login';
 	protected $redirectAfterLogout = '/admin/login';
 	protected $loginView ="/admin/login";
@@ -120,7 +120,7 @@ class AuthController extends Controller
 	public function showLoginForm()
 	{
 		if(Auth::guard('admin')->check()){
-				return redirect('/admin');
+				return redirect('/admin/index');
 		}
 		else{
 				return view('tickets.admin.login');

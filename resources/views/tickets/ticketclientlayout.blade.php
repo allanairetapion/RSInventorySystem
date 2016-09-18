@@ -19,7 +19,9 @@
 		<link href="/css/plugins/summernote/summernote.css" rel="stylesheet">
 		<link href="/css/plugins/summernote/summernote-bs3.css" rel="stylesheet">
 		<link href="/css/plugins/c3/c3.min.css" rel="stylesheet">
-		
+		<!-- Dropzone -->
+		<link href="/css/plugins/dropzone/basic.css" rel="stylesheet">
+    	<link href="/css/plugins/dropzone/dropzone.css" rel="stylesheet">
 		<!-- Mainly scripts -->
 		<script src="/js/jquery-2.1.1.js"></script>
 		<script src="/js/bootstrap.min.js"></script>
@@ -30,6 +32,8 @@
 		<script src="/js/plugins/pace/pace.min.js"></script>
 		<!-- Sweet Alert -->
 		<script src="/js/plugins/sweetalert/sweetalert.min.js"></script>
+		<!-- DROPZONE -->
+    	<script src="/js/plugins/dropzone/dropzone.js"></script>
 		<!-- Flot -->
 		<script src="/js/plugins/flot/jquery.flot.js"></script>
 		<script src="/js/plugins/flot/jquery.flot.tooltip.min.js"></script>

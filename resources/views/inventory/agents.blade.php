@@ -1,3 +1,4 @@
+
 @extends('inventory.inventory') 
 @section('title', 'RS | Agents') 
 
@@ -21,67 +22,74 @@
 				<div class="ibox-title">
 					@if(Auth::guard('inventory')->user()->user_type == 'admin')
 					<div class="pull-right">
-						<a href="/admin/createAgent" class="btn btn-sm btn-primary"><i
+						<a href="/inventory/createAgent" class="btn btn-sm btn-primary"><i
 							class="fa fa-user-plus"></i> Create New User </a>
 					</div>
 					@endif
 					<h2 class="font-bold ">Agents</h2>
 				</div>
 
-				<div class="ibox-content" style="height: 450px;">
+				<div class="ibox-content">
 
-					<form class="topic form-horizontal agentPassword" method="post">
-						{!! csrf_field() !!} <input type="hidden"
-							class="form-control email" name="email"
-							placeholder="Email address" required=""
-							value="{{ old('email') }}">
-
-						<table
-							class="table table-striped table-bordered table-hover agentPassword"
-							id="editable">
-							<thead>
-								<tr>
-									<th>Id</th>
-									<th>Email</th>
-									<th>Name</th>
-									<th>User Type</th>
-									@if(Auth::guard('inventory')->user()->user_type== 'admin')
-									<th class="text-center">Actions</th> 
-									@endif
-
-								</tr>
-							</thead>
-							<tbody>
-								@foreach ($agents as $agent)
-								<tr class="gradeX">
-									<td>{{$agent->id}}</td>
-									<td>{{$agent->email}}</td>
-									<td>{{$agent->first_name.' '.$agent->last_name}}
-									
-									<td id="{{$agent->id}}">{{$agent->user_type}}</td>
-									@if(Auth::guard('inventory')->user()->user_type == 'admin')
-									<td class="text-center">
-
-										<button type="button"
-											class="btn btn-sm btn-primary agentPasswordResetLink"
-											value="{{$agent->email}}">Send Password Reset Link</button>
-
-										<button type="button"
-											class="btn btn-sm btn-danger agentChangeUserType"
-											name="{{$agent->user_type}}" value="{{$agent->id}}">Change
-											user type</button>
-
-									</td> 
-									@endif
-								</tr>
-								@endforeach
-
-							</tbody>
-
-						</table>
+					<form class="topic form-horizontal agentPassword">
+						{!! csrf_field() !!} <input type="hidden" name="email"
+							class="email">
 					</form>
+					<table class="table  table-bordered table-hover agentPassword">
+						<thead>
+							<tr>
+								<th>Id</th>
+								<th>Email</th>
+								<th>Name</th>
+								<th>User Type</th>
+								<th>Date Registered</th>
+								<th>Date Updated</th>
+								@if(Auth::guard('inventory')->user()->user_type== 'admin')
+								<th class="text-center">Actions</th> @endif
 
-					</form>
+							</tr>
+						</thead>
+						<tbody>
+							@foreach ($agents as $agent)
+							<tr>
+								@if(Auth::guard('inventory')->user()->user_type == 'admin')
+								<td><a href="#">{{$agent->id}}</a></td>
+								@else
+								<td>{{$agent->id}}</td>
+								@endif
+								<td>{{$agent->email}}</td>
+								<td>{{$agent->first_name.' '.$agent->last_name}}
+								
+								<td id="{{$agent->id}}">{{$agent->user_type}}</td>
+								<td>{{$agent->date_registered}}</td>
+								<td>{{$agent->updated_at}}</td>
+								@if(Auth::guard('inventory')->user()->user_type == 'admin')
+								<td class="text-center">
+									<div class="btn-group">
+										<button data-toggle="dropdown"
+											class="btn btn-primary btn-xs dropdown-toggle">
+											Actions <span class="caret"></span>
+										</button>
+										<ul class="dropdown-menu">
+											<li><a href="/admin/agents/{{$agent->id}}">View Profile</a>
+											
+											<li><a href="#" id="agentPasswordResetLink"
+												value="{{$agent->email}}">Send Reset Link</a></li>
+											<li><a href="#" id="agentChangeUserType"
+												name="{{$agent->user_type}}" value="{{$agent->id}}">Change
+													User Type</a></li>
+
+										</ul>
+									</div>
+								</td> @endif
+							</tr>
+							@endforeach
+
+						</tbody>
+
+					</table>
+
+
 
 				</div>
 			</div>

@@ -2,102 +2,116 @@
 @section('body')
 
 <div class="row">
-
+	
+</div>
 	<div class="ibox float-e-margins">
-		
-
-		<div class="ibox-content">
-			<ul class="nav nav-tabs">
-				<li class="active">
+		<div class="ibox-title">
+		<ul class="nav nav-tabs">
+				<li class="ticketReport active">
 					<a data-toggle="tab" href="#home">Home</a>
 				</li>
-				<li>
+				<li class="ticketReport">
 					<a data-toggle="tab" href="#menu1">Open</a>
 				</li>
-				<li>
+				<li class="ticketReport">
 					<a data-toggle="tab" href="#menu2">Pending</a>
 				</li>
-				<li>
+				<li class="ticketReport">
 					<a data-toggle="tab" href="#menu3">Closed</a>
 				</li>
-				<li>
+				<li class="ticketReport">
 					<a data-toggle="tab" href="#menu4">Unresolved</a>
 				</li>
 				
 			</ul>
+		</div>
+
+		<div class="ibox-content">
+			
 
 			<div class="tab-content">
 				<div id="home" class="tab-pane fade in active">
-						<br>
 			
-				<form class="advancedTicket" class="form-horizontal" >
+			<form class="advancedTicket form-horizontal">
 					{!! csrf_field() !!}
 
 					<div class="row">
 					
-						<div class="col-md-3">
-							<label class="control-label">Topic:</label>
-							<select name="topicSearch"class="form-control topic">
+						<div class="form-group col-md-3">
+							<label class="control-label col-md-3"> Topic:</label>
+							<div class="col-md-9">
+							<select name="topicSearch"class="topic form-control ">
 								<option value="" selected>  </option>
 								@foreach ($topics as $topic)
 								<option value="{{$topic->description}}"> {{$topic->description}}</option>
 								@endforeach
 							</select>
-
+							</div>
 						</div>
-						<div class="col-md-3">
-							<label class="control-label">Status:</label>
-							<select name="statusSearch"class="form-control statusSearch ">
+						
+						<div class=" form-group col-md-3">
+							<label class="control-label col-md-4">Status:</label>
+							<div class="col-md-8">
+							<select name="statusSearch"class="statusSearch form-control">
 								<option value="" selected > </option>
 								<option value="Open">Open</option>
 								<option value="Pending">Pending</option>
 								<option value="Closed">Closed</option>
+								<option value="Unresolved">Unresolved</option>
 							</select>
+							</div>
 						</div>
-					
 						
-						<div class="col-md-3">
-							<label class="control-label">Assigned to:</label>
-							<select name="agentSent" class="form-control agentSent ">
-								<option value="" selected> </option>
-								@foreach ($agent as $agents)
-								<option value="{{$agents->id}}"> {{$agents->first_name.' '.$agents->last_name}}</option>
-								@endforeach
-							</select>
-						</div>
-						<div class="col-md-3">
-							<label class="control-label">Closed by:</label>
-							<select name="agentClosed" class="form-control agentClosed">
-								<option value="" selected > </option>
-								@foreach ($agent as $agents)
-								<option value="{{$agents->id}}"> {{$agents->first_name.' '.$agents->last_name}}</option>
-								@endforeach
-							</select>
-						</div>
-<div class="col-md-3">
-							<label class="control-label">Sort By:</label>
-							<select name="dateSort"class="form-control topic">
+					<div class="form-group col-md-6">
+
+							<label class="control-label col-md-2">Date:</label>
+							<div class="col-md-4">
+							<select name="dateSort"class="topic form-control">
 								<option value="1">Date Sent  </option>
 								<option value="2">Date Updated  </option>
 							</select>
-							
-						</div>
-						<div class="col-md-3">
-						<label class="control-label">Date Range:</label>
-						<div class="input-daterange input-group" id="datepicker">
+							</div>
+						
+						
+						<div class="input-daterange input-group col-md-6" id="datepicker">
 									<span class="input-group-addon">From</span>
                                     <input type="text" class=" form-control" data-mask="9999-99-99" name="dateStart" value=""/>
                                     <span class="input-group-addon">to</span>
                                     <input type="text" class=" form-control" data-mask="9999-99-99" name="dateEnd" value="" />
                                 </div>
+                                
 						</div>
-						<div class="col-md-offset-3 col-md-3 text-center">
-							<br>
+						
+						<div class="form-group col-md-4">
+							<label class="control-label col-md-4">Assigned to:</label>
+							<div class="col-md-8">
+							<select name="agentSent" class="agentSent form-control">
+								<option value="" selected> </option>
+								@foreach ($agent as $agents)
+								<option value="{{$agents->id}}"> {{$agents->first_name.' '.$agents->last_name}}</option>
+								@endforeach
+							</select>
+							</div>
+						</div>
+						<div class="form-group col-md-4">
+							<label class="control-label col-md-4">Closed by:</label>
+							<div class="col-md-8">
+							<select name="agentClosed" class="agentClosed form-control">
+								<option value="" selected > </option>
+								@foreach ($agent as $agents)
+								<option value="{{$agents->id}}"> {{$agents->first_name.' '.$agents->last_name}}</option>
+								@endforeach
+							</select>
+							</div>
+						</div>
+						
 
-							<button type="button" class="btn btn-primary  advancedTicketSearch">
+						<div class="col-md-4 text-right" >
+						
+							<button type="button" class="btn btn-primary btn-w-m advancedTicketSearch">
 								<i class="fa fa-search"></i> Search
 							</button>
-							<button type="button" class="btn btn-warning  advancedTicketReset">
+							<button type="button" class="btn btn-warning btn-w-m advancedTicketReset">
 								<i class="fa fa-refresh"></i> Reset
 							</button>
 
@@ -105,13 +119,13 @@
 					</div>
 
 				</form>
+				
 				<br>
 			
 					<div class="table-responsive">
 						<form class="selectedTickets">
 							{!! csrf_field() !!}
-							<table class="table table-bordered ticketReport"
-							style="font-size: small;">
+							<table class="table table-bordered ticketReport">
 								<thead>
 									<tr>
 										<th>
@@ -130,20 +144,13 @@
 										<th>Date Updated</th>
 									</tr>
 								</thead>
+								
 								<tbody class="ticketReport">
 
 									@foreach($tickets as $ticketStat)
-									@if ($ticketStat->ticket_status == "Pending")
-									<tr style="background-color: #F2F256;" id="{{$ticketStat->id}}">
-										@elseif ($ticketStat->ticket_status == "Open")
-									<tr class="bg-primary" id="{{$ticketStat->id}}">
-										@elseif ($ticketStat->ticket_status == "Closed")
-									<tr class="navy-bg" id="{{$ticketStat->id}}">
-										@else
-									<tr class="red-bg" id="{{$ticketStat->id}}">
-										@endif
+									<tr>
 										<td>
-										<input type="checkbox" id="reportTicket" name="id" value="{{$ticketStat->id}}">
+										
 										</td>
 										<td>{{$ticketStat->id}}</td>
 										
@@ -191,7 +198,7 @@
 								<thead>
 									<tr>
 										<th>
-										<input type="checkbox"  class=" ticketReportCB">
+										<input type="checkbox"  class=" ticketOpenCB">
 										</th>
 										<th>Ticket No. </th>
 										<th>Sender </th>
@@ -213,9 +220,7 @@
 									
 									<tr class="bg-primary" id="{{$ticketStat->id}}">
 										
-										<td>
-										<input type="checkbox" id="reportTicket" name="id" value="{{$ticketStat->id}}">
-										</td>
+										<td><input class="Open" type="checkbox"></td>
 										<td>{{$ticketStat->id}}</td>
 										
 										<td>{{$ticketStat->sender_id}}</td>
@@ -259,7 +264,7 @@
 								<thead>
 									<tr>
 										<th>
-										<input type="checkbox"  class=" ticketReportCB">
+										<input type="checkbox"  class=" ticketPendingCB">
 										</th>
 										<th>Ticket No. </th>
 										<th>Sender </th>
@@ -281,9 +286,7 @@
 									<tr style="background-color: #F2F256;" id="{{$ticketStat->id}}">
 										
 										
-										<td>
-										<input type="checkbox" id="reportTicket" name="id" value="{{$ticketStat->id}}">
-										</td>
+										<td><input class="Pending" type="checkbox"></td>
 										<td>{{$ticketStat->id}}</td>
 										
 										<td>{{$ticketStat->sender_id}}</td>
@@ -329,7 +332,7 @@
 								<thead>
 									<tr>
 										<th>
-										<input type="checkbox"  class=" ticketReportCB">
+										<input type="checkbox"  class=" ticketClosedCB">
 										</th>
 										<th>Ticket No. </th>
 										<th>Sender </th>
@@ -352,9 +355,7 @@
 									<tr class="navy-bg" id="{{$ticketStat->id}}">
 										
 										
-										<td>
-										<input type="checkbox" id="reportTicket" name="id" value="{{$ticketStat->id}}">
-										</td>
+										<td><input class="Closed" type="checkbox"></td>
 										<td>{{$ticketStat->id}}</td>
 										
 										<td>{{$ticketStat->sender_id}}</td>
@@ -399,7 +400,7 @@
 								<thead>
 									<tr>
 										<th>
-										<input type="checkbox"  class=" ticketReportCB">
+										<input type="checkbox"  class=" ticketUnresolvedCB">
 										</th>
 										<th>Ticket No. </th>
 										<th>Sender </th>
@@ -421,9 +422,7 @@
 									
 									<tr class="red-bg" id="{{$ticketStat->id}}">
 										
-										<td>
-										<input type="checkbox" id="reportTicket" name="id" value="{{$ticketStat->id}}">
-										</td>
+										<td><input class="Unresolved" type="checkbox"></td>
 										<td>{{$ticketStat->id}}</td>
 										
 										<td>{{$ticketStat->sender_id}}</td>
@@ -466,85 +465,34 @@
 $('table.ticketReport')
 .dataTable(
 		{
+			"createdRow": function( row, data, dataIndex ) {
+			    if ( data[5] == "Open" ) {
+				    
+			      $(row).addClass( 'bg-primary' );
+			    }else if (data[5] == "Pending"){
+				   $(row).css('background-color','#F2F256');
+				}else if (data[5] == "Closed"){
+					$(row).addClass('navy-bg');
+				}else if (data[5] == "Unresolved"){
+					$(row).addClass('red-bg');
+				}
+			  },
+			  'columnDefs': [{
+			         'targets': 0,
+			         'searchable':false,
+			         'orderable':false,
+			         'className': 'dt-body-center',
+			         'render': function (data, type, full, meta){
+			             return '<input type="checkbox" class="ticketReport">';
+			         }
+			      }],
 			"bSort" : false,
 			dom : '<"html5buttons"B>lTfgtip',
 			buttons : [
 					{
 						text : '<i class="fa fa-trash"></i> Delete',
-						action : function() {
-							var tickets = [ 'x' ];
-							var usrtype = <?php echo json_encode(Auth::guard('admin')->user()->user_type); ?>;
-							if(usrtype == "agent"){
-								swal('Oops...','Action not allowed','info');
-								return false;
-								}
-							$(
-									'input:checkbox:checked')
-									.each(
-											function() {
-												tickets
-														.push($(
-																this)
-																.val());
-											});
-							if (tickets[1] == ''
-									|| tickets[1] == null) {
-								swal(
-										'Ooops...',
-										"You haven't selected any ticket",
-										'info');
-								return false;
-							}
-
-							console
-									.log($(
-											'form.selectedTickets')
-											.serializeArray());
-							swal(
-									{
-										title : "Are you sure?",
-										text : "This action can't be undone",
-										type : "warning",
-										showCancelButton : true,
-										closeOnConfirm : false,
-										confirmButtonText : "Yes",
-									},
-									function() {
-
-										swal({
-											title : 'Are you sure?',
-											text : "This Action can't be undone",
-											type : 'warning',
-											showCancelButton : true,
-											showCancelButton : true,
-											closeOnConfirm : false,
-											showLoaderOnConfirm : true,
-											disableButtonsOnConfirm : true,
-										}, function() {
-											
-
-											$.ajax({
-													headers : {'X-CSRF-Token' : $('input[name="_token"]').val()},
-													type : "DELETE",
-													url : "/admin/deleteTicket",
-													data : {tickets : tickets},
-													}).done(function(data) {
-															swal({
-																	title : "Deleted",
-																	text : "Tickets has been deleted",
-																	type : "success",
-																},function() {
-																	$('input:checkbox:checked').each(function() {
-																			$(this).parents('tr').remove();
-																});
-													});
-											
-										});
-
-									});
-
-									});
-
+						action : function(){
+							ticketReportDelete('ticketReport')
 						}
 					},
 					{
@@ -584,78 +532,7 @@ $('table.ticketReport2').dataTable({
 			buttons : [{
 						text : '<i class="fa fa-trash"></i> Delete',
 						action : function() {
-							var tickets = [ 'x' ];
-							var usrtype = <?php echo json_encode(Auth::guard('admin')->user()->user_type); ?>;
-							if(usrtype == "agent"){
-								swal('Oops...','Action not allowed','info');
-								return false;
-								}
-							$(
-									'input:checkbox:checked')
-									.each(
-											function() {
-												tickets
-														.push($(
-																this)
-																.val());
-											});
-							if (tickets[1] == ''
-									|| tickets[1] == null) {
-								swal(
-										'Ooops...',
-										"You haven't selected any ticket",
-										'info');
-								return false;
-							}
-
-							console
-									.log($(
-											'form.selectedTickets')
-											.serializeArray());
-							swal(
-									{
-										title : "Are you sure?",
-										text : "This action can't be undone",
-										type : "warning",
-										showCancelButton : true,
-										closeOnConfirm : false,
-										confirmButtonText : "Yes",
-									},
-									function() {
-
-										swal({
-											title : 'Are you sure?',
-											text : "This Action can't be undone",
-											type : 'warning',
-											showCancelButton : true,
-											showCancelButton : true,
-											closeOnConfirm : false,
-											showLoaderOnConfirm : true,
-											disableButtonsOnConfirm : true,
-										}, function() {
-											
-
-											$.ajax({
-													headers : {'X-CSRF-Token' : $('input[name="_token"]').val()},
-													type : "DELETE",
-													url : "/admin/deleteTicket",
-													data : {tickets : tickets},
-													}).done(function(data) {
-															swal({
-																	title : "Deleted",
-																	text : "Tickets has been deleted",
-																	type : "success",
-																},function() {
-																	$('input:checkbox:checked').each(function() {
-																			$(this).parents('tr').remove();
-																});
-													});
-											
-										});
-
-									});
-
-									});
+							ticketReportDelete($('li.ticketReport.active a').text());
 
 						}
 					},
@@ -690,6 +567,83 @@ $('table.ticketReport2').dataTable({
 					} ]
 
 		});
+function ticketReportDelete(ticketStatus){
+	console.log(ticketStatus);
+	var tickets = [ 'x' ];
+	var usrtype = <?php echo json_encode(Auth::guard('admin')->user()->user_type); ?>;
+	if(usrtype == "agent"){
+		swal('Oops...','Action not allowed','info');
+		return false;
+		}
+	$('input.'+ ticketStatus + ':checkbox:checked').each(function() {
+						tickets.push($(this).closest('tr').find('td:eq(1)').text());
+						
+					});
+	console.log(tickets);
+	if (tickets[1] == ''
+			|| tickets[1] == null) {
+		swal(
+				'Ooops...',
+				"You haven't selected any ticket",
+				'info');
+		return false;
+	}
 
+	console
+			.log($(
+					'form.selectedTickets')
+					.serializeArray());
+	swal(
+			{
+				title : "Are you sure?",
+				text : "This action can't be undone",
+				type : "warning",
+				showCancelButton : true,
+				closeOnConfirm : false,
+				confirmButtonText : "Yes",
+			},
+			function() {
+
+				swal({
+					title : 'Are you sure?',
+					text : "This Action can't be undone",
+					type : 'warning',
+					showCancelButton : true,
+					showCancelButton : true,
+					closeOnConfirm : false,
+					showLoaderOnConfirm : true,
+					disableButtonsOnConfirm : true,
+				}, function() {
+					
+
+					$.ajax({
+							headers : {'X-CSRF-Token' : $('input[name="_token"]').val()},
+							type : "DELETE",
+							url : "/admin/deleteTicket",
+							data : {tickets : tickets},
+							}).done(function(data) {
+									swal({
+											title : "Deleted",
+											text : "Tickets has been deleted",
+											type : "success",
+										},function() {
+											var table = $('table.ticketReport').DataTable();
+											 
+											
+											    table.rows( $('input:checkbox:checked').parents('tr') )
+											    .remove().draw();
+											
+											
+										
+							});
+					
+				});
+
+			});
+
+			});
+
+
+}
 </script>
 @endsection
