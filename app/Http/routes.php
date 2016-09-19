@@ -12,68 +12,35 @@
 */
 use App\Tickets as Tickets;
 
- Route::get('/inventory', 'inventoryController@showInventory');
- 
- 
-//Route::get('/', "UserController@showDashboard");
+// General
+Route::post('/checkEmail','HomeController@checkEmail');
+Route::get('/dropzone', 'HomeController@dropzone');
 
-Route::get('/inventory/index', ['middleware' => 'inventory','uses' =>'inventoryController@showIndex']);
-
-
-
-/* Login */
+Route::post('dropzone/store', ['as'=>'dropzone.store','uses'=>'HomeController@dropzoneStore']);
+// Login 
 Route::get('/inventory/login', 'InputAuth\AuthController@showLoginForm');
 Route::post('/inventory/login', 'InputAuth\AuthController@postLogin');
 Route::get('/inventory/logout', 'InputAuth\AuthController@getLogout');
-
-/* Register */
-
-
-Route::get('/inventory/register', 'InputAuth\AuthController@showRegistrationForm');
-Route::get('/register', 'inventoryController@refereshCapcha');
+// Register
 Route::post('/inventory/register', "InputAuth\AuthController@register");
-Route::get('/inventory/signuptypage', 'InputAuth\AuthController@showRegisterty');
-
-
-/* Verify */
-
-Route::get('register/verify/{confirmationCode}', [
-    'as' => 'confirmation_path',
-    'uses' => 'InputAuth\AuthController@confirm'
-]);
-
-
-Route::get('/inventory/verified',"InputAuth\AuthController@showVerified");
-
-Route::get('/inventory/resend/{confirmationCode}', [
-    'as' => 'confirmation_path',
-    'uses' => 'InputAuth\AuthController@resendVerLink'
-]);
-
-Route::get('/inventory/resend2/{confirmationCode}', [
-    'uses' => 'InputAuth\AuthController@resendVerLink2'
-]);
-
-/* Password Resets */
-
+// Inventory Forgot Password
 Route::get("/inventory/forgotPassword", 'InputAuth\PasswordController@getEmail');
 Route::post("/inventory/forgotPassword",'InputAuth\PasswordController@postEmail');
 Route::get("/inventory/forgotPassword/Thankyou", "InputAuth\PasswordController@forgotpassTypage");
-
+// Inventory Change Password
 Route::get("inventory/changePassword/{token}",'InputAuth\PasswordController@showResetForm');
 Route::post("inventory/changePassword",'InputAuth\PasswordController@postReset');
 Route::get("/inventory/thankyoupage", "inventoryController@showNewPassTy");
 
 
-
-/* Item input */
-
 	
 Route::group(['middleware' => 'inventory'], function () {
 	
+	Route::get('/inventory/index', 'inventoryController@showIndex');
 	Route::get("/uniqueId",'HomeController@uniqueId');
 	Route::get("/inventory/itemInfo",'inventoryController@itemInfo');
 	Route::get("/inventory/borrowInfo",'inventoryController@borrowInfo');
+	Route::get("/inventory/issueInfo",'inventoryController@issueInfo');
 	Route::get("/inventory/addItems", 'inventoryController@showAddItem');
 	Route::get("/inventory/manageAccounts", 'inventoryController@showManageAccounts');
 	Route::get("/inventory/borrow","inventoryController@showBorrow");
@@ -86,11 +53,17 @@ Route::group(['middleware' => 'inventory'], function () {
 	Route::get("/inventory/borrow/search","inventoryController@borrowSearch");
 	Route::get("/inventory/return/search","inventoryController@returnSearch");
 	Route::get("/inventory/agents","inventoryController@showAgents");
-	
+	Route::get("/inventory/createAgent","inventoryController@showCreateAgent");
+	Route::get("/inventory/maintenance","inventoryController@showMaintenance");
+	Route::get("/inventory/skin-config.html", function(){return view("inventory.skin-config");} );
 	
 	Route::post("/inventory/addItem","inventoryController@addItem");
 	Route::post("/inventory/borrowItem","inventoryController@borrowItem");
 	Route::post("/inventory/returnItem","inventoryController@returnItem");
+	Route::post("/inventory/issueItem","inventoryController@issueItem");
+	Route::post("/inventory/repairItem","inventoryController@repairItem");
+	Route::post("/inventory/verifyPassword",'inventoryController@checkPassword');
+	Route::post("/inventory/brokenItem","inventoryController@brokenItem");
 	
 });
 
@@ -171,7 +144,7 @@ Route::get('/admin/activateSuccess','AdminAuth\PasswordController@activateSucces
 //Admin Pages
 Route::group(['middleware' => 'admin'], function () {
 		
-	Route::get('/admin', 'TicketsAdmin@index');
+	Route::get('/admin/index', 'TicketsAdmin@index');
 	Route::get('/admin/createAgent','TicketsAdmin@createAgent');
 	Route::get('/admin/createTicket','TicketsAdmin@showCreateTicket');
 	Route::get('/admin/topics','TicketsAdmin@showTopics');
@@ -187,7 +160,7 @@ Route::group(['middleware' => 'admin'], function () {
 	Route::get('/admin/tickets-Closed','TicketsAdmin@showTicketsClosed');
 	Route::get('/admin/tickets/{id}','TicketsAdmin@showTicketDetails');
 	Route::get('/admin/printTickets/{id}','TicketsAdmin@printTicketDetails');
-	Route::get('admin/ticketReply','TicketsAdmin@showTicketReply');
+	Route::get('/admin/ticketReply','TicketsAdmin@showTicketReply');
 	Route::get('/admin/ticketReply/{id}','TicketsAdmin@showTicketReply');
 	Route::get('/admin/printTicketClosed','TicketsAdmin@printTicketClosed');
 	Route::get('/admin/topIssue','TicketsAdmin@topIssue');
@@ -203,15 +176,16 @@ Route::group(['middleware' => 'admin'], function () {
 	Route::get('/admin/departmentInfo','TicketsAdmin@departmentInfo');
 	Route::get('/admin/ticketStatus/info','TicketsAdmin@ticketStatusInfo');
 	Route::get('/admin/topIssue/info','TicketsAdmin@topIssueInfo');
+	Route::get('/admin/agents/{id}','TicketsAdmin@agentProfile');
+	Route::get('/agents/ticketStats','TicketsAdmin@agentTicketStats');
 	
-	Route::post('/admin/verifyPassword','TicketsAdmin@checkPassword');
 	Route::post('/admin/createTicket','TicketsAdmin@createTicket');	
-	Route::post('/checkEmail','TicketsAdmin@checkEmail');
 	Route::post('/admin/addTopic','TicketsAdmin@addTopic');		
 	Route::post('/admin/advancedSearch','TicketsAdmin@advancedSearch');
 	Route::post('/admin/ticketReply','TicketsAdmin@sendReply');
 	Route::post('/admin/createClient','Auth\AuthController@createClient');
 	Route::post('/admin/addDepartment','TicketsAdmin@addDepartment');
+	Route::post('/admin/verifyPassword','HomeController@checkPassword');
 	
 	Route::put('/admin/updateSelection','TicketsAdmin@updateSelection');
 	Route::put('/admin/editTopic','TicketsAdmin@editTopic');
@@ -226,6 +200,7 @@ Route::group(['middleware' => 'admin'], function () {
 	Route::put('/admin/closeTicket','TicketsAdmin@closeTicket');
 	Route::put('/admin/changePersonalInfo','TicketsAdmin@changePersonalInfo');
 	Route::put('/admin/changePassword','TicketsAdmin@changePassword');
+	Route::put('/admin/changeProfilePicture','TicketsAdmin@changeProfilePicture');
 	Route::put('/admin/updateDepartment','TicketsAdmin@updateDepartment');
 	
 	Route::delete('/admin/deleteTopic','TicketsAdmin@deleteTopic');

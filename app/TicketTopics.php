@@ -9,6 +9,6 @@ class TicketTopics extends Model
     protected $table = "ticket_topics";
 	public $timestamps = false;
 	protected $fillable = [
-         'description','priority_level','status','date_updated'
+         'description','default_priority','status','date_updated'
     ];
 }

@@ -1,13 +1,13 @@
 @extends('inventory.inventory') 
-@section('title', 'RS | DetailedInventory') 
+@section('title', 'RS | Inventory Details') 
 
 @section('header-page')
 <div class="col-lg-10">
-	<h2>Detailed Inventory Form</h2>
+	<h2>Inventory Details</h2>
 	<ol class="breadcrumb">
 		<li><a href="index.html">Home</a></li>
 
-		<li class="active"><strong>Detailed Inventory Form</strong></li>
+		<li class="active"><strong>Inventory Details</strong></li>
 	</ol>
 </div>
 @endsection 
@@ -36,17 +36,20 @@
 						data-filter="#filter">
 						<thead>
 							<tr>
-								<th data-toggle="true">Unique Identifier</th>
-								<th>Item No.</th>
-								<th>Station No.</th>
-								<th>Company</th>
+								<th data-toggle="true">Unique Id</th>
+								<th>Item No</th>
+								<th>Station No</th>
 								<th>Item Type</th>
 								<th>Brand</th>
 								<th>Model</th>
-								<th>Morning Shift</th>
-								<th>Night Shift</th>
-								<th data-hide="all">Issue</th>
-								<th data-hide="all">Broken</th>
+								<th>Status</th>
+								
+								
+								
+								<th data-hide="all">Morning Shift</th>
+								<th data-hide="all">Night Shift</th>
+								<th data-hide="all">Last Issue</th>
+								<th data-hide="all">Last Broken</th>
 								<th>Date Arrived</th>
 								<th data-hide="all">Last Borrowed</th>
 								<th data-hide="all">Last Returned</th>
@@ -59,14 +62,16 @@
 								<td>{{$item->unique_id}}</td>
 								<td>{{$item->itemNo}}</td>
 								<td>{{$item->stationNo}}</td>
-								<td>{{$item->company}}</td>
+								
 								<td>{{$item->itemType}}</td>
 								<td>{{$item->brand}}</td>
 								<td>{{$item->model}}</td>
+								<td>{{$item->itemStatus}}</td>
+								
 								<td>{{$item->morningClient}}</td>
 								<td>{{$item->nightClient}}</td>
-								<td>text</td>
-								<td>text</td>
+								<td>{{$item->lastIssue}}</td>
+								<td>{{$item->lastBroken}}</td>
 								<td>{{$item->dateArrived}}</td>
 								<td>{{$item->dateBorrowed}}</td>
 								<td>{{$item->dateReturned}}</td>

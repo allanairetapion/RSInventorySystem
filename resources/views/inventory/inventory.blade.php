@@ -21,31 +21,23 @@
 <link rel="stylesheet" type="text/css"href="/css/plugins/jQueryUI/jquery-ui.css" />
 <!-- FooTable -->
 <link href="/css/plugins/footable/footable.core.css" rel="stylesheet">
-
+<!-- Full Calendar -->
+<link href="/css/plugins/fullcalendar/fullcalendar.css" rel="stylesheet">
+<link href="/css/plugins/fullcalendar/fullcalendar.print.css" rel='stylesheet' media='print'>
 <!-- c3 Charts -->
 <link href="/css/plugins/c3/c3.min.css" rel="stylesheet">
 
 <link href="/css/plugins/toastr/toastr.min.css" rel="stylesheet">
 
 <link href="/css/plugins/ladda/ladda-themeless.min.css" rel="stylesheet">
-
-
-<!-- Mainly scripts -->
-
+<!-- Time Picker -->
+<link href="/css/plugins/timepicker/jquery.timepicker.css" rel="stylesheet">
 <style>
-@media screen and (min-width: 768px) {
-	.modal-lg {
-		width: 950px;
-	}
-	.modal-sm {
-		width: 300px;
-	}
-}
-</style>
-</head>
 
-<body>
+</style>
+
 	<script src="/js/jquery-2.1.1.js"></script>
+	<script src="/js/plugins/fullcalendar/moment.min.js"></script>
 	<script src="/js/bootstrap.min.js"></script>
 	<script src="/js/plugins/metisMenu/jquery.metisMenu.js"></script>
 	<script src="/js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
@@ -72,16 +64,24 @@
 	<script src="/js/plugins/ladda/spin.min.js"></script>
 	<script src="/js/plugins/ladda/ladda.min.js"></script>
 	<script src="/js/plugins/ladda/ladda.jquery.min.js"></script>
-
+	<!-- Full Calendar -->
+	<script src="/js/plugins/fullcalendar/fullcalendar.min.js"></script>
+	<!-- Time Picker -->
+	<script src="/js/plugins/timepicker/jquery.timepicker.js"></script>
 	<!-- d3 and c3 charts -->
 	<script src="/js/plugins/d3/d3.min.js"></script>
 	<script src="/js/plugins/c3/c3.min.js"></script>
 	<!--Ichecks-->
 	<script src="/js/plugins/iCheck/icheck.min.js"></script>
-
+	<!-- jQuery UI custom -->
+	<script src="/js/jquery-ui.custom.min.js"></script>
 	<!-- Data picker -->
 	<script src="/js/plugins/datapicker/bootstrap-datepicker.js"></script>
 	<script src="/js/inventory.js"></script>
+</head>
+
+<body>
+	
 	<div id="wrapper">
 
 		<nav class="navbar-default navbar-static-side" role="navigation">
@@ -90,9 +90,10 @@
 					@section('sidebar')
 
 					<li class="nav-header">
-						<div class="dropdown profile-element">
-
-							<h2 class="text-navy font-bold">RSITS</h2>
+						<div class="dropdown profile-element"><span>
+                            <img alt="image" class="img-circle"  height="50px" width="50px" src="/img/agents/{{Auth::guard('inventory')->user()->id}}.jpg"
+						onerror="this.src = '/img/default-profile.jpg'"/>
+                             </span>
 							<a data-toggle="dropdown" class="dropdown-toggle" href="#"> <span
 								class="clear"> <span class="block m-t-xs"> {{
 										Auth::guard('inventory')->user()->adminProfile ?
@@ -117,7 +118,7 @@
 						<div class="logo-element">RS</div>
 					</li>
 					@section('sidebarDashboard')
-					<li><a href="/inventory/index"><i class="fa fa-th-large"></i> <span
+					<li><a href="/inventory/index"><i class="fa fa-dashboard"></i> <span
 							class="nav-label">Dashboard</span></a></li>
 					@show
 					<li><a href="#"><i class="fa fa-cube"></i> <span
@@ -135,25 +136,27 @@
 						<a href="/inventory/agents"> <i class="fa fa-user"></i><span class="nav-label">Agents</span> </a>
 						
 					</li>
+					<li><a href="#"><i class="fa fa-list-alt"></i> <span
+							class="nav-label">Summary</span> <span class="fa arrow"></span></a>
+						<ul class="nav nav-second-level">
+							<li><a href="/inventory/detailed">Inventory Details</a></li>
+							<li><a href="#">Reports</a></li>
+							
+						</ul>
+					</li>
+
+
+					
 
 
 
-					<li><a href="/inventory/detailed"><i class="fa fa-list-alt"></i> <span
-							class="nav-label">Detailed Inventory Form</span></a></li>
 
 
 
-
-
-					<li><a href="/inventory/summaryMonYrs"><i
-							class="fa fa-shopping-cart"></i> <span class="nav-label">Summary
-								for Month and Year </span></a></li>
-
-					<li><a href="/inventory/summaryAll"><i class="fa fa-shopping-cart"></i>
-							<span class="nav-label">Summary of All Items </span></a></li>
-
-
-					<li class="special_link"><a target="_blank" href="/admin"><i
+					<li><a target="_blank" href="/inventory/maintenance"><i
+							class="fa fa-calendar"></i> <span class="nav-label">Maintenance</span></a>
+					</li>
+					<li><a target="_blank" href="/admin/index"><i
 							class="fa fa-ticket"></i> <span class="nav-label">Ticketing</span></a>
 					</li>
 

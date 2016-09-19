@@ -1,11 +1,11 @@
 /**
- * @author ITojt01 Luis Philip M. CastaÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â±eda
+ * @author ITojt01 Luis Philip M. CastaÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â±eda
  */
 
 $(function() {
 	$(document).ready(function() {
 		$('div.summernote').summernote({
-			height: 200,
+			height: 125,
 			toolbar : [['style', ['bold', 'italic', 'underline', 'clear']], ['fontname', ['fontname']], ['fontsize', ['fontsize']], ['color', ['color']], ['para', ['ul', 'ol', 'paragraph']], ['height', ['height']]]
 		});
 		$('[data-toggle="tooltip"]').tooltip();
@@ -13,47 +13,7 @@ $(function() {
 	});
 
 	/// Create Ticket
-	$('button.create-ticket').click(function(e) {
-		$('input[type="hidden"].topic').val($('div.summernote').code());
-		console.log($('div.summernote').code());
-		$('div.topic').removeClass('has-error');
-		$('div.subject').removeClass('has-error');
-		$('div.summary').removeClass('has-error');
-		e.preventDefault();
-		$.ajax({
-			type : "POST",
-			url : "/tickets/createTicket",
-			data : $('.createTicket').serialize(),
-		}).done(function(data) {
-			var msg = "";
-			if (data.response != "") {
-				$.each(data.errors, function(k, v) {
-					msg = v + "\n" + msg;
-				});
-				if (data.errors['topic']) {
-					$('div.topic').addClass('has-error');
-				}
-				if (data.errors['subject']) {
-					$('div.subject').addClass('has-error');
-				}
-				if (data.errors['summary']) {
-					$('div.summary').addClass('has-error');
-				}
-
-				swal("Oops...", msg, "warning");
-			} else {
-				swal({
-					title : "Success!",
-					text : "Your ticket has been created.",
-					type : "success",
-				}, function() {
-					window.location.href = "/tickets";
-				});
-
-			}
-		});
-	});
-
+	
 	var registerClient = $('button.registerClient').ladda();
 
 	registerClient.click(function() {

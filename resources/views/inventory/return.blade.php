@@ -6,7 +6,7 @@
 	<ol class="breadcrumb">
 		<li><a href="index.html">Home</a></li>
 
-		<li class="active"><strong>Return Form</strong></li>
+		<li class="active"><strong>Return Item</strong></li>
 	</ol>
 </div>
 
@@ -97,12 +97,13 @@
 					<table class="table table-bordered table-hover return">
 						<thead>
 							<tr>
+								<th>Unique Identifier</th>
+								<th>Item No.</th>
 								<th>Item Type</th>
 
 								<th>Brand</th>
 								<th>Model</th>
-								<th>Unique Identifier</th>
-								<th>Item No.</th>
+								
 								<th>Borrower</th>
 								<th>Receiver</th>
 								<th>Date Returned</th>
@@ -112,17 +113,20 @@
 						<tbody class="returnItem">
 
 							@foreach($returnedItems as $return)
+							@if($return->dateReturned)
 							<tr>
+								<td>{{$return->unique_id}}</td>
+								<td>{{$return->itemNo}}</td>
 								<td>{{$return->itemType}}</td>
 								<td>{{$return->brand}}</td>
 								<td>{{$return->model}}</td>
-								<td>{{$return->unique_id}}</td>
-								<td>{{$return->itemNo}}</td>
+								
 								<td>{{$return->borrower}}</td>
 								<td>{{$return->first_name.' '.$return->last_name}}</td>
 								<td>{{$return->dateReturned}}</td>
 								
 							</tr>
+							@endif
 							@endforeach
 
 						</tbody>

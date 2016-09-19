@@ -9,7 +9,7 @@
 			</div>
 			<div class="ibox-content">
 
-				<form class="m-t  agentForm" role="form" method="Post" action="/checkAdmin">
+				<form class="m-t  agentForm">
 					{!! csrf_field() !!}
 
 					<div class="row">
@@ -58,7 +58,7 @@
 			</div>
 		</div>
 	</div>
-</div>
+
 
 
 <script>

@@ -41,21 +41,16 @@
 									<td>{{$client->department}}</td>
 									<td id="{{$client->id}}">{{$client->status}}</td>
 									<td class="text-center">
-										<div class="btn-group">
-											<button type="button"
-												class="btn btn-sm btn-primary btn-xs clientPasswordResetLink"
-												value="{{$client->email}}">Send Reset Link</button>
-											<button type="button"
-												class="btn btn-sm btn-warning btn-xs clientChangePassword"
-												value="{{$client->id}}">Change Password</button>
-											<button type="button"
-												class="btn btn-sm btn-danger btn-xs changeClientStatus"
-												name="{{$client->status}}" value="{{$client->id}}">Change
-												Status</button>
-											<button type="button"
-												class="btn btn-sm btn-danger btn-xs btn-outline clientDelete"
-												name="clientDelete" value="{{$client->id}}">Delete</button>
-										</div>
+									<div class="btn-group">
+                            <button data-toggle="dropdown" class="btn btn-primary btn-xs dropdown-toggle">Action <span class="caret"></span></button>
+                            <ul class="dropdown-menu">
+                                <li><a href="#" id="clientPasswordResetLink" value="{{$client->email}}">Send Password Reset Link</a></li>
+                                <li><a href="#" id="clientChangePassword" value="{{$client->id}}">Change Password</a></li>
+                                <li><a href="#" id="changeClientStatus" name="{{$client->status}}" value="{{$client->id}}">Change Status</a></li>
+                                <li class="divider"></li>
+                                <li><a id="clientDelete" href="#" value="{{$client->id}}">Delete</a></li>
+                            </ul>
+                        </div>
 									</td>
 
 								</tr>

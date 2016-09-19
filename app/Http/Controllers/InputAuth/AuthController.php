@@ -2,18 +2,20 @@
 
 namespace App\Http\Controllers\InputAuth;
 
-use App\IsUser;
+
+use App\Admin as Admins;
+use App\AdminProfile;
+use App\User as Clients;
 use Auth;
 use Validator;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
 use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
 use Illuminate\Http\Request;
-use Mail;
-use Hash;
 use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Contracts\Auth\Registrar;
 use Session;
+use Carbon\Carbon;
 
 class AuthController extends Controller {
 	/*
@@ -51,74 +53,68 @@ class AuthController extends Controller {
 	 * @param array $data        	
 	 * @return \Illuminate\Contracts\Validation\Validator
 	 */
-	protected function validator(array $data) {
-		return Validator::make ( $data, [ 
-				'email' => 'email|required|unique:is_users,email',
-				'first_name' => 'required|string|min:2',
-				'last_name' => 'required|string|min:2',
-				'password' => 'required|alpha_num|between:6,100|confirmed',
-				'password_confirmation' => 'required|alpha_num|between:6,100',
-				'phone_number' => 'digits:11|required|unique:is_users,phone_number',
-				'captcha' => 'required|captcha' 
-		] );
-	}
-	
-	/**
-	 * Create a new user instance after a valid registration.
-	 *
-	 * @param array $data        	
-	 * @return User
-	 */
-	protected function create(array $data) {
-		$confirmation_code = str_random ( 30 );
+ protected function validator(array $data)
+    {
+        return Validator::make($data, [
+        	'user_type' => 'required',
+            'firstname' => 'required|min:3|max:255|alpha',
+            'lastname' => 'required|min:2|max:255|alpha',
+             'email' => 'required|email|max:255|unique:clients|unique:admin',
+            
+        ]);
+    }
+
+    /**
+     * Create a new user instance after a valid registration.
+     *
+     * @param  array  $data
+     * @return User
+     */
+  
+
+    protected function create(array $data)
+    {
+    	$ida;
+    	do{
+			$ida = mt_rand(0, 9999);
+			$ida = Carbon::today()->year . $ida;						
+		}
+		while (Admins::where('id',$ida)->exists() && Clients::where('id',$ida)->exists());
 		
-		$user = IsUser::create ( [ 
-				'first_name' => ucfirst ( $data ['first_name'] ),
-				'last_name' => ucfirst ( $data ['last_name'] ),
-				'email' => $data ['email'],
-				'password' => bcrypt ( $data ['password'] ),
-				'phone_number' => $data ['phone_number'],
-				'date_created' => date ( 'Y-m-d H:i:s' ),
-				'confirmation_code' => $confirmation_code 
-		] );
+		
+        $user = Admins::create([
+         	'id' => $ida,
+         	
+            'user_type' => $data['user_type'],
+            'email' => $data['email'],
+            'status' => 'Not Activated',
+            'date_registered' => Carbon::now(),
+        ]);
+		
+		$admin_profiles = AdminProfile::create([
+			'first_name' => $data['firstname'],
+			'agent_id' => $ida,
+			'last_name' => $data['lastname'],
+			'date_registered' => Carbon::now(),
+		]);
 		
 		return $user;
-		
-		$is_users = IsUser::where ( 'email', '=', $data ['email'] )->first ();
-		
-		$mailData = array (
-				'client' => 'cravendelossantos',
-				'url' => 'http://laravel.com' 
-		);
-		
-		// \Mail::send('inventory.newpassword', $data, function($message)
-		// $url = URL::to('/inventory/verify/'.$confirmation_code);
-		Mail::send ( 'inventory.verifyEmail', [ 
-				'is_users' => $is_users 
-		], function ($message) use($is_users) 
+    }
+    
+	public function register(Request $request)
+    {
+        $validator = $this->validator($request->all());
 
-		{
-			
-			// $m->to($user->email, $user->name)->subject('Your Reminder!');
-			$message->to ( $is_users->email, $is_users->name )->subject ( 'Verify your email address' );
-			
-			$message->from ( 'InventoryManagent@remoteStaff.com', 'RS Inventory Management' );
-		} );
-		
-		// $is_users = IsUser::where('email', '=', $data['email']) -> first();
-		return view ( "inventory.signuptypage" );
-	}
-	public function confirm($confirmation_code) {
-		$is_users = IsUser::whereConfirmationCode ( $confirmation_code )->first ();
-		
-		$is_users->confirmed = 1;
-		$is_users->confirmation_code = null;
-		$is_users->save ();
-		
-		return view ( '/inventory/verified', array (
-				"is_users" => $is_users 
-		) );
-	}
+        if ($validator->fails()) {
+            $this->throwValidationException(
+                $request, $validator
+            );
+        }
+
+        $this->create($request->all());
+
+        
+    }
 	
 	public function login(Request $request) {
 		 $this->validateLogin($request);
@@ -194,40 +190,7 @@ class AuthController extends Controller {
 				"is_users" => $is_users 
 		) );
 	}
-	public function register(Request $request) {
-		$validator = $this->validator ( $request->all () );
-		
-		if ($validator->fails ()) {
-			$this->throwValidationException ( $request, $validator );
-		}
-		
-		$this->create ( $request->all () );
-		
-		$is_users = IsUser::where ( 'email', '=', $request ['email'] )->first ();
-		
-		$mailData = array (
-				'client' => 'cravendelossantos',
-				'url' => 'http://laravel.com' 
-		);
-		
-		// \Mail::send('inventory.newpassword', $data, function($message)
-		// $url = URL::to('/inventory/verify/'.$confirmation_code);
-		Mail::send ( 'inventory.verifyEmail', [ 
-				'is_users' => $is_users 
-		], function ($message) use($is_users) 
-
-		{
-			
-			// $m->to($user->email, $user->name)->subject('Your Reminder!');
-			$message->to ( $is_users->email, $is_users->name )->subject ( 'Verify your email address' );
-			
-			$message->from ( 'InventoryManagent@remoteStaff.com', 'RS Inventory Management' );
-		} );
-		
-		$is_users = IsUser::where ( 'email', '=', $request ['email'] )->first ();
-		
-		return redirect ( '/inventory/signuptypage' )->with ( 'data', $is_users ['confirmation_code'] );
-	}
+	
 	public function showLoginForm() {
 		if (Auth::guard ( 'inventory' )->check ()) {
 			return redirect ( 'inventory/index' );

@@ -53,7 +53,7 @@
 			<form class="pull-right mail-search">
 				<div class="input-group">
 					<input type="text" class="form-control input-sm" id="filter"
-						placeholder="Ticket Id">
+						placeholder="Quick Search">
 					<div class="input-group-btn">
 						<button type="button"
 							class="btn btn-sm btn-primary advancedSearch">
@@ -134,7 +134,19 @@
 			</div>
 
 			<div class="mail-tools tooltip-demo m-t-md">
-
+			
+				<div class="btn-group pull-right">
+					@if(1 == $tickets->currentPage())
+					<a href="{{$tickets->previousPageUrl()}}" disabled class="btn btn-white btn-sm"> <i class="fa fa-arrow-left"></i> </a>
+					@else
+					<a href="{{$tickets->previousPageUrl()}}" class="btn btn-white btn-sm"> <i class="fa fa-arrow-left"></i> </a>
+					@endif
+					@if($tickets->hasMorePages())
+					<a href="{{$tickets->nextPageUrl()}}" class="btn btn-white btn-sm"> <i class="fa fa-arrow-right"></i> </a>
+					@else
+					<a href="{{$tickets->nextPageUrl()}}" disabled class="btn btn-white btn-sm"> <i class="fa fa-arrow-right"></i> </a>
+					@endif
+				</div>
 				<button class="btn btn-white btn-sm refreshBtn"
 					data-toggle="tooltip" data-placement="left" title="Refresh inbox">
 					<i class="fa fa-refresh"></i> Refresh
@@ -222,8 +234,9 @@
 					</tbody>
 					<tfoot>
 						<tr>
-							<td colspan="7">
-								<ul class="pagination pull-right"></ul>
+							<td colspan="7" class="text-right">
+								{{ $tickets->links() }}
+
 							</td>
 						</tr>
 					</tfoot>
@@ -279,7 +292,7 @@
 				$('span.closedTickets').text(data.closedTickets);
 			});
 			$('div.spinner').hide();
-			$('table.showTickets').footable();
+			//$('table.showTickets').footable();
 		});
 		$(document).on('click', 'a#closeTicket', function() {
 			$('input[type="hidden"]#ticketId').val($(this).attr('name'));

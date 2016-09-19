@@ -41,21 +41,17 @@ class PasswordController extends Controller {
 	public function forgotpassTypage() {
 		return view ( 'inventory.forgotpass_typage' );
 	}
-	public function showResetForm($token)
-	{
-		$reset = DB::table('password_resets')->where('token',$token)->first();
-	
+	public function showResetForm($token) {
+		$reset = DB::table ( 'password_resets' )->where ( 'token', $token )->first ();
+		
 		if ($reset == null) {
-			abort(404);
+			abort ( 404 );
 		}
-	
-		session(['resetEmail' => $reset->email,'token' => $token]);
-	
-	
-		return view($this->resetView);
-		 
+		session ( [ 
+				'resetEmail' => $reset->email,
+				'token' => $token 
+		] );
+		return view ( $this->resetView );
 	}
-	
-	
 	
 }

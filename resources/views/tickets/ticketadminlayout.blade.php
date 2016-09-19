@@ -24,10 +24,17 @@
    		 <link href="/css/plugins/footable/footable.core.css" rel="stylesheet">
 		<!-- c3 Charts -->
 		<link href="/css/plugins/c3/c3.min.css" rel="stylesheet">
+		<link href="/css/plugins/blueimp/css/blueimp-gallery.min.css" rel="stylesheet">
+		
+		<!-- Dropzone -->
+		<link href="/css/plugins/dropzone/basic.css" rel="stylesheet">
+    	<link href="/css/plugins/dropzone/dropzone.css" rel="stylesheet">
 
 		<link href="/css/plugins/toastr/toastr.min.css" rel="stylesheet">
 
 		<link href="/css/plugins/ladda/ladda-themeless.min.css" rel="stylesheet">
+		
+		<link href="/css/plugins/cropper/cropper.min.css" rel="stylesheet">
 		
 		@section('scripts')
 		<!-- Mainly scripts -->
@@ -39,6 +46,8 @@
 		<script src="/js/inspinia.js"></script>
 		<script src="/js/plugins/pace/pace.min.js"></script>
 		<!-- FooTable -->
+		<!-- blueimp gallery -->
+    <script src="/js/plugins/blueimp/jquery.blueimp-gallery.min.js"></script>
     	<script src="/js/plugins/footable/footable.all.min.js"></script>
 		<!-- Toastr script -->
 		<script src="/js/plugins/toastr/toastr.min.js"></script>
@@ -48,15 +57,16 @@
 		<script src="/js/plugins/dataTables/datatables.min.js"></script>
 		<!-- SUMMERNOTE -->
 		<script src="/js/plugins/summernote/summernote.min.js"></script>
-		
+		<!-- Image cropper -->
+    	<script src="/js/plugins/cropper/cropper.min.js"></script>
 		<!-- Sweet Alert -->
 		<script src="/js/plugins/sweetalert/sweetalert.min.js"></script>
-		
+		<!-- DROPZONE -->
+    	<script src="/js/plugins/dropzone/dropzone.js"></script>
 		<!-- Ladda -->
 		<script src="/js/plugins/ladda/spin.min.js"></script>
 		<script src="/js/plugins/ladda/ladda.min.js"></script>
 		<script src="/js/plugins/ladda/ladda.jquery.min.js"></script>
-		
 		<!-- d3 and c3 charts -->
 		<script src="/js/plugins/d3/d3.min.js"></script>
 		<script src="/js/plugins/c3/c3.min.js"></script>
@@ -73,6 +83,7 @@
 		@section('style')
 		@show
 		<style>
+		
 			@media screen and (min-width: 768px) {
 				.modal-lg {
 					width: 950px;
@@ -96,7 +107,7 @@
 							<button aria-controls="navbar" aria-expanded="false" data-target="#navbar" data-toggle="collapse" class="navbar-toggle collapsed"type="button">
 								<i class="fa fa-reorder"></i>
 							</button>
-							<a href="/admin" class="navbar-brand">Remote Staff</a>
+							<a href="/admin/index" class="navbar-brand">Remote Staff</a>
 						</div>
 						<div class="navbar-collapse collapse" id="navbar">
 							<ul class="nav navbar-nav">
@@ -111,6 +122,8 @@
 										<li>
 											<a href="/admin/ticketReport">Ticket Report</a>
 										</li>
+										 <li class="divider" role="separator"></li>
+										 <li><a href="/admin/createTicket">Create Ticket</a></li>
 									</ul>
 								</li>
 								

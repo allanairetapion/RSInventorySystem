@@ -3,11 +3,11 @@
 @section('header-page')
 
 <div class="col-lg-10">
-	<h2>Borrow Form</h2>
+	<h2>Borrow Item</h2>
 	<ol class="breadcrumb">
 		<li><a href="/inventory/index">Home</a></li>
 
-		<li class="active"><strong>Borrow Form</strong></li>
+		<li class="active"><strong>Borrow Item</strong></li>
 	</ol>
 </div>
 
@@ -106,13 +106,11 @@
 							class="table table-bordered table-hover borrow">
 							<thead>
 								<tr>
-									<th>Item Type</th>
-									
-									<th>Brand</th>
-									<th>Model</th>
 									<th>Unique Identifier</th>
 									<th>Item No.</th>
-									
+									<th>Item Type</th>					
+									<th>Brand</th>
+									<th>Model</th>									
 									<th>Borrowee</th>
 									<th>Borrower</th>
 									<th>Station No </th>
@@ -122,18 +120,21 @@
 							</thead>
 							<tbody class="borrowItem">
 							@foreach($borrowedItems as $borrow)
+							@if($borrow->dateBorrowed)
 							<tr>
+									<td>{{$borrow->unique_id}}</td>
+									<td>{{$borrow->itemNo}}</td>
 									<td>{{$borrow->itemType}}</td>
 									<td>{{$borrow->brand}}</td>
 									<td>{{$borrow->model}}</td>
-									<td>{{$borrow->unique_id}}</td>
-									<td>{{$borrow->itemNo}}</td>
+									
 									<td>{{$borrow->first_name.' '.$borrow->last_name}} </td>
 									<td>{{$borrow->borrower}}</td>
 									<td>{{$borrow->borrowerStationNo}}</td>
 									<td>{{$borrow->dateBorrowed}}</td>
 									
 							</tr>
+							@endif
 							@endforeach
 
 
@@ -223,7 +224,7 @@
 					<hr>
 					<h2 class="text-center">Item Not Found</h2>
 					</div>
-					<form class="form-horizontal itemInfo">
+					<form class="form-horizontal itemInfo">					
 						<hr>
 						<div class="row">
 							<div class="form-group col-lg-7">

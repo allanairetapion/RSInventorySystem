@@ -65,38 +65,32 @@
 		</div>
 	</div>
 	<div class="col-lg-9 animated fadeInRight mailView">
-		@if(Carbon\Carbon::today()->subDays(2)->endOfDay()  >=  Session::get('date_modified') && Session::get('status') != "Closed")
+		@if(Carbon\Carbon::today()->subDays(2)->endOfDay()  >=  $ticket->updated_at && $ticket->ticket_status != "Closed")
 		<div class="alert alert-danger">
 			<i class="fa fa-warning fa-2x"></i><strong> &emsp;This ticket has been unresolved for more than two days</strong>
-		</div>
-		@endif
-		
-		@if(Session::get('email') == '')
-		<div class="alert alert-info">
-			<i class="fa fa-exclamation fa-2x"></i><strong> &emsp;The sender no longer exists in our records</strong>
 		</div>
 		@endif
 		
 		<div class="mail-box-header">
 			<form class="form-inline ticketStatus">
 				{!! csrf_field() !!}
-				<input type="hidden" name="id" value="{{Session::get('id')}}">
+				<input type="hidden" name="id" value="{{$ticket->id}}">
 				<input type="hidden" name="assignedTo" class="assignedTo" value="">
 				
 				<div class="row">
 					<div class="pull-right">																	
 						<div class="form-group">
 							<label class="">Status: </label>
-							@if((Session::get('status') == "Closed" || $restrictions[0]->agent == "0")&& Auth::guard('admin')->user()->user_type == "agent")
+							@if(($ticket->ticket_status == "Closed" || $restrictions[0]->agent == "0") && Auth::guard('admin')->user()->user_type == "agent")
 							<select readonly name="ticket_status" class="form-control ticketStatus">
-								<option selected value="{{Session::get('status')}}">{{Session::get('status')}}</option>
+								<option selected value="{{$ticket->ticket_status}}">{{$ticket->ticket_status}}</option>
 							@else
 							<select name="ticket_status" class="form-control ticketStatus">
-								@if(Session::get('status') == "Open")
+								@if($ticket->ticket_status == "Open")
 								<option value="Open">Open</option>
 								<option value="Pending">Pending</option>
 								<option value="Closed">Closed</option>
-								@elseif(Session::get('status') == "Pending")	
+								@elseif($ticket->ticket_status == "Pending")	
 								<option value="Pending">Pending</option>
 								<option value="Closed">Closed</option>
 								@else
@@ -109,24 +103,25 @@
 							</select>
 
 						</div>
+						
 					</div>
-					<h2> &nbsp; Ticket ID: {{Session::get('id')}} - {{Session::get('status')}}</span></h2>
+					<h2> &nbsp; Ticket ID: {{$ticket->id}} - {{$ticket->ticket_status}}</span></h2>
 				</div>
 			</form>
 
 			<div class="mail-tools tooltip-demo m-t-md">
 
-				<h5><span class="pull-right"><span class="font-noraml">Topic:</span> {{Session::get('topic')}}</span></h5><h3><span class="font-noraml">Subject: </span>{{Session::get('subject')}}</h3>
-				<h5><span class="pull-right"><span class="font-noraml">Priority:</span> {{Session::get('priority')}}</span><span class="font-noraml">Department: </span>{{Session::get('department')}} </h5>
+				<h5><span class="pull-right"><span class="font-noraml">Topic:</span> {{$ticket->description}}</span></h5><h3><span class="font-noraml">Subject: </span>{{$ticket->subject}}</h3>
+				<h5><span class="pull-right"><span class="font-noraml">Priority:</span> {{$ticket->priority_level}}</span><span class="font-noraml">Department: </span>{{$ticket->department}} </h5>
 				
 				
 				
-				@if(Session::get('status') != "Open")
+				@if($ticket->ticket_status != "Open")
 				<h5>
-					@if(Session::get('status') == "Closed")
-					<span class="pull-right"><span class="font-noraml">Closed by: </span>{{Session::get('closed_by')}} </span>
+					@if($ticket->ticket_status == "Closed")
+					<span class="pull-right"><span class="font-noraml">Closed by: </span>{{$ticket->closedFN.' '.$ticket->closedLN}} </span>
 					@endif
-					<span class="font-noraml">Assigned to: </span>{{Session::get('assigned_support')}} </h5>
+					<span class="font-noraml">Assigned to: </span>{{$ticket->assignFN.' '.$ticket->assignLN}} </h5>
 				@endif
 			</div>
 
@@ -137,16 +132,30 @@
 			<h4>Description:</h4>
 				<div  class="panel panel-info ">
 					<div class="panel-heading"> 
-						By: {{Session::get('sender')}} <span class="pull-right"> {{Session::get('date_sent')}}</span>
+						By: {{$ticket->sender_id}} <span class="pull-right"> {{$ticket->created_at}}</span>
 					</div>
 					<div class="panel-body">
 						 <p>
-					{!!html_entity_decode(Session::get('summary'))!!}
+					{!!html_entity_decode($ticket->summary)!!}
 				 </p>
+				 <?php $ticket->attachments = explode(",",$ticket->attachments)?>
+					 <div class="lightBoxGallery">
+					 @foreach($ticket->attachments as $attachment)
+					 @if($attachment != "")
+					 <a href="{{$attachment}}" data-gallery="" > 
+					<img src="{{$attachment}}" height="100" width="100" class="img-thumbnail"/>
+				</a>
+				@endif
+					 @endforeach
+				
+				 
+				 
+				 </div>
+				 	
 					</div>
 					
 				</div>
-				@if(Session::get('status') != "Open" && $messages != null)
+				@if($ticket->ticket_status != "Open" && $messages != null)
 					
 					@foreach($messages as $message)
 					
@@ -165,16 +174,17 @@
 					
 				@endif
 				
-				@if(Session::get('status') == "Closed")
+				@if($ticket->ticket_status == "Closed")
 				<h4>Closing Report:</h4>
 				<div  class="panel panel-success ">
 					<div class="panel-heading"> 
-						By: {{Session::get('closed_by')}}  <span class="pull-right"> {{Session::get('date_modified')}}</span>
+						By: {{$ticket->closedFN.' '.$ticket->closedLN}}  <span class="pull-right"> {{$ticket->updated_at}}</span>
 					</div>
 					<div class="panel-body">
 						 <p>
-					{!!html_entity_decode(Session::get('closing_report'))!!}
+					{!!html_entity_decode($ticket->closing_report)!!}
 				 </p>
+				
 					</div>
 					
 				</div>
@@ -185,24 +195,24 @@
 			</div>
 
 			<div class="mail-body text-right tooltip-demo">
-				@if(Session::get('status') != "Closed" || Auth::guard('admin')->user()->user_type == 'admin')
+				@if($ticket->ticket_status != "Closed" || Auth::guard('admin')->user()->user_type == 'admin')
 				<button type="button" class="ladda-button btn ticketSave btn-sm btn-white data-style="zoom-in" ">
 					<i class="fa fa-save "></i> Save
 				</button>
 				@endif
-				@if(Session::get('status') != "Closed")
+				@if($ticket->ticket_status != "Closed")
 					@if($restrictions[1]->agent == 1 || Auth::guard('admin')->user()->user_type == 'admin')
-				<button class="btn btn-sm btn-white" onclick="window.document.location='/admin/ticketReply/{{Session::get('id')}}'"><i class="fa fa-reply"></i> Reply</button>
+				<button class="btn btn-sm btn-white" onclick="window.document.location='/admin/ticketReply/{{$ticket->id}}'"><i class="fa fa-reply"></i> Reply</button>
 					@endif
 				@endif
 				
-				@if(Session::get('status') != "Closed")
+				@if($ticket->ticket_status != "Closed")
 					@if(Auth::guard('admin')->user()->user_type == 'admin' || $restrictions[2]->agent == 1)
 						<a class="btn btn-sm btn-white" data-toggle="modal" data-target="#forward"><i class="fa fa-mail-forward"></i> Forward</a>
 					@endif
 				@endif				
 				
-				<button class="btn btn-sm btn-white" onclick="window.open('/admin/printTickets/{{Session::get('id')}}')">
+				<button class="btn btn-sm btn-white" onclick="window.open('/admin/printTickets/{{$ticket->id}}')">
 					<i class="fa fa-print"></i> Print
 				</button>
 				@if(Auth::guard('admin')->user()->user_type == 'admin')
@@ -216,7 +226,15 @@
 		</div>
 	</div>
 </div>
-
+<div id="blueimp-gallery" class="blueimp-gallery">
+                                <div class="slides"></div>
+                                <h3 class="title"></h3>
+                                <a class="prev">‹</a>
+                                <a class="next">›</a>
+                                <a class="close">×</a>
+                                <a class="play-pause"></a>
+                                <ol class="indicator"></ol>
+                            </div>
 <div class="modal inmodal" id="forward" tabindex="-1" role="dialog"  aria-hidden="true">
 	<div class="modal-dialog">
 		<div class="modal-content animated flipInY">
@@ -230,15 +248,15 @@
 			</div>
 			<div class="modal-body">
 				<p>
-					This ticket is assigned to: <span class="font-bold">{{Session::get('assigned_support')}}</span>. Choose an agent below if you want to change the assigned support.
+					This ticket is assigned to: <span class="font-bold">{{$ticket->assignFN.' '.$ticket->assignLN}}</span>. Choose an agent below if you want to change the assigned support.
 				</p>
 				<form class="forwardTo">
 					{!! csrf_field() !!}
-					<input type="hidden" name="id" value="{{Session::get('id')}}">
+					<input type="hidden" name="id" value="{{$ticket->id}}">
 					<select name="agent" class="form-control assignAgent">
 						<option value="" selected hidden>Select agent...</option>
 						@foreach ($agent as $agents)
-							@if($agents->first_name.' '.$agents->last_name != Session::get('assigned_support'))
+							@if($agents->first_name.' '.$agents->last_name != $ticket->assignFN.' '.$ticket->assignLN)
 							<option value="{{$agents->id}}"> {{$agents->
 								first_name.' '.$agents->last_name}}</option>
 							@endif
@@ -312,8 +330,8 @@
 			</div>
 			<form class="closeTicket">
 				{!! csrf_field() !!}
-				<input type="hidden" id="closing_report"name="closing_report" value="{{Session::get('closing_report')}}">
-				<input type="hidden" name="id" value="{{Session::get('id')}}">
+				<input type="hidden" id="closing_report"name="closing_report" value="{{$ticket->closing_report}}">
+				<input type="hidden" name="id" value="{{$ticket->id}}">
 				
 				<div class="modal-body">
 					<h4>This ticket require's a closing report to change it's status to "Closed".</h4>
@@ -335,6 +353,7 @@
 </div>
 
 <script>
+
 		$(document).ready(function() {
 			$.ajax({
 				type : 'get',

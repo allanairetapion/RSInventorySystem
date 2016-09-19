@@ -1,7 +1,7 @@
 <?php
 namespace App\Http\Controllers;
 use App\Tickets as Ticket;
-use App\TicketLogs as TicketLogs;
+use App\TicketMessages as TicketMessages;
 use App\TicketTopics as TicketTopics;
 use App\Http\Controllers;
 use App\Http\Controllers\Controller;
@@ -47,7 +47,7 @@ class TicketsController extends Controller{
         ]);
 
         if ($validator->fails()) {
-            return response()->json(array('success'=> false, 'errors' =>$validator->getMessageBag()->toArray())); 
+            return response()->json(array('success'=> false, 'errors' =>$validator->getMessageBag()->toArray()),400); 
           
         }
 		else {
@@ -59,7 +59,21 @@ class TicketsController extends Controller{
 			$ida = mt_rand(0, 99999999);					
 		}
 		while (Ticket::where('id')->exists());
+		$filecount = 1;
+		$attachmentpath = "";
 			
+		$image = $request->file ( 'attachment' );
+		$imgvalidatoR = Validator::make ( $image, [
+				'attachment' => 'image|max:10485760'
+		] );
+		foreach ( $image as $file ) {
+		
+			$imageName = $ida . $file->getClientOriginalName ();
+		
+			$file->move ( public_path ( '/img/attachment/' ), $imageName );
+			$filecount ++;
+			$attachmentpath = $attachmentpath . "/img/attachment/" . $imageName . ",";
+		}
 		
 			$user = Ticket::create([
 			'id' => $ida,
@@ -69,6 +83,7 @@ class TicketsController extends Controller{
             'summary' => $request['summary'],
             'ticket_status' => 'Open',            
             'department' =>Auth::guard('user')->user()->department,
+					'attachments' => $attachmentpath
         ]);
 			
 			return response()->json(['response' => '']); 
@@ -196,7 +211,7 @@ class TicketsController extends Controller{
 				'closing_report' => $closedBy->closing_report
 		] );
 		if ($ticket->ticket_status != 'Open') {
-			$messages = TicketLogs::where('ticket_id',$id)->get();
+			$messages = TicketMessages::where('ticket_id',$id)->get();
 		
 			foreach($messages as $message){
 				$name = DB::table('admin_profiles')->where('agent_id', $message['sender'])->first();
@@ -257,7 +272,7 @@ class TicketsController extends Controller{
 			 $message->to ( $request ['email'] );
 			} );
 			*/
-			$message = new TicketLogs;
+			$message = new TicketMessages;
 			$message->ticket_id = $request ['ticket_id'];
 			$message->message = $request ['message'];
 			$message->sender = Auth::guard('user')->user()->id;
