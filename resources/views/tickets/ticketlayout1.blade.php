@@ -10,17 +10,9 @@
 
 		<link href="/css/bootstrap.min.css" rel="stylesheet">
 		<link href="/font-awesome/css/font-awesome.css" rel="stylesheet">
+		
 		<link href="/css/animate.css" rel="stylesheet">
 		<link href="/css/style.css" rel="stylesheet">
-		
-		@section('css')
-		
-		@show
-		
-		@section('scripts')
-		
-		@show
-		
 		<link href="/css/plugins/ladda/ladda-themeless.min.css" rel="stylesheet">
 		<link rel="stylesheet" type="text/css" href="/css/plugins/jQueryUI/jquery-ui.css" />
 		

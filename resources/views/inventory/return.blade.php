@@ -25,12 +25,21 @@
 			<div class="ibox-content">
 				<div id="advancedSearch" class=" gray-bg" style="padding: 5px;">
 					<br>
-					<form class="returnTicketSearch">
+					<form class="advancedTicket" method="GET"
+						action="/inventory/return/search">
 						{!! csrf_field() !!}
 						<div class="row">
 							<div class="col-md-3">
 								<label class="control-label">Unique Id:</label> <input
 									type="text" class="form-control" name="unique_id">
+
+							</div>
+							<div class="col-md-3">
+								<label class="control-label">Brand:</label> <select
+									name="topicSearch" class="form-control brand">
+									<option value="" selected></option>
+
+								</select>
 
 							</div>
 							<div class="col-md-3">
@@ -53,23 +62,25 @@
 							</div>
 
 
-						
-							<div class="col-md-3">
-								<label class="control-label">Date Returned:</label>
-								<div class="input-group date dateReturned">
-									<span class="input-group-addon"><i class="fa fa-calendar"></i></span><input
-										type="text" class="form-control dateReturned"
-										placeholder="Name" name="dateReturned">
-
+						</div>
+						<div class="row">
+							<div class="col-md-6">
+								<label class="control-label">Date Range:</label>
+								<div class="input-daterange input-group" id="datepicker">
+									<span class="input-group-addon">From</span> <input type="text"
+										class=" form-control" data-mask="9999-99-99" name="dateStart"
+										value="" /> <span class="input-group-addon">to</span> <input
+										type="text" class=" form-control" data-mask="9999-99-99"
+										name="dateEnd" value="" />
 								</div>
 							</div>
 
 
 
-							<div class=" col-md-3 text-center">
+							<div class="col-md-offset-3 col-md-3 text-center">
 								<br>
 
-								<button type="button" class="btn btn-primary returnTicketSearch">
+								<button type="submit" class="btn btn-primary">
 									<i class="fa fa-search"></i> Search
 								</button>
 								<button type="reset" class="btn btn-warning">
@@ -280,20 +291,6 @@ $(document).ready(function() {
 	    format : 'yyyy-mm-dd',
 	    todayBtn: "linked"
 		});
-
-	$('table.return').dataTable({
-		"bSort" : false,
-		dom : '<"html5buttons"B>lTfgtip',
-		buttons : [{
-			text : 'Advanced Search',
-			action : function() {
-				$(
-						'div#advancedSearch')
-						.slideToggle();
-			}
-		},
-			],
-	});
 });
 
 $(function() {
@@ -307,27 +304,20 @@ $(function() {
 	});
 }); 
 
-$('button.returnTicketSearch').click(function(){
-	$.ajax({
-		type : "get",
-		url : "/inventory/return/search",
-		data : $('form.returnTicketSearch').serialize(),
-		success: function(data){
-			var table = $('table.return').DataTable();
-			table.clear();
-			
-			
-			$.each(data.response,function(i, v) {
-				table.row.add([ v.unique_id, v.itemNo,
-				               v.itemType, v.brand,v.model,
-				               v.borrower,v.first_name+" "+v.last_name, 
-				               v.dateReturned] ).draw();	
-				});
-			}
-	});
+
+$('table.return').dataTable({
+	"bSort" : false,
+	dom : '<"html5buttons"B>lTfgtip',
+	buttons : [{
+		text : 'Advanced Search',
+		action : function() {
+			$(
+					'div#advancedSearch')
+					.slideToggle();
+		}
+	},
+		],
 });
-
-
 </script>
 @endsection
 

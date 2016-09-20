@@ -122,7 +122,7 @@ $(function() {
 								.done(
 										function(data) {
 
-											
+											$('tbody.ticketReport').empty();
 											var html;
 											var table = $('table.ticketReport').DataTable();
 											table.clear();

@@ -15,17 +15,8 @@
 		<link href="/css/style.css" rel="stylesheet">
 		<link href="/css/plugins/ladda/ladda-themeless.min.css" rel="stylesheet">
 		<link rel="stylesheet" type="text/css" href="/css/plugins/jQueryUI/jquery-ui.css" />
-		<link href="/css/plugins/ladda/ladda-themeless.min.css" rel="stylesheet">
 		
-		<script src="/js/jquery-2.1.1.js"></script>
-		<script src="/js/bootstrap.min.js"></script>
 
-		<script src="/js/plugins/metisMenu/jquery.metisMenu.js"></script>
-		
-		<!-- Custom and plugin javascript -->
-		<script src="/js/inspinia.js"></script>
-		<script src="/js/plugins/pace/pace.min.js"></script>
-		
 	</head>
 
 	<body class="white-bg top-navigation" >
@@ -42,7 +33,7 @@
 		<div class="col-md-6">
 			
 			<div class="ibox-content text-center gray-bg">
-				<form class="m-t"  >
+				<form class="m-t" role="form" method="post" action="/tickets/login"  >
 					{!! csrf_field() !!}
 					<h4 class="text-warning ">{{ Session::get('message') }}</h4>
 					@if ($errors->has('email'))
