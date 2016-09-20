@@ -3,6 +3,21 @@
  */
 
 $(function() {
+	$(document).ready(function(){
+		$('.input-group.date.dateBroken').datepicker({
+		    format : 'yyyy-mm-dd',
+		    todayBtn: "linked"
+			});
+		
+
+	$('.i-checks').iCheck({
+		checkboxClass : 'icheckbox_square-green',
+		radioClass : 'iradio_square-green',
+	});
+	
+	});
+
+	
 	$('button.advancedSearch').click(function() {
 		$('div#advancedSearch').slideToggle();
 	});
@@ -168,12 +183,14 @@ $(function() {
 					borrowItem.ladda('stop');
 					$('form.borrowItem').trigger('reset');
 					
-					$('tbody.borrowItem').prepend("<tr><td>"+ data.response['unique_id'] + "</td>"+
-							"<td>" + data.response['itemNo']+ "</td><td>" + data.response['itemType']+" </td>" +
-							"<td>" + data.response['brand'] +"</td><td>"+ data.response['model']+"</td>" +
-							"<td>" + data.response['first_name']+" "+data.response['last_name']+"</td>"+
-							"<td>" + data.response['borrower'] +"</td><td>" +data.response['borrowerStationNo']+ "</td>" +
-							"<td>" + data.response['dateBorrowed'] +"</td></tr>");
+					var table = $('table.borrow').DataTable();
+					table.row.add([ data.response['unique_id'], data.response['itemNo'],
+					                data.response.itemType, data.response.brand,data.response.model,
+					                data.response.first_name+" "+data.response.last_name, data.response.borrower,
+					                data.response.borrowerStationNo,
+					                data.response.created_at] ).draw();	
+					
+			
 					$('#myModal').modal('hide');
 					swal('','Item Borrowed','success');
 					
@@ -279,7 +296,7 @@ $(function() {
 						"<td>" + data.response['brand'] +"</td><td>"+ data.response['model']+"</td>" +
 						"<td>" + data.response['borrower'] +"</td>"+
 						"<td>" + data.response['first_name']+" "+data.response['last_name']+"</td>"+
-						"<td>"+ data.response['dateReturned'] +"</td></tr>");
+						"<td>"+ data.response['created_at'] +"</td></tr>");
 				$('#myModal').modal('hide');
 				swal('','Item Returned','success');
 				
@@ -589,6 +606,10 @@ $(function() {
 					$('span.brokenDamage').text(data.errors["damage"]).show();
 					$('div.brokenDamage').addClass('has-error');
 				}
+				if(data.errors["status"]){
+					$('span.brokenStatus').text(data.errors["status"]).show();
+					$('div.brokenStatus').addClass('has-error');
+				}
 				if(data.errors["dateBroken"]){
 					$('span.dateBroken').text(data.errors["dateBroken"]).show();
 					$('div.dateBroken').addClass('has-error');
@@ -597,12 +618,21 @@ $(function() {
 				issueItem.ladda('stop');
 				$('form.brokenItem').trigger('reset');
 				
-				$('tbody#brokenItem').prepend("<tr><td>"+ data.response['unique_id'] + "</td>"+
+					
+					
+				$('tbody#brokenItem').prepend("<tr><td> <input type='checkbox' class='i-checks brokenItem' value='"+data.response['unique_id'] +"'/> &nbsp;"+ 
+						data.response['unique_id'] + "</td>"+
 						"<td>" + data.response['itemNo']+ "</td><td>" + data.response['damage']+" </td>" +
-						"<td>"+ data.response['reported_by']+"</td>" +
+						"<td>"+data.response['brokenStatus']+"</td><td>"+ data.response['first_name']+" "+ data.response['last_name']+"</td>" +
 						"<td>" + data.response['created_at']+ "</td></tr>");
 				
+				$('.i-checks').iCheck({
+					checkboxClass : 'icheckbox_square-green',
+					radioClass : 'iradio_square-green',
+				});
+				
 				$('#brokenReport').modal('hide');
+				
 				swal('','Item Reported','success');
 				
 				

@@ -12,7 +12,9 @@ class InventoryItem extends Model
      */
     protected $table = 'items';
     protected $fillable = [
-    		'unique_id','itemNo','company', 'stationNo','itemType','model','brand','morningClient','nightClient','arrivalDate','itemStatus'
+    		'unique_id','itemNo','company', 'stationNo'
+    		,'itemType','model','brand','morningClient',
+    		'nightClient','arrivalDate','itemStatus','updated_at'
     ];
     
     
