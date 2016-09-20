@@ -32,7 +32,7 @@
 				<div class="ibox-content">
 <div id="advancedSearch" class=" gray-bg" style="padding: 5px;">
 				<br>
-				<form class="advancedTicket" method="GET" action="/inventory/borrow/search">
+				<form class="borrowTicketSearch">
 					{!! csrf_field() !!}
 					<div class="row">
 						<div class="col-md-3">
@@ -40,15 +40,7 @@
 							<input type="text" class="form-control" name="unique_id">
 
 						</div>
-						<div class="col-md-3">
-							<label class="control-label">Brand:</label> <select
-								name="brand" class="form-control brand">
-								<option value="" selected ></option>
-								<option value="Hua" selected >Hua</option>
-								
-							</select>
-
-						</div>
+						
 						<div class="col-md-3">
 							<label class="control-label">Borrowee:</label> 
 							<select class="form-control chosen-select" name="borrowee">
@@ -68,25 +60,23 @@
 							</select>
 						</div>
 						
-						</div>
-						<div class="row">
-						<div class="col-md-6">
-						<label class="control-label">Date Range:</label>
-						<div class="input-daterange input-group" id="datepicker">
-									<span class="input-group-addon">From</span>
-                                    <input type="text" class=" form-control" data-mask="9999-99-99" name="dateStart" value=""/>
-                                    <span class="input-group-addon">to</span>
-                                    <input type="text" class=" form-control" data-mask="9999-99-99" name="dateEnd" value="" />
-                                </div>
+						
+						<div class="col-md-3">
+						<label class="control-label">Date Borrowed:</label>
+						<div class="input-group date dateBorrowed">
+										<span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control dateBorrowed" 
+									name="dateBorrowed">
+
+									</div>
 						</div>
 					
 						
 						
-						<div class="col-md-offset-3 col-md-3 text-center">
+						<div class=" col-md-3 ">
 							<br>
 
-							<button type="submit"
-								class="btn btn-primary">
+							<button type="button"
+								class="btn btn-primary borrowTicketSearch">
 								<i class="fa fa-search"></i> Search
 							</button>
 							<button type="reset" class="btn btn-warning">
@@ -102,8 +92,7 @@
 
 					<div class="table-responsive">
 					
-						<table
-							class="table table-bordered table-hover borrow">
+						<table class="table table-bordered table-hover borrow">
 							<thead>
 								<tr>
 									<th>Unique Identifier</th>
@@ -331,8 +320,25 @@ $(document).ready(function() {
 
 	
 });
-
-$('div#advancedSearch').slideToggle();
+$('button.borrowTicketSearch').click(function(){
+	$.ajax({
+		type : "get",
+		url : "/inventory/borrow/search",
+		data : $('form.borrowTicketSearch').serialize(),
+		success: function(data){
+			var table = $('table.borrow').DataTable();
+			table.clear();
+			$.each(data.response,function(i, v) {
+				table.row.add([ v.unique_id, v.itemNo,
+				               v.itemType, v.brand,v.model,
+				               v.first_name+" "+v.last_name, v.borrower,
+				               v.borrowerStationNo,
+				               v.dateBorrowed] ).draw();	
+				});
+			}
+	});
+});
+$('div#advancedSearch').hide();
 
 $('#myModal').on('shown.bs.modal', function () {
 	  $('.chosen-select', this).chosen();

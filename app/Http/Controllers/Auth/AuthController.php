@@ -39,7 +39,8 @@ class AuthController extends Controller
     protected $redirectTo = 'tickets/';
     protected $loginPath = '/login';
 	protected $redirectAfterLogout = '/tickets/login';
-	protected $loginView ="/tickets/login";
+	protected $loginView ="auth/login";
+	protected $registerView = "auth/register";
     /**
      * Create a new authentication controller instance.
      *
@@ -134,12 +135,14 @@ class AuthController extends Controller
 		if(Auth::guard('user')->check()){
 			return redirect('/tickets');
 		}
-			return view("auth.login");	
+			 return view($this->loginView);	
 	}
 	
 	public function showRegistrationForm()
 {
-    return view('auth.register');
+if (property_exists($this, 'registerView')) {
+            return view($this->registerView);
+        }
 } 
 	
 	public function login(Request $request)

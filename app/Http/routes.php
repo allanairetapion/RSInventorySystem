@@ -65,6 +65,8 @@ Route::group(['middleware' => 'inventory'], function () {
 	Route::post("/inventory/verifyPassword",'inventoryController@checkPassword');
 	Route::post("/inventory/brokenItem","inventoryController@brokenItem");
 	
+	Route::put("/inventory/brokenMark","inventoryController@updateBroken");
+	
 });
 
 
