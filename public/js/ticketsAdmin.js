@@ -47,7 +47,7 @@ $(function() {
 															'para',
 															[ 'ul', 'ol',
 																	'paragraph' ] ],
-													[ 'height', [ 'height' ] ] ]
+													 ]
 										});
 						$('div.ticketReplySummernote')
 								.summernote(
@@ -873,15 +873,18 @@ $(function() {
 			type : "POST",
 			url : "/admin/sendActivate",
 			data : $('.agentForm').serialize(),
-		}).done(function() {
-			swal({
-				title : 'Success',
-				text : 'New user has been added',
-				type : 'success'
-			}, function() {
-				window.location.href = "/admin/agents";
-			});
-
+			success: function(){
+				swal({
+					title : 'Success',
+					text : 'New user has been added',
+					type : 'success'
+				}, function() {
+					window.location.href = "/admin/agents";
+				});
+			},
+			error: function () {
+				sendActivation();
+			},
 		});
 	}
 	;
@@ -894,7 +897,7 @@ $(function() {
 		$('div.email').removeClass('has-error');
 
 		$('input[type="hidden"].ticketReply').val(
-				$('div.ticketReplySummernote').code());
+				$('div.ticketReplySummernote').summernote('code'));
 		console.log($('form.ticketReply').serialize());
 		ticketReply.ladda('start');
 
@@ -1040,7 +1043,7 @@ $(function() {
 			'click',
 			function() {
 				$('input[type="hidden"]#closing_report').val(
-						$('div.ticketsummernote').code());
+						$('div.ticketsummernote').summernote('code'));
 
 				$.ajax({
 					type : "PUT",

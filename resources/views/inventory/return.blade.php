@@ -1,4 +1,6 @@
-@extends('inventory.inventory') @section('title', 'RS | Return')
+@extends('inventory.inventory') 
+
+@section('title', 'RS | Return')
 
 @section('header-page')
 <div class="col-lg-10">
@@ -23,67 +25,86 @@
 					data-target="#myModal">Report</button>
 			</div>
 			<div class="ibox-content">
-				<div id="advancedSearch" class=" gray-bg" style="padding: 5px;">
-					<br>
-					<form class="returnTicketSearch">
-						{!! csrf_field() !!}
-						<div class="row">
-							<div class="col-md-3">
-								<label class="control-label">Unique Id:</label> <input
-									type="text" class="form-control" name="unique_id">
-
-							</div>
-							<div class="col-md-3">
-								<label class="control-label">Borrower:</label> <select
-									class="form-control chosen-select" name="borrower">
-									<option value="" selected></option>
-									@foreach($clients as $client)
-									<option value="{{$client->id}}"> {{$client->first_name.' '.$client->last_name}}</option>
-									@endforeach
-								</select>
-							</div>
-							<div class="col-md-3">
-								<label class="control-label">Receiver:</label> <select
-									class="form-control chosen-select" name="receiver">
-									<option value="" selected hidden></option>
-									@foreach($clients as $client)
-									<option value="{{$client->id}}"> {{$client->first_name.' '.$client->last_name}}</option>
-									@endforeach
-								</select>
-							</div>
+				<div class="input-group m-b">
+					<input type="text" class="form-control" id="filter"
+						placeholder="Search...">
+					<div class="input-group-btn">
+						<button class="btn btn-white" id="returnAdvancedSearch"
+							type="button">
+							Search Options <span class="caret"></span>
+						</button>
+					</div>
+				</div>
+				<div id="returnAdvancedSearch" class="panel panel-default">
+					<div class="panel-body">
+						<form class="returnTicketSearch">
+							{!! csrf_field() !!}
 
 
-						
-							<div class="col-md-3">
-								<label class="control-label">Date Returned:</label>
-								<div class="input-group date dateReturned">
-									<span class="input-group-addon"><i class="fa fa-calendar"></i></span><input
-										type="text" class="form-control dateReturned"
-										placeholder="Name" name="dateReturned">
+							<div class="row">
+								<div class="col-md-3">
+									<label class="control-label">Unique Id:</label> <select
+										class="form-control uniqueId chosen-select" name="unique_id">
+										<option value="" selected></option> 
+										@foreach($unique_ids as $id)
+										<option value="{{$id->unique_id}}">{{$id->unique_id}}</option>
+										@endforeach
+									</select>
+								</div>
+								<div class="col-md-3">
+									<label class="control-label">Borrower:</label> <select
+										class="form-control chosen-select" name="borrower">
+										<option value="" selected></option> 
+										@foreach($clients as $client)
+										<option value="{{$client->id}}">{{$client->first_name.' '.$client->last_name}}</option> 
+										@endforeach
+									</select>
+								</div>
+								<div class="col-md-3">
+									<label class="control-label">Receiver:</label> <select
+										class="form-control chosen-select" name="receiver">
+										<option value="" selected hidden></option> 
+										@foreach($clients as $client)
+										<option value="{{$client->id}}">{{$client->first_name.' '.$client->last_name}}</option> 
+										@endforeach
+									</select>
+								</div>
+
+
+
+								<div class="col-md-3">
+									<label class="control-label">Date Returned:</label>
+									<div class="input-group date dateReturned">
+										<span class="input-group-addon"><i class="fa fa-calendar"></i></span><input
+											type="text" class="form-control dateReturned"
+											placeholder="Name" name="dateReturned">
+
+									</div>
+								</div>
+
+
+
+								<div class=" col-md-3 text-center">
+									<br>
+
+									<button type="button"
+										class="btn btn-primary returnTicketSearch">
+										<i class="fa fa-search"></i> Search
+									</button>
+									<button type="reset" class="btn btn-warning">
+										<i class="fa fa-refresh"></i> Reset
+									</button>
 
 								</div>
 							</div>
 
-
-
-							<div class=" col-md-3 text-center">
-								<br>
-
-								<button type="button" class="btn btn-primary returnTicketSearch">
-									<i class="fa fa-search"></i> Search
-								</button>
-								<button type="reset" class="btn btn-warning">
-									<i class="fa fa-refresh"></i> Reset
-								</button>
-
-							</div>
-						</div>
-
-					</form>
-					<br>
+						</form>
+					</div>
 				</div>
+
 				<div class="table-responsive">
-					<table class="table table-bordered table-hover return">
+					<table id="return" class="table table-bordered table-hover"
+						data-filter="#filter" data-striping="false">
 						<thead>
 							<tr>
 								<th>Unique Identifier</th>
@@ -92,16 +113,16 @@
 
 								<th>Brand</th>
 								<th>Model</th>
-								
+
 								<th>Borrower</th>
 								<th>Receiver</th>
 								<th>Date Returned</th>
-								
+
 							</tr>
 						</thead>
 						<tbody class="returnItem">
 
-							@foreach($returnedItems as $return)
+							@foreach($returnedItems as $return) 
 							@if($return->dateReturned)
 							<tr>
 								<td>{{$return->unique_id}}</td>
@@ -109,11 +130,11 @@
 								<td>{{$return->itemType}}</td>
 								<td>{{$return->brand}}</td>
 								<td>{{$return->model}}</td>
-								
+
 								<td>{{$return->borrower}}</td>
 								<td>{{$return->first_name.' '.$return->last_name}}</td>
 								<td>{{$return->dateReturned}}</td>
-								
+
 							</tr>
 							@endif
 							@endforeach
@@ -135,7 +156,7 @@
 		<div class="modal-content">
 			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal">&times;</button>
-				<h4 class="modal-title">Borrow Report</h4>
+				<h4 class="modal-title">Return Report</h4>
 			</div>
 
 			<div class="ibox-content">
@@ -145,9 +166,13 @@
 						<div class="form-group col-lg-7 unique_id">
 							<label class="control-label col-lg-4"> Unique Identifier:</label>
 							<div class="col-lg-8">
-								<input type="text" class="form-control borrowUniqueId"
-									placeholder="Unique Identifier" name="unique_id"> <span
-									class="help-block text-danger unique_id">192.168.100.200</span>
+								<select id="returnUniqueId" class="form-control chosen-select"
+									name="unique_id">
+									<option value="" selected></option> 
+									@foreach($unique_ids as $id)
+									<option value="{{$id->unique_id}}">{{$id->unique_id}}</option>
+									@endforeach
+								</select> <span class="help-block text-danger unique_id">192.168.100.200</span>
 							</div>
 						</div>
 						<div class="form-group col-lg-5 itemNo">
@@ -280,22 +305,15 @@ $(document).ready(function() {
 	    format : 'yyyy-mm-dd',
 	    todayBtn: "linked"
 		});
-
-	$('table.return').dataTable({
-		"bSort" : false,
-		dom : '<"html5buttons"B>lTfgtip',
-		buttons : [{
-			text : 'Advanced Search',
-			action : function() {
-				$(
-						'div#advancedSearch')
-						.slideToggle();
-			}
-		},
-			],
-	});
+	$("div#returnAdvancedSearch").hide();
+	$('table#return').footable();
+	
 });
 
+$("button#returnAdvancedSearch").click(function(){
+	$("div#returnAdvancedSearch").slideToggle();
+	});
+	
 $(function() {
 	$("input.uniqueId").keyup(function() {
 		$("input.uniqueId").autocomplete({
@@ -313,17 +331,24 @@ $('button.returnTicketSearch').click(function(){
 		url : "/inventory/return/search",
 		data : $('form.returnTicketSearch').serialize(),
 		success: function(data){
-			var table = $('table.return').DataTable();
-			table.clear();
-			
-			
-			$.each(data.response,function(i, v) {
-				table.row.add([ v.unique_id, v.itemNo,
-				               v.itemType, v.brand,v.model,
-				               v.borrower,v.first_name+" "+v.last_name, 
-				               v.dateReturned] ).draw();	
+			var table = $('table#borrow').data('footable');
+			$('tbody>tr').each(function(){
+				table.removeRow(this);
 				});
+			
+			if(data.response.length >= 1){
+			$.each(data.response,function(i, v) {
+				var newRow = "<tr><td>" + v.unique_id + "</td><td>" + v.itemNo + " </td>"+
+				"<td>" + v.itemType + "</td><td>" + v.brand + "</td><td>" + v.model + "</td>" +
+				"<td>" + v.borrower + "</td><td>" + v.first_name + " " + v.last_name +"</td>"+
+				"<td>" + v.dateReturned + "</td></tr>";
+				
+				});
+			}else{
+				table.appendRow("<tr><td colspan='8' class='text-center'> No Data Found.</td></tr>");
 			}
+		}
+		
 	});
 });
 

@@ -52,10 +52,14 @@ Route::group(['middleware' => 'inventory'], function () {
 	Route::get("/inventory/summaryAll","inventoryController@showSummaryAll");
 	Route::get("/inventory/borrow/search","inventoryController@borrowSearch");
 	Route::get("/inventory/return/search","inventoryController@returnSearch");
+	Route::get("/inventory/issue/search","inventoryController@issueSearch");
+	Route::get("/inventory/broken/search","inventoryController@brokenSearch");
 	Route::get("/inventory/agents","inventoryController@showAgents");
 	Route::get("/inventory/createAgent","inventoryController@showCreateAgent");
 	Route::get("/inventory/maintenance","inventoryController@showMaintenance");
 	Route::get("/inventory/skin-config.html", function(){return view("inventory.skin-config");} );
+	Route::get("/inventory/itemTypeSummary",'inventoryController@itemTypeSummary');
+	Route::get("/inventory/items/{id}","inventoryController@viewItemDetails");
 	
 	Route::post("/inventory/addItem","inventoryController@addItem");
 	Route::post("/inventory/borrowItem","inventoryController@borrowItem");
@@ -64,8 +68,13 @@ Route::group(['middleware' => 'inventory'], function () {
 	Route::post("/inventory/repairItem","inventoryController@repairItem");
 	Route::post("/inventory/verifyPassword",'inventoryController@checkPassword');
 	Route::post("/inventory/brokenItem","inventoryController@brokenItem");
+	Route::post("/inventory/addSchedule","inventoryController@addSchedule");
+	Route::post("/inventory/addActivity","inventoryController@addActivity");
+	Route::post("/inventory/addItemPhoto","inventoryController@addItemPhoto");
 	
 	Route::put("/inventory/brokenMark","inventoryController@updateBroken");
+	
+	Route::delete("/inventory/deleteItemPhoto","inventoryController@deleteItemPhoto");
 	
 });
 
@@ -81,7 +90,7 @@ Route::get('/search', 'HomeController@postSearch');
 
 //Tickets Client
 //Client Registration Route
-Route::get('/tickets/signUp', 'Auth\AuthController@showRegistrationForm');
+
 Route::post('/tickets/signUp', 'Auth\AuthController@register');
 Route::get('/tickets/signUpSuccess','Auth\AuthController@showSignUpSuccess');
 //Client Login Route
@@ -187,7 +196,7 @@ Route::group(['middleware' => 'admin'], function () {
 	Route::post('/admin/ticketReply','TicketsAdmin@sendReply');
 	Route::post('/admin/createClient','Auth\AuthController@createClient');
 	Route::post('/admin/addDepartment','TicketsAdmin@addDepartment');
-	Route::post('/admin/verifyPassword','HomeController@checkPassword');
+	Route::post('/admin/verifyPassword','TicketsAdmin@checkPassword');
 	
 	Route::put('/admin/updateSelection','TicketsAdmin@updateSelection');
 	Route::put('/admin/editTopic','TicketsAdmin@editTopic');

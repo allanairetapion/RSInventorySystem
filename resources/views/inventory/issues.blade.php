@@ -29,15 +29,72 @@
 						data-target="#repairReport">Report Item Repair</button>
                     </div>
                     <div class="ibox-content">
+				<div class="input-group m-b">
+					<input type="text" class="form-control" id="filter" placeholder="Search...">
+					<div class="input-group-btn">
+						<button class="btn btn-white" id="issueAdvancedSearch" type="button">
+							Search Options <span class="caret"></span>
+						</button>
+					</div>
+				</div>
+				<div id="issueAdvancedSearch" class="panel panel-default">
+				<div class="panel-body">
+				<form class="issueTicketSearch">
+					{!! csrf_field() !!}
+					<div class="row">
+						<div class="col-md-3">
+							<label class="control-label">Unique Id:</label> 
+							<input type="text" class="form-control" name="unique_id">
 
+						</div>
+						<div class="col-md-3">
+							<label class="control-label">Reported By:</label> 
+							<select class="form-control chosen-select" name="reported_by">
+								<option value="" selected ></option>
+								@foreach($agents as $agent)
+								<option value="{{$agent->agent_id}}"> {{$agent->first_name.' '.$agent->last_name}}</option>	
+								@endforeach
+							</select>
+						</div>
+						
+						
+						<div class="col-md-3">
+						<label class="control-label">Date Reported:</label>
+						<div class="input-group date dateReported">
+										<span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control dateReported"
+									name="dateReported">
+
+									</div>
+						</div>
+					
+						
+						
+						<div class=" col-md-3 ">
+							<br>
+
+							<button type="button"
+								class="btn btn-primary issueTicketSearch">
+								<i class="fa fa-search"></i> Search
+							</button>
+							<button type="reset" class="btn btn-warning">
+								<i class="fa fa-refresh"></i> Clear
+							</button>
+
+						</div>
+					</div>
+
+				</form>
+				</div>
+				</div>
                         <div class="table-responsive">
-                    <table class="table  table-bordered " >
+                    <table id="issue" class="footable table table-bordered toggle-arrow-tiny" 
+                    data-filter="#filter" data-striping="false">
                     <thead>
                     <tr>
-                        <th>Unique Id</th>
+                        <th data-toggle="true">Unique Id</th>
                         <th>Item No</th>
                         <th>Damage</th>
-                        <th>Issue</th>
+                        <th data-hide="all">Issue</th>
                         <th>Reported By</th>
                         <th>Date Reported</th>
                        
@@ -45,11 +102,11 @@
                     </thead>
                     <tbody class="issueItem">
                    		@foreach($issueItems as $issue)
-                   		<tr>
+                   		<tr id="{{$issue->unique_id}}">
                    			<td>{{$issue->unique_id}}</td>
                    			<td>{{$issue->itemNo}}</td>
                    			<td>{{$issue->damage}}</td>
-                   			<td>{{$issue->issue}}</td>
+                   			<td>{!!html_entity_decode($issue->issue)!!}</td>
                    			<td>{{$issue->first_name.' '.$issue->last_name}}</td>
                    			<td>{{$issue->created_at}}</td>
                    			
@@ -84,8 +141,12 @@
 						<div class="form-group col-lg-7 issueUnique_id">
 							<label class="control-label col-lg-4"> Unique Identifier:</label>
 							<div class="col-lg-8">
-								<input type="text" class="form-control issueUniqueId"
-									placeholder="Unique Identifier" name="unique_id">
+							<select id="issueUniqueId" class="form-control chosen-select" name="unique_id">
+									<option value="" selected></option>
+								@foreach($unique_ids as $id)
+									<option value="{{$id->unique_id}}"> {{$id->unique_id}} </option>
+								@endforeach
+							</select>
 									<span class="help-block text-danger issueUnique_id">192.168.100.200</span>
 							</div>
 						</div>
@@ -97,36 +158,36 @@
 									<span class="help-block text-danger itemNo">192.168.100.200</span>
 							</div>
 						</div>
-						<div class="form-group col-lg-12 itemDamage">
-							<label class="control-label col-lg-2"> Damage:</label>
-							<div class="col-lg-10">
+						<div class="form-group col-lg-7 itemDamage">
+							<label class="control-label col-lg-4"> Damage:</label>
+							<div class="col-lg-8">
 							<input type="text" class="form-control itemDamage"
 									name="damage">
 								
 									<span class="help-block text-danger itemDamage">192.168.100.200</span>
 							</div>
 						</div>
-						<div class="form-group col-lg-12 itemIssue">
-							<label class="control-label col-lg-2"> Issue:</label>
-							<div class="col-lg-10">
-								<textarea class="form-control itemIssue" name="issue" rows="2"> </textarea>
-								<span class="help-block text-danger itemIssue">192.168.100.200</span>
-							</div>
-						</div>
-						<div class="form-group col-lg-12 dateReported">
-							<label class="control-label col-lg-2"> Date Reported:</label>
-							<div class="col-lg-4">
+						<div class="form-group col-lg-5 dateReported">
+							<label class="control-label col-lg-4"> Date:</label>
+							<div class="col-lg-8">
 							<div class="input-group date dateReported">
 										<span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control dateReported"
 									name="dateReported">
 
 									</div>
-							
-                   
 									<span class="help-block text-danger dateReported">192.168.100.200</span>
 									
 							</div>
 						</div>
+						<div class="form-group col-lg-12 itemIssue">
+							<label class="control-label col-lg-1"> Issue:</label>
+							<div class="col-lg-11">
+								<input type="hidden" id="itemIssue" name="issue" rows="2">
+								<div id="issueSummary"></div>
+								<span class="help-block text-danger itemIssue">192.168.100.200</span>
+							</div>
+						</div>
+						
 					</div>
 
 				</form>
@@ -232,8 +293,13 @@
 						<div class="form-group col-lg-7 repairUnique_id">
 							<label class="control-label col-lg-4"> Unique Identifier:</label>
 							<div class="col-lg-8">
-								<input type="text" class="form-control repairUniqueId"
-									placeholder="Unique Identifier" name="unique_id">
+							<select id="repairUniqueId" class="form-control chosen-select" name="unique_id">
+									<option value="" selected></option>
+								@foreach($unique_ids as $id)
+									<option value="{{$id->unique_id}}"> {{$id->unique_id}} </option>
+								@endforeach
+							</select>
+								
 									<span class="help-block text-danger repairUnique_id">192.168.100.200</span>
 							</div>
 						</div>
@@ -292,7 +358,8 @@
 						<div class="form-group col-lg-12">
 							<label class="control-label col-lg-2"> Issue:</label>
 							<div class="col-lg-10">
-								<textarea class="form-control repairIssue" rows="2" readonly> </textarea>	
+								<div id="repairIssue" class="gray-bg" 
+								style="padding:6px 12px;overflow-y:auto;min-height:130px;max-height: 130px"></div>
 							</div>
 						</div>
 						<div class="form-group col-lg-12">
@@ -337,12 +404,73 @@ $(document).ready(function() {
 	    format : 'yyyy-mm-dd',
 	    todayBtn: "linked"
 		});
-	});
 
-$('.input-group.date.dateRepair').datepicker({
+	$('.input-group.date.dateRepair').datepicker({
     format : 'yyyy-mm-dd',
     todayBtn: "linked"
 	});
+	$('table#issue').footable();
+	$('div#issueAdvancedSearch').hide();
+	$('div#issueSummary').summernote({
+		height: 150,
+		minHeight: 150,             // set minimum height of editor
+		maxHeight: 150,
+		toolbar : [
+					[
+							'style',
+							[
+									'bold',
+									'italic',
+									'underline',
+									'clear' ] ],
+					[ 'fontname',
+							[ 'fontname' ] ],
+					[ 'fontsize',
+							[ 'fontsize' ] ],
+					[ 'color', [ 'color' ] ],
+					[
+							'para',
+							[ 'ul', 'ol',
+									'paragraph' ] ],
+					 ]   });
+	
+	});
+
+$('button#issueAdvancedSearch').click(function(){
+	$('div#issueAdvancedSearch').slideToggle();
+});
+
+$('div.modal').on('hidden.bs.modal', function() {
+	$('form.itemInfo').hide();
+	$('i.fa-pulse').hide();
+	$('div.itemNotfound').hide();
+	$('span.text-danger').hide();
+});
+$('button.issueTicketSearch').click(function(){
+	$.ajax({
+		type : "get",
+		url : "/inventory/issue/search",
+		data : $('form.issueTicketSearch').serialize(),
+		success: function(data){
+			var table = $('table#issue').data('footable');
+			$('tbody>tr').each(function(){
+				table.removeRow(this);
+				});
+
+			if(data.response.length >= 1){
+				$.each(data.response,function(i, v) {
+					var newRow = "<tr><td>" + v.unique_id + "</td><td>" + v.itemNo + " </td>"+
+								"<td>" + v.damage + "</td><td>" + v.issue + "</td></td>" +
+								"<td>" + v.first_name + " " + v.last_name + "</td>" + 
+								"<td>" + v.created_at + "</td></tr>";
+					table.appendRow(newRow);
+					});
+				}else{
+				table.appendRow("<tr><td colspan='6' class='text-center'> No Data Found.</td></tr>");
+				}
+		}
+	});
+});
 
 </script>
 

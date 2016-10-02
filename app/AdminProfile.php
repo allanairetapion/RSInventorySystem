@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class AdminProfile extends Model
 {
-	public $timestamps = false;
+	
 	protected $table = "admin_profiles";
 
 protected $fillable = [

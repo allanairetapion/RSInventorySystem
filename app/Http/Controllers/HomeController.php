@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 use Response;
+use Validator;
 use Illuminate\Support\Facades\Input;
 use App\Http\Requests;
 use Illuminate\Http\Request;
@@ -54,7 +55,22 @@ class HomeController extends Controller {
 		}
 		return $return_array;
 	}
+	public function checkEmail(Request $request){
+		$validator = Validator::make($request->all(),[
+				'firstname' => 'required|min:3|alpha|max:255',
+				'lastname' => 'required|min:2|alpha|max:255',
+				'email' => 'required|email|max:255|unique:admin|unique:clients',
+				'user_type' => 'required',
+		]);
 	
+		if ($validator->fails()) {
+			return response()->json(array('success'=> false, 'errors' =>$validator->getMessageBag()->toArray()));
+	
+		}
+		else {
+			return response()->json(['response' => '']);
+		}
+	}
 	
 	
 	public function dropzone()

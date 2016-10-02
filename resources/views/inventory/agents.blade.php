@@ -61,7 +61,7 @@
 								<td>{{$agent->first_name.' '.$agent->last_name}}
 								
 								<td id="{{$agent->id}}">{{$agent->user_type}}</td>
-								<td>{{$agent->date_registered}}</td>
+								<td>{{$agent->created_at}}</td>
 								<td>{{$agent->updated_at}}</td>
 								@if(Auth::guard('inventory')->user()->user_type == 'admin')
 								<td class="text-center">
