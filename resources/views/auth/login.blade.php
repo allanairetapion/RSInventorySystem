@@ -42,7 +42,7 @@
 		<div class="col-md-6">
 			
 			<div class="ibox-content text-center gray-bg">
-				<form class="m-t"  >
+				<form class="m-t" method="post" action="/tickets/login" >
 					{!! csrf_field() !!}
 					<h4 class="text-warning ">{{ Session::get('message') }}</h4>
 					@if ($errors->has('email'))
@@ -61,7 +61,7 @@
 					<p class="text-muted text-center">
 						<small>Do not have an account?</small>
 					</p>
-					<a class="btn btn-sm btn-white btn-block" href="/tickets/signUp">Create an account</a>
+					<a class="btn btn-sm btn-white btn-block" href="/register">Create an account</a>
 				</form>
 
 			</div>

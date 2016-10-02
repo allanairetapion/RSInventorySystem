@@ -28,62 +28,10 @@ $(function() {
 		});
 	
 	//Add Item
-	$('button.addItem').click(function(){
-		$('div.form-group').removeClass('has-error');
-		$('span.text-danger').hide();
-		console.log( $("form.addItem").serialize() );
-		$.ajax({
-			type : "POST",
-			url : "/inventory/addItem",
-			data :  $("form.addItem").serialize(),
-		}).done(function(data){
-			
-			if(data.success == false){
-				
-				if(data.errors["unique_id"]){
-					$('span.unique_id').text(data.errors["unique_id"]).show();
-					$('div.unique_id').addClass('has-error');
-				}
-				if(data.errors["itemNo"]){
-					$('span.itemNo').text(data.errors["itemNo"]).show();
-					$('div.itemNo').addClass('has-error');
-				}
-				if(data.errors["company"]){
-					$('span.company').text(data.errors["company"]).show();
-					$('div.company').addClass('has-error');
-				}
-				if(data.errors["stationNo"]){
-					$('span.stationNo').text(data.errors["stationNo"]).show();
-					$('div.stationNo').addClass('has-error');
-				}
-				if(data.errors["brand"]){
-					$('span.brand').text(data.errors["brand"]).show();
-					$('div.brand').addClass('has-error');
-				}
-				if(data.errors["model"]){
-					$('span.model').text(data.errors["model"]).show();
-					$('div.model').addClass('has-error');
-				}
-				if(data.errors["itemType"]){
-					$('span.itemType').text(data.errors["itemType"]).show();
-					$('div.itemType').addClass('has-error');
-				}
-				if(data.errors["dateArrived"]){
-					$('span.dateArrived').text(data.errors["dateArrived"]).show();
-					$('div.dateArrived').addClass('has-error');
-				}
-			}else if(data.success == true){
-				swal('','New Item Added','success');
-				$('form.addItem').trigger('reset');
-			}
-			
-			
-			
-		});
-	});
+	
 	
 	//Borrow Form
-	$('input.uniqueId').change(function(){				
+	$('select#borrowUniqueId').change(function(){				
 		$('i.fa-pulse').show();
 		$('form.itemInfo').hide();
 		$('div.itemNotfound').hide();
@@ -94,7 +42,7 @@ $(function() {
 		$.ajax({
 			type : "GET",
 			url : "/inventory/itemInfo",
-			data : { item : $('input.uniqueId').val() } ,
+			data : { item : $('select#borrowUniqueId').val() } ,
 		}).done(function(data){
 			if(data.success == true){
 				$('i.fa-pulse').hide();
@@ -183,13 +131,15 @@ $(function() {
 					borrowItem.ladda('stop');
 					$('form.borrowItem').trigger('reset');
 					
-					var table = $('table.borrow').DataTable();
-					table.row.add([ data.response['unique_id'], data.response['itemNo'],
-					                data.response.itemType, data.response.brand,data.response.model,
-					                data.response.first_name+" "+data.response.last_name, data.response.borrower,
-					                data.response.borrowerStationNo,
-					                data.response.created_at] ).draw();	
+					var table = $('table#borrow').data('footable');
 					
+					var newRow = "<tr><td>" + data.response['unique_id'] + "</td><td>" + data.response['itemNo'] + " </td>"+
+						"<td>" + data.response.itemType + "</td><td>" + data.response['brand'] + "</td><td>" + data.response['model'] + "</td>" +
+						"<td>" + data.response['first_name'] + " " +data.response['last_name'] + "</td><td>" + data.response['borrower'] + "</td>"+
+						"<td>" + data.response['borrowerStationNo'] + "</td><td>" + data.response['created_at'] + "</td></tr>";
+					
+					$('tbody').prepend(newRow);
+					table.redraw();
 			
 					$('#myModal').modal('hide');
 					swal('','Item Borrowed','success');
@@ -203,7 +153,7 @@ $(function() {
 		
 		
 	//Return Form
-	$('input.borrowUniqueId').change(function(){
+	$('select#returnUniqueId').change(function(){
 		
 		
 		
@@ -218,7 +168,7 @@ $(function() {
 		$.ajax({
 			type : "GET",
 			url : "/inventory/borrowInfo",
-			data : { item : $('input.borrowUniqueId').val() } ,
+			data : { item : $('select#returnUniqueId').val() } ,
 		}).done(function(data){
 			if(data.success == true){
 				$('i.fa-pulse').hide();
@@ -232,8 +182,12 @@ $(function() {
 				$('input.infoItemType').val(data.info['itemType']);
 				$('input.infoBrand').val(data.info['brand']);
 				$('input.infoModel').val(data.info['model']);
-				$('input.infodateBorrowed').val(data.borrow['dateBorrowed']);
+				$('input.infodateBorrowed').val(data.borrow['created_at']);
 				
+				if(data.info['itemStatus'] == "Available"){
+					$('div.unique_id').addClass('has-error');
+					$('span.unique_id').text("This Item is already returned").show();
+				}
 				
 				
 			}else if(data.success == false){
@@ -291,12 +245,17 @@ $(function() {
 			}else{
 				returnItem.ladda('stop');
 				$('form.returnItem').trigger('reset');
-				$('tbody.returnItem').prepend("<tr><td>"+ data.response['unique_id'] + "</td>"+
-						"<td>" + data.response['itemNo']+ "</td><td>" + data.response['itemType']+" </td>" +
-						"<td>" + data.response['brand'] +"</td><td>"+ data.response['model']+"</td>" +
-						"<td>" + data.response['borrower'] +"</td>"+
-						"<td>" + data.response['first_name']+" "+data.response['last_name']+"</td>"+
-						"<td>"+ data.response['created_at'] +"</td></tr>");
+				var table = $('table#return').data('footable');
+				
+				var newRow = "<tr><td>"+ data.response['unique_id'] + "</td>"+
+				"<td>" + data.response['itemNo']+ "</td><td>" + data.response['itemType']+" </td>" +
+				"<td>" + data.response['brand'] +"</td><td>"+ data.response['model']+"</td>" +
+				"<td>" + data.response['borrower'] +"</td>"+
+				"<td>" + data.response['first_name']+" "+data.response['last_name']+"</td>"+
+				"<td>"+ data.response['created_at'] +"</td></tr>";
+				
+				table.redraw();
+				$('tbody').prepend(newRow);
 				$('#myModal').modal('hide');
 				swal('','Item Returned','success');
 				
@@ -308,7 +267,7 @@ $(function() {
 	});
 	
 	// Issue Form
-	$('input.issueUniqueId').change(function(){				
+	$('select#issueUniqueId').change(function(){				
 		
 		$('i.fa-pulse').show();
 		$('form.itemInfo').hide();
@@ -320,7 +279,7 @@ $(function() {
 		$.ajax({
 			type : "GET",
 			url : "/inventory/itemInfo",
-			data : { item : $('input.issueUniqueId').val() } ,
+			data : { item : $('select#issueUniqueId').val() } ,
 		}).done(function(data){
 			if(data.success == true){
 				
@@ -368,7 +327,7 @@ $(function() {
 	var issueItem = $('button.issueItem').ladda();
 	
 	issueItem.click(function(){
-		
+		$('input#itemIssue').val($('div#issueSummary').summernote('code'));
 		$('span.text-danger').hide();
 		$('div.form-group').removeClass('has-error');
 		$('div.input-group').removeClass('has-error');
@@ -411,11 +370,13 @@ $(function() {
 				}
 			}else{
 				issueItem.ladda('stop');
+				var table = $('table#issue').data('footable');
 				$('form.issueItem').trigger('reset');
 				$('tbody.issueItem').prepend("<tr><td>"+ data.response['unique_id'] + "</td>"+
 						"<td>" + data.response['itemNo']+ "</td><td>" + data.response['damage']+" </td>" +
-						"<td>" + data.response['issue'] +"</td><td>"+ data.response['reported_by']+"</td>" +
+						"<td>" + decodeURI(data.response['issue']) +"</td><td>"+ data.response['first_name']+" "+ data.response['last_name']+"</td>" +
 						"<td>" + data.response['created_at']+ "</td></tr>");
+				table.redraw();
 				$('#issueReport').modal('hide');
 				swal('','Item Reported','success');
 				
@@ -427,7 +388,7 @@ $(function() {
 		
 	});
 	
-	$('input.repairUniqueId').change(function(){				
+	$('select#repairUniqueId').change(function(){				
 		$('span.unique_id').text("").hide();
 		$('i.fa-pulse').show();
 		$('form.itemInfo').hide();
@@ -438,7 +399,7 @@ $(function() {
 		$.ajax({
 			type : "GET",
 			url : "/inventory/issueInfo",
-			data : { item : $('input.repairUniqueId').val() } ,
+			data : { item : $('select#repairUniqueId').val() } ,
 		}).done(function(data){
 			if(data.success == true){
 				
@@ -460,8 +421,8 @@ $(function() {
 					$('input.repairId').val(data.info['unique_id']);
 					$('input.repairItemNo').val(data.info['itemNo']);
 					$('input.repairDamage').val(data.info['damage']);
-					$('textarea.repairIssue').val(data.info['issue']);
-					$('input.repairBroken').val(data.info['date_reported']);
+					$('div#repairIssue').html(data.info['issue']).text();
+					$('input.repairBroken').val(data.info['created_at']);
 				}
 				
 				
@@ -522,12 +483,9 @@ $(function() {
 			}else{
 				repairItem.ladda('stop');
 				$('form.returnItem').trigger('reset');
-				/*$('tbody.returnItem').prepend("<tr><td>"+ data.response['itemType']+" </td>" +
-						"<td>" + data.response['brand'] +"</td><td>"+ data.response['model']+"</td>" +
-						"<td>" + data.response['unique_id'] + "</td><td>" + data.response['itemNo']+ "</td>" +
-						"<td>" + data.response['borrower'] +"</td>"+
-						"<td>" + data.response['first_name']+" "+data.response['last_name']+"</td>"+
-						"<td>"+ data.response['dateReturned'] +"</td><td></td</tr>");*/
+				var table = $('table#issue').data('footable');
+				
+				table.removeRow($('tr#'+data.response['unique_id']));
 				$('#repairReport').modal('hide');
 				swal('','Item Repaired','success');
 				
@@ -574,6 +532,7 @@ $(function() {
 	var brokenItem = $('button.brokenItem').ladda();
 	
 	brokenItem.click(function(){
+		$('input#brokenSummary').val($('div#brokenSummary').summernote('code'));
 		$('span.text-danger').hide();
 		$('div.form-group').removeClass('has-error');
 		$('div.input-group').removeClass('has-error');
@@ -606,6 +565,10 @@ $(function() {
 					$('span.brokenDamage').text(data.errors["damage"]).show();
 					$('div.brokenDamage').addClass('has-error');
 				}
+				if(data.errors["summary"]){
+					$('span.brokenSummary').text(data.errors["summary"]).show();
+					$('div.brokenSummary').addClass('has-error');
+				}
 				if(data.errors["status"]){
 					$('span.brokenStatus').text(data.errors["status"]).show();
 					$('div.brokenStatus').addClass('has-error');
@@ -617,20 +580,20 @@ $(function() {
 			}else{
 				issueItem.ladda('stop');
 				$('form.brokenItem').trigger('reset');
-				
+				var table = $('table#broken').data('footable');
 					
 					
 				$('tbody#brokenItem').prepend("<tr><td> <input type='checkbox' class='i-checks brokenItem' value='"+data.response['unique_id'] +"'/> &nbsp;"+ 
 						data.response['unique_id'] + "</td>"+
 						"<td>" + data.response['itemNo']+ "</td><td>" + data.response['damage']+" </td>" +
 						"<td>"+data.response['brokenStatus']+"</td><td>"+ data.response['first_name']+" "+ data.response['last_name']+"</td>" +
-						"<td>" + data.response['created_at']+ "</td></tr>");
+						"<td>" + data.response['created_at']+ "</td><td>"+ decodeURI(data.response['brokenSummary']) +"</tr>");
 				
 				$('.i-checks').iCheck({
 					checkboxClass : 'icheckbox_square-green',
 					radioClass : 'iradio_square-green',
 				});
-				
+				table.redraw();
 				$('#brokenReport').modal('hide');
 				
 				swal('','Item Reported','success');
@@ -748,15 +711,18 @@ $(function() {
 			type : "POST",
 			url : "/admin/sendActivate",
 			data : $('form.agentForm').serialize(),
-		}).done(function() {
-			swal({
-				title : 'Success',
-				text : 'New user has been added',
-				type : 'success'
-			}, function() {
-				window.location.href = "/inventory/agents";
-			});
-
+			success: function(){
+				swal({
+					title : 'Success',
+					text : 'New user has been added',
+					type : 'success'
+				}, function() {
+					window.location.href = "/admin/agents";
+				});
+			},
+			error: function () {
+				sendActivation();
+			},
 		});
 	}
 	;

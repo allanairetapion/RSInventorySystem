@@ -5,8 +5,10 @@
 	
 </div>
 	<div class="ibox float-e-margins">
-		<div class="ibox-title">
-		<ul class="nav nav-tabs">
+		
+
+		<div class="ibox-content">
+			<ul class="nav nav-tabs">
 				<li class="ticketReport active">
 					<a data-toggle="tab" href="#home">Home</a>
 				</li>
@@ -24,11 +26,7 @@
 				</li>
 				
 			</ul>
-		</div>
-
-		<div class="ibox-content">
-			
-
+<br>
 			<div class="tab-content">
 				<div id="home" class="tab-pane fade in active">
 			
@@ -37,9 +35,9 @@
 
 					<div class="row">
 					
-						<div class="form-group col-md-3">
-							<label class="control-label col-md-3"> Topic:</label>
-							<div class="col-md-9">
+						<div class="form-group col-md-4">
+							<label class="control-label col-md-4"> Topic:</label>
+							<div class="col-md-8">
 							<select name="topicSearch"class="topic form-control ">
 								<option value="" selected>  </option>
 								@foreach ($topics as $topic)
@@ -49,7 +47,7 @@
 							</div>
 						</div>
 						
-						<div class=" form-group col-md-3">
+						<div class=" form-group col-md-4">
 							<label class="control-label col-md-4">Status:</label>
 							<div class="col-md-8">
 							<select name="statusSearch"class="statusSearch form-control">
@@ -62,7 +60,7 @@
 							</div>
 						</div>
 						
-					<div class="form-group col-md-6">
+					<div class="form-group col-md-4">
 
 							<label class="control-label col-md-2">Date:</label>
 							<div class="col-md-4">
@@ -160,16 +158,12 @@
 
 										<td>{{$ticketStat->ticket_status}}</td>
 										<td>{{$ticketStat->department}}</td>
-										@foreach($assigned_to as $assigned)
-										@if($assigned->id == $ticketStat->id)
-										<td>{{$assigned->first_name.' '.$assigned->last_name}}</td>
-										@endif
-										@endforeach
-										@foreach($closed_by as $closed)
-										@if($closed->id == $ticketStat->id)
-										<td>{{$closed->first_name.' '.$closed->last_name}}</td>
-										@endif
-										@endforeach
+										
+										<td>{{$ticketStat->assignFN.' '.$ticketStat->assignLN}}</td>
+										
+										
+										<td>{{$ticketStat->closedFN.' '.$ticketStat->closedLN}}</td>
+										
 										<td>{{$ticketStat->created_at}}</td>
 										<td>{{$ticketStat->updated_at}}</td>
 									</tr>
@@ -229,16 +223,10 @@
 
 										<td>{{$ticketStat->ticket_status}}</td>
 										<td>{{$ticketStat->department}}</td>
-										@foreach($assigned_to as $assigned)
-										@if($assigned->id == $ticketStat->id)
-										<td>{{$assigned->first_name.' '.$assigned->last_name}}</td>
-										@endif
-										@endforeach
-										@foreach($closed_by as $closed)
-										@if($closed->id == $ticketStat->id)
-										<td>{{$closed->first_name.' '.$closed->last_name}}</td>
-										@endif
-										@endforeach
+										<td>{{$ticketStat->assignFN.' '.$ticketStat->assignLN}}</td>
+										
+										
+										<td>{{$ticketStat->closedFN.' '.$ticketStat->closedLN}}</td>
 										<td>{{$ticketStat->created_at}}</td>
 										<td>{{$ticketStat->updated_at}}</td>
 									</tr>
@@ -295,16 +283,10 @@
 
 										<td>{{$ticketStat->ticket_status}}</td>
 										<td>{{$ticketStat->department}}</td>
-										@foreach($assigned_to as $assigned)
-										@if($assigned->id == $ticketStat->id)
-										<td>{{$assigned->first_name.' '.$assigned->last_name}}</td>
-										@endif
-										@endforeach
-										@foreach($closed_by as $closed)
-										@if($closed->id == $ticketStat->id)
-										<td>{{$closed->first_name.' '.$closed->last_name}}</td>
-										@endif
-										@endforeach
+										<td>{{$ticketStat->assignFN.' '.$ticketStat->assignLN}}</td>
+										
+										
+										<td>{{$ticketStat->closedFN.' '.$ticketStat->closedLN}}</td>
 										<td>{{$ticketStat->created_at}}</td>
 										<td>{{$ticketStat->updated_at}}</td>
 									</tr>
@@ -364,16 +346,10 @@
 
 										<td>{{$ticketStat->ticket_status}}</td>
 										<td>{{$ticketStat->department}}</td>
-										@foreach($assigned_to as $assigned)
-										@if($assigned->id == $ticketStat->id)
-										<td>{{$assigned->first_name.' '.$assigned->last_name}}</td>
-										@endif
-										@endforeach
-										@foreach($closed_by as $closed)
-										@if($closed->id == $ticketStat->id)
-										<td>{{$closed->first_name.' '.$closed->last_name}}</td>
-										@endif
-										@endforeach
+										<td>{{$ticketStat->assignFN.' '.$ticketStat->assignLN}}</td>
+										
+										
+										<td>{{$ticketStat->closedFN.' '.$ticketStat->closedLN}}</td>
 										<td>{{$ticketStat->created_at}}</td>
 										<td>{{$ticketStat->updated_at}}</td>
 									</tr>
@@ -431,16 +407,10 @@
 
 										<td>{{$ticketStat->ticket_status}}</td>
 										<td>{{$ticketStat->department}}</td>
-										@foreach($assigned_to as $assigned)
-										@if($assigned->id == $ticketStat->id)
-										<td>{{$assigned->first_name.' '.$assigned->last_name}}</td>
-										@endif
-										@endforeach
-										@foreach($closed_by as $closed)
-										@if($closed->id == $ticketStat->id)
-										<td>{{$closed->first_name.' '.$closed->last_name}}</td>
-										@endif
-										@endforeach
+										<td>{{$ticketStat->assignFN.' '.$ticketStat->assignLN}}</td>
+										
+										
+										<td>{{$ticketStat->closedFN.' '.$ticketStat->closedLN}}</td>
 										<td>{{$ticketStat->created_at}}</td>
 										<td>{{$ticketStat->updated_at}}</td>
 									</tr>

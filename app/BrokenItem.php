@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Model;
   
   protected $table = "broken_logs";
  
-  protected $fillable = ['unique_id','damage','reported_by','brokenStatus','created_at','updated_at'];
+  protected $fillable = ['unique_id','damage','reported_by','brokenStatus','brokenSummary','created_at','updated_at'];
   
  }
  ?>

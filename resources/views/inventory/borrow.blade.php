@@ -30,14 +30,27 @@
 				</div>
 
 				<div class="ibox-content">
-<div id="advancedSearch" class=" gray-bg" style="padding: 5px;">
-				<br>
+				<div class="input-group m-b">
+					<input type="text" class="form-control" id="filter" placeholder="Search...">
+					<div class="input-group-btn">
+						<button class="btn btn-white" id="borrowAdvancedSearch" type="button">
+							Search Options <span class="caret"></span>
+						</button>
+					</div>
+				</div>
+				<div id="borrowAdvancedSearch" class="panel panel-default">
+				<div class="panel-body">
 				<form class="borrowTicketSearch">
 					{!! csrf_field() !!}
 					<div class="row">
 						<div class="col-md-3">
 							<label class="control-label">Unique Id:</label> 
-							<input type="text" class="form-control" name="unique_id">
+							<select class="form-control uniqueId chosen-select" name="unique_id">
+									<option value="" selected></option>
+								@foreach($unique_ids as $id)
+									<option value="{{$id->unique_id}}"> {{$id->unique_id}} </option>
+								@endforeach
+							</select>
 
 						</div>
 						
@@ -80,19 +93,20 @@
 								<i class="fa fa-search"></i> Search
 							</button>
 							<button type="reset" class="btn btn-warning">
-								<i class="fa fa-refresh"></i> Reset
+								<i class="fa fa-refresh"></i> Clear
 							</button>
 
 						</div>
 					</div>
 
 				</form>
-				<br>
-			</div>
+				</div>
+				</div>
+
 
 					<div class="table-responsive">
 					
-						<table class="table table-bordered table-hover borrow">
+						<table id="borrow" class="table table-bordered table-hover" data-filter="#filter" data-striping="false">
 							<thead>
 								<tr>
 									<th>Unique Identifier</th>
@@ -107,7 +121,7 @@
 									
 								</tr>
 							</thead>
-							<tbody class="borrowItem">
+							<tbody id="borrow">
 							@foreach($borrowedItems as $borrow)
 							@if($borrow->dateBorrowed)
 							<tr>
@@ -154,8 +168,12 @@
 						<div class="form-group col-lg-7 unique_id">
 							<label class="control-label col-lg-4"> Unique Identifier:</label>
 							<div class="col-lg-8">
-								<input type="text" class="form-control uniqueId"
-									placeholder="Unique Identifier" name="unique_id">
+							<select id="borrowUniqueId" class="form-control chosen-select" name="unique_id">
+									<option value="" selected></option>
+								@foreach($unique_ids as $id)
+									<option value="{{$id->unique_id}}"> {{$id->unique_id}} </option>
+								@endforeach
+							</select>
 									<span class="help-block text-danger unique_id">192.168.100.200</span>
 							</div>
 						</div>
@@ -171,6 +189,7 @@
 							<label class="control-label col-lg-4"> Borrower:</label>
 							<div class="col-lg-8">
 							<select class="form-control chosen-select" name="borrower">
+									<option value="" selected></option>
 								@foreach($clients as $client)
 									<option value="{{$client->id}}"> {{$client->first_name.' '.$client->last_name}}</option>
 								@endforeach
@@ -303,42 +322,39 @@ $(document).ready(function() {
 	    format : 'yyyy-mm-dd',
 	    todayBtn: "linked"
 		});
-
-	$('table.borrow').dataTable({
-		"bSort" : false,
-		dom : '<"html5buttons"B>lTfgtip',
-		buttons : [{
-			text : 'Advanced Search',
-			action : function() {
-				$(
-						'div#advancedSearch')
-						.slideToggle();
-			}
-		},
-			],
-	});
-
-	
+	$('div#borrowAdvancedSearch').hide();
+	$('table#borrow').footable();
 });
+$('button#borrowAdvancedSearch').click(function(){
+	$('div#borrowAdvancedSearch').slideToggle();
+});
+
 $('button.borrowTicketSearch').click(function(){
 	$.ajax({
 		type : "get",
 		url : "/inventory/borrow/search",
 		data : $('form.borrowTicketSearch').serialize(),
 		success: function(data){
-			var table = $('table.borrow').DataTable();
-			table.clear();
-			$.each(data.response,function(i, v) {
-				table.row.add([ v.unique_id, v.itemNo,
-				               v.itemType, v.brand,v.model,
-				               v.first_name+" "+v.last_name, v.borrower,
-				               v.borrowerStationNo,
-				               v.dateBorrowed] ).draw();	
+			var table = $('table#borrow').data('footable');
+			$('tbody>tr').each(function(){
+				table.removeRow(this);
 				});
-			}
+
+			if(data.response.length >= 1){
+				$.each(data.response,function(i, v) {
+					var newRow = "<tr><td>" + v.unique_id + "</td><td>" + v.itemNo + " </td>"+
+								"<td>" + v.itemType + "</td><td>" + v.brand + "</td><td>" + v.model + "</td>" +
+								"<td>" + v.first_name + " " + v.last_name + "</td><td>" + v.borrower + "</td>"+
+								"<td>" + v.borrowerStationNo + "</td><td>" + v.dateBorrowed + "</td></tr>";
+					table.appendRow(newRow);
+					});
+				}else{
+				table.appendRow("<tr><td colspan='9' class='text-center'> No Data Found.</td></tr>");
+				}
+		}
 	});
 });
-$('div#advancedSearch').hide();
+
 
 $('#myModal').on('shown.bs.modal', function () {
 	  $('.chosen-select', this).chosen();
