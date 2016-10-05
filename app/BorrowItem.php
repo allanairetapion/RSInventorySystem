@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
   
   protected $table = "borrow_logs";
  
-  protected $fillable = ['unique_id','borrowee','borrowerStationNo','borrower','created_at','updated_at'];
+  protected $fillable = ['itemNo','borrowee','borrowerStationNo','borrower','created_at','updated_at'];
   
  }
  ?>

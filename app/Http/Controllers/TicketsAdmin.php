@@ -1032,16 +1032,25 @@ class TicketsAdmin extends Controller {
 		}
 	}
 	public function changeProfilePicture(Request $request) {
-		$admin = AProfile::where ( 'agent_id', $request ['id'] );
+		$admin = AProfile::where ( 'agent_id', $request ['id'] )->first();
 		
+		if($admin != null){
 		$dataUrl = explode ( ',', $request ['photo'] );
 		$photo = base64_decode ( $dataUrl [1] );
-		
-		$filepath = public_path () . "/img/agents/" . Auth::guard ( 'admin' )->user ()->id . ".jpg";
-		
+		$ext = explode("/",$dataUrl[0]);
+		$ext = explode(";",$ext[1]);
+		$filepath = public_path () . "/img/agents/" . Auth::guard ( 'inventory' )->user ()->id .".". $ext[0];
+	
 		file_put_contents ( $filepath, $photo );
+		$admin = AProfile::where ( 'agent_id', $request ['id'] )->update(['photo' => "/img/agents/" . Auth::guard ( 'inventory' )->user ()->id .".". $ext[0] ]);
 		return response ()->json ( array (
-				'success' => true 
+				'success' => true
+		) );
+		}
+		
+		return response ()->json ( array (
+				'success' => false,
+				'error' => "User does not exists"
 		) );
 	}
 	//

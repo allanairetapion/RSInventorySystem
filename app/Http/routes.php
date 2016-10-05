@@ -32,8 +32,6 @@ Route::get("inventory/changePassword/{token}",'InputAuth\PasswordController@show
 Route::post("inventory/changePassword",'InputAuth\PasswordController@postReset');
 Route::get("/inventory/thankyoupage", "inventoryController@showNewPassTy");
 
-
-	
 Route::group(['middleware' => 'inventory'], function () {
 	
 	Route::get('/inventory/index', 'inventoryController@showIndex');
@@ -57,9 +55,11 @@ Route::group(['middleware' => 'inventory'], function () {
 	Route::get("/inventory/agents","inventoryController@showAgents");
 	Route::get("/inventory/createAgent","inventoryController@showCreateAgent");
 	Route::get("/inventory/maintenance","inventoryController@showMaintenance");
-	Route::get("/inventory/skin-config.html", function(){return view("inventory.skin-config");} );
+	//Route::get("/skin-config.html", function(){return view("inventory.skin-config");} );
 	Route::get("/inventory/itemTypeSummary",'inventoryController@itemTypeSummary');
 	Route::get("/inventory/items/{id}","inventoryController@viewItemDetails");
+	Route::get("/inventory/editAccount","inventoryController@showEditAccount");
+	Route::get("/inventory/agents/{id}","inventoryController@showAgentProfile");
 	
 	Route::post("/inventory/addItem","inventoryController@addItem");
 	Route::post("/inventory/borrowItem","inventoryController@borrowItem");
@@ -73,6 +73,10 @@ Route::group(['middleware' => 'inventory'], function () {
 	Route::post("/inventory/addItemPhoto","inventoryController@addItemPhoto");
 	
 	Route::put("/inventory/brokenMark","inventoryController@updateBroken");
+	Route::put("/inventory/updateItemDetail","inventoryController@updateItemDetail");
+	Route::put('/inventory/changePersonalInfo','inventoryController@changePersonalInfo');
+	Route::put('/inventory/changePassword','inventoryController@changePassword');
+	Route::put('/inventory/changeProfilePicture','inventoryController@changeProfilePicture');
 	
 	Route::delete("/inventory/deleteItemPhoto","inventoryController@deleteItemPhoto");
 	

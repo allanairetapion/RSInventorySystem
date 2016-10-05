@@ -136,6 +136,7 @@
 <script>
 $(document).ready(function(){
 	$('table#itemTypeSummary').footable();
+	
 });
 var data1 = <?php echo json_encode($summaryData); ?>;
          

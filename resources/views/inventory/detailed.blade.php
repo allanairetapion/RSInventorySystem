@@ -32,8 +32,8 @@
 						data-filter="#filter" data-striping="false">
 						<thead>
 							<tr>
-								<th data-toggle="true">Unique Id</th>
-								<th>Item No</th>
+								<th data-toggle="true">Item No</th>
+								<th>Unique Id</th>
 								<th>Station No</th>
 								<th>Item Type</th>
 								<th>Brand</th>
@@ -49,14 +49,14 @@
 								<th>Date Arrived</th>
 								<th data-hide="all">Last Borrowed</th>
 								<th data-hide="all">Last Returned</th>
-								<th>Action</th>
+								
 							</tr>
 						</thead>
 						<tbody>
 							@foreach($items as $item)
 							<tr>
-								<td><a href="/inventory/items/{{$item->unique_id}}">{{$item->unique_id}}</a></td>
-								<td>{{$item->itemNo}}</td>
+								<td><a href="/inventory/items/{{$item->itemNo}}">{{$item->itemNo}}</a></td>
+								<td>{{$item->unique_id}}</td>
 								<td>{{$item->stationNo}}</td>
 								
 								<td>{{$item->itemType}}</td>
@@ -68,13 +68,10 @@
 								<td>{{$item->nightClient}}</td>
 								<td>{{$item->lastIssue}}</td>
 								<td>{{$item->lastBroken}}</td>
-								<td>{{$item->dateArrived}}</td>
+								<td>{{$item->created_at}}</td>
 								<td>{{$item->dateBorrowed}}</td>
 								<td>{{$item->dateReturned}}</td>
-								<td>
-									<button>Update</button>
-									<button>Delete</button>
-								</td>
+								
 							</tr>
 							@endforeach
 

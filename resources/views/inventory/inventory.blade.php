@@ -31,9 +31,9 @@
 <!-- Dropzone -->
 <link href="/css/plugins/dropzone/basic.css" rel="stylesheet">
 <link href="/css/plugins/dropzone/dropzone.css" rel="stylesheet">
+ <link href="/css/plugins/jasny/jasny-bootstrap.min.css" rel="stylesheet">
 
-
-
+<link href="/css/plugins/cropper/cropper.min.css" rel="stylesheet">
 <link href="/css/plugins/toastr/toastr.min.css" rel="stylesheet">
 
 <link href="/css/plugins/ladda/ladda-themeless.min.css" rel="stylesheet">
@@ -51,9 +51,13 @@
 <script src="/js/inspinia.js"></script>
 <script src="/js/plugins/pace/pace.min.js"></script>
 <!-- FooTable -->
+<script src="/js/plugins/footable/footable.all.min.js"></script>
+<!-- Image cropper -->
+<script src="/js/plugins/cropper/cropper.min.js"></script>
 <!-- DROPZONE -->
 <script src="/js/plugins/dropzone/dropzone.js"></script>
-<script src="/js/plugins/footable/footable.all.min.js"></script>
+<!-- Input Mask-->
+<script src="/js/plugins/jasny/jasny-bootstrap.min.js"></script>
 <!-- Toastr script -->
 <script src="/js/plugins/toastr/toastr.min.js"></script>
 <script type="text/javascript" src="/js/jquery-ui-1.10.4.min.js"></script>
@@ -101,7 +105,7 @@
 						<div class="dropdown profile-element">
 							<span> <img alt="image" class="img-circle" height="50px"
 								width="50px"
-								src="/img/agents/{{Auth::guard('inventory')->user()->id}}.jpg"
+								src="{{Auth::guard('inventory')->user()->adminProfile->photo}}"
 								onerror="this.src = '/img/default-profile.jpg'" />
 							</span> <a data-toggle="dropdown" class="dropdown-toggle"
 								href="#"> <span class="clear"> <span class="block m-t-xs"> {{

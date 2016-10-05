@@ -26,7 +26,7 @@
 							class="fa fa-user-plus"></i> Create New User </a>
 					</div>
 					@endif
-					<h2 class="font-bold ">Agents</h2>
+					
 				</div>
 
 				<div class="ibox-content">
@@ -53,7 +53,7 @@
 							@foreach ($agents as $agent)
 							<tr>
 								@if(Auth::guard('inventory')->user()->user_type == 'admin')
-								<td><a href="#">{{$agent->id}}</a></td>
+								<td><a href="agents/{{$agent->id}}">{{$agent->id}}</a></td>
 								@else
 								<td>{{$agent->id}}</td>
 								@endif

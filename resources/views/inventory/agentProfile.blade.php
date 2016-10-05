@@ -1,62 +1,24 @@
-@extends('inventory.inventory') @section('title', 'RS | Item Detail')
+@extends('inventory.inventory') 
+
+@section('title', 'RS | Agent Profile')
 
 @section('header-page')
 <br>
-<div class="col-lg-4">
-	<div class="carousel slide" id="carousel1">
-		<div class="carousel-inner">
-		<?php $item->photo = ($item->photo == null) ? null : explode(",",$item->photo)?>
-		@if($item->photo != null)
-		@foreach($item->photo as $photo)
-		@if($photo != "")
-			<div class="item">
-				<img alt="image" class="img-responsive center-block"
-					src="{{$photo}}" style="height: 205px; margin: auto;">
-			</div>
-			@endif @endforeach @else
-			<div class="item">
-				<img alt="image" class="img-responsive" src="/img/remote_logo2.jpg"
-					style="height: 205px; margin: auto;">
-			</div>
-			@endif
-		</div>
-		<a data-slide="prev" href="#carousel1" class="left carousel-control">
-			<span class="icon-prev"></span>
-		</a> <a data-slide="next" href="#carousel1"
-			class="right carousel-control"> <span class="icon-next"></span>
-		</a>
-
-	</div>
-	<br>
-	<button type="button" class="btn btn-primary btn-w-m"
-	data-toggle="modal" data-target="#itemDetails">Update Details</button>
-	<button type="button" class="btn btn-primary btn-w-m"
-		data-toggle="modal" data-target="#itemPhoto">Update/Add Photo</button>
-	<div></div>
+<div class="col-lg-3">
+	<h3>{{$agent->first_name.' '.$agent->last_name}}</h3>
+		<img alt="image" class="img-responsive"
+		src="{{$agent->photo ? $agent->photo : '/img/default-profile.jpg'}} ">
+		
+	
+	
 </div>
-<div class="col-lg-4">
-	<h3>Unique ID: <span id="itemUniqueID">{{$item->unique_id}}</span></h3>
-	<h3>Item No: {{$item->itemNo}}</h3>
-	<h4>Current Location:  
-	@if($item->itemStatus != "Borrowed")
-	Technical Support
-	@else
-	Station No. {{$item->stationNo}}
-	@endif
-	</h4>
-	<h4>Item Type: {{$item->itemType}}</h4>
-	<h4>Status: {{$item->itemStatus}}</h4>
-	<h4>Brand: {{$item->brand}}</h4>
-	<h4>Model: {{$item->model}}</h4>
+<div class="col-lg-9">
+	<div>
+                                <div id="slineChart" ></div>
+                            </div>
 
 </div>
-<div class="col-lg-4">
-	<h4>Morning User: {{$item->morningClient}}</h4>
-	<h4>Night User: {{$item->nightClient}}</h4>
-	<h4>Specification:</h4>
-	<div style="height: 150px; overflow: auto;">{!!html_entity_decode($item->specification)!!}</div>
 
-</div>
 @endsection @section('content')
 <div class="row">
 	<div class="col-lg-12">
@@ -88,7 +50,7 @@
 								<tr>
 									<td>{{$borrow->id}}</td>
 									<td>{{$borrow->borrower}}</td>
-									<td>{{$borrow->first_name.' '.$borrow->last_name}}</td>
+									<td>{{$agent->first_name.' '.$agent->last_name}}</td>
 									<td>{{$borrow->borrowerStationNo}}</td>
 									<td>{{$borrow->created_at}}</td>
 								</tr>
@@ -113,7 +75,7 @@
 								<tr>
 									<td>{{$return->id}}</td>
 									<td>{{$return->borrower}}</td>
-									<td>{{$return->first_name.' '.$return->last_name}}</td>
+									<td>{{$agent->first_name.' '.$agent->last_name}}</td>
 									<td>{{$return->created_at}}</td>
 								</tr>
 								@endforeach
@@ -143,7 +105,7 @@
 											value='{{$issue->issue}}'>Click to view full details</button>
 									</td>
 									<td>{{$issue->damage}}</td>
-									<td>{{$issue->first_name.' '.$issue->last_name}}</td>
+									<td>{{$agent->first_name.' '.$agent->last_name}}</td>
 									<td>{{$issue->created_at}}</td>
 								</tr>
 								@endforeach
@@ -175,7 +137,7 @@
 											value='{{$broken->brokenSummary}}'>Click to view full details
 										</button></td>
 									<td>{{$broken->brokenStatus}}</td>
-									<td>{{$broken->first_name.' '.$broken->last_name}}</td>
+									<td>{{$agent->first_name.' '.$agent->last_name}}</td>
 									<td>{{$broken->created_at}}</td>
 									<td>{{$broken->updated_at}}</td>
 								</tr>
@@ -229,17 +191,7 @@
 			<div class="modal-body">
 			<div class="row">
 				<div id="itemPhotoPreview">
-					@if($item->photo != null) 
-					@foreach($item->photo as $photo)
-					@if($photo != "")
-					<div class="item col-md-3 text-center">
-						<img alt="image" class="img-responsive center-block"
-							src="{{$photo}}" style="height: 205px; margin: auto;">
-							<a href="#" id="deleteItemPhoto" >Remove File</a>
-					</div>
-					@endif 
-					@endforeach 
-					@endif
+					h
 					
 					</div>
 				</div>
@@ -273,20 +225,7 @@
 			<div class="row">
 				<form id="itemDetails"class="form-horizontal">
 				{!! csrf_field() !!}
-				<div class="form-group col-md-6">
-					<label class="control-label col-md-4">Morning User: </label>
-					<div class="col-md-8">
-					<input type="text" class="form-control" name="unique_id" value="{{$item->morningClient}}">
-					
-					</div>
-				</div>
-				<div class="form-group col-md-6">
-					<label class="control-label col-md-4">Night User: </label>
-					<div class="col-md-8">
-					<input type="text" class="form-control" name="unique_id" value="{{$item->nightClient}}">
-					
-					</div>
-				</div>
+				
 				</form>
 			</div>
 </div>
@@ -300,91 +239,40 @@
 	</div>
 </div>
 
-<script>
+<<script type="text/javascript">
 $(document).ready(function(){
-	$('div.item:first').addClass('active');
-	$('button.issue').click(function(){
-			$('h4.modal-title').text('Issue Log ID: ' + $('td:first', $(this).parents('tr')).text());
+	c3.generate({
+        bindto: '#slineChart',
+        data:{
+            x: "x",
+            columns: 
+                <?php echo json_encode($stats); ?>,
+                
+            
+            colors:{
+                data1: '#1ab394',
+                data2: '#BABABA'
+            },
+            type: 'spline'
+        },
+        axis : {
+			x : {
+				type : 'category',
+			}
+			}
 		
-			$('div.itemlogs').html($(this).val());
-		});
-	$('button.broken').click(function(){
-		$('h4.modal-title').text('Broken Log ID: ' + $('td:first', $(this).parents('tr')).text());
-	
-		$('div.itemlogs').html($(this).val());
-	});
-	$('div.tab-pane').on( 'click', function () {
-	    $('table').trigger('footable_redraw');
-	});
-	$('table#borrow_logs').footable();
-	$('table#return_logs').footable();
-	$('table#issue_logs').footable();
-	$('table#broken_logs').footable();
-
-	
+    });
 	
 });
+$('button.issue').click(function(){
+	$('h4.modal-title').text('Issue Log ID: ' + $('td:first', $(this).parents('tr')).text());
 
-var $inputImage = $("#inputImage");
-if (window.FileReader) {
-    $inputImage.change(function() {
-        var fileReader = new FileReader(),
-                files = this.files,
-                file;
+	$('div.itemlogs').html($(this).val());
+});
+$('button.broken').click(function(){
+$('h4.modal-title').text('Broken Log ID: ' + $('td:first', $(this).parents('tr')).text());
 
-        if (!files.length) {
-            return;
-        }
-
-        file = files[0];
-
-        if (/^image\/\w+$/.test(file.type)) {
-            fileReader.readAsDataURL(file);
-            fileReader.onload = function () {
-				var photo = this.result;
-                
-                $.ajax({
-					headers : {'X-CSRF-Token' : $('input[name="_token"]').val()},
-					type : "POST",
-					url : "/inventory/addItemPhoto",
-					data : {id : $('span#itemUniqueID').text(),name: file.name,photo : photo},
-					success: function(data){
-						var newPhoto = '<div class="item col-md-3 text-center">'+
-						'<img alt="image" class="img-responsive center-block" src="'+ data.response + 
-						'"style="height: 205px; margin: auto;"><a href="#" id="deleteItemPhoto">Remove File</a></div>';
-		                $('div#itemPhotoPreview').append(newPhoto);
-		                
-		                var carouselPhoto = '<div class="item"><img alt="image" class="img-responsive center-block"'+
-							'src="'+ data.response +'" style="height: 205px; margin: auto;"></div>';
-		                $('div.carousel-inner').append(carouselPhoto);
-		                
-		                toastr.success('New Photo has been added.');
-						},
-                });
-                
-            };
-        } else {
-            showMessage("Please choose an image file.");
-        }
-    });
-} else {
-    $inputImage.addClass("hide");
-}
-$(document).on('click','a#deleteItemPhoto',function(){
-	var src = $(this).parent().find('img').attr('src');
-	var currentPhoto = this;
-	$.ajax({
-		headers : {'X-CSRF-Token' : $('input[name="_token"]').val()},
-		type : "DELETE",
-		url : "/inventory/deleteItemPhoto",
-		data : {id : $('span#itemUniqueID').text(),name: src},
-		success: function(){
-			$('img[src="'+ src +'"]').parent().remove();
-			$('div.item:first').addClass('active');
-			toastr.success('Photo succesfully deleted.');
-			},
-    });
-	
+$('div.itemlogs').html($(this).val());
 });
 </script>
 @endsection
