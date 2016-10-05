@@ -1010,7 +1010,13 @@ class inventoryController extends Controller {
 		] );
 	}
 	public function viewItemDetails($id) {
-		$item = Item::where ( 'itemNo', $id )->first ();
+		$item = Item::where ( 'itemNo', $id )
+		->leftJoin ( DB::raw ( '(select client_id, first_name as morningFN, last_name as morningLN from client_profiles) morning' ), function ($join) {
+			$join->on ( 'items.morningClient', '=', 'morning.client_id' );
+		} )
+		->leftJoin ( DB::raw ( '(select client_id, first_name as eveningFN, last_name as eveningLN from client_profiles) evening' ), function ($join) {
+			$join->on ( 'items.nightClient', '=', 'evening.client_id' );
+		} )->first();
 		$borrows = Borrow::where ( 'itemNo', $id )->leftJoin ( DB::raw ( '(Select agent_id,first_name,last_name from admin_profiles) admin_profiles' ), function ($join) {
 			$join->on ( 'borrow_logs.borrowee', '=', 'admin_profiles.agent_id' );
 		} )->orderBy ( 'borrow_logs.created_at', 'desc' )->get ();
@@ -1055,7 +1061,8 @@ class inventoryController extends Controller {
 				'borrows' => $borrows,
 				'returns' => $returns,
 				'issues' => $issue,
-				'brokens' => $broken 
+				'brokens' => $broken,
+				'clients' => $clients
 		] );
 	}
 	public function addItemPhoto(Request $request) {
@@ -1262,5 +1269,24 @@ class inventoryController extends Controller {
 		return view('inventory.agentProfile',['agent' => $agent,'stats' => [$borrow,$return,$issue,$broken,$xAxis],
 				'borrows' => $borrow_logs,'returns' => $return_logs,'issues' => $issue_logs,'brokens'=>$broken_logs
 		]);
+	}
+	public function updateItemDetails(Request $request){
+		$validator = Validator::make ( $request->all (), [
+				'itemNo' => 'required|exists:items,itemNo',
+		] );
+		
+		if ($validator->fails ()) {
+			return response ()->json ( array (
+					'success' => false,
+					'errors' => $validator->getMessageBag ()->toArray ()
+			),400 );
+		}
+		$item = Item::where('itemNo',$request['itemNo'])->update(['morningClient' => $request['morning_user'],
+			'nightClient' => $request['evening_user']
+		]);
+		
+		return response ()->json ( array (
+				'success' => true
+		) );
 	}
 }
