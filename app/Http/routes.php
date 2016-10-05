@@ -77,6 +77,7 @@ Route::group(['middleware' => 'inventory'], function () {
 	Route::put('/inventory/changePersonalInfo','inventoryController@changePersonalInfo');
 	Route::put('/inventory/changePassword','inventoryController@changePassword');
 	Route::put('/inventory/changeProfilePicture','inventoryController@changeProfilePicture');
+	Route::put('/inventory/updateItemDetails','inventoryController@updateItemDetails');
 	
 	Route::delete("/inventory/deleteItemPhoto","inventoryController@deleteItemPhoto");
 	

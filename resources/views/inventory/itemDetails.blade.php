@@ -51,8 +51,8 @@
 
 </div>
 <div class="col-lg-4">
-	<h4>Morning User: {{$item->morningClient}}</h4>
-	<h4>Night User: {{$item->nightClient}}</h4>
+	<h4>Morning User: <span id="itemMorningClient">{{$item->morningFN.' '.$item->morningLN}}</span> </h4>
+	<h4>Night User: <span id="itemNightClient">{{$item->nightFN.' '.$item->nightLN}}</span></h4>
 	<h4>Specification:</h4>
 	<div style="height: 150px; overflow: auto;">{!!html_entity_decode($item->specification)!!}</div>
 
@@ -271,19 +271,32 @@
 			</div>
 			<div class="modal-body">
 			<div class="row">
-				<form id="itemDetails"class="form-horizontal">
+				<form id="updateItemDetails"class="form-horizontal">
 				{!! csrf_field() !!}
+				<input type="hidden" name="itemNo" value="{{$item->itemNo}}"/>
 				<div class="form-group col-md-6">
 					<label class="control-label col-md-4">Morning User: </label>
 					<div class="col-md-8">
-					<input type="text" class="form-control" name="unique_id" value="{{$item->morningClient}}">
+					<select class="form-control morning_user" name="morning_user">
+					<option value="" selected></option>
+					@foreach($clients as $client)
+					<option value="{{$client->id}}">{{$client->first_name.' '.$client->last_name}}</option>
+					@endforeach
+					</select>
+					
 					
 					</div>
 				</div>
 				<div class="form-group col-md-6">
-					<label class="control-label col-md-4">Night User: </label>
+					<label class="control-label col-md-4">Evening User: </label>
 					<div class="col-md-8">
-					<input type="text" class="form-control" name="unique_id" value="{{$item->nightClient}}">
+					<select class="form-control evening_user" name="evening_user">
+					<option value="" selected></option>
+					@foreach($clients as $client)
+					<option value="{{$client->id}}">{{$client->first_name.' '.$client->last_name}}</option>
+					@endforeach
+					</select>
+					
 					
 					</div>
 				</div>
@@ -294,13 +307,35 @@
 			
 					
 				<button type="button" class="btn btn-white" data-dismiss="modal">Close</button>
-				<button type="button" class="btn btn-primary">Save changes</button>
+				<button type="button" class="btn btn-primary" id="updateItemDetails">Save changes</button>
 			</div>
 		</div>
 	</div>
 </div>
 
 <script>
+$('button#updateItemDetails').click(function(){
+	console.log('click');
+	$.ajax({
+		type : "PUT",
+		url : "/inventory/updateItemDetails",
+		data : $('form#updateItemDetails').serialize(),
+		success: function(data){
+			if($('select.morning_user').val() != null){
+			$('span#itemMorningClient').text($('select.morning_user :selected').text());
+			}
+			if($('select.evening_user').val() != null){
+			$('span#itemNightClient').text($('select.evening_user :selected').val());
+			}
+			toastr.success('Detail succesfully updated.');
+			},
+		error: function(data){
+			toastr.error('An error occured');
+			}
+    });
+});
+
+
 $(document).ready(function(){
 	$('div.item:first').addClass('active');
 	$('button.issue').click(function(){
@@ -386,5 +421,7 @@ $(document).on('click','a#deleteItemPhoto',function(){
     });
 	
 });
+
+
 </script>
 @endsection
