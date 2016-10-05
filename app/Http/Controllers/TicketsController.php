@@ -61,20 +61,20 @@ class TicketsController extends Controller{
 		while (Ticket::where('id')->exists());
 		$filecount = 1;
 		$attachmentpath = "";
-			
-		$image = $request->file ( 'attachment' );
-		$imgvalidatoR = Validator::make ( $image, [
-				'attachment' => 'image|max:10485760'
-		] );
-		foreach ( $image as $file ) {
+		if($request['attachment'] != null){
+			$image = $request->file ( 'attachment' );
+			$imgvalidatoR = Validator::make ( $image, [
+					'attachment' => 'image|max:10485760'
+			] );
+			foreach ( $image as $file ) {
 		
-			$imageName = $ida . $file->getClientOriginalName ();
+				$imageName = $ida . $file->getClientOriginalName ();
 		
-			$file->move ( public_path ( '/img/attachment/' ), $imageName );
-			$filecount ++;
-			$attachmentpath = $attachmentpath . "/img/attachment/" . $imageName . ",";
-		}
-		
+				$file->move ( public_path ( '/img/attachment/' ), $imageName );
+				$filecount ++;
+				$attachmentpath = $attachmentpath . "/img/attachment/" . $imageName . ",";
+			}
+		};
 			$user = Ticket::create([
 			'id' => $ida,
             'sender_id' => Auth::guard('user')->user()->id,

@@ -12,7 +12,7 @@
 						action="/admin/createTicket" role="form" method="POST"
 						files="true" enctype="multipart/form-data">
 						{!! csrf_field() !!} 
-						<input type="hidden" class="form-control topic" name="summary">
+						<input type="hidden" class="form-control ticketSummary" name="summary">
 						@if(Auth::guard('admin')->user()->user_type== 'admin')
 						<div class="form-group assigned_support">
 							<label class="col-md-2 control-label">Assigned Support:&nbsp;</label>
@@ -163,7 +163,7 @@
 						 
 						createTicket.ladda('start');
 						  console.log('here');
-						  $('input[type="hidden"].topic').val($('div.ticketsummernote').summernote('code'));
+						  $('input.ticketSummary').val($('div.ticketsummernote').summernote('code'));
 							
 							$('div.topic').removeClass('has-error');
 							$('div.subject').removeClass('has-error');
@@ -208,7 +208,7 @@
 										text : "Your ticket has been created.",
 										type : "success",
 									}, function() {
-										window.location.href = '/admin';
+										window.location.href = '/admin/index';
 									});	
 							},
 					  });
