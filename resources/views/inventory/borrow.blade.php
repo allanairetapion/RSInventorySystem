@@ -15,141 +15,161 @@
 
 
 
-	<div class="row">
+<div class="row">
 
-		<div class="col-lg-12">
+	<div class="col-lg-12">
 
-			<div class="ibox float-e-margins">
+		<div class="ibox float-e-margins">
 
-				<div class="ibox-title">
 
-					<!-- Trigger the modal with a button -->
-					<button type="button" class="btn btn-primary" data-toggle="modal"
-						data-target="#myModal">Report</button>
+			<div class="ibox-content">
+				<div class="row">
+					<div class="col-md-1">
+						<button type="button" class="btn btn-primary btn-sm"
+							data-toggle="modal" data-target="#myModal">Report</button>
 
-				</div>
-
-				<div class="ibox-content">
-				<div class="input-group m-b">
-					<input type="text" class="form-control" id="filter" placeholder="Search...">
-					<div class="input-group-btn">
-						<button class="btn btn-white" id="borrowAdvancedSearch" type="button">
-							Search Options <span class="caret"></span>
-						</button>
+					</div>
+					<div class="col-md-11">
+						<div class="input-group m-b">
+							<input type="text" class="form-control" id="filter"
+								placeholder="Search...">
+							<div class="input-group-btn">
+								<button class="btn btn-white" id="borrowAdvancedSearch"
+									type="button">
+									Search Options <span class="caret"></span>
+								</button>
+							</div>
+						</div>
 					</div>
 				</div>
 				<div id="borrowAdvancedSearch" class="panel panel-default">
-				<div class="panel-body">
-				<form class="borrowTicketSearch">
-					{!! csrf_field() !!}
-					<div class="row">
-						<div class="col-md-3">
-							<label class="control-label">Unique Id:</label> 
-							<select class="form-control uniqueId chosen-select" name="unique_id">
-									<option value="" selected></option>
-								@foreach($unique_ids as $id)
-									<option value="{{$id->unique_id}}"> {{$id->unique_id}} </option>
-								@endforeach
-							</select>
-
-						</div>
-						
-						<div class="col-md-3">
-							<label class="control-label">Borrowee:</label> 
-							<select class="form-control chosen-select" name="borrowee">
-							<option value="" selected ></option>
-								@foreach($clients as $client)
-									<option value="{{$client->id}}"> {{$client->first_name.' '.$client->last_name}}</option>
-								@endforeach
-							</select>
-						</div>
-						<div class="col-md-3">
-							<label class="control-label">Borrower:</label> 
-							<select class="form-control chosen-select" name="borrower">
-								<option value="" selected ></option>
-								@foreach($clients as $client)
-									<option value="{{$client->id}}"> {{$client->first_name.' '.$client->last_name}}</option>
-								@endforeach
-							</select>
-						</div>
-						
-						
-						<div class="col-md-3">
-						<label class="control-label">Date Borrowed:</label>
-						<div class="input-group date dateBorrowed">
-										<span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control dateBorrowed" 
-									name="dateBorrowed">
-
+					<div class="panel-body">
+						<form class="borrowTicketSearch form-horizontal">
+							{!! csrf_field() !!}
+							<div class="row">
+								<div class="col-md-4">
+									<label class="control-label col-md-4">Item No:</label>
+									<div class="col-md-8">
+										<select class="form-control itemNo chosen-select"
+											name="itemNo">
+											<option value="" selected></option> @foreach($itemNumbers as
+											$id)
+											<option value="{{$id->itemNo}}">{{$id->itemNo}}</option>
+											@endforeach
+										</select>
 									</div>
-						</div>
-					
-						
-						
-						<div class=" col-md-3 ">
-							<br>
+								</div>
+								<div class="col-md-4">
+									<label class="control-label col-md-4">Unique ID:</label>
+									<div class="col-md-8">
+										<input class="form-control" name="unique_id" type="text">
+									</div>
+								</div>
+								<div class="col-md-4">
+									<label class="control-label col-md-4">Borrowee:</label>
+									<div class="col-md-8">
+										<select class="form-control chosen-select" name="borrowee">
+											<option value="" selected></option> @foreach($agents as
+											$agent)
+											<option value="{{$agent->id}}">{{$agent->first_name.'
+												'.$agent->last_name}}</option> 
+												@endforeach
+										</select>
+									</div>
+								</div>
+								<div class="col-md-4">
+								<br>
+									<label class="control-label col-md-4">Borrower:</label>
+									<div class="col-md-8">
+										<select class="form-control chosen-select" name="borrower">
+											<option value="" selected></option> @foreach($names as
+											$name)
+											<option value="{{$name->id}}">{{$name->first_name.'
+												'.$name->last_name}}</option> @endforeach
+										</select>
+									</div>
+								</div>
 
-							<button type="button"
-								class="btn btn-primary borrowTicketSearch">
-								<i class="fa fa-search"></i> Search
-							</button>
-							<button type="reset" class="btn btn-warning">
-								<i class="fa fa-refresh"></i> Clear
-							</button>
 
-						</div>
+								<div class="col-md-4">
+									<br> <label class="control-label col-md-4">Date:</label>
+									<div class="col-md-8">
+										<div class="input-group date dateBorrowed">
+											<span class="input-group-addon"><i class="fa fa-calendar"></i></span><input
+												type="text" class="form-control dateBorrowed"
+												name="dateBorrowed">
+
+										</div>
+									</div>
+								</div>
+
+
+
+								<div class=" col-md-4 ">
+									<br>
+
+									<button type="button"
+										class="btn btn-primary borrowTicketSearch">
+										<i class="fa fa-search"></i> Search
+									</button>
+									<button type="reset" class="btn btn-warning">
+										<i class="fa fa-refresh"></i> Clear
+									</button>
+
+								</div>
+							</div>
+
+						</form>
 					</div>
-
-				</form>
-				</div>
 				</div>
 
 
-					<div class="table-responsive">
-					
-						<table id="borrow" class="table table-bordered table-hover" data-filter="#filter" data-striping="false">
-							<thead>
-								<tr>
-									<th>Unique Identifier</th>
-									<th>Item No.</th>
-									<th>Item Type</th>					
-									<th>Brand</th>
-									<th>Model</th>									
-									<th>Borrowee</th>
-									<th>Borrower</th>
-									<th>Station No </th>
-									<th>Date Borrowed</th>
-									
-								</tr>
-							</thead>
-							<tbody id="borrow">
-							@foreach($borrowedItems as $borrow)
-							@if($borrow->dateBorrowed)
+				<div class="table-responsive">
+
+					<table id="borrow" class="table table-bordered table-hover"
+						data-filter="#filter" data-striping="false">
+						<thead>
 							<tr>
-									<td>{{$borrow->unique_id}}</td>
-									<td>{{$borrow->itemNo}}</td>
-									<td>{{$borrow->itemType}}</td>
-									<td>{{$borrow->brand}}</td>
-									<td>{{$borrow->model}}</td>
-									
-									<td>{{$borrow->first_name.' '.$borrow->last_name}} </td>
-									<td>{{$borrow->borrower}}</td>
-									<td>{{$borrow->borrowerStationNo}}</td>
-									<td>{{$borrow->dateBorrowed}}</td>
-									
+								
+								<th>Item No.</th>
+								<th>Unique Identifier</th>
+								<th>Item Type</th>
+								<th>Brand</th>
+								<th>Model</th>
+								<th>Borrowee</th>
+								<th>Borrower</th>
+								<th>Station No</th>
+								<th>Date Borrowed</th>
+
 							</tr>
-							@endif
-							@endforeach
+						</thead>
+						<tbody id="borrow">
+							@foreach($borrowedItems as $borrow) @if($borrow->dateBorrowed)
+							<tr>
+								<td><a href="/inventory/items/{{$borrow->itemNo}}">{{$borrow->itemNo}}</a></td>
+								<td>{{$borrow->unique_id}}</td>
+								<td>{{$borrow->itemType}}</td>
+								<td>{{$borrow->brand}}</td>
+								<td>{{$borrow->model}}</td>
+
+								<td>{{$borrow->first_name.' '.$borrow->last_name}}</td>
+								<td>{{$borrow->borrower}}</td>
+								<td>{{$borrow->borrowerStationNo}}</td>
+								<td>{{$borrow->dateBorrowed}}</td>
+
+							</tr>
+							@endif @endforeach
 
 
-							</tbody>
+						</tbody>
 
-						</table>
-					</div>
-
+					</table>
 				</div>
+
 			</div>
 		</div>
 	</div>
+</div>
 
 <div id="myModal" class="modal fade" role="dialog">
 	<div class="modal-dialog modal-lg">
@@ -163,61 +183,55 @@
 
 			<div class="ibox-content">
 				<form class="form-horizontal borrowItem" id="borrowItem">
-				{!! csrf_field() !!}
+					{!! csrf_field() !!}
 					<div class="row">
-						<div class="form-group col-lg-7 unique_id">
-							<label class="control-label col-lg-4"> Unique Identifier:</label>
-							<div class="col-lg-8">
-							<select id="borrowUniqueId" class="form-control chosen-select" name="unique_id">
-									<option value="" selected></option>
-								@foreach($unique_ids as $id)
-									<option value="{{$id->unique_id}}"> {{$id->unique_id}} </option>
-								@endforeach
-							</select>
-									<span class="help-block text-danger unique_id">192.168.100.200</span>
-							</div>
-						</div>
 						<div class="form-group col-lg-5 itemNo">
 							<label class="control-label col-lg-4"> Item No:</label>
 							<div class="col-lg-8">
-								<input type="text" class="form-control infoItemNo" placeholder="Item No."
-									name="itemNo" readonly>
-									<span class="help-block text-danger itemNo">192.168.100.200</span>
+								<select id="borrowItemNo" class="form-control chosen-select"
+									name="itemNo">
+									<option value="" selected></option> @foreach($itemNumbers as
+									$id)
+									<option value="{{$id->itemNo}}">{{$id->itemNo}}</option>
+									@endforeach
+								</select> 
+								<span class="help-block text-danger itemNo">192.168.100.200</span>
 							</div>
 						</div>
+
 						<div class="form-group col-lg-7 borrower">
 							<label class="control-label col-lg-4"> Borrower:</label>
 							<div class="col-lg-8">
-							<select class="form-control chosen-select" name="borrower">
-									<option value="" selected></option>
-								@foreach($clients as $client)
-									<option value="{{$client->id}}"> {{$client->first_name.' '.$client->last_name}}</option>
-								@endforeach
-							</select>
-								
-									<span class="help-block text-danger borrower">192.168.100.200</span>
+								<select class="form-control chosen-select" name="borrower">
+									<option value="" selected></option> @foreach($names as
+									$client)
+									<option value="{{$client->id}}">{{$client->first_name.'
+										'.$client->last_name}}</option> @endforeach
+								</select> 
+								<span class="help-block text-danger borrower">192.168.100.200</span>
 							</div>
 						</div>
 						<div class="form-group col-lg-5 stationNo">
 							<label class="control-label col-lg-4"> Station No:</label>
 							<div class="col-lg-8">
 								<input type="text" class="form-control"
-									placeholder="Station No." name="stationNo">
-									<span class="help-block text-danger stationNo">192.168.100.200</span>
+									placeholder="Station No." name="stationNo"> <span
+									class="help-block text-danger stationNo">192.168.100.200</span>
 							</div>
 						</div>
 						<div class="form-group col-lg-7 dateBorrowed">
 							<label class="control-label col-lg-4"> Date Borrowed:</label>
 							<div class="col-lg-8">
-							<div class="input-group date dateBorrowed">
-										<span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control dateBorrowed" placeholder="Name"
-									name="dateBorrowed">
+								<div class="input-group date dateBorrowed">
+									<span class="input-group-addon"><i class="fa fa-calendar"></i></span><input
+										type="text" class="form-control dateBorrowed"
+										placeholder="Name" name="dateBorrowed">
 
-									</div>
-							
-                   
-									<span class="help-block text-danger dateBorrowed">192.168.100.200</span>
-									
+								</div>
+
+
+								<span class="help-block text-danger dateBorrowed">192.168.100.200</span>
+
 							</div>
 						</div>
 					</div>
@@ -226,74 +240,75 @@
 				<center>
 					<i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i> <span
 						class="sr-only">Loading...</span>
-					
-					</center>
-					<div class="itemNotfound">
+
+				</center>
+				<div class="itemNotfound">
 					<hr>
 					<h2 class="text-center">Item Not Found</h2>
-					</div>
-					<form class="form-horizontal itemInfo">					
-						<hr>
-						<div class="row">
-							<div class="form-group col-lg-7">
-								<label class="control-label col-lg-4"> Unique Identifier :</label>
-								<div class="col-lg-8">
-									<input type="text" class="form-control infoId"
-										value="Unique Identifier" readonly>
-								</div>
+				</div>
+				<form class="form-horizontal itemInfo">
+					<hr>
+					<div class="row">
+						<div class="form-group col-lg-7">
+							<label class="control-label col-lg-4"> Unique Identifier :</label>
+							<div class="col-lg-8">
+								<input type="text" class="form-control infoId"
+									value="Unique Identifier" readonly>
 							</div>
-							<div class="form-group col-lg-5">
-								<label class="control-label col-lg-4"> Item No :</label>
-								<div class="col-lg-8">
-									<input type="text" class="form-control infoItemNo"
-										value="Item No." readonly>
-								</div>
-							</div>
-							<div class="form-group col-lg-7">
-								<label class="control-label col-lg-4"> Company :</label>
-								<div class="col-lg-8">
-									<input type="text" class="form-control infoCompany"
-										value="Company" readonly>
-								</div>
-							</div>
-							<div class="form-group col-lg-5">
-								<label class="control-label col-lg-4"> Station No :</label>
-								<div class="col-lg-8">
-									<input type="text" class="form-control infoStationNo"
-										value="Station No." readonly>
-								</div>
-							</div>
-							<div class="form-group col-lg-7">
-								<label class="control-label col-lg-4"> Brand :</label>
-								<div class="col-lg-8">
-									<input type="text" class="form-control infoBrand" value="Brand"
-										readonly>
-								</div>
-							</div>
-							<div class="form-group col-lg-5">
-								<label class="control-label col-lg-4"> Model :</label>
-								<div class="col-lg-8">
-									<input type="text" class="form-control infoModel" value="Model"
-										readonly>
-								</div>
-							</div>
-							<div class="form-group col-lg-7">
-								<label class="control-label col-lg-4"> Item Type :</label>
-								<div class="col-lg-8">
-									<input type="text" class="form-control infoItemType"
-										value="Item Type" readonly>
-								</div>
-							</div>
-							
-
-
 						</div>
-					</form>
-				
+						<div class="form-group col-lg-5">
+							<label class="control-label col-lg-4"> Item No :</label>
+							<div class="col-lg-8">
+								<input type="text" class="form-control infoItemNo"
+									value="Item No." readonly>
+							</div>
+						</div>
+						<div class="form-group col-lg-7">
+							<label class="control-label col-lg-4"> Company :</label>
+							<div class="col-lg-8">
+								<input type="text" class="form-control infoCompany"
+									value="Company" readonly>
+							</div>
+						</div>
+						<div class="form-group col-lg-5">
+							<label class="control-label col-lg-4"> Station No :</label>
+							<div class="col-lg-8">
+								<input type="text" class="form-control infoStationNo"
+									value="Station No." readonly>
+							</div>
+						</div>
+						<div class="form-group col-lg-7">
+							<label class="control-label col-lg-4"> Brand :</label>
+							<div class="col-lg-8">
+								<input type="text" class="form-control infoBrand" value="Brand"
+									readonly>
+							</div>
+						</div>
+						<div class="form-group col-lg-5">
+							<label class="control-label col-lg-4"> Model :</label>
+							<div class="col-lg-8">
+								<input type="text" class="form-control infoModel" value="Model"
+									readonly>
+							</div>
+						</div>
+						<div class="form-group col-lg-7">
+							<label class="control-label col-lg-4"> Item Type :</label>
+							<div class="col-lg-8">
+								<input type="text" class="form-control infoItemType"
+									value="Item Type" readonly>
+							</div>
+						</div>
+
+
+
+					</div>
+				</form>
+
 			</div>
 
 			<div class="modal-footer">
-				<button class="ladda-button btn btn-w-m btn-primary borrowItem" type="button">
+				<button class="ladda-button btn btn-w-m btn-primary borrowItem"
+					type="button">
 					<strong>Save</strong>
 				</button>
 				<button type="button" class="btn btn-w-m btn-danger"
@@ -342,10 +357,10 @@ $('button.borrowTicketSearch').click(function(){
 
 			if(data.response.length >= 1){
 				$.each(data.response,function(i, v) {
-					var newRow = "<tr><td>" + v.unique_id + "</td><td>" + v.itemNo + " </td>"+
+					var newRow = "<tr><td><a href='/inventory/items/"+ v.itemNo +" '>" + v.itemNo + "</a></td><td>" + v.unique_id + " </td>"+
 								"<td>" + v.itemType + "</td><td>" + v.brand + "</td><td>" + v.model + "</td>" +
 								"<td>" + v.first_name + " " + v.last_name + "</td><td>" + v.borrower + "</td>"+
-								"<td>" + v.borrowerStationNo + "</td><td>" + v.dateBorrowed + "</td></tr>";
+								"<td>" + v.borrowerStationNo + "</td><td>" + v.created_at + "</td></tr>";
 					table.appendRow(newRow);
 					});
 				}else{

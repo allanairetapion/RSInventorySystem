@@ -24,21 +24,8 @@
 					{!! csrf_field() !!}
 					<div class="row">
 						<div class="col-lg-7">
-							<div class="col-lg-6">
-								<div class="unique_id">
-									<label class="control-label">Unique Identifier:</label> <input
-										type="text" class="form-control"
-										placeholder="Unique Identifier" id="unique_id" name="unique_id" required> <span
-										class="help-block text-danger unique_id">192.168.100.200</span>
-								</div>
-							</div>
-							<div class="col-lg-6">
-								<div class="itemNo">
-									<label class="control-label">Item No:</label> <input type="text"
-										class="form-control" placeholder="Item No." name="itemNo" id="itemNo"
-										required> <span class="help-block text-danger itemNo">192.168.100.200</span>
-								</div>
-							</div>
+						
+							
 							<div class="col-lg-6">
 								<div class="brand">
 									<label class="control-label"> Brand:</label> <input type="text"
@@ -56,21 +43,28 @@
 								</div>
 							</div>
 							<div class="col-lg-6">
+								<div class="serial_no">
+									<label class="control-label">Serial No:</label> <input
+										type="text" class="form-control"
+										placeholder="Serial Number" id="serial_no" 
+										name="serial_no" required > <span
+										class="help-block text-danger serial_no">192.168.100.200</span>
+								</div>
+							</div>
+							
+							<div class="col-lg-6">
 								<div class="company">
-									<label class="control-label"> Company:</label> <input
-										type="text" class="form-control" placeholder="Company"
-										name="company" id="company" required> <span
+									<label class="control-label"> Company:</label> 
+										<select class="form-control" name="company" id="company">
+										<option value="" selected></option>
+											<option value="Remote Staff"> Remote Staff</option>
+											<option value="Real Estate"> Real Estate</option>
+										</select>
+										<span
 										class="help-block text-danger company">192.168.100.200</span>
 								</div>
 							</div>
-							<div class="col-lg-6">
-								<div class="stationNo">
-									<label class="control-label"> Station No:</label> <input
-										type="text" class="form-control" placeholder="Station No."
-										name="stationNo" id="stationNo" required> <span
-										class="help-block text-danger stationNo">192.168.100.200</span>
-								</div>
-							</div>
+							
 							<div class="col-lg-12">
 								<div class="specification">
 									<label class="control-label"> Specification:</label>
@@ -82,9 +76,16 @@
 							</div>
 							<div class="col-lg-6">
 								<div class="itemType">
-									<label class="control-label"> Item Type:</label> <input
-										type="text" class="form-control" placeholder="Item Type"
-										name="itemType" id="itemType" required> <span
+									<label class="control-label"> Item Type:</label> 
+										<select class="form-control" name="itemType" id="itemType">
+											<option value="" selected></option>
+											<option value="Laptop">Laptop</option>
+											<option value="Keyboard">Keyboard</option>
+											<option value="Mouse">Mouse</option>
+											<option value="Headset">Headset</option>
+											<option value="Monitor">Monitor</option>
+										</select>
+										<span
 										class="help-block text-danger itemType">192.168.100.200</span>
 
 								</div>
@@ -198,9 +199,8 @@
 							  console.log('here');
 							  $('input[type="hidden"].topic').val($('div.ticketsummernote').summernote('code'));
 								
-								$('div.topic').removeClass('has-error');
-								$('div.subject').removeClass('has-error');
-								$('div.summary').removeClass('has-error');
+								
+								$('div').removeClass('has-error');
 								e.preventDefault();
 
 								$.ajax({
@@ -209,9 +209,9 @@
 									data :  $("form.addItem").serialize(),
 									error: function(data){
 										var errors = data.responseJSON;
-										if(errors.errors["unique_id"]){
-											$('span.unique_id').text(errors.errors["unique_id"]).show();
-											$('div.unique_id').addClass('has-error');
+										if(errors.errors["serial_no"]){
+											$('span.serial_no').text(errors.errors["serial_no"]).show();
+											$('div.serial_no').addClass('has-error');
 										}
 										if(errors.errors["itemNo"]){
 											$('span.itemNo').text(errors.errors["itemNo"]).show();
@@ -257,11 +257,11 @@
 
 					this.on("sendingmultiple", function(data, xhr, formData) {
 						formData.append("_token", $('[name=_token').val());
-			            formData.append("unique_id", $("input#unique_id").val());
+			            formData.append("serial_no", $("input#serial_no").val());
 			            formData.append("itemNo", $("input#itemNo").val());
 			            formData.append("brand", $("input#brand").val());
 			            formData.append("model", $("input#model").val());
-			            formData.append("company", $("input#company").val());
+			            formData.append("company", $("select#company").val());
 			            formData.append("stationNo", $("input#stationNo").val());
 			            formData.append("specification", $("input#specification").val());
 			            formData.append("itemType", $("input#itemType").val());
@@ -286,9 +286,9 @@
 							}
 						file.status = Dropzone.QUEUED;
 						$(file.previewElement).find('.dz-error-message').text("An error occurred");
-						if(response.errors["unique_id"]){
-							$('span.unique_id').text(response.errors["unique_id"]).show();
-							$('div.unique_id').addClass('has-error');
+						if(response.errors["serial_no"]){
+							$('span.serial_no').text(response.errors["serial_no"]).show();
+							$('div.serial_no').addClass('has-error');
 						}
 						if(response.errors["itemNo"]){
 							$('span.itemNo').text(response.errors["itemNo"]).show();
@@ -328,16 +328,15 @@
 					this.on("successmultiple", function () {
 							
 							
-							$('div.topic').removeClass('has-error');
-							$('div.subject').removeClass('has-error');
-							$('div.summary').removeClass('has-error');
+							
+							$('div').removeClass('has-error');
 							createTicket.ladda('stop');
 							swal({
 								title : 'Success!',
 								text : "New Item Added.",
 								type : "success",
 							}, function() {
-								location.reload();
+								
 							});
 							
 							$('form.addItem').trigger('reset');

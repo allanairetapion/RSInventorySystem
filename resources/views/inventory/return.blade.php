@@ -19,12 +19,11 @@
 <div class="row">
 	<div class="col-lg-12">
 		<div class="ibox float-e-margins">
-			<div class="ibox-title">
-
-				<button type="button" class="btn btn-primary" data-toggle="modal"
-					data-target="#myModal">Report</button>
-			</div>
 			<div class="ibox-content">
+			<div class="row">
+			<div class="col-md-1"><button type="button" class="btn btn-primary btn-sm" data-toggle="modal"
+					data-target="#myModal">Report</button></div>
+			<div class="col-md-11">
 				<div class="input-group m-b">
 					<input type="text" class="form-control" id="filter"
 						placeholder="Search...">
@@ -35,50 +34,67 @@
 						</button>
 					</div>
 				</div>
+				</div>
+			</div>
 				<div id="returnAdvancedSearch" class="panel panel-default">
 					<div class="panel-body">
-						<form class="returnTicketSearch">
+						<form class="returnTicketSearch form-horizontal">
 							{!! csrf_field() !!}
 
 
 							<div class="row">
-								<div class="col-md-3">
-									<label class="control-label">Unique Id:</label> <select
-										class="form-control uniqueId chosen-select" name="unique_id">
+								<div class="col-md-4">
+									<label class="control-label col-md-4">Item No:</label> 
+									<div class="col-md-8">
+									<select class="form-control itemNo chosen-select" name="itemNo">
 										<option value="" selected></option> 
-										@foreach($unique_ids as $id)
-										<option value="{{$id->unique_id}}">{{$id->unique_id}}</option>
+										@foreach($itemNumbers as $id)
+										<option value="{{$id->itemNo}}">{{$id->itemNo}}</option>
 										@endforeach
-									</select>
+									</select></div>
 								</div>
-								<div class="col-md-3">
-									<label class="control-label">Borrower:</label> <select
-										class="form-control chosen-select" name="borrower">
+								<div class="col-md-4">
+									<label class="control-label col-md-4">Unique ID:</label>
+									<div class="col-md-8">
+										<input class="form-control" name="unique_id" type="text">
+									</div>
+								</div>
+								<div class="col-md-4">
+									<label class="control-label col-md-4">Borrower:</label>
+									<div class="col-md-8">
+									 <select class="form-control chosen-select" name="borrower">
 										<option value="" selected></option> 
 										@foreach($clients as $client)
 										<option value="{{$client->id}}">{{$client->first_name.' '.$client->last_name}}</option> 
 										@endforeach
 									</select>
+									</div>
 								</div>
-								<div class="col-md-3">
-									<label class="control-label">Receiver:</label> <select
-										class="form-control chosen-select" name="receiver">
+								<div class="col-md-4">
+								<br>
+									<label class="control-label col-md-4">Receiver:</label> 
+									<div class="col-md-8">
+									<select class="form-control chosen-select" name="receiver">
 										<option value="" selected hidden></option> 
-										@foreach($clients as $client)
-										<option value="{{$client->id}}">{{$client->first_name.' '.$client->last_name}}</option> 
+										@foreach($agents as $agent)
+										<option value="{{$client->id}}">{{$agent->first_name.' '.$agent->last_name}}</option> 
 										@endforeach
 									</select>
+									</div>
 								</div>
 
 
 
-								<div class="col-md-3">
-									<label class="control-label">Date Returned:</label>
+								<div class="col-md-4">
+								<br>
+									<label class="control-label col-md-4">Date:</label>
+									<div class="col-md-8">
 									<div class="input-group date dateReturned">
 										<span class="input-group-addon"><i class="fa fa-calendar"></i></span><input
 											type="text" class="form-control dateReturned"
-											placeholder="Name" name="dateReturned">
+											placeholder="Date Returned" name="dateReturned">
 
+									</div>
 									</div>
 								</div>
 
@@ -88,10 +104,10 @@
 									<br>
 
 									<button type="button"
-										class="btn btn-primary returnTicketSearch">
+										class="btn btn-primary btn-sm returnTicketSearch">
 										<i class="fa fa-search"></i> Search
 									</button>
-									<button type="reset" class="btn btn-warning">
+									<button type="reset" class="btn btn-warning btn-sm">
 										<i class="fa fa-refresh"></i> Reset
 									</button>
 
@@ -107,8 +123,9 @@
 						data-filter="#filter" data-striping="false">
 						<thead>
 							<tr>
-								<th>Unique Identifier</th>
+								
 								<th>Item No.</th>
+								<th>Unique Identifier</th>
 								<th>Item Type</th>
 
 								<th>Brand</th>
@@ -125,8 +142,8 @@
 							@foreach($returnedItems as $return) 
 							@if($return->dateReturned)
 							<tr>
+								<td><a href="/inventory/items/{{$return->itemNo}}">{{$return->itemNo}}</a></td>
 								<td>{{$return->unique_id}}</td>
-								<td>{{$return->itemNo}}</td>
 								<td>{{$return->itemType}}</td>
 								<td>{{$return->brand}}</td>
 								<td>{{$return->model}}</td>
@@ -162,27 +179,21 @@
 			<div class="ibox-content">
 				<form class="form-horizontal returnItem" id="returnItem">
 					{!! csrf_field() !!}
+					<input type="hidden" name="borrower" class="infoBorrower">
 					<div class="row">
-						<div class="form-group col-lg-7 unique_id">
-							<label class="control-label col-lg-4"> Unique Identifier:</label>
-							<div class="col-lg-8">
-								<select id="returnUniqueId" class="form-control chosen-select"
-									name="unique_id">
-									<option value="" selected></option> 
-									@foreach($unique_ids as $id)
-									<option value="{{$id->unique_id}}">{{$id->unique_id}}</option>
-									@endforeach
-								</select> <span class="help-block text-danger unique_id">192.168.100.200</span>
-							</div>
-						</div>
 						<div class="form-group col-lg-5 itemNo">
 							<label class="control-label col-lg-4"> Item No:</label>
 							<div class="col-lg-8">
-								<input type="text" class="form-control infoItemNo"
-									placeholder="Item No." name="itemNo" readonly> <span
-									class="help-block text-danger itemNo">192.168.100.200</span>
+								<select id="returnItemNo" class="form-control chosen-select"
+									name="itemNo">
+									<option value="" selected></option> 
+									@foreach($itemNumbers as $id)
+									<option value="{{$id->itemNo}}">{{$id->itemNo}}</option>
+									@endforeach
+								</select> <span class="help-block text-danger itemNo">192.168.100.200</span>
 							</div>
 						</div>
+						
 						<div class="form-group col-lg-7 dateReturned">
 							<label class="control-label col-lg-4"> Date Received:</label>
 							<div class="col-lg-8">
@@ -206,7 +217,7 @@
 				</center>
 				<div class="itemNotfound">
 					<hr>
-					<h2 class="text-center">Item Not Found</h2>
+					<h2 class="text-center">Item is already returned</h2>
 				</div>
 				<form class="form-horizontal borrowInfo">
 					<hr>
@@ -331,19 +342,21 @@ $('button.returnTicketSearch').click(function(){
 		url : "/inventory/return/search",
 		data : $('form.returnTicketSearch').serialize(),
 		success: function(data){
-			var table = $('table#borrow').data('footable');
+			var table = $('table#return').data('footable');
 			$('tbody>tr').each(function(){
 				table.removeRow(this);
 				});
 			
 			if(data.response.length >= 1){
 			$.each(data.response,function(i, v) {
-				var newRow = "<tr><td>" + v.unique_id + "</td><td>" + v.itemNo + " </td>"+
+				var newRow = "<tr><td><a href='/inventory/items/"+ v.itemNo +"'>" + v.itemNo + "</a></td><td>" + v.unique_id + " </td>"+
 				"<td>" + v.itemType + "</td><td>" + v.brand + "</td><td>" + v.model + "</td>" +
 				"<td>" + v.borrower + "</td><td>" + v.first_name + " " + v.last_name +"</td>"+
-				"<td>" + v.dateReturned + "</td></tr>";
-				
+				"<td>" + v.created_at + "</td></tr>";
+				table.appendRow(newRow);
 				});
+			
+			
 			}else{
 				table.appendRow("<tr><td colspan='8' class='text-center'> No Data Found.</td></tr>");
 			}

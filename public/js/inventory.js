@@ -31,7 +31,7 @@ $(function() {
 	
 	
 	//Borrow Form
-	$('select#borrowUniqueId').change(function(){				
+	$('select#borrowItemNo').change(function(){				
 		$('i.fa-pulse').show();
 		$('form.itemInfo').hide();
 		$('div.itemNotfound').hide();
@@ -42,7 +42,7 @@ $(function() {
 		$.ajax({
 			type : "GET",
 			url : "/inventory/itemInfo",
-			data : { item : $('select#borrowUniqueId').val() } ,
+			data : { item : $('select#borrowItemNo').val() } ,
 		}).done(function(data){
 			if(data.success == true){
 				$('i.fa-pulse').hide();
@@ -56,8 +56,9 @@ $(function() {
 				$('input.infoBrand').val(data.info['brand']);
 				$('input.infoModel').val(data.info['model']);
 				if(data.info['itemStatus'] != "Available"){
-					$('div.unique_id').addClass('has-error');
-					$('span.unique_id').text("This Item is not Available").show();
+					$('div.itemNo').addClass('has-error');
+					$('span.itemNo').text("This Item is not Available").show();
+					$('span.borrower').text("*").show();
 				}
 				
 				
@@ -94,46 +95,37 @@ $(function() {
 				type : "POST",
 				url : "/inventory/borrowItem",
 				data : $('form.borrowItem').serialize() ,
-			}).done(function(data){
-				if(data.success == false){
-					borrowItem.ladda('stop');
-					if(data.errors["unique_id"]){
-						
-						$('span.unique_id').text(data.errors["unique_id"]).show();
-						
-						
-					if(data.errors["unique_id"] == "The selected unique id is invalid."){
-							$('span.unique_id').text("This Item is not Available").show();
-							$('div.unique_id').addClass('has-error');
-						}
-						$('div.unique_id').addClass('has-error');
-					}
+				error: function(data){
 					
-					if(data.errors["itemNo"]){
-						$('span.itemNo').text(data.errors["itemNo"]).show();
+					borrowItem.ladda('stop');
+					var errors = data.responseJSON;
+					
+					console.log(errors.errors["itemNo"]);
+					
+					if(errors.errors["itemNo"]){
+						$('span.itemNo').text(errors.errors["itemNo"]).show();
 						$('div.itemNo').addClass('has-error');
 					}
-					if(data.errors["stationNo"]){
-						$('span.stationNo').text(data.errors["stationNo"]).show();
+					if(errors.errors["stationNo"]){
+						$('span.stationNo').text(errors.errors["stationNo"]).show();
 						$('div.stationNo').addClass('has-error');
 					}
-					if(data.errors["borrower"]){
-						$('span.borrower').text(data.errors["borrower"]).show();
+					if(errors.errors["borrower"]){
+						$('span.borrower').text(errors.errors["borrower"]).show();
 						$('div.borrower').addClass('has-error');
 					}
-					if(data.errors["dateBorrowed"]){
-						$('span.dateBorrowed').text(data.errors["dateBorrowed"]).show();
+					if(errors.errors["dateBorrowed"]){
+						$('span.dateBorrowed').text(errors.errors["dateBorrowed"]).show();
 						$('div.dateBorrowed').addClass('has-error');
 						}
-					
-				}else{
-					
+				},
+				success : function (data){
 					borrowItem.ladda('stop');
 					$('form.borrowItem').trigger('reset');
 					
 					var table = $('table#borrow').data('footable');
 					
-					var newRow = "<tr><td>" + data.response['unique_id'] + "</td><td>" + data.response['itemNo'] + " </td>"+
+					var newRow = "<tr><td><a href='/inventory/items/"+ data.response['itemNo'] +"'>" + data.response['itemNo'] + "</a></td><td>" + data.response['unique_id'] + " </td>"+
 						"<td>" + data.response.itemType + "</td><td>" + data.response['brand'] + "</td><td>" + data.response['model'] + "</td>" +
 						"<td>" + data.response['first_name'] + " " +data.response['last_name'] + "</td><td>" + data.response['borrower'] + "</td>"+
 						"<td>" + data.response['borrowerStationNo'] + "</td><td>" + data.response['created_at'] + "</td></tr>";
@@ -145,18 +137,12 @@ $(function() {
 					swal('','Item Borrowed','success');
 					
 					$('form.itemInfo').hide();
-					
 				}
-				
 			});
 		});
 		
-		
 	//Return Form
-	$('select#returnUniqueId').change(function(){
-		
-		
-		
+	$('select#returnItemNo').change(function(){
 		$('i.fa-pulse').show();
 		$('form.itemInfo').hide();
 		$('div.itemNotfound').hide();
@@ -168,25 +154,26 @@ $(function() {
 		$.ajax({
 			type : "GET",
 			url : "/inventory/borrowInfo",
-			data : { item : $('select#returnUniqueId').val() } ,
+			data : { item : $('select#returnItemNo').val() } ,
 		}).done(function(data){
 			if(data.success == true){
 				$('i.fa-pulse').hide();
-				$('div.itemNotfound').hide();
-				$('form.borrowInfo').show();
-				
-				$('input.infoId').val(data.info['unique_id']);
-				$('input.infoItemNo').val(data.info['itemNo']);
-				$('input.infoBorrower').val(data.borrow['borrower']);
-				$('input.infoStationNo').val(data.borrow['borrowerStationNo']);
-				$('input.infoItemType').val(data.info['itemType']);
-				$('input.infoBrand').val(data.info['brand']);
-				$('input.infoModel').val(data.info['model']);
-				$('input.infodateBorrowed').val(data.borrow['created_at']);
 				
 				if(data.info['itemStatus'] == "Available"){
-					$('div.unique_id').addClass('has-error');
-					$('span.unique_id').text("This Item is already returned").show();
+					$('div.itemNotfound').show();
+					$('div.itemNo').addClass('has-error');
+					$('span.itemNo').text("This Item is already returned").show();
+				}else{	
+					$('div.itemNotfound').hide();
+					$('form.borrowInfo').show();
+					$('input.infoId').val(data.info['unique_id']);
+					$('input.infoItemNo').val(data.info['itemNo']);
+					$('input.infoBorrower').val(data.borrow['borrower']);
+					$('input.infoStationNo').val(data.borrow['borrowerStationNo']);
+					$('input.infoItemType').val(data.info['itemType']);
+					$('input.infoBrand').val(data.info['brand']);
+					$('input.infoModel').val(data.info['model']);
+					$('input.infodateBorrowed').val(data.borrow['created_at']);
 				}
 				
 				
@@ -247,8 +234,8 @@ $(function() {
 				$('form.returnItem').trigger('reset');
 				var table = $('table#return').data('footable');
 				
-				var newRow = "<tr><td>"+ data.response['unique_id'] + "</td>"+
-				"<td>" + data.response['itemNo']+ "</td><td>" + data.response['itemType']+" </td>" +
+				var newRow = "<tr><td><a href='/inventory/items/"+ data.response['itemNo'] +"'>" + data.response['itemNo'] + "</a></td>"+
+				"<td>" + data.response['unique_id'] + "</td><td>" + data.response['itemType']+" </td>" +
 				"<td>" + data.response['brand'] +"</td><td>"+ data.response['model']+"</td>" +
 				"<td>" + data.response['borrower'] +"</td>"+
 				"<td>" + data.response['first_name']+" "+data.response['last_name']+"</td>"+
@@ -267,7 +254,7 @@ $(function() {
 	});
 	
 	// Issue Form
-	$('select#issueUniqueId').change(function(){				
+	$('select#issueItemNo').change(function(){				
 		
 		$('i.fa-pulse').show();
 		$('form.itemInfo').hide();
@@ -279,7 +266,7 @@ $(function() {
 		$.ajax({
 			type : "GET",
 			url : "/inventory/itemInfo",
-			data : { item : $('select#issueUniqueId').val() } ,
+			data : { item : $('select#issueItemNo').val() } ,
 		}).done(function(data){
 			if(data.success == true){
 				
@@ -338,42 +325,38 @@ $(function() {
 			type : "POST",
 			url : "/inventory/issueItem",
 			data : $('form#issueItem').serialize() ,
-		}).done(function(data){
-			if(data.success == false){
+			error : function (data){
+				var errors = data.responseJSON;
 				issueItem.ladda('stop');
-				if(data.errors["unique_id"]){
-					
-					$('span.issueUnique_id').text(data.errors["unique_id"]).show();
-					
-					
-					if(data.errors["unique_id"] == "The selected unique id is invalid."){
-						$('span.issueUnique_id').text("This Item is already Reported").show();
-						$('div.issueUnique_id').addClass('has-error');
+				
+				if(errors.errors["itemNo"]){
+					if(error.errors['itemNo'] == "The selected item no is invalid."){
+						$('span.issueItemNo').text("This Item is already Reported").show();
+						$('div.issueItemNo').addClass('has-error');
 					}
-					$('div.issueUnique_id').addClass('has-error');
+					$('span.issueItemNo').text(errors.errors["itemNo"]).show();
+					$('div.issueItemNo').addClass('has-error');
 				}
-				if(data.errors["itemNo"]){
-					$('span.itemNo').text(data.errors["itemNo"]).show();
-					$('div.itemNo').addClass('has-error');
-				}
-				if(data.errors["damage"]){
-					$('span.itemDamage').text(data.errors["damage"]).show();
+				if(errors.errors["damage"]){
+					$('span.itemDamage').text(errors.errors["damage"]).show();
 					$('div.itemDamage').addClass('has-error');
 				}
-				if(data.errors["issue"]){
-					$('span.itemIssue').text(data.errors["issue"]).show();
+				if(errors.errors["issue"]){
+					$('span.itemIssue').text(errors.errors["issue"]).show();
 					$('div.itemIssue').addClass('has-error');
 				}
-				if(data.errors["dateReported"]){
-					$('span.dateReported').text(data.errors["dateReported"]).show();
+				if(errors.errors["dateReported"]){
+					$('span.dateReported').text(errors.errors["dateReported"]).show();
 					$('div.dateReported').addClass('has-error');
 				}
-			}else{
+			},
+			success : function(data){
 				issueItem.ladda('stop');
 				var table = $('table#issue').data('footable');
 				$('form.issueItem').trigger('reset');
-				$('tbody.issueItem').prepend("<tr><td>"+ data.response['unique_id'] + "</td>"+
-						"<td>" + data.response['itemNo']+ "</td><td>" + data.response['damage']+" </td>" +
+				$('tbody.issueItem').prepend("<tr><td><a href='/inventory/items/"+ data.response['itemNo'] +"'>"+ data.response['itemNo'] + "</a></td><td>" + data.response['unique_id']+ "</td>"+
+						"<td>" + data.response['itemType']+ "</td><td>" + data.response['brand']+"</td>" +
+						"<td>" + data.response['model'] +"</td><td>" + data.response['damage']+"</td>" +
 						"<td>" + decodeURI(data.response['issue']) +"</td><td>"+ data.response['first_name']+" "+ data.response['last_name']+"</td>" +
 						"<td>" + data.response['created_at']+ "</td></tr>");
 				table.redraw();
@@ -383,7 +366,6 @@ $(function() {
 				$('form.itemInfo').hide();
 				
 			}
-			
 		});
 		
 	});
@@ -497,7 +479,7 @@ $(function() {
 	});
 	// Broken Item
 	
-	$('input.brokenUniqueId').change(function(){				
+	$('select#brokenItemNo').change(function(){				
 		$('span.unique_id').text("").hide();
 		$('i.fa-pulse').show();
 		$('form.itemInfo').hide();
@@ -508,18 +490,21 @@ $(function() {
 		$.ajax({
 			type : "GET",
 			url : "/inventory/itemInfo",
-			data : { item : $('input.brokenUniqueId').val() } ,
+			data : { item : $('select#brokenItemNo').val() } ,
 		}).done(function(data){
-			if(data.success == true){
-				$('input.brokenItemNo').val(data.info['itemNo']);
 			
+			if(data.success == true){
+				
+				
 				if(data.info['itemStatus'] == "Broken"){
-					$('div.repairUnique_id').addClass('has-error');
-					$('span.repairUnique_id').text("This Item is already Reported").show();
+					$('div.brokenItemNo').addClass('has-error');
+					$('span.brokenItemNo').text("This Item is already Reported").show();
 					
 					$('i.fa-pulse').hide();
 					
 				}else{
+					
+					
 					$('i.fa-pulse').hide();
 					$('div.itemNotfound').hide();
 				}			
@@ -537,8 +522,6 @@ $(function() {
 		$('div.form-group').removeClass('has-error');
 		$('div.input-group').removeClass('has-error');
 		
-		console.log($('form.returnItem').serialize());
-		
 		$.ajax({
 			type : "POST",
 			url : "/inventory/brokenItem",
@@ -546,20 +529,16 @@ $(function() {
 		}).done(function(data){
 			if(data.success == false){
 				issueItem.ladda('stop');
-				if(data.errors["unique_id"]){
-					
-					$('span.brokenUnique_id').text(data.errors["unique_id"]).show();
-					
-					
-					if(data.errors["unique_id"] == "The selected unique id is invalid."){
-						$('span.brokeneUnique_id').text("This Item is already Reported").show();
-						$('div.brokenUniqueId').addClass('has-error');
-					}
-					$('div.brokenUniqueId').addClass('has-error');
-				}
 				if(data.errors["itemNo"]){
-					$('span.itemNo').text(data.errors["itemNo"]).show();
-					$('div.itemNo').addClass('has-error');
+					
+					$('span.brokenItemNo').text(data.errors["itemNo"]).show();
+					
+					
+					if(data.errors["itemNo"] == "The selected unique id is invalid."){
+						$('span.brokeneItemNo').text("This Item is already Reported").show();
+						$('div.brokenItemNo').addClass('has-error');
+					}
+					$('div.brokenItemNo').addClass('has-error');
 				}
 				if(data.errors["damage"]){
 					$('span.brokenDamage').text(data.errors["damage"]).show();
@@ -583,11 +562,14 @@ $(function() {
 				var table = $('table#broken').data('footable');
 					
 					
-				$('tbody#brokenItem').prepend("<tr><td> <input type='checkbox' class='i-checks brokenItem' value='"+data.response['unique_id'] +"'/> &nbsp;"+ 
-						data.response['unique_id'] + "</td>"+
-						"<td>" + data.response['itemNo']+ "</td><td>" + data.response['damage']+" </td>" +
-						"<td>"+data.response['brokenStatus']+"</td><td>"+ data.response['first_name']+" "+ data.response['last_name']+"</td>" +
-						"<td>" + data.response['created_at']+ "</td><td>"+ decodeURI(data.response['brokenSummary']) +"</tr>");
+				$('tbody#brokenItem').prepend(
+				"<tr><td> <input type='checkbox' class='i-checks brokenItem' value='"+ data.response['itemNo'] +"'/> &nbsp;"+ 
+				"<a href='/inventory/items/" + data.response['itemNo'] +"'>" +data.response['itemNo'] + "</a></td><td>" + data.response['unique_id'] + "</td>" +
+				"<td>" + data.response['damage']+" </td><td>"+data.response['brokenStatus']+"</td>" +
+				"<td>"+ data.response['first_name']+" "+ data.response['last_name']+"</td>" +
+				"<td>" + data.response['created_at']+ "</td><td>" + data.response['itemType'] +"</td>" +
+				"<td>" + data.response['brand'] + "</td><td>" + data.response['model'] + "</td>" +
+				"<td>"+ decodeURI(data.response['brokenSummary']) +"</tr>");
 				
 				$('.i-checks').iCheck({
 					checkboxClass : 'icheckbox_square-green',
@@ -726,5 +708,88 @@ $(function() {
 		});
 	}
 	;
+	var editPersonalInfo = $('button.editPersonalInfo').ladda();
+	var editPassword = $('button.editPassword').ladda();
+	var editProfilePicture = $('button.editProfilePicture').ladda();
+	editPersonalInfo.click(function(e) {
+		e.preventDefault();
+		editPersonalInfo.ladda('start');
+		swal({
+			title : 'Are you sure?',
+			type : 'warning',
+			showCancelButton : true,
+			confirmButtonText : "Yes",
+			closeOnConfirm : false,
+			showLoaderOnConfirm : true,
+			disableButtonsOnConfirm : true,
+		}, function() {
+			$.ajax({
+				type : 'PUT',
+				url : '/inventory/changePersonalInfo',
+				data : $('form.personalInformation').serialize(),
+			}).done(function(data) {
+				if (data.success == true) {
+					swal('Personal Info is updated', '', 'success');
+					editPersonalInfo.ladda('stop');
+				}
+			});
+		});
+	});
+
+	editPassword.click(function() {
+		$('div.form-group').removeClass('has-error');
+		$('label.text-danger').hide();
+		editPassword.ladda('start');
+		$.ajax({
+			type : 'PUT',
+			url : '/inventory/changePassword',
+			data : $('form.adminChangePassword').serialize(),
+		}).done(
+				function(data) {
+					if (data.success == true) {
+						swal('Password successfully changed', '', 'success');
+						editPassword.ladda('stop');
+						$('form.adminChangePassword').trigger('reset');
+					} else {
+						editPassword.ladda('stop');
+
+						if (data.errors['oldPassword']) {
+							$('div.oldPassword').addClass('has-error');
+							$('label.oldPassword').text(
+									data.errors['oldPassword']).show();
+						}
+
+						if (data.errors['password']) {
+							$('div.newPassword').addClass('has-error');
+							$('label.newPassword')
+									.text(data.errors['password']).show();
+						}
+					}
+				});
+	});
 	
+	editProfilePicture.click(function(){
+		var $image = $(".image-crop > img");
+		$('input.editProfilePicture').val($image.cropper("getDataURL"));
+		console.log($('form.editProfilePicture').serialize());
+		$.ajax({
+			type : 'PUT',
+			url : '/inventory/changeProfilePicture',
+			data : $('form.editProfilePicture').serialize(),
+			success: function(data){
+				if(data.success == true){
+					swal({
+						title: '',
+						text: 'Success',
+						type: 'success',
+					},function(){
+						$('div#uploadPicture').modal('hide');
+						$('img#profilePicture').attr('src',$image.cropper("getDataURL"));
+					});
+					
+					
+				}
+			}
+		});
+	});
 });

@@ -52,9 +52,11 @@
 
 							<div class="col-lg-4">
 								<select name="area" class="col-lg-5 form-control">
-									<option value="" selected></option> @foreach($areas as $area)
-									{{$area->area}}
-									</option> @endforeach
+									<option value="" selected></option>
+									 @foreach($areas as $area)
+									<option value="{{$area->id}}">{{$area->area}}
+									</option> 
+									@endforeach
 
 
 								</select> <span class="help-block text-danger area">Example
@@ -139,56 +141,6 @@
 
 
 
-<div id="myModal" class="modal fade" role="dialog">
-	<div class="modal-dialog ">
-
-		<!-- Modal content-->
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal">&times;</button>
-				<h4 class="modal-title">Borrow Report</h4>
-			</div>
-
-			<div class="ibox-content">
-				<form id="addActivity" class="form-horizontal">
-				{!! csrf_field() !!}
-				<div class="row">
-					<div class="form-group">
-						<label class="control-label col-lg-2">Activity:</label>
-						<div class="col-lg-10">
-						<input type="text" name="activity" class="form-control">
-						
-						</div>
-					</div>
-					
-					<div class="form-group">
-						<label class="control-label col-lg-2">Description:</label>
-						<div class="col-lg-10">
-						<textarea rows="2" cols="" name="description" class="form-control"></textarea>
-						
-						</div>
-					</div>
-					</div>
-				</form>
-				
-				
-
-			</div>
-
-			<div class="modal-footer">
-				<button class="ladda-button btn btn-w-m btn-primary" id="addActivity"
-					type="button">
-					<strong>Save</strong>
-				</button>
-				<button type="button" class="btn btn-w-m btn-danger"
-					data-dismiss="modal">
-					<strong>Cancel</strong>
-				</button>
-			</div>
-		</div>
-
-	</div>
-</div>
 
 <script type="text/javascript">
 $(document).ready(function() {
@@ -263,16 +215,7 @@ $('#calendar').fullCalendar({
         }
     },
     events:<?php echo json_encode($schedules); ?>,
-    dayClick: function(date, jsEvent, view) {
-
-        alert('Clicked on: ' + date.format());
-
-        alert('Coordinates: ' + jsEvent.pageX + ',' + jsEvent.pageY);
-		alert(jsEvent.title);
-        alert('Current view: ' + view.name);
-
-
-    },
+    
     eventClick: function(calEvent, jsEvent, view) {
 
 		swal(calEvent.title,
