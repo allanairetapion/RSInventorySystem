@@ -331,7 +331,7 @@ $ntime = date ( 'Y-m-d' );
 		}).done(function(data){
 			console.log(data);
 			$('h2.newTickets').text(data.openTickets);
-			$('h2.pendingTickets').text(data.pendingTickets +  data.openTickets);
+			$('h2.pendingTickets').text(data.pendingTickets);
 			$('h2.overdueTickets').text(data.overdueTickets);
 			$('h2.closedTickets').text(data.closedTicketsToday);
 		});

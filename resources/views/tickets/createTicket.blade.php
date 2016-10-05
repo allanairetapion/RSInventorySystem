@@ -58,7 +58,7 @@
 					<label class="col-md-2 control-label">Summary:</label>
 
 					<div class="col-md-10">
-						<input type="hidden" class="form-control summary" name="summary">
+						<input type="hidden" class="form-control ticketSummary" name="summary">
 
 						<div class="ibox-content no-padding">
 							<div class="summernote"></div>
@@ -192,8 +192,8 @@ $(document).ready(function(){
 				  else {
 					 
 					createTicket.ladda('start');
-					  console.log('here');
-					  $('input[type="hidden"].topic').val($('div.ticketsummernote').summernote('code'));
+					  
+					  $('input.ticketSummary').val($('div.summernote').summernote('code'));
 						
 						$('div.topic').removeClass('has-error');
 						$('div.subject').removeClass('has-error');

@@ -571,7 +571,7 @@ class inventoryController extends Controller {
 			$returnedItems->where ( 'items.itemNo', $request ['itemNo'] );
 		}
 		if ($request ['unique_id'] != null) {
-			$returnedItems->where ( 'items.unique_id', $request ['unique_id'] );
+			$returnedItems->where ( 'items.unique_addid', $request ['unique_id'] );
 		}
 		if ($request ['borrower'] != null) {
 			$returnedItems->where ( 'borrower', $request ['borrower'] );

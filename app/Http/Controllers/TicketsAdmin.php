@@ -97,7 +97,7 @@ class TicketsAdmin extends Controller {
 			
 			$filecount = 1;
 			$attachmentpath = "";
-			
+			if($request['attachment'] != null){
 			$image = $request->file ( 'attachment' );
 			$imgvalidatoR = Validator::make ( $image, [ 
 					'attachment' => 'image|max:10485760' 
@@ -109,7 +109,9 @@ class TicketsAdmin extends Controller {
 				$file->move ( public_path ( '/img/attachment/' ), $imageName );
 				$filecount ++;
 				$attachmentpath = $attachmentpath . "/img/attachment/" . $imageName . ",";
+			}	
 			}
+			
 			$user = Tickets::create ( [ 
 					'id' => $ida,
 					'sender_id' => Auth::guard ( 'admin' )->user ()->id,
