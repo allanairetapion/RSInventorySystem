@@ -56,6 +56,13 @@
 								</tr>
 								@endforeach
 							</tbody>
+							<tfoot>
+						<tr>
+						<td colspan="5" class="text-right">
+						<ul class="pagination"></ul>
+						</td>
+						</tr>
+					</tfoot>
 						</table>
 
 					</div>
@@ -80,6 +87,13 @@
 								</tr>
 								@endforeach
 							</tbody>
+							<tfoot>
+						<tr>
+						<td colspan="4" class="text-right">
+						<ul class="pagination"></ul>
+						</td>
+						</tr>
+					</tfoot>
 						</table>
 
 					</div>
@@ -110,6 +124,13 @@
 								</tr>
 								@endforeach
 							</tbody>
+							<tfoot>
+						<tr>
+						<td colspan="5" class="text-right">
+						<ul class="pagination"></ul>
+						</td>
+						</tr>
+					</tfoot>
 						</table>
 
 					</div>
@@ -143,6 +164,13 @@
 								</tr>
 								@endforeach
 							</tbody>
+							<tfoot>
+						<tr>
+						<td colspan="7" class="text-right">
+						<ul class="pagination"></ul>
+						</td>
+						</tr>
+					</tfoot>
 						</table>
 
 					</div>

@@ -16,7 +16,8 @@
 		<div class="ibox float-e-margins">
 			<div class="ibox-title">
 				<div class="pull-right">
-					<button class="btn btn-primary btn-sm addSchedule">Add Schedule</button>
+					<button class="btn btn-primary btn-sm addSchedule" 
+					data-toggle="modal" data-target="#addSchedule" >Add Schedule</button>
 				</div>
 				<h4>Maintenance Schedule</h4>
 
@@ -26,14 +27,17 @@
 			</div>
 		</div>
 	</div>
-	<div id="addSchedule" class="col-lg-12 hidden">
-		<div class="ibox float-e-margins">
-			<div class="ibox-title">
+	<div id="addSchedule" class="modal fade" role="dialog">
+	<div class="modal-dialog modal-lg">
 
-				<h4>Add Schedule</h4>
-
+		<!-- Modal content-->
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+				<h4 class="modal-title">Add Schedule</h4>
 			</div>
-			<div class="ibox-content">
+
+			<div class="modal-body">
 				<form class="form-horizontal" id="addSchedule">
 					{!! csrf_field() !!}
 					<div class="form-group">
@@ -121,23 +125,27 @@
 								class="fa fa-plus"></i> Add new Activity...</a>
 						</div>
 					</div>
-					<hr>
+					
+					
 
-					<div class="text-right">
+				</form>
+				
 
-						<button type="button"
+			</div>
+
+			<div class="modal-footer">
+				<button type="button"
 							class="ladda-button btn btn-w-m btn-primary saveSchedule"
 							data-style="zoom-in">Save</button>
 						<button type="button"
-							class="btn btn-w-m btn-danger btn-outline cancelSchedule ">Cancel</button>
-
-					</div>
-
-				</form>
+							class="btn btn-w-m btn-danger btn-outline" data-dismiss="modal">Cancel</button>
 			</div>
 		</div>
+
 	</div>
 </div>
+	
+	
 
 
 
@@ -231,21 +239,7 @@ $('#calendar').fullCalendar({
 
 });
 
-$('button.addSchedule').click(function(){
-	$('div.sample').slideToggle();
-	
-	$('div#addSchedule').removeClass('hidden');
-	
-	});
 
-$('button.cancelSchedule').click(function(){
-	
-	$('div#addSchedule').addClass('hidden');
-	$('div.sample').slideToggle();
-	
-	
-	
-	})
 
 $('button.saveSchedule').click(function(){
 	var start_date = $('input#startScheduleDate').val();
@@ -255,7 +249,7 @@ $('button.saveSchedule').click(function(){
 	var end_time = convert_time($('input#endScheduleTime').val());
 	
 	function convert_time(time_str){
-		if(time_str != null)
+		if(time_str == null)
 			return false;
 		
 		    var time = time_str.match(/(\d+):(\d+) (\w)/);
@@ -268,11 +262,13 @@ $('button.saveSchedule').click(function(){
 		    }
 		    else if (meridian == 'A' && hours == 12) {
 		      hours = hours - 12;
-		      hours = "0"+ hours.toString();
 		      
 		    }
+		    if (hours < 10){
+				hours = "0"+ hours;
+			    }
 		    console.log(hours)
-		    return hours+":"+minutes+":00";
+		    return String(hours+":"+minutes+":00");
 		};
 		
 		$
@@ -289,15 +285,15 @@ $('button.saveSchedule').click(function(){
 						  });
 						var myEvent = {
 								  title:"Maintenance",
-								  start: start_date + "T" + start_time + ".196Z",
-								  end: end_date + "T"+ end_time + ".196Z",
+								  start: $.fullCalendar.moment(start_date + "T" + start_time),
+								  end: $.fullCalendar.moment(end_date + "T"+ end_time),
 								  description : schedDescription
 								};
-							$('div.sample').slideToggle();
-								
-								$('div#addSchedule').addClass('hidden');
+						$('form#addActivity').trigger('reset');
+						$('div#addSchedule').modal('toggle');
 								$('#calendar').fullCalendar( 'renderEvent', myEvent,true );
-								
+								var start = start_date + "T" + start_time+".196Z";
+								console.log(start);
 							
 						},
 					error: function(data){
@@ -364,7 +360,7 @@ $('button#addActivity').click(function(){
 							radioClass : 'iradio_square-green',
 						});
 						$('form#addActivity').trigger('reset');
-						$('div#myModal').modal('toggle');
+						$('div#addSchedule').modal('toggle');
 					}
 			});
 });

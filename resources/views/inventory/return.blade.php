@@ -21,9 +21,9 @@
 		<div class="ibox float-e-margins">
 			<div class="ibox-content">
 			<div class="row">
-			<div class="col-md-1"><button type="button" class="btn btn-primary btn-sm" data-toggle="modal"
-					data-target="#myModal">Report</button></div>
-			<div class="col-md-11">
+			<div class="col-md-2"><button type="button" class="btn btn-primary btn-sm btn-block" data-toggle="modal"
+					data-target="#myModal">Return Item</button></div>
+			<div class="col-md-10">
 				<div class="input-group m-b">
 					<input type="text" class="form-control" id="filter"
 						placeholder="Search...">
@@ -157,7 +157,13 @@
 							@endforeach
 
 						</tbody>
-
+<tfoot>
+						<tr>
+						<td colspan="8" class="text-right">
+						<ul class="pagination"></ul>
+						</td>
+						</tr>
+					</tfoot>
 					</table>
 				</div>
 
@@ -239,7 +245,7 @@
 						<div class="form-group col-lg-7">
 							<label class="control-label col-lg-4"> Borrower :</label>
 							<div class="col-lg-8">
-								<input type="text" class="form-control infoBorrower"
+								<input type="text" class="form-control infoBorrowerName"
 									value="Borrower" readonly>
 							</div>
 						</div>

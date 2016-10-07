@@ -15,6 +15,19 @@ $(function() {
 		radioClass : 'iradio_square-green',
 	});
 	
+	$('a#exportExcel').click(function(){
+		$('table').table2excel({
+		
+		    exclude: ".noExl",
+		    name: "Worksheet Name",
+		    filename: "SomeFile" //do not include extension
+		  }); 
+		});
+	
+	$('a#exportCSV').click(function(){
+		$("table").tableToCSV();
+		});
+	
 	});
 
 	
@@ -169,6 +182,7 @@ $(function() {
 					$('input.infoId').val(data.info['unique_id']);
 					$('input.infoItemNo').val(data.info['itemNo']);
 					$('input.infoBorrower').val(data.borrow['borrower']);
+					$('input.infoBorrowerName').val(data.borrow['borrowerName']);
 					$('input.infoStationNo').val(data.borrow['borrowerStationNo']);
 					$('input.infoItemType').val(data.info['itemType']);
 					$('input.infoBrand').val(data.info['brand']);
@@ -245,8 +259,7 @@ $(function() {
 				$('tbody').prepend(newRow);
 				$('#myModal').modal('hide');
 				swal('','Item Returned','success');
-				
-				$('form.itemInfo').hide();
+				$('form.borrowInfo').hide();
 				
 			}
 			
@@ -278,21 +291,13 @@ $(function() {
 					
 					if($('input.uniqueId').val() == ""){
 						$('div.itemNotfound').hide();
-						$('input.infoItemNo').val("");
+						
 					}else{
 						$('div.itemNotfound').show();
 					}
 				}else{
 					$('i.fa-pulse').hide();
 					$('div.itemNotfound').hide();
-					$('form.itemInfo').show();
-					$('input.infoId').val(data.info['unique_id']);
-					$('input.infoItemNo').val(data.info['itemNo']);
-					$('input.infoCompany').val(data.info['company']);
-					$('input.infoStationNo').val(data.info['stationNo']);
-					$('input.infoItemType').val(data.info['itemType']);
-					$('input.infoBrand').val(data.info['brand']);
-					$('input.infoModel').val(data.info['model']);
 				}
 				
 				
@@ -330,12 +335,16 @@ $(function() {
 				issueItem.ladda('stop');
 				
 				if(errors.errors["itemNo"]){
-					if(error.errors['itemNo'] == "The selected item no is invalid."){
+					if(errors.errors['itemNo'] == "The selected item no is invalid."){
 						$('span.issueItemNo').text("This Item is already Reported").show();
 						$('div.issueItemNo').addClass('has-error');
 					}
 					$('span.issueItemNo').text(errors.errors["itemNo"]).show();
 					$('div.issueItemNo').addClass('has-error');
+				}
+				if(errors.errors["item_user"]){
+					$('span.itemUser').text(errors.errors["item_user"]).show();
+					$('div.itemUser').addClass('has-error');
 				}
 				if(errors.errors["damage"]){
 					$('span.itemDamage').text(errors.errors["damage"]).show();
@@ -355,8 +364,9 @@ $(function() {
 				var table = $('table#issue').data('footable');
 				$('form.issueItem').trigger('reset');
 				$('tbody.issueItem').prepend("<tr><td><a href='/inventory/items/"+ data.response['itemNo'] +"'>"+ data.response['itemNo'] + "</a></td><td>" + data.response['unique_id']+ "</td>"+
-						"<td>" + data.response['itemType']+ "</td><td>" + data.response['brand']+"</td>" +
+						"<td>" + data.response['itemType'] + "</td><td>" + data.response['brand']+"</td>" +
 						"<td>" + data.response['model'] +"</td><td>" + data.response['damage']+"</td>" +
+						"<td>" + data.response['itemUser'] + "</td>" +
 						"<td>" + decodeURI(data.response['issue']) +"</td><td>"+ data.response['first_name']+" "+ data.response['last_name']+"</td>" +
 						"<td>" + data.response['created_at']+ "</td></tr>");
 				table.redraw();
@@ -442,20 +452,10 @@ $(function() {
 		}).done(function(data){
 			if(data.success == false){
 				repairItem.ladda('stop');
-				if(data.errors["unique_id"]){
-					
-					$('span.repairUnique_id').text(data.errors["unique_id"]).show();
-					
-					
-					if(data.errors["unique_id"] == "The selected unique id is invalid."){
-						$('span.repairUnique_id').text("This Item is already Returned").show();
-						$('div.repairUnique_id').addClass('has-error');
-					}
-					$('div.unique_id').addClass('has-error');
-				}
+				
 				if(data.errors["itemNo"]){
-					$('span.itemNo').text(data.errors["itemNo"]).show();
-					$('div.itemNo').addClass('has-error');
+					$('span.repairItemNo').text(data.errors["itemNo"]).show();
+					$('div.repairItemNo').addClass('has-error');
 				}
 				
 				if(data.errors["dateRepair"]){
@@ -480,12 +480,12 @@ $(function() {
 	// Broken Item
 	
 	$('select#brokenItemNo').change(function(){				
-		$('span.unique_id').text("").hide();
+		$('span.brokenItemNo').text("").hide();
 		$('i.fa-pulse').show();
 		$('form.itemInfo').hide();
 		$('div.itemNotfound').hide();
-		$('div.unique_id').removeClass('has-error');
-		$('div.input-group').removeClass('has-error');
+		$('div').removeClass('has-error');
+		
 		
 		$.ajax({
 			type : "GET",
@@ -548,6 +548,11 @@ $(function() {
 					$('span.brokenSummary').text(data.errors["summary"]).show();
 					$('div.brokenSummary').addClass('has-error');
 				}
+				console.log(data.errors["item_user"]);
+				if(data.errors["item_user"]){
+					$('span.brokenitemUser').text(data.errors["item_user"]).show();
+					$('div.brokenitemUser').addClass('has-error');
+				}
 				if(data.errors["status"]){
 					$('span.brokenStatus').text(data.errors["status"]).show();
 					$('div.brokenStatus').addClass('has-error');
@@ -565,7 +570,7 @@ $(function() {
 				$('tbody#brokenItem').prepend(
 				"<tr><td> <input type='checkbox' class='i-checks brokenItem' value='"+ data.response['itemNo'] +"'/> &nbsp;"+ 
 				"<a href='/inventory/items/" + data.response['itemNo'] +"'>" +data.response['itemNo'] + "</a></td><td>" + data.response['unique_id'] + "</td>" +
-				"<td>" + data.response['damage']+" </td><td>"+data.response['brokenStatus']+"</td>" +
+				"<td>" + data.response['damage'] + "</td><td>" + data.response['itemUser'] + "</td><td>"+data.response['brokenStatus']+"</td>" +
 				"<td>"+ data.response['first_name']+" "+ data.response['last_name']+"</td>" +
 				"<td>" + data.response['created_at']+ "</td><td>" + data.response['itemType'] +"</td>" +
 				"<td>" + data.response['brand'] + "</td><td>" + data.response['model'] + "</td>" +
@@ -576,7 +581,7 @@ $(function() {
 					radioClass : 'iradio_square-green',
 				});
 				table.redraw();
-				$('#brokenReport').modal('hide');
+				$('div#brokenReport').modal('hide');
 				
 				swal('','Item Reported','success');
 				
