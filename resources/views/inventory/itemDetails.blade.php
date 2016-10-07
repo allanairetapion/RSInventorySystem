@@ -94,6 +94,13 @@
 								</tr>
 								@endforeach
 							</tbody>
+							<tfoot>
+						<tr>
+						<td colspan="5" class="text-right">
+						<ul class="pagination"></ul>
+						</td>
+						</tr>
+					</tfoot>
 						</table>
 
 					</div>
@@ -118,6 +125,13 @@
 								</tr>
 								@endforeach
 							</tbody>
+							<tfoot>
+						<tr>
+						<td colspan="4" class="text-right">
+						<ul class="pagination"></ul>
+						</td>
+						</tr>
+					</tfoot>
 						</table>
 
 					</div>
@@ -148,6 +162,13 @@
 								</tr>
 								@endforeach
 							</tbody>
+							<tfoot>
+						<tr>
+						<td colspan="5" class="text-right">
+						<ul class="pagination"></ul>
+						</td>
+						</tr>
+					</tfoot>
 						</table>
 
 					</div>
@@ -181,6 +202,13 @@
 								</tr>
 								@endforeach
 							</tbody>
+							<tfoot>
+						<tr>
+						<td colspan="7" class="text-right">
+						<ul class="pagination"></ul>
+						</td>
+						</tr>
+					</tfoot>
 						</table>
 
 					</div>
@@ -392,7 +420,7 @@ if (window.FileReader) {
 		                var carouselPhoto = '<div class="item"><img alt="image" class="img-responsive center-block"'+
 							'src="'+ data.response +'" style="height: 205px; margin: auto;"></div>';
 		                $('div.carousel-inner').append(carouselPhoto);
-		                
+		                $('div.item:first').addClass('active');
 		                toastr.success('New Photo has been added.');
 						},
                 });
@@ -416,6 +444,7 @@ $(document).on('click','a#deleteItemPhoto',function(){
 		success: function(){
 			$('img[src="'+ src +'"]').parent().remove();
 			$('div.item:first').addClass('active');
+			
 			toastr.success('Photo succesfully deleted.');
 			},
     });

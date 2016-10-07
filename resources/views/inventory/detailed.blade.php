@@ -77,7 +77,13 @@
 
 
 						</tbody>
-
+<tfoot>
+						<tr>
+						<td colspan="8" class="text-right">
+						<ul class="pagination"></ul>
+						</td>
+						</tr>
+					</tfoot>
 					</table>
 				</div>
 

@@ -24,12 +24,19 @@
 
 			<div class="ibox-content">
 				<div class="row">
-					<div class="col-md-1">
+					<div class="col-md-2">
 						<button type="button" class="btn btn-primary btn-sm"
 							data-toggle="modal" data-target="#myModal">Report</button>
-
+						<div class="btn-group">
+                            <button data-toggle="dropdown" class="btn btn-primary btn-sm dropdown-toggle">Export <span class="caret"></span></button>
+                            <ul class="dropdown-menu">
+                                <li><a href="#" id="exportExcel">excel</a></li>
+                                <li><a href="#" id="exportCSV">csv</a></li>
+                               
+                            </ul>
+                        </div>
 					</div>
-					<div class="col-md-11">
+					<div class="col-md-10">
 						<div class="input-group m-b">
 							<input type="text" class="form-control" id="filter"
 								placeholder="Search...">
@@ -162,7 +169,13 @@
 
 
 						</tbody>
-
+						<tfoot>
+						<tr>
+						<td colspan="9" class="text-right">
+						<ul class="pagination"></ul>
+						</td>
+						</tr>
+					</tfoot>
 					</table>
 				</div>
 
@@ -214,7 +227,7 @@
 						<div class="form-group col-lg-5 stationNo">
 							<label class="control-label col-lg-4"> Station No:</label>
 							<div class="col-lg-8">
-								<input type="text" class="form-control"
+								<input type="number" class="form-control"
 									placeholder="Station No." name="stationNo"> <span
 									class="help-block text-danger stationNo">192.168.100.200</span>
 							</div>

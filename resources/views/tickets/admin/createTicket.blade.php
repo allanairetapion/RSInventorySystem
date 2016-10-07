@@ -51,6 +51,7 @@
 							<label class="col-md-2 control-label"> Priority: &nbsp; </label>
 							<div class="col-md-10">
 								<select name="priority" class="form-control" id="priority">
+									<option value=""></option>
 									<option value="High">High</option>
 									<option value="Normal">Normal</option>
 									<option value="Low">Low</option>

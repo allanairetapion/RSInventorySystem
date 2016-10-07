@@ -14,7 +14,9 @@
 <div class="col-lg-3">
 	<h2>Welcome {{
 		Auth::guard('inventory')->user()->adminProfile->first_name }}!</h2>
+		<h3> Summary </h3>
 	<ul class="list-group clear-list m-t">
+	
 		<li class="list-group-item fist-item"><span class="pull-right">Borrowed
 				Items</span> <span class="label label-success">{{$brokenCount}}</span>
 		</li>

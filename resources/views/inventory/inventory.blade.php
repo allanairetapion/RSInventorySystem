@@ -56,6 +56,9 @@
 <script src="/js/plugins/cropper/cropper.min.js"></script>
 <!-- DROPZONE -->
 <script src="/js/plugins/dropzone/dropzone.js"></script>
+<!-- Table Export -->
+<script src="/js/plugins/tableExport/jquery.table2excel.js"></script>
+<script src="/js/plugins/tableExport/jquery.tabletoCSV.js"></script>
 <!-- Input Mask-->
 <script src="/js/plugins/jasny/jasny-bootstrap.min.js"></script>
 <!-- Toastr script -->
@@ -108,7 +111,7 @@
 								src="{{Auth::guard('inventory')->user()->adminProfile->photo}}"
 								onerror="this.src = '/img/default-profile.jpg'" />
 							</span> <a data-toggle="dropdown" class="dropdown-toggle"
-								href="#"> <span class="clear"> <span class="block m-t-xs"> {{
+								href="#"> <span class="clear" id="adminName"> <span class="block m-t-xs"> {{
 										Auth::guard('inventory')->user()->adminProfile ?
 										Auth::guard('inventory')->user()->adminProfile->first_name.'
 										'.Auth::guard('inventory')->user()->adminProfile->last_name :
@@ -145,13 +148,10 @@
 					<li><a href="/inventory/agents"> <i class="fa fa-user"></i><span
 							class="nav-label">Agents</span>
 					</a></li>
-					<li><a href="#"><i class="fa fa-list-alt"></i> <span
-							class="nav-label">Summary</span> <span class="fa arrow"></span></a>
-						<ul class="nav nav-second-level">
-							<li><a href="/inventory/detailed">Inventory Details</a></li>
-							<li><a href="#">Reports</a></li>
-
-						</ul></li>
+					<li><a href="/inventory/detailed"> <i class="fa fa-table"></i><span
+							class="nav-label">Inventory Details</span>
+					</a></li>
+					
 
 
 

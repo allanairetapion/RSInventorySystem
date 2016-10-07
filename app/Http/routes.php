@@ -60,6 +60,7 @@ Route::group(['middleware' => 'inventory'], function () {
 	Route::get("/inventory/items/{id}","inventoryController@viewItemDetails");
 	Route::get("/inventory/editAccount","inventoryController@showEditAccount");
 	Route::get("/inventory/agents/{id}","inventoryController@showAgentProfile");
+	Route::get("/inventory/addItem/search","inventoryController@addItemSearch");
 	
 	Route::post("/inventory/addItem","inventoryController@addItem");
 	Route::post("/inventory/borrowItem","inventoryController@borrowItem");
