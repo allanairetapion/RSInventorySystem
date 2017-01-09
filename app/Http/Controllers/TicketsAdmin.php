@@ -715,8 +715,7 @@ class TicketsAdmin extends Controller {
 		}
 	}
 	public function topIssue(Request $request) {
-		$today = Carbon::today ();
-		
+		$today = Carbon::today ();		
 		$topic_id = array ();
 		$trendingTopics = array ();
 		$trendingDescription = array ();

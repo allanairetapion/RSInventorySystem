@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
   
   protected $table = "maintenance_schedules";
  
-  protected $fillable = ['activities','area','title','status','start_date','end_date'];
+  protected $fillable = ['activities','agents','area','title','status','start_date','end_date'];
   
  }
  ?>

@@ -31,16 +31,14 @@
 <!-- Dropzone -->
 <link href="/css/plugins/dropzone/basic.css" rel="stylesheet">
 <link href="/css/plugins/dropzone/dropzone.css" rel="stylesheet">
- <link href="/css/plugins/jasny/jasny-bootstrap.min.css" rel="stylesheet">
+<link href="/css/plugins/jasny/jasny-bootstrap.min.css" rel="stylesheet">
 
 <link href="/css/plugins/cropper/cropper.min.css" rel="stylesheet">
 <link href="/css/plugins/toastr/toastr.min.css" rel="stylesheet">
 
 <link href="/css/plugins/ladda/ladda-themeless.min.css" rel="stylesheet">
-<!-- Time Picker -->
-<link href="/css/plugins/timepicker/timepicki.css"
-	rel="stylesheet">
-
+<!-- Clock Picker -->
+<link href="/css/plugins/clockpicker/clockpicker.css" rel="stylesheet">
 
 <script src="/js/jquery-2.1.1.js"></script>
 <script src="/js/plugins/fullcalendar/moment.min.js"></script>
@@ -81,8 +79,8 @@
 <script src="/js/plugins/ladda/ladda.jquery.min.js"></script>
 <!-- Full Calendar -->
 <script src="/js/plugins/fullcalendar/fullcalendar.min.js"></script>
-<!-- Time Picker -->
-<script src="/js/plugins/timepicker/timepicki.js"></script>
+<!-- Clock picker -->
+<script src="/js/plugins/clockpicker/clockpicker.js"></script>
 <!-- d3 and c3 charts -->
 <script src="/js/plugins/d3/d3.min.js"></script>
 <script src="/js/plugins/c3/c3.min.js"></script>
@@ -111,7 +109,8 @@
 								src="{{Auth::guard('inventory')->user()->adminProfile->photo}}"
 								onerror="this.src = '/img/default-profile.jpg'" />
 							</span> <a data-toggle="dropdown" class="dropdown-toggle"
-								href="#"> <span class="clear" id="adminName"> <span class="block m-t-xs"> {{
+								href="#"> <span class="clear" id="adminName"> <span
+									class="block m-t-xs"> {{
 										Auth::guard('inventory')->user()->adminProfile ?
 										Auth::guard('inventory')->user()->adminProfile->first_name.'
 										'.Auth::guard('inventory')->user()->adminProfile->last_name :
@@ -151,7 +150,7 @@
 					<li><a href="/inventory/detailed"> <i class="fa fa-table"></i><span
 							class="nav-label">Inventory Details</span>
 					</a></li>
-					
+
 
 
 

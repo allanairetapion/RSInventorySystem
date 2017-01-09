@@ -24,6 +24,9 @@
 	top: auto;
 	bottom: 6px;
 }
+.clockpicker-popover {
+    z-index: 999999;
+}
 .clockpicker-popover .popover-title {
 	background-color: #fff;
 	color: #999;

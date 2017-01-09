@@ -1070,9 +1070,7 @@ $(function() {
 
 	// Dashboard Buttons
 
-	$('button.topSupportWeek')
-			.on(
-					'click',
+	$('button.topSupportWeek').on('click',
 					function() {
 						$
 								.ajax({
