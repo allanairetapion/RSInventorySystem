@@ -7,90 +7,19 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>@yield('title')</title>
 
-<link href="/css/plugins/chosen/chosen.css" rel="stylesheet">
 <link href="/css/bootstrap.min.css" rel="stylesheet">
 <link href="/font-awesome/css/font-awesome.css" rel="stylesheet">
 <link href="/css/plugins/iCheck/custom.css" rel="stylesheet">
 <link href="/css/animate.css" rel="stylesheet">
 <link href="/css/style.css" rel="stylesheet">
 <link href="/css/plugins/sweetalert/sweetalert.css" rel="stylesheet">
-<link href="/css/plugins/dataTables/datatables.min.css" rel="stylesheet">
 <link href="/css/plugins/iCheck/custom.css" rel="stylesheet">
 <link href="/css/plugins/datapicker/datepicker3.css" rel="stylesheet">
 <link href="/css/plugins/summernote/summernote.css" rel="stylesheet">
-<link rel="stylesheet" type="text/css"
-	href="/css/plugins/jQueryUI/jquery-ui.css" />
-<!-- FooTable -->
+<link rel="stylesheet" type="text/css" href="/css/plugins/jQueryUI/jquery-ui.css" />
 <link href="/css/plugins/footable/footable.core.css" rel="stylesheet">
-<!-- Full Calendar -->
-<link href="/css/plugins/fullcalendar/fullcalendar.css" rel="stylesheet">
-<link href="/css/plugins/fullcalendar/fullcalendar.print.css"
-	rel='stylesheet' media='print'>
-<!-- c3 Charts -->
-<link href="/css/plugins/c3/c3.min.css" rel="stylesheet">
-<!-- Dropzone -->
-<link href="/css/plugins/dropzone/basic.css" rel="stylesheet">
-<link href="/css/plugins/dropzone/dropzone.css" rel="stylesheet">
-<link href="/css/plugins/jasny/jasny-bootstrap.min.css" rel="stylesheet">
-
-<link href="/css/plugins/cropper/cropper.min.css" rel="stylesheet">
-<link href="/css/plugins/toastr/toastr.min.css" rel="stylesheet">
-
 <link href="/css/plugins/ladda/ladda-themeless.min.css" rel="stylesheet">
-<!-- Clock Picker -->
-<link href="/css/plugins/clockpicker/clockpicker.css" rel="stylesheet">
-
-<script src="/js/jquery-2.1.1.js"></script>
-<script src="/js/plugins/fullcalendar/moment.min.js"></script>
-<script src="/js/bootstrap.min.js"></script>
-<script src="/js/plugins/metisMenu/jquery.metisMenu.js"></script>
-<script src="/js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
-<!-- Custom and plugin javascript -->
-<script src="/js/inspinia.js"></script>
-<script src="/js/plugins/pace/pace.min.js"></script>
-<!-- FooTable -->
-<script src="/js/plugins/footable/footable.all.min.js"></script>
-<!-- Image cropper -->
-<script src="/js/plugins/cropper/cropper.min.js"></script>
-<!-- DROPZONE -->
-<script src="/js/plugins/dropzone/dropzone.js"></script>
-<!-- Table Export -->
-<script src="/js/plugins/tableExport/jquery.table2excel.js"></script>
-<script src="/js/plugins/tableExport/jquery.tabletoCSV.js"></script>
-<!-- Input Mask-->
-<script src="/js/plugins/jasny/jasny-bootstrap.min.js"></script>
-<!-- Toastr script -->
-<script src="/js/plugins/toastr/toastr.min.js"></script>
-<script type="text/javascript" src="/js/jquery-ui-1.10.4.min.js"></script>
-<!---Data Table -->
-<script src="/js/plugins/jeditable/jquery.jeditable.js"></script>
-<script src="/js/plugins/dataTables/datatables.min.js"></script>
-<!-- SUMMERNOTE -->
-<script src="/js/plugins/summernote/summernote.min.js"></script>
-<!-- Chosen -->
-<script src="/js/plugins/chosen/chosen.jquery.js"></script>
-<!-- Sweet Alert -->
-<script src="/js/plugins/sweetalert/sweetalert.min.js"></script>
-<!-- Input Mask -->
-<script src="/js/plugins/jasny/jasny-bootstrap.min.js"></script>
-<!-- Ladda -->
-<script src="/js/plugins/ladda/spin.min.js"></script>
-<script src="/js/plugins/ladda/ladda.min.js"></script>
-<script src="/js/plugins/ladda/ladda.jquery.min.js"></script>
-<!-- Full Calendar -->
-<script src="/js/plugins/fullcalendar/fullcalendar.min.js"></script>
-<!-- Clock picker -->
-<script src="/js/plugins/clockpicker/clockpicker.js"></script>
-<!-- d3 and c3 charts -->
-<script src="/js/plugins/d3/d3.min.js"></script>
-<script src="/js/plugins/c3/c3.min.js"></script>
-<!--Ichecks-->
-<script src="/js/plugins/iCheck/icheck.min.js"></script>
-<!-- jQuery UI custom -->
-<script src="/js/jquery-ui.custom.min.js"></script>
-<!-- Data picker -->
-<script src="/js/plugins/datapicker/bootstrap-datepicker.js"></script>
-<script src="/js/inventory.js"></script>
+<link href="/css/plugins/chosen/chosen.css" rel="stylesheet">
 </head>
 
 <body>
@@ -238,7 +167,37 @@
 
 
 	@show
+<script src="/js/jquery-2.1.1.js"></script>
 
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/plugins/metisMenu/jquery.metisMenu.js"></script>
+<script src="/js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+<!-- Custom and plugin javascript -->
+<script src="/js/inspinia.js"></script>
+<script src="/js/plugins/pace/pace.min.js"></script>
+<!-- FooTable -->
+<script src="/js/plugins/footable/footable.all.min.js"></script>
+<!-- Table Export -->
+<script src="/js/plugins/tableExport/jquery.table2excel.js"></script>
+<script src="/js/plugins/tableExport/jquery.tabletoCSV.js"></script>
+<!-- SUMMERNOTE -->
+<script src="/js/plugins/summernote/summernote.min.js"></script>
+<!-- Sweet Alert -->
+<script src="/js/plugins/sweetalert/sweetalert.min.js"></script>
+<!-- Ladda -->
+<script src="/js/plugins/ladda/spin.min.js"></script>
+<script src="/js/plugins/ladda/ladda.min.js"></script>
+<script src="/js/plugins/ladda/ladda.jquery.min.js"></script>
+<!--Ichecks-->
+<script src="/js/plugins/iCheck/icheck.min.js"></script>
+<!-- jQuery UI custom -->
+<script src="/js/jquery-ui.custom.min.js"></script>
+<!-- Date picker -->
+<script src="/js/plugins/datapicker/bootstrap-datepicker.js"></script>
+<!-- Chosen -->
+<script src="/js/plugins/chosen/chosen.jquery.js"></script>
+<script src="/js/inventory.js"></script>
 </body>
 
+@yield('scripts')
 </html>

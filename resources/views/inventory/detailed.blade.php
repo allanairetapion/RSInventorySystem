@@ -72,14 +72,14 @@ Details') @section('header-page')
 												<tbody>
 													@foreach($items as $item)
 													<tr>
-														<td><a href="#" id="itemInfo">{{$item->itemNo}}</a></td>
+														<td><a href="/inventory/items/{{$item->itemNo}}">{{$item->itemNo}}</a></td>
 														<td>{{$item->unique_id}}</td>
 														<td>{{$item->stationNo}}</td>
 														<td>{{$item->brand}}</td>
 														<td>{{$item->model}}</td>
 														<td>{{$item->itemStatus}}</td>
-														<td>{{$item->morningClient}}</td>
-														<td>{{$item->nightClient}}</td>
+														<td>{{$item->morning_FN.' '.$item->morning_LN}}</td>
+														<td>{{$item->night_FN.' '.$item->night_LN}}</td>
 														<td>{{$item->created_at}}</td>
 													</tr>
 													@endforeach
