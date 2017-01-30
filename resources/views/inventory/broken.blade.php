@@ -1,6 +1,5 @@
-@extends('inventory.inventory') @section('title', 'RS | Broken Items')
-
-@section('header-page')
+@extends('layouts.inventory_basic') @section('title', 'RS | Broken
+Items') @section('header-page')
 <div class="col-lg-10">
 	<h2>Broken Items</h2>
 	<ol class="breadcrumb">
@@ -24,7 +23,7 @@
 						<button type="button" class="btn btn-primary btn-sm "
 							data-toggle="modal" data-target="#brokenReport">Report Broken
 							Item</button>
-					
+
 						<div class="btn-group">
 							<button data-toggle="dropdown"
 								class="btn btn-primary btn-sm dropdown-toggle">
@@ -40,27 +39,33 @@
 							</ul>
 						</div>
 						<div class="btn-group">
-                            <button data-toggle="dropdown" class="btn btn-primary btn-sm dropdown-toggle">Export <span class="caret"></span></button>
-                            <ul class="dropdown-menu">
-                                <li><a href="#" id="exportExcel">excel</a></li>
-                                <li><a href="#" id="exportCSV">csv</a></li>
-                               
-                            </ul>
-                        </div>
+							<button data-toggle="dropdown"
+								class="btn btn-primary btn-sm dropdown-toggle">
+								Export <span class="caret"></span>
+							</button>
+							<ul class="dropdown-menu">
+								<li><a href="#" id="exportExcel">excel</a></li>
+								<li><a href="#" id="exportCSV">csv</a></li>
+
+							</ul>
+						</div>
 					</div>
-					<div class="col-md-8">
+					<div class="col-md-offset-4 col-md-4">
 						<div class="input-group m-b">
-
-
-							<input type="text" class="form-control" id="filter"
-								placeholder="Search...">
+							<input type="text" class="form-control" id="brokenSearch"
+								name="brokenSearch" placeholder="Search...">
 							<div class="input-group-btn">
-								<button class="btn btn-white" id="brokenAdvancedSearch"
-									type="button">
-									Search Options <span class="caret"></span>
+								<button id="brokenSearch" class="btn btn-primary" type="button">
+									<i class="fa fa-search"></i>
 								</button>
+								<button class="btn btn-success" id="brokenAdvancedSearch"
+									type="button">
+									<span class="caret"></span>
+								</button>
+
 							</div>
 						</div>
+
 					</div>
 				</div>
 
@@ -150,9 +155,15 @@
 					</div>
 				</div>
 
+				<div class="spiner-example hide" id="spinner">
+					<div class="sk-spinner sk-spinner-three-bounce">
+						<div class="sk-bounce1"></div>
+						<div class="sk-bounce2"></div>
+						<div class="sk-bounce3"></div>
+					</div>
+				</div>
 
-
-				<table id="broken"
+				<table id="brokenResult"
 					class="footable table table-bordered table-hover toggle-arrow-tiny"
 					data-filter="#filter" data-striping="false">
 					<thead>
@@ -160,7 +171,7 @@
 							<th data-toggle="true"><input type="checkbox" class="i-checks" />
 								&nbsp; Item No.</th>
 							<th>Unique ID</th>
-							
+
 							<th>Damage</th>
 							<th>Item User</th>
 							<th>Current Status</th>
@@ -173,6 +184,11 @@
 						</tr>
 					</thead>
 					<tbody id="brokenItem">
+						@if(count($brokenItems) == 0)
+							<tr class="text-center">
+								<td colspan="6">No item found.</td>
+							</tr>
+						@endif
 						@foreach($brokenItems as $brokenItem)
 
 						<tr id="{{$brokenItem->itemNo}}">
@@ -182,9 +198,9 @@
 							<td>{{$brokenItem->unique_id}}</td>
 
 							<td>{{$brokenItem->damage}}</td>
-							<td>{{$brokenItem->itemUser}}</td>
-							<td>{{$brokenItem->brokenStatus}}</td>
 							<td>{{$brokenItem->first_name.' '.$brokenItem->last_name}}</td>
+							<td>{{$brokenItem->brokenStatus}}</td>
+							<td>{{$brokenItem->agent_FN.' '.$brokenItem->agent_LN}}</td>
 							<td>{{$brokenItem->created_at}}</td>
 							<td>{{$brokenItem->itemType}}</td>
 							<td>{{$brokenItem->brand}}</td>
@@ -197,13 +213,43 @@
 					</tbody>
 					<tfoot>
 						<tr>
-						<td colspan="7" class="text-right">
-						<ul class="pagination"></ul>
-						</td>
+							<td colspan="7" class="text-right">
+								<ul class="pagination"></ul>
+							</td>
 						</tr>
 					</tfoot>
 				</table>
+	<table id="brokenSearchResult"
+					class="footable table table-bordered table-hover toggle-arrow-tiny hide"
+					data-filter="#filter" data-striping="false">
+					<thead>
+						<tr>
+							<th data-toggle="true"><input type="checkbox" class="i-checks" />
+								&nbsp; Item No.</th>
+							<th>Unique ID</th>
 
+							<th>Damage</th>
+							<th>Item User</th>
+							<th>Current Status</th>
+							<th>Reported By</th>
+							<th>Date Broken</th>
+							<th data-hide="all">ItemType</th>
+							<th data-hide="all">Brand</th>
+							<th data-hide="all">Model</th>
+							<th data-hide="all">Summary</th>
+						</tr>
+					</thead>
+					<tbody id="brokenItem">
+
+					</tbody>
+					<tfoot>
+						<tr>
+							<td colspan="10" class="text-right">
+								<ul class="pagination"></ul>
+							</td>
+						</tr>
+					</tfoot>
+				</table>
 
 			</div>
 		</div>
@@ -222,9 +268,10 @@
 			</div>
 
 			<div class="modal-body">
+			<div class="row">
 				<form id="brokenItem" id="brokenItem">
 					{!! csrf_field() !!}
-					<div class="row">
+					
 						<div class="form-group brokenItemNo">
 							<label class="control-label"> Item No:</label> <select
 								id="brokenItemNo" class="form-control chosen-select"
@@ -279,7 +326,7 @@
 
 							<div class="input-group date dateBroken">
 								<span class="input-group-addon"><i class="fa fa-calendar"></i></span><input
-									type="text" class="form-control dateBroken" name="dateBroken">
+									type="text" class="form-control dateBroken" name="dateReported">
 
 							</div>
 
@@ -320,142 +367,8 @@
 
 	</div>
 </div>
-
-
-
-<script type="text/javascript">
-$(document).ready(function() {
-	$('form.itemInfo').hide();
-	$('i.fa-pulse').hide();
-	$('div.itemNotfound').hide();
-	$('span.text-danger').hide();
-	$('div#brokenAdvancedSearch').hide();
-	$('table#broken').footable();
-	$('div#brokenSummary').summernote({
-		height: 150,
-		minHeight: 150,             // set minimum height of editor
-		maxHeight: 150,
-		toolbar : [
-					[
-							'style',
-							[
-									'bold',
-									'italic',
-									'underline',
-									'clear' ] ],
-					[ 'fontname',
-							[ 'fontname' ] ],
-					[ 'fontsize',
-							[ 'fontsize' ] ],
-					[ 'color', [ 'color' ] ],
-					[
-							'para',
-							[ 'ul', 'ol',
-									'paragraph' ] ],
-					 ] 
-	 });
-	});
-
-	
-
-$('button#brokenAdvancedSearch').click(function(){
-	$('div#brokenAdvancedSearch').slideToggle();
-});
-	
-$('li a#brokenMark').click(function(){
-	var items = [];
-	var mark = $(this).text();
-
-	$('input:checkbox.brokenItem:checked').each(function () {
-	       if(this.checked){
-		       items.push($(this).val());
-		   		$('tr#'+$(this).val()+' td').eq(3).text(mark);
-	       }
-	  });
-	console.log(items);
-	  if(items.length == 0){
-		  toastr.warning('No Input');
-			return false;
-		  }
-	
-	swal({
-		title : 'Are you sure?',
-		text : "This Action can't be undone",
-		type : 'warning',
-		showCancelButton : true,
-		showCancelButton : true,
-		closeOnConfirm : false,
-		showLoaderOnConfirm : true,
-		disableButtonsOnConfirm : true,
-	}, function() {
-		
-		$.ajax({
-			headers : {'X-CSRF-Token' : $('input[name="_token"]').val()},
-			type : "PUT",
-			url : "/inventory/brokenMark",
-			data : {items : items, mark : mark},
-			success: function(data){
-				var table = $('table#broken').data('footable');
-				swal({
-					title:"Success",
-					text: "Successfully Marked as "+ mark,
-					type: "success",
-					},function(){
-						$('input:checkbox.brokenItem:checked').each(function () {
-							if(mark != "Repaired"){
-								
-							   		$('tr#'+$(this).val()+' td').eq(3).text(mark);	   		
-						       		
-							}else{								 
-									table.removeRow($('tr#'+$(this).val()));
-								}
-							table.redraw();
-						});
-						});
-				
-					}
-			});
-		});
-	
-	  
-});
-
-$('button.brokenTicketSearch').click(function(){
-	$.ajax({
-		type : "get",
-		url : "/inventory/broken/search",
-		data : $('form.brokenTicketSearch').serialize(),
-		success: function(data){
-			var table = $('table#broken').data('footable');
-			$('tbody>tr').each(function(){
-				table.removeRow(this);
-				});
-
-			if(data.response.length >= 1){
-				$.each(data.response,function(i, v) {
-					var newRow = "<tr id='" + v.itemNo + "'><td><input type='checkbox' class='i-checks brokenItem' value='" + v.itemNo +"' />" + 
-					"<a href='/inventory/items/"+ v.itemNo +"'> " +v.itemNo + "</td><td>" + v.unique_id + " </td>"+
-					"<td>" + v.damage + "</td><td>" + v.itemUser + "</td><td>" + v.brokenStatus + "</td>" +
-					"<td>" + v.first_name + " " + v.last_name + "</td>" + 
-					"<td>" + v.created_at + "</td><td>" + v.itemType + "</td>"+
-					"<td>" + v.brand + "</td><td>" + v.model + "</td>" + 
-					"<td>" + decodeURI(v.brokenSummary) + "</td></tr>";
-					table.appendRow(newRow);
-					
-					
-					});
-				}else{
-				table.appendRow("<tr><td colspan='6' class='text-center'> No Data Found.</td></tr>");
-				}
-			$('.i-checks').iCheck({
-				checkboxClass : 'icheckbox_square-green',
-				radioClass : 'iradio_square-green',
-			});
-		}
-	
-	});
-});
-
+@endsection @section('scripts')
+<script type="text/javascript" src="/js/inventory/inventoryBroken.js">
 </script>
 @endsection
 

@@ -18,31 +18,39 @@
 		<div class="ibox ">
 
 			<div class="ibox-content">
-			<div class="row">
+				<div class="row">
 					<div class="col-md-2">
 						<button type="button" class="btn btn-primary btn-sm"
 							data-toggle="modal" data-target="#addItem">Add Item</button>
-							<div class="btn-group">
-                            <button data-toggle="dropdown" class="btn btn-primary btn-sm dropdown-toggle">Export <span class="caret"></span></button>
-                            <ul class="dropdown-menu">
-                                <li><a href="#" id="exportExcel">excel</a></li>
-                                <li><a href="#" id="exportCSV">csv</a></li>
-                               
-                            </ul>
-                        </div>
+						<div class="btn-group">
+							<button data-toggle="dropdown"
+								class="btn btn-primary btn-sm dropdown-toggle">
+								Export <span class="caret"></span>
+							</button>
+							<ul class="dropdown-menu">
+								<li><a href="#" id="exportExcel">excel</a></li>
+								<li><a href="#" id="exportCSV">csv</a></li>
+
+							</ul>
+						</div>
 
 					</div>
-					<div class="col-md-10">
+					<div class="col-md-offset-6 col-md-4">
 						<div class="input-group m-b">
 							<input type="text" class="form-control" id="filter"
 								placeholder="Search...">
 							<div class="input-group-btn">
-								<button class="btn btn-white" id="itemAdvancedSearch"
-									type="button">
-									Search Options <span class="caret"></span>
+								<button tabindex="-1" class="btn btn-primary" type="button">
+									<i class="fa fa-search"></i>
 								</button>
+								<button class="btn btn-success" id="itemAdvancedSearch"
+									type="button">
+									<span class="caret"></span>
+								</button>
+
 							</div>
 						</div>
+
 					</div>
 				</div>
 				<div id="itemAdvancedSearch" class="panel panel-default">
@@ -53,13 +61,7 @@
 								<div class="col-md-4">
 									<label class="control-label col-md-4">Item No:</label>
 									<div class="col-md-8">
-										<select class="form-control itemNo chosen-select"
-											name="itemNo">
-											<option value="" selected></option> 
-											@foreach($items as $item)
-											<option value="{{$item->itemNo}}">{{$item->itemNo}}</option>
-											@endforeach
-										</select>
+										<input type="text" name="itemNo" class="form-control">
 									</div>
 								</div>
 								<div class="col-md-4">
@@ -72,30 +74,27 @@
 									<label class="control-label col-md-4">Item Type:</label>
 									<div class="col-md-8">
 										<select class="form-control" name="itemType">
-										<option value="" selected></option>
-										@foreach($itemTypes as $itemType)
-										<option value="{{$itemType->itemType}}">{{$itemType->itemType}}</option>
-										@endforeach
+											<option value="" selected></option> @foreach($itemTypes as
+											$itemType)
+											<option value="{{$itemType->itemType}}">{{$itemType->itemType}}</option>
+											@endforeach
 										</select>
 									</div>
 								</div>
 								<div class="col-md-4">
-								<br>
-									<label class="control-label col-md-4">Brand:</label>
+									<br> <label class="control-label col-md-4">Brand:</label>
 									<div class="col-md-8">
 										<input class="form-control" name="brand" type="text">
 									</div>
 								</div>
 								<div class="col-md-4">
-								<br>
-									<label class="control-label col-md-4">Model:</label>
+									<br> <label class="control-label col-md-4">Model:</label>
 									<div class="col-md-8">
 										<input class="form-control" name="model" type="text">
 									</div>
 								</div>
 								<div class="col-md-4">
-								<br>
-								<label class="control-label col-md-4">Date:</label>
+									<br> <label class="control-label col-md-4">Date:</label>
 									<div class="col-md-8">
 										<div class="input-group date dateBorrowed">
 											<span class="input-group-addon"><i class="fa fa-calendar"></i></span><input
@@ -111,8 +110,8 @@
 								<div class=" col-md-4 ">
 									<br>
 
-									<button type="button"
-										class="btn btn-primary btn-w-m" id="addItemSearch">
+									<button type="button" class="btn btn-primary btn-w-m"
+										id="addItemSearch">
 										<i class="fa fa-search"></i> Search
 									</button>
 									<button type="reset" class="btn btn-warning btn-w-m">
@@ -125,19 +124,20 @@
 						</form>
 					</div>
 				</div>
-				<table id="itemList" class="table table-bordered" data-filter="#filter" data-striping="false">
+				<table id="itemList" class="table table-bordered"
+					data-filter="#filter" data-striping="false">
 					<thead>
-					<tr>
-						<th>Item No.</th>
-						<th>Item Type</th>
-						<th>Unique ID</th>
-						<th>Brand</th>
-						<th>Model</th>
-						<th>Date Arrived</th>
+						<tr>
+							<th>Item No.</th>
+							<th>Item Type</th>
+							<th>Unique ID</th>
+							<th>Brand</th>
+							<th>Model</th>
+							<th>Date Arrived</th>
 						</tr>
 					</thead>
 					<tbody>
-					@foreach($items as $item)
+						@foreach($items as $item)
 						<tr>
 							<td>{{$item->itemNo}}</td>
 							<td>{{$item->itemType}}</td>
@@ -150,17 +150,17 @@
 					</tbody>
 					<tfoot>
 						<tr>
-						<td colspan="6" class="text-right">
-						<ul class="pagination"></ul>
-						</td>
+							<td colspan="6" class="text-right">
+								<ul class="pagination"></ul>
+							</td>
 						</tr>
 					</tfoot>
 				</table>
-				
+
 			</div>
 		</div>
 	</div>
-	
+
 
 </div>
 <div id="addItem" class="modal fade" role="dialog">
@@ -203,12 +203,9 @@
 						</div>
 						<div class="col-lg-12">
 							<div class="form-group company">
-								<label class="control-label"> Company:</label> <select
-									class="form-control" name="company" id="company">
-									<option value="" selected></option>
-									<option value="Remote Staff">Remote Staff</option>
-									<option value="Real Estate">Real Estate</option>
-								</select> <span class="help-block text-danger company">192.168.100.200</span>
+								<label class="control-label"> Company:</label> 
+								<input name="company" id="company" class="form-control" type="text">
+								 <span class="help-block text-danger company">192.168.100.200</span>
 							</div>
 						</div>
 
@@ -230,11 +227,11 @@
 									<option value="Mouse">Mouse</option>
 									<option value="Headset">Headset</option>
 									<option value="Monitor">Monitor</option>
-									<option value="" id ="otherItemType">Other</option>
-								</select> 
-								<input type="text" class="form-control hidden" id="otherItemType" placeholder="Please Specify">
-								<span class="help-block text-danger itemType">192.168.100.200</span>
-								
+									<option value="" id="otherItemType">Other</option>
+								</select> <input type="text" class="form-control hidden"
+									id="otherItemType" placeholder="Please Specify"> <span
+									class="help-block text-danger itemType">192.168.100.200</span>
+
 							</div>
 						</div>
 						<div class="col-lg-12">
@@ -269,7 +266,7 @@
 
 
 
-						
+
 					</div>
 				</form>
 
@@ -277,9 +274,9 @@
 
 			<div class="modal-footer">
 				<button class="btn btn-w-m btn-primary addItem" type="button">
-								<strong>Submit</strong>
-							</button>
-							<button class="btn btn-danger btn-w-m" data-dismiss="modal">Cancel</button>
+					<strong>Submit</strong>
+				</button>
+				<button class="btn btn-danger btn-w-m" data-dismiss="modal">Cancel</button>
 
 			</div>
 		</div>
@@ -431,7 +428,7 @@
 			            formData.append("itemNo", $("input#itemNo").val());
 			            formData.append("brand", $("input#brand").val());
 			            formData.append("model", $("input#model").val());
-			            formData.append("company", $("select#company").val());
+			            formData.append("company", $("input#company").val());
 			            formData.append("stationNo", $("input#stationNo").val());
 			            formData.append("specification", $("input#specification").val());
 			            formData.append("itemType", $("select#itemType").val());

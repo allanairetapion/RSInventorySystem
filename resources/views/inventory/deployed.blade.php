@@ -1,12 +1,12 @@
-@extends('layouts.inventory_basic') @section('title', 'RS | Return')
+@extends('layouts.inventory_basic') @section('title', 'RS | Deploy')
 
 @section('header-page')
 <div class="col-lg-10">
-	<h2>Return Form</h2>
+	<h2>Deployed Items</h2>
 	<ol class="breadcrumb">
-		<li><a href="index.html">Home</a></li>
+		<li><a href="/inventory/index">Home</a></li>
 
-		<li class="active"><strong>Return Item</strong></li>
+		<li class="active"><strong>Deployed Items</strong></li>
 	</ol>
 </div>
 
@@ -21,17 +21,17 @@
 				<div class="row">
 					<div class="col-md-2">
 						<button type="button" class="btn btn-primary btn-sm btn-block"
-							data-toggle="modal" data-target="#myModal">Return Item</button>
+							data-toggle="modal" data-target="#myModal">Deploy Item</button>
 					</div>
 					<div class="col-md-offset-6 col-md-4">
 						<div class="input-group m-b">
-							<input type="text" class="form-control" id="returnSearch"
-								name="returnSearch" placeholder="Search...">
+							<input type="text" class="form-control" id="deploySearch"
+								name="deploySearch" placeholder="Search...">
 							<div class="input-group-btn">
-								<button id="returnSearch" class="btn btn-primary" type="button">
+								<button id="deploySearch" class="btn btn-primary" type="button">
 									<i class="fa fa-search"></i>
 								</button>
-								<button class="btn btn-success" id="returnAdvancedSearch"
+								<button class="btn btn-success" id="deployAdvancedSearch"
 									type="button">
 									<span class="caret"></span>
 								</button>
@@ -42,9 +42,9 @@
 					</div>
 
 				</div>
-				<div id="returnAdvancedSearch" class="panel panel-default">
+				<div id="deployAdvancedSearch" class="panel panel-default">
 					<div class="panel-body">
-						<form class="returnTicketSearch form-horizontal">
+						<form class="deployTicketSearch form-horizontal">
 							{!! csrf_field() !!}
 
 
@@ -66,22 +66,11 @@
 									<div class="col-md-8">
 										<input class="form-control" name="unique_id" type="text">
 									</div>
-								</div>
+								</div>								
 								<div class="col-md-4">
-									<label class="control-label col-md-4">Borrower:</label>
+									<label class="control-label col-md-4">Deploy by:</label>
 									<div class="col-md-8">
-										<select class="form-control chosen-select" name="borrower">
-											<option value="" selected></option> @foreach($clients as
-											$client)
-											<option value="{{$client->id}}">{{$client->first_name.'
-												'.$client->last_name}}</option> @endforeach
-										</select>
-									</div>
-								</div>
-								<div class="col-md-4">
-									<br> <label class="control-label col-md-4">Receiver:</label>
-									<div class="col-md-8">
-										<select class="form-control chosen-select" name="receiver">
+										<select class="form-control chosen-select" name="deployed_by">
 											<option value="" selected hidden></option> @foreach($agents
 											as $agent)
 											<option value="{{$agent->id}}">{{$agent->first_name.'
@@ -95,10 +84,10 @@
 								<div class="col-md-4">
 									<br> <label class="control-label col-md-4">Date:</label>
 									<div class="col-md-8">
-										<div class="input-group date dateReturned">
+										<div class="input-group date dateDeployed">
 											<span class="input-group-addon"><i class="fa fa-calendar"></i></span><input
-												type="text" class="form-control dateReturned"
-												placeholder="Date Returned" name="dateReturned">
+												type="text" class="form-control dateDeployed"
+												placeholder="Date Deployed" name="dateDeployed">
 
 										</div>
 									</div>
@@ -110,7 +99,7 @@
 									<br>
 
 									<button type="button"
-										class="btn btn-primary btn-sm returnTicketSearch">
+										class="btn btn-primary btn-sm deployTicketSearch">
 										<i class="fa fa-search"></i> Search
 									</button>
 									<button type="reset" class="btn btn-warning btn-sm">
@@ -130,45 +119,41 @@
 						<div class="sk-bounce3"></div>
 					</div>
 				</div>
-				<div class="table-responsive" id="returnResult">
-					<table id="return" class="table table-bordered table-hover"
+				<div class="table-responsive" id="deployResult">
+					<table id="deploy" class="table table-bordered table-hover"
 						data-filter="#filter" data-striping="false">
 						<thead>
 							<tr>
 
 								<th>Item No.</th>
-								<th>Unique Identifier</th>
-								<th>Item Type</th>
-
-								<th>Brand</th>
-								<th>Model</th>
-
-								<th>Borrower</th>
-								<th>Receiver</th>
-								<th>Date Returned</th>
+							<th>Unique Identifier</th>
+							<th>Item Type</th>
+							<th>Brand</th>
+							<th>Model</th>
+							<th>Station No</th>
+							<th>Deployed By</th>
+							<th>Date Deployed</th>
 
 							</tr>
 						</thead>
-						<tbody class="returnItem">
-							@if(count($returnedItems) == 0)
+						<tbody class="deployItem">
+							@if(count($deployedItems) == 0)
 							<tr class="text-center">
 								<td colspan="8">No item found.</td>
 							</tr>
 							@endif
-							@foreach($returnedItems as $return) @if($return->dateReturned)
-							<tr>
-								<td><a href="/inventory/items/{{$return->itemNo}}">{{$return->itemNo}}</a></td>
-								<td>{{$return->unique_id}}</td>
-								<td>{{$return->itemType}}</td>
-								<td>{{$return->brand}}</td>
-								<td>{{$return->model}}</td>
-								<td>{{$return->first_name.' '.$return->last_name}}</td>
-								<td>{{$return->agent_FN.' '.$return->agent_LN}}</td>
-								<td>{{$return->dateReturned}}</td>
-
-							</tr>
-							@endif @endforeach
-
+							@foreach($deployedItems as $item)
+								<tr>
+									<td><a href="/inventory/items/{{$item->itemNo}}">{{$item->itemNo}}</a></td>
+									<td>{{$item->unique_id}}</td>
+									<td>{{$item->itemType}}</td>
+									<td>{{$item->brand}}</td>
+									<td>{{$item->model}}</td>
+									<td>{{$item->stationNo}}</td>
+									<td>{{$item->first_name.' '.$item->last_name}}</td>
+									<td>{{$item->created_at}}</td>
+								</tr>
+							@endforeach
 						</tbody>
 						<tfoot>
 							<tr>
@@ -179,7 +164,7 @@
 						</tfoot>
 					</table>
 				</div>
-				<table id="returnSearchResult"
+				<table id="deploySearchResult"
 					class="table table-bordered table-hover hide" data-striping="false">
 					<thead>
 						<tr>
@@ -187,13 +172,10 @@
 							<th>Item No.</th>
 							<th>Unique Identifier</th>
 							<th>Item Type</th>
-
 							<th>Brand</th>
 							<th>Model</th>
-
-							<th>Borrower</th>
-							<th>Receiver</th>
-							<th>Date Returned</th>
+							<th>Deployed By</th>
+							<th>Date Deployed</th>
 
 						</tr>
 					</thead>
@@ -221,18 +203,17 @@
 		<div class="modal-content">
 			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal">&times;</button>
-				<h4 class="modal-title">Return Report</h4>
+				<h4 class="modal-title">Deploy Report</h4>
 			</div>
 
 			<div class="ibox-content">
-				<form class="form-horizontal returnItem" id="returnItem">
-					{!! csrf_field() !!} <input type="hidden" name="borrower"
-						class="infoBorrower">
+				<form class="form-horizontal deployItem" id="deployItem">
+					{!! csrf_field() !!} <input type="hidden">
 					<div class="row">
-						<div class="form-group col-lg-5 itemNo">
+						<div class="form-group col-lg-6 itemNo">
 							<label class="control-label col-lg-4"> Item No:</label>
 							<div class="col-lg-8">
-								<select id="returnItemNo" class="form-control chosen-select"
+								<select id="deployItemNo" class="form-control chosen-select"
 									name="itemNo">
 									<option value="" selected></option> @foreach($itemNumbers as
 									$id)
@@ -240,18 +221,14 @@
 									@endforeach
 								</select> <span class="help-block text-danger itemNo">192.168.100.200</span>
 							</div>
+							
 						</div>
-
-						<div class="form-group col-lg-7 dateReturned">
-							<label class="control-label col-lg-4"> Date Received:</label>
+						<div class="form-group col-lg-6 stationNo">
+							
+							<label class="control-label col-lg-4"> Station No:</label>
 							<div class="col-lg-8">
-								<div class="input-group date dateReturned">
-									<span class="input-group-addon"><i class="fa fa-calendar"></i></span><input
-										type="text" class="form-control dateReturned"
-										placeholder="Name" name="dateReturned">
-
-								</div>
-								<span class="help-block text-danger dateReturned">192.168.100.200</span>
+								<input type="number" name="stationNo" class="form-control" >
+								<span class="help-block text-danger stationNo">192.168.100.200</span>
 							</div>
 						</div>
 
@@ -265,9 +242,9 @@
 				</center>
 				<div class="itemNotfound">
 					<hr>
-					<h2 class="text-center">Item is already returned</h2>
+					<h2 class="text-center">Item is already deployed</h2>
 				</div>
-				<form class="form-horizontal borrowInfo">
+				<form class="form-horizontal itemInfo">
 					<hr>
 					<div class="row">
 						<div class="form-group col-lg-7">
@@ -319,17 +296,6 @@
 									value="Item Type" readonly>
 							</div>
 						</div>
-						<div class="form-group col-lg-7">
-							<label class="control-label col-lg-4"> Date Borrowed:</label>
-							<div class="col-lg-8">
-								<div class="input-group date">
-									<span class="input-group-addon"><i class="fa fa-calendar"></i></span><input
-										type="text" class="form-control infodateBorrowed" readonly>
-
-								</div>
-
-							</div>
-						</div>
 
 
 
@@ -339,7 +305,7 @@
 			</div>
 
 			<div class="modal-footer">
-				<button class="ladda-button btn btn-w-m btn-primary returnItem"
+				<button class="ladda-button btn btn-w-m btn-primary deployItem"
 					type="button">
 					<strong>Save</strong>
 				</button>
@@ -353,6 +319,6 @@
 	</div>
 </div>
 @endsection @section('scripts')
-<script type="text/javascript" src="/js/inventory/inventoryReturn.js">
+<script type="text/javascript" src="/js/inventory/inventoryDeploy.js">
 </script>
 @endsection

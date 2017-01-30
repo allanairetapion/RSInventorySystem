@@ -55,14 +55,74 @@
 
 <div class="row">
 
+	<div class="ibox">
+		<div class="ibox-content">
+			<div class="tabs-container">
+				<a href="/inventory/detailed"
+					class="btn btn-primary btn-sm pull-right">View All</a>
+				<ul class="nav nav-tabs">
+					<li class="active"><a id="itemType" data-toggle="tab" href="#tab-1">All</a></li>
+					<li class=""><a id="itemType" data-toggle="tab" href="#tab-2">Laptop</a></li>
+					<li class=""><a id="itemType" data-toggle="tab" href="#tab-3">Mouse</a></li>
+					<li class=""><a id="itemType" data-toggle="tab" href="#tab-4">Headset</a></li>
+					<li class=""><a id="itemType" data-toggle="tab" href="#tab-5">Projector</a></li>
 
-	<div class="col-lg-3">
-		<div class="row text-center">
-			<h4>Inventory by Type</h4>
+				</ul>
+				<div class="tab-content">
+					<div id="tab-1" class="tab-pane active">
+						<div class="panel-body">
+							<div class="table-responsive" id="stockAll">
+								<table id="detailed" class="footable table table-hover"
+									data-striping="false">
+									<thead>
+										<tr>
+											<th>Item No</th>
+											<th>Serial No.</th>
+											<th>Station No</th>
+											<th>Brand</th>
+											<th>Model</th>
+											<th>Item Type</th>
+											<th>Status</th>
+											<th>Morning User</th>
+											<th>Night User</th>
+											<th>Date Reported</th>
+										</tr>
+									</thead>
+									<tbody>
+										@foreach($items as $item)
+										<tr>
+											<td><a href="/inventory/items/{{$item->itemNo}}">{{$item->itemNo}}</a></td>
+											<td>{{$item->unique_id}}</td>
+											<td>{{$item->stationNo}}</td>
+											<td>{{$item->brand}}</td>
+											<td>{{$item->model}}</td>
+											<td>{{$item->itemType}}</td>
+											<td>{{$item->itemStatus}}</td>
+											<td>{{$item->morning_FN.' '.$item->morning_FN}}</td>
+											<td>{{$item->night_FN.' '.$item->night_LN}}</td>
+											<td>{{$item->updated_at->diffForHumans()}}</td>
+										</tr>
+										@endforeach
+									</tbody>
+									<tfoot>
+										<tr>
+											<td colspan="10">
+												<ul class="pagination pull-right"></ul>
+											</td>
+										</tr>
+									</tfoot>
+								</table>
+
+							</div>
+						</div>
+					</div>
 
 
-			<canvas id="doughnutChart"></canvas>
 
+				</div>
+
+
+			</div>
 		</div>
 	</div>
 
@@ -96,59 +156,20 @@
 								<li class=""><a data-toggle="tab" href="#tab-8"></a></li>
 							</ul>
 							<div class="tab-content">
-								
+
 								<div id="tab-1" class="tab-pane active">
 									<div class="panel-body">
-										<div id="vertical-timeline" class="vertical-container">
-											<div class="vertical-timeline-block">
-												<div class="vertical-timeline-icon red-bg">
-													<i class="fa fa-calendar"></i>
-												</div>
-
-												<div class="vertical-timeline-content red-bg">
-													
-												</div>
-											</div>
-
-
-
-										</div>
+										<div id="vertical-timeline" class="vertical-container"></div>
 									</div>
 								</div>
 								<div id="tab-2" class="tab-pane">
 									<div class="panel-body">
-										<div id="vertical-timeline" class="vertical-container">
-											<div class="vertical-timeline-block">
-												<div class="vertical-timeline-icon red-bg">
-													<i class="fa fa-calendar"></i>
-												</div>
-
-												<div class="vertical-timeline-content red-bg">
-													
-												</div>
-											</div>
-
-
-
-										</div>
+										<div id="vertical-timeline" class="vertical-container"></div>
 									</div>
 								</div>
 								<div id="tab-3" class="tab-pane">
 									<div class="panel-body">
-										<div id="vertical-timeline" class="vertical-container">
-											<div class="vertical-timeline-block">
-												<div class="vertical-timeline-icon red-bg">
-													<i class="fa fa-calendar"></i>
-												</div>
-
-												<div class="vertical-timeline-content red-bg">
-													
-												</div>
-											</div>
-
-
-
-										</div>
+										<div id="vertical-timeline" class="vertical-container"></div>
 									</div>
 								</div>
 								<div id="tab-4" class="tab-pane">
@@ -159,9 +180,7 @@
 													<i class="fa fa-calendar"></i>
 												</div>
 
-												<div class="vertical-timeline-content red-bg">
-													
-												</div>
+												<div class="vertical-timeline-content red-bg"></div>
 											</div>
 
 
@@ -177,9 +196,7 @@
 													<i class="fa fa-calendar"></i>
 												</div>
 
-												<div class="vertical-timeline-content red-bg">
-													
-												</div>
+												<div class="vertical-timeline-content red-bg"></div>
 											</div>
 
 
@@ -195,9 +212,7 @@
 													<i class="fa fa-calendar"></i>
 												</div>
 
-												<div class="vertical-timeline-content red-bg">
-													
-												</div>
+												<div class="vertical-timeline-content red-bg"></div>
 											</div>
 
 
@@ -213,9 +228,7 @@
 													<i class="fa fa-calendar"></i>
 												</div>
 
-												<div class="vertical-timeline-content red-bg">
-													
-												</div>
+												<div class="vertical-timeline-content red-bg"></div>
 											</div>
 
 
@@ -253,25 +266,14 @@
 <script src="/js/plugins/chartJs/Chart.min.js"></script>
 <script>
 $(document).ready(function(){
-	$('table#itemTypeSummary').footable();
-	
-	 var config = {
-             '.chosen-select'           : {},
-             '.chosen-select-deselect'  : {allow_single_deselect:true},
-             '.chosen-select-no-single' : {disable_search_threshold:10},
-             '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
-             '.chosen-select-width'     : {width:"95%"}
-         }
-         for (var selector in config) {
-             $(selector).chosen(config[selector]);
-         }
+	$('.footable').footable();
 	
 });
 $('#maintenance').click(function(){
 	$.ajax(
 			{
 				type : "GET",
-				url : "/inventory/maintenanceSchedDetails/",
+				url : "/inventory/maintenanceDashboard/",
 				success: function(data){
 					var index = 7;
 					$(data).each(function(i,e){
@@ -290,17 +292,10 @@ $('#maintenance').click(function(){
 		                        		'</div>'+
 		                        	'<div class="vertical-timeline-content ' + status + '">'+
 		                            '<h2>' + e['title']+ '</h2>'+
-		                            '<p>'+ e['activities'] + '</p></div> </div>';
-							}else{
-								html = '<div class="vertical-timeline-block">'+
-                        		'<div class="vertical-timeline-icon ' + status + '">'+
-                        		'<i class="fa fa-calendar"></i>'+
-                    		'</div>'+
-                    	'<div class="vertical-timeline-content ' + status + '">'+
-                        '<h2> No Schedule </h2>></div> </div>';
-							}
-							
-                            
+		                            '<p>'+ e['activities'] + '</p>'+
+		                            '<span>' + e['start_date'] + '<span>'+
+		                            '</div> </div>';
+							}							                            
 						});
 						if(data[i][0]){
 							var date = data[i][0]['start_date'];
@@ -368,39 +363,16 @@ var data1 = <?php echo json_encode($summaryData); ?>;
                      tooltip: true
                  }
          );
-         function getRandomColor() {
-     	    var letters = '0123456789ABCDEF'.split('');
-     	    var color = '#';
-     	    for (var i = 0; i < 6; i++ ) {
-     	        color += letters[Math.floor(Math.random() * 16)];
-     	    }
-     	    return color;
-     	}
-		var itemTypes = <?php echo json_encode($types); ?>;
+         
 		
-		$.each(itemTypes, function(i,v){
-			itemTypes[i]["color"] = getRandomColor();
-			itemTypes[i]["highlight"] = "#1ab394";
-			});
-		console.log(itemTypes);
-      
-
-                      var doughnutOptions = {
-                          segmentShowStroke: true,
-                          segmentStrokeColor: "#fff",
-                          segmentStrokeWidth: 2,
-                          percentageInnerCutout: 45, // This is 0 for Pie charts
-                          animationSteps: 100,
-                          animationEasing: "easeOutBounce",
-                          animateRotate: true,
-                          animateScale: false,
-                          responsive: true,
-                      };
-
-
-                      var ctx = document.getElementById("doughnutChart").getContext("2d");
-                      var myNewChart = new Chart(ctx).Doughnut(itemTypes, doughnutOptions);
-
+$('a#itemType').click(function(){
+	console.log('click');
+	if($(this).text() == "All"){
+		$('.footable').trigger('footable_clear_filter');
+	}else{
+		$('.footable').trigger('footable_filter', {filter: $(this).text()});
+	}
+});
          
 </script>
 @endsection

@@ -8,7 +8,9 @@ use App\ClientProfile as CProfile;
 use App\InventoryItem as Item;
 use App\BorrowItem as Borrow;
 use App\ItemIssues as Issue;
+use App\DeployItem as Deploy;
 use App\BrokenItem as Broken;
+use App\RepairItem as Repair;
 use App\MaintenanceActivity as mActivity;
 use App\MaintenanceSchedule as mSchedule;
 use App\MaintenanceArea as mArea;
@@ -32,7 +34,17 @@ class inventoryController extends Controller {
 	}
 	// Dashboard
 	public function showIndex() {
-		$items = Item::all ();
+		
+		
+						
+		$items = Item::whereBetween ('updated_at',[Carbon::today (),Carbon::today ()->addDays(7)])->orderBy('updated_at','desc')
+		->leftJoin ( DB::raw ( '(select client_id,first_name as morning_FN, last_name as morning_LN from client_profiles) cProfile'),function($join){
+			$join->on('items.morningClient','=','cProfile.client_id');
+		} )->leftJoin ( DB::raw ( '(select client_id,first_name as night_FN, last_name as night_LN from client_profiles) cProfile2'),function($join){
+			$join->on('items.nightClient','=','cProfile2.client_id');
+		} )->get();
+		
+		
 		$itemTypes = Item::select ( 'itemType as label', DB::raw ( 'Count(*) as value' ) )->groupBy ( 'itemType' )->get ();
 		$borrowCount = 0;
 		$returnCount = 0;
@@ -41,7 +53,7 @@ class inventoryController extends Controller {
 		$mSchedToday = mSchedule::whereBetween ( 'start_date', [ 
 				Carbon::today (),
 				Carbon::tomorrow () 
-		] )->count();
+		] )->count ();
 		
 		foreach ( $items as $item ) {
 			if ($item->itemStatus == "Available") {
@@ -135,8 +147,7 @@ class inventoryController extends Controller {
 						$issueData,
 						$brokenData 
 				],
-				'summaryXaxis' => $summaryXaxis,
-				 
+				'summaryXaxis' => $summaryXaxis 
 		] );
 	}
 	public function itemTypeSummary(Request $request) {
@@ -150,10 +161,11 @@ class inventoryController extends Controller {
 	
 	// Borrow Page
 	public function showBorrow() {
-		$itemCount = Item::where ( 'itemStatus', 'Not Available' )->count ();
-		$borrowedItems = Item::where ( 'itemStatus', 'Not Available' )->leftJoin ( DB::raw ( '(select itemNo, borrowee,borrower,borrowerStationNo,created_at as dateBorrowed,updated_at from borrow_logs) borrow' ), function ($join) {
+		$borrowedId = Borrow::select ( DB::raw ( 'Max(id)' ) )->groupBy ( 'itemNo' )->get ();
+		
+		$borrowedItems = Item::leftJoin ( DB::raw ( '(select id,itemNo, borrowee,borrower,borrowerStationNo,created_at as dateBorrowed,updated_at from borrow_logs) borrow' ), function ($join) {
 			$join->on ( 'items.itemNo', '=', 'borrow.itemNo' );
-		} )->leftJoin ( 'admin_profiles', 'borrow.borrowee', '=', 'admin_profiles.agent_id' )->orderBy ( 'dateBorrowed', 'desc' )->take ( $itemCount )->get ();
+		} )->leftJoin ( 'admin_profiles', 'borrow.borrowee', '=', 'admin_profiles.agent_id' )->where ( 'itemStatus', 'Borrowed' )->whereIn ( 'borrow.id', $borrowedId )->orderBy ( 'dateBorrowed', 'desc' )->get ();
 		
 		$names = [ ];
 		
@@ -259,12 +271,113 @@ class inventoryController extends Controller {
 		}
 		;
 	}
+	public function showDeployed() {
+		$agents = AProfile::select ( 'agent_id as id', 'first_name', 'last_name' )->get ();
+		$borrowedId = Borrow::select ( DB::raw ( 'Max(id)' ) )->groupBy ( 'itemNo' )->get ();
+		
+		$deployedId = Deploy::select ( DB::raw ( 'Max(id)' ) )->groupBy ( 'itemNo' )->get ();
+		$deployedItems = Deploy::leftJoin ( DB::raw ( '(select itemNo, unique_id, brand,stationNo, itemStatus,itemType,model from items) items' ), 'deploy_logs.itemNo', '=', 'items.itemNo' )->leftJoin ( 'admin_profiles', 'deploy_logs.deploy_by', '=', 'admin_profiles.agent_id' )->where ( 'itemStatus', 'Deployed' )->whereIn ( 'deploy_logs.id', $deployedId )->orderby ( 'deploy_logs.created_at', 'desc' )->get ();
+		$itemNumbers = Item::select ( 'itemNo' )->get ();
+		
+		return view ( "inventory.deployed", [ 
+				'deployedItems' => $deployedItems,
+				
+				'agents' => $agents,
+				'itemNumbers' => $itemNumbers 
+		] );
+	}
+	public function deployItem(Request $request) {
+		$validator = Validator::make ( $request->all (), [ 
+				'itemNo' => 'required|exists:items,itemNo,itemStatus,"In-stock"',
+				'stationNo' => 'required|numeric|unique:items,stationNo' 
+		] );
+		
+		if ($validator->fails ()) {
+			return response ()->json ( array (
+					'success' => false,
+					'errors' => $validator->getMessageBag ()->toArray () 
+			), 400 );
+		} else {
+			
+			$deployItem = new Deploy ();
+			$deployItem->itemNo = $request ['itemNo'];
+			$deployItem->stationNo = $request ['stationNo'];
+			$deployItem->deploy_by = Auth::guard ( 'inventory' )->user ()->id;
+			$deployItem->save ();
+			
+			$updateItem = Item::where ( 'itemNo', $request ['itemNo'] )->update ( [ 
+					'itemStatus' => 'Deployed',
+					'stationNo' => $request ['stationNo'] 
+			] );
+			$result = Deploy::leftJoin ( DB::raw ( '(select itemNo, unique_id, brand,stationNo, itemStatus,itemType,model from items) items' ), 'deploy_logs.itemNo', '=', 'items.itemNo' )->where ( 'id', $deployItem->id )->leftJoin ( 'admin_profiles', 'deploy_logs.deploy_by', '=', 'admin_profiles.agent_id' )->first ();
+			
+			return response ()->json ( [ 
+					'success' => true,
+					'response' => $result 
+			] );
+		}
+	}
+	public function deploySearch(Request $request) {
+		$columns = [ 
+				"deploy_logs.itemNo",
+				"unique_id",
+				"itemType",
+				"brand",
+				"model",
+				"stationNo",
+				"first_name",
+				"last_name" 
+		];
+		$deployItems = Deploy::leftJoin ( DB::raw ( '(select unique_id, itemNo, itemType, brand, model
+				from items) items' ), function ($join) {
+			$join->on ( 'deploy_logs.itemNo', '=', 'items.itemNo' );
+		} )->leftJoin ( DB::raw ( '(select agent_id, first_name, last_name
+				from admin_profiles) admin_profiles' ), 'deploy_logs.deploy_by', '=', 'admin_profiles.agent_id' )->orderBy ( 'created_at', 'desc' );
+		$deployItems = $deployItems->newQuery ();
+		foreach ( $columns as $column ) {
+			$deployItems->orWhere ( $column, $request ['deploySearch'] );
+		}
+		return response ()->json ( [ 
+				'success' => true,
+				'response' => $deployItems->get () 
+		] );
+	}
+	public function deployAdvancedSearch(Request $request) {
+		$deployItems = Deploy::leftJoin ( DB::raw ( '(select unique_id, itemNo, itemType, brand, model
+				from items) items' ), function ($join) {
+			$join->on ( 'deploy_logs.itemNo', '=', 'items.itemNo' );
+		} )->leftJoin ( DB::raw ( '(select agent_id, first_name, last_name
+				from admin_profiles) admin_profiles' ), 'deploy_logs.deploy_by', '=', 'admin_profiles.agent_id' )->orderBy ( 'created_at', 'desc' );
+		$deployItems = $deployItems->newQuery ();
+		if ($request ['itemNo'] != null) {
+			$deployItems->where ( 'items.itemNo', $request ['itemNo'] );
+		}
+		if ($request ['unique_id'] != null) {
+			$deployItems->where ( 'items.unique_id', $request ['unique_id'] );
+		}
+		if ($request ['deployed_by'] != null) {
+			$deployItems->where ( 'deploy_by', $request ['borrower'] );
+		}
+		if ($request ['dateDeployed'] != null) {
+			$deployItems->where ( 'created_at', 'like', '%' . $request ['dateBorrowed'] . '%' );
+		}
+		$deployItems = $deployItems->get ();
+		return response ()->json ( [ 
+				'success' => true,
+				'response' => $deployItems 
+		] );
+	}
 	public function showReturn() {
-		$itemCount = Item::where ( 'itemStatus', 'Available' )->count ();
-		$returnedItems = Item::where ( 'itemStatus', 'Available' )->leftJoin ( DB::raw ( '(select id,itemNo, receiver, borrower,
+		$first = AProfile::select ( 'agent_id as id', 'first_name', 'last_name' );
+		$second = CProfile::select ( 'client_id as id', 'first_name', 'last_name' )->union ( $first );
+		
+		$returnedItems = Item::leftJoin ( DB::raw ( '(select id,itemNo, receiver, borrower,
 				created_at as dateReturned ,updated_at from return_logs) returnInfo' ), function ($join) {
 			$join->on ( 'items.itemNo', '=', 'returnInfo.itemNo' );
-		} )->leftJoin ( 'admin_profiles', 'returnInfo.receiver', '=', 'admin_profiles.agent_id' )->orderby ( 'dateReturned', 'desc' )->take ( $itemCount )->get ();
+		} )->leftJoin ( DB::raw ( '(select agent_id, first_name as agent_FN, last_name as agent_LN
+				from admin_profiles) admin_profiles' ), 'returnInfo.receiver', '=', 'admin_profiles.agent_id' )->leftJoin ( DB::raw ( "({$second->toSql()}) as names" ), function ($join) {
+			$join->on ( 'returnInfo.borrower', '=', 'names.id' );
+		} )->orderby ( 'dateReturned', 'desc' )->get ();
 		
 		$names = [ ];
 		
@@ -276,13 +389,6 @@ class inventoryController extends Controller {
 		}
 		foreach ( $agents as $agent ) {
 			array_push ( $names, $agent );
-		}
-		foreach ( $returnedItems as $returnedItem ) {
-			foreach ( $names as $nm ) {
-				if ($nm->id == $returnedItem->borrower) {
-					$returnedItem->borrower = $nm->first_name . ' ' . $nm->last_name;
-				}
-			}
 		}
 		
 		$itemNumbers = Item::select ( 'itemNo' )->get ();
@@ -342,7 +448,6 @@ class inventoryController extends Controller {
 		}
 		;
 	}
-	
 	public function showAgents() {
 		$users = DB::table ( 'admin' )->leftJoin ( DB::raw ( '(select agent_id, first_name, last_name from admin_profiles) agents' ), 'admin.id', '=', 'agents.agent_id' )->get ();
 		return view ( "inventory.agents", [ 
@@ -461,8 +566,40 @@ class inventoryController extends Controller {
 		}
 	}
 	
-	// Borrow form advanced search
+	// Borrow form search and advanced search
 	public function borrowSearch(Request $request) {
+		$columns = [ 
+				"borrow_logs.itemNo",
+				"unique_id",
+				"itemType",
+				"brand",
+				"model",
+				"borrowerStationNo",
+				"first_name",
+				"last_name",
+				"agent_FN",
+				"agent_LN" 
+		];
+		$first = AProfile::select ( 'agent_id as id', 'first_name', 'last_name' );
+		$second = CProfile::select ( 'client_id as id', 'first_name', 'last_name' )->union ( $first );
+		
+		$borrows = Borrow::leftJoin ( DB::raw ( '(select unique_id, itemNo, itemType, brand, model
+				from items) items' ), function ($join) {
+			$join->on ( 'borrow_logs.itemNo', '=', 'items.itemNo' );
+		} )->leftJoin ( DB::raw ( '(select agent_id, first_name as agent_FN, last_name as agent_LN
+				from admin_profiles) admin_profiles' ), 'borrow_logs.borrowee', '=', 'admin_profiles.agent_id' )->leftJoin ( DB::raw ( "({$second->toSql()}) as names" ), function ($join) {
+			$join->on ( 'borrow_logs.borrower', '=', 'names.id' );
+		} )->orderBy ( 'created_at', 'desc' );
+		$borrows = $borrows->newQuery ();
+		foreach ( $columns as $column ) {
+			$borrows->orWhere ( $column, $request ['borrowSearch'] );
+		}
+		return response ()->json ( [ 
+				'success' => true,
+				'response' => $borrows->get () 
+		] );
+	}
+	public function borrowAdvancedSearch(Request $request) {
 		$borrows = Borrow::leftJoin ( DB::raw ( '(select unique_id, itemNo, itemType, brand, model
 				from items) items' ), function ($join) {
 			$join->on ( 'borrow_logs.itemNo', '=', 'items.itemNo' );
@@ -507,13 +644,47 @@ class inventoryController extends Controller {
 				'response' => $borrows 
 		] );
 	}
-	// Return Form advanced search
+	// Return Form search and advanced search
 	public function returnSearch(Request $request) {
+		$columns = [ 
+				"returnInfo.itemNo",
+				"unique_id",
+				"itemType",
+				"brand",
+				"model",
+				"first_name",
+				"last_name",
+				"agent_FN",
+				"agent_LN" 
+		];
+		
+		$returnedItems = Item::leftJoin ( DB::raw ( '(select id,itemNo, receiver, borrower,
+				created_at as dateReturned ,updated_at from return_logs) returnInfo' ), function ($join) {
+			$join->on ( 'items.itemNo', '=', 'returnInfo.itemNo' );
+		} )->leftJoin ( DB::raw ( '(select agent_id, first_name as agent_FN, last_name as agent_LN
+				from admin_profiles) admin_profiles' ), 'returnInfo.receiver', '=', 'admin_profiles.agent_id' )->leftJoin ( DB::raw ( "({$second->toSql()}) as names" ), function ($join) {
+			$join->on ( 'returnInfo.borrower', '=', 'names.id' );
+		} )->orderby ( 'dateReturned', 'desc' );
+		
+		$returnedItems = $returnedItems->newQuery ();
+		foreach ( $columns as $column ) {
+			$returnedItems->orWhere ( $column, $request ['returnSearch'] );
+		}
+		return response ()->json ( [ 
+				'success' => true,
+				'response' => $returnedItems->get () 
+		] );
+	}
+	public function returnAdvancedSearch(Request $request) {
+		$first = AProfile::select ( 'agent_id as id', 'first_name', 'last_name' );
+		$second = CProfile::select ( 'client_id as id', 'first_name', 'last_name' )->union ( $first );
 		$returnedItems = ReturnItem::leftJoin ( DB::raw ( '(select unique_id, itemNo, itemType, brand, model
 				from items) items' ), function ($join) {
 			$join->on ( 'return_logs.itemNo', '=', 'items.itemNo' );
-		} )->leftJoin ( DB::raw ( '(select agent_id, first_name, last_name
-				from admin_profiles) admin_profiles' ), 'return_logs.receiver', '=', 'admin_profiles.agent_id' )->orderBy ( 'created_at', 'desc' );
+		} )->leftJoin ( DB::raw ( '(select agent_id, first_name as agent_FN, last_name as agent_LN
+				from admin_profiles) admin_profiles' ), 'return_logs.receiver', '=', 'admin_profiles.agent_id' )->leftJoin ( DB::raw ( "({$second->toSql()}) as names" ), function ($join) {
+			$join->on ( 'return_logs.borrower', '=', 'names.id' );
+		} )->orderBy ( 'created_at', 'desc' );
 		
 		$returnedItems = $returnedItems->newQuery ();
 		
@@ -533,35 +704,26 @@ class inventoryController extends Controller {
 			$returnedItems->where ( 'created_at', 'like', '%' . $request ['dateReturned'] . '%' );
 		}
 		
-		$names = DB::table ( 'admin_profiles' )->select ( 'agent_id as id', 'first_name', 'last_name' )->get ();
-		$clients = DB::table ( 'client_profiles' )->select ( 'client_id as id', 'first_name', 'last_name' )->get ();
-		
-		foreach ( $clients as $client ) {
-			array_push ( $names, $client );
-		}
-		$returnedItems = $returnedItems->get ();
-		foreach ( $returnedItems as $returnedItem ) {
-			foreach ( $names as $nm ) {
-				if ($nm->id == $returnedItem->borrower) {
-					$returnedItem->borrower = $nm->first_name . ' ' . $nm->last_name;
-				}
-			}
-		}
-		
 		return response ()->json ( [ 
 				'success' => true,
-				'response' => $returnedItems 
+				'response' => $returnedItems->get () 
 		] );
 	}
 	
 	// Issue Form
 	public function showIssues() {
-		$itemCount = Item::where ( 'itemStatus', 'With Issue' )->count ();
-		$issueItems = Item::where ( 'itemStatus', 'With Issue' )->leftJoin ( 'issue_logs', function ($join) {
+		$first = AProfile::select ( 'agent_id as id', 'first_name', 'last_name' );
+		$second = CProfile::select ( 'client_id as id', 'first_name', 'last_name' )->union ( $first );
+		$issueId = Issue::select ( DB::raw ( 'Max(id)' ) )->groupBy ( 'itemNo' )->get ();
+
+		$issueItems = Issue::leftJoin ( 'items', function ($join) {
 			$join->on ( 'items.itemNo', '=', 'issue_logs.itemNo' );
-		} )->leftJoin ( DB::raw ( '(SELECT agent_id,first_name, last_name from admin_profiles) assignedSupport' ), function ($join) {
-			$join->on ( 'issue_logs.reported_by', '=', 'assignedSupport.agent_id' );
-		} )->orderby ( 'issue_logs.created_at', 'desc' )->take ( $itemCount )->get ();
+		} )->leftJoin ( DB::raw ( '(select agent_id, first_name as agent_FN, last_name as agent_LN
+				from admin_profiles) admin_profiles' ), 'issue_logs.reported_by', '=', 'admin_profiles.agent_id' )
+		->leftJoin ( DB::raw ( "({$second->toSql()}) as names" ), function ($join) {
+			$join->on ( 'issue_logs.itemUser', '=', 'names.id' );
+		} )->where('itemStatus','With Issue')->whereIn('issue_logs.id',$issueId)
+		->orderBy ( 'issue_logs.created_at', 'desc' )->get ();
 		
 		$names = [ ];
 		$agents = AProfile::select ( 'agent_id as id', 'first_name', 'last_name' )->get ();
@@ -599,7 +761,7 @@ class inventoryController extends Controller {
 		} else {
 			$updatetime = Carbon::now ();
 			$time = Carbon::parse ( Carbon::now () );
-			$date = Carbon::parse ( $request ['dateBroken'] );
+			$date = Carbon::parse ( $request ['dateReported'] );
 			
 			$issueItem = new Issue ();
 			
@@ -614,19 +776,19 @@ class inventoryController extends Controller {
 			
 			$itemStatus = Item::where ( 'itemNo', $request ['itemNo'] )->update ( [ 
 					'itemStatus' => 'With Issue',
-					'stationNo' => 0,
 					'updated_at' => $updatetime 
 			] );
 			
-			$result = Issue::where ( 'issue_logs.itemNo', $request ['itemNo'] )->leftJoin ( DB::raw ( '(SELECT unique_id,itemNo,itemType,brand,model from items) items' ), function ($join) {
+			$first = AProfile::select ( 'agent_id as id', 'first_name', 'last_name' );
+			$second = CProfile::select ( 'client_id as id', 'first_name', 'last_name' )->union ( $first );
+			
+			$result = Issue::where ( 'issue_logs.id', $issueItem->id )->leftJoin ( DB::raw ( '(SELECT unique_id,itemNo,itemType,brand,model from items) items' ), function ($join) {
 				$join->on ( 'issue_logs.itemNo', '=', 'items.itemNo' );
-			} )->leftJoin ( DB::raw ( '(SELECT agent_id,first_name, last_name from admin_profiles) assignedSupport' ), function ($join) {
+			} )->leftJoin ( DB::raw ( '(SELECT agent_id,first_name as agent_FN, last_name as agent_LN from admin_profiles) assignedSupport' ), function ($join) {
 				$join->on ( 'issue_logs.reported_by', '=', 'assignedSupport.agent_id' );
-			} )->orderby ( 'issue_logs.created_at', 'desc' )->first ();
-			
-			$name = (CProfile::where ( 'client_id', $result->itemUser )->first ()) ? CProfile::where ( 'client_id', $result->itemUser )->first () : Aprofile::where ( 'agent_id', $result->itemUser )->first ();
-			
-			$result ['itemUser'] = ($name != null) ? $name->first_name . ' ' . $name->last_name : '';
+			} )->leftJoin ( DB::raw ( "({$second->toSql()}) as names" ), function ($join) {
+				$join->on ( 'issue_logs.itemUser', '=', 'names.id' );
+			} )->first ();
 			
 			return response ()->json ( [ 
 					'success' => true,
@@ -635,33 +797,50 @@ class inventoryController extends Controller {
 		}
 		;
 	}
-	public function issueInfo(Request $request) {
-		$itemInfo = Item::where ( 'unique_id', $request ['item'] )->first ();
-		$issueInfo = Issue::where ( 'unique_id', $request ['item'] )->orderby ( 'created_at', 'desc' )->first ();
-		if ($issueInfo == null) {
-			return response ()->json ( [ 
-					'success' => false 
-			] );
-		} else {
-			
-			$name = DB::table ( 'admin_profiles' )->where ( 'agent_id', $issueInfo ['reported_by'] )->first ();
-			$issueInfo->itemStatus = $itemInfo ['itemStatus'];
-			$issueInfo->itemNo = $itemInfo ['itemNo'];
-			if ($name != null) {
-				$issueInfo ['reported_by'] = $name->first_name . ' ' . $name->last_name;
-			}
-			return response ()->json ( [ 
-					'success' => true,
-					'info' => $issueInfo 
-			] );
-		}
-	}
 	public function issueSearch(Request $request) {
+		$columns = [ 
+				"issue_logs.itemNo",
+				"unique_id",
+				"itemType",
+				"brand",
+				"model",
+				"itemUser",
+				"first_name",
+				"last_name",
+				"agent_FN",
+				"agent_LN" 
+		];
+		$first = AProfile::select ( 'agent_id as id', 'first_name', 'last_name' );
+		$second = CProfile::select ( 'client_id as id', 'first_name', 'last_name' )->union ( $first );
+		
 		$issueItems = Issue::leftJoin ( DB::raw ( '(select unique_id, itemNo, itemType, brand, model
 				from items) items' ), function ($join) {
 			$join->on ( 'issue_logs.itemNo', '=', 'items.itemNo' );
-		} )->leftJoin ( DB::raw ( '(select agent_id, first_name, last_name
-				from admin_profiles) admin_profiles' ), 'issue_logs.reported_by', '=', 'admin_profiles.agent_id' )->orderBy ( 'created_at', 'desc' );
+		} )->leftJoin ( DB::raw ( '(select agent_id, first_name as agent_FN, last_name as agent_LN
+				from admin_profiles) admin_profiles' ), 'issue_logs.reported_by', '=', 'admin_profiles.agent_id' )->leftJoin ( DB::raw ( "({$second->toSql()}) as names" ), function ($join) {
+			$join->on ( 'issue_logs.itemUser', '=', 'names.id' );
+		} )->orderBy ( 'created_at', 'desc' );
+		
+		$issueItems = $issueItems->newQuery ();
+		foreach ( $columns as $column ) {
+			$issueItems->orWhere ( $column, $request ['issueSearch'] );
+		}
+		return response ()->json ( [ 
+				'success' => true,
+				'response' => $issueItems->get () 
+		] );
+	}
+	public function issueAdvancedSearch(Request $request) {
+		$first = AProfile::select ( 'agent_id as id', 'first_name', 'last_name' );
+		$second = CProfile::select ( 'client_id as id', 'first_name', 'last_name' )->union ( $first );
+		
+		$issueItems = Issue::leftJoin ( DB::raw ( '(select unique_id, itemNo, itemType, brand, model
+				from items) items' ), function ($join) {
+			$join->on ( 'issue_logs.itemNo', '=', 'items.itemNo' );
+		} )->leftJoin ( DB::raw ( '(select agent_id, first_name as agent_FN, last_name as agent_LN
+				from admin_profiles) admin_profiles' ), 'issue_logs.reported_by', '=', 'admin_profiles.agent_id' )->leftJoin ( DB::raw ( "({$second->toSql()}) as names" ), function ($join) {
+			$join->on ( 'issue_logs.itemUser', '=', 'names.id' );
+		} )->orderBy ( 'created_at', 'desc' );
 		$issueItems = $issueItems->newQuery ();
 		
 		if ($request ['itemNo'] != null) {
@@ -677,25 +856,6 @@ class inventoryController extends Controller {
 			$issueItems->where ( 'created_at', 'like', '%' . $request ['dateReturned'] . '%' );
 		}
 		$issueItems = $issueItems->get ();
-		$names = [ ];
-		
-		$agents = AProfile::select ( 'agent_id as id', 'first_name', 'last_name' )->get ();
-		$clients = CProfile::select ( 'client_id as id', 'first_name', 'last_name' )->get ();
-		
-		foreach ( $clients as $client ) {
-			array_push ( $names, $client );
-		}
-		foreach ( $agents as $agent ) {
-			array_push ( $names, $agent );
-		}
-		
-		foreach ( $issueItems as $issueItem ) {
-			foreach ( $names as $nm ) {
-				if ($nm->id == $issueItem->itemUser) {
-					$issueItem->itemUser = $nm->first_name . ' ' . $nm->last_name;
-				}
-			}
-		}
 		
 		return response ()->json ( [ 
 				'success' => true,
@@ -704,8 +864,7 @@ class inventoryController extends Controller {
 	}
 	public function repairItem(Request $request) {
 		$validator = Validator::make ( $request->all (), [ 
-				'itemNo' => 'required|exists:items,itemNo,itemStatus,With Issue',
-				'dateRepair' => 'required|date' 
+				'itemNo' => 'required|exists:items,itemNo' 
 		] );
 		
 		if ($validator->fails ()) {
@@ -714,74 +873,63 @@ class inventoryController extends Controller {
 					'errors' => $validator->getMessageBag ()->toArray () 
 			) );
 		} else {
-			$time = Carbon::parse ( Carbon::now () );
-			$date = Carbon::parse ( $request ['dateRepair'] );
+			$item = Issue::select ( 'damage', 'itemStatus' )->where ( 'issue_logs.itemNo', $request ['itemNo'] )->leftJoin ( 'items', 'items.itemNo', '=', 'issue_logs.itemNo' )->orderBy ( 'issue_logs.created_at', 'desc' )->first ();
+			if ($item ['itemStatus'] != "With Issue" && $item ['itemStatus'] != "Broken") {
+				return response ()->json ( array (
+						'success' => false,
+						'errors' => [ 
+								'itemNo' => 'This Item is already Repaired' 
+						] 
+				) );
+			}
+			$repairItem = new Repair ();
+			$repairItem->itemNo = $request ['itemNo'];
+			$repairItem->damage = $item ['damage'];
+			$repairItem->repaired_by = Auth::guard ( 'inventory' )->user ()->id;
+			$repairItem->save ();
 			
-			$repairItem = Issue::where ( 'itemNo', $request ['itemNo'] )->orderby ( 'created_at', 'desc' )->update ( [ 
-					'updated_at' => Carbon::create ( $date->year, $date->month, $date->day, $time->hour, $time->minute, $time->second ) 
-			] );
 			$itemStatus = Item::where ( 'itemNo', $request ['itemNo'] )->update ( [ 
-					'itemStatus' => 'Available' 
+					'itemStatus' => 'In-stock',
+					'stationNo' => 0 
 			] );
-			
-			$result = Issue::where ( 'issue_logs.itemNo', $request ['itemNo'] )->leftJoin ( DB::raw ( '(SELECT unique_id,itemNo,itemType,model,brand from items) items' ), function ($join) {
-				$join->on ( 'issue_logs.itemNo', '=', 'items.itemNo' );
-			} )->leftJoin ( DB::raw ( '(SELECT agent_id,first_name, last_name from admin_profiles) assignedSupport' ), function ($join) {
-				$join->on ( 'issue_logs.reported_by', '=', 'assignedSupport.agent_id' );
-			} )->orderby ( 'issue_logs.created_at', 'desc' )->first ();
 			
 			return response ()->json ( [ 
-					'success' => true,
-					'response' => $result 
+					'success' => true 
 			] );
 		}
 		;
 	}
 	// Broken Form
 	public function showBroken() {
-		$itemCount = Item::where ( 'itemStatus', 'Broken' )->count ();
+		$first = AProfile::select ( 'agent_id as id', 'first_name', 'last_name' );
+		$second = CProfile::select ( 'client_id as id', 'first_name', 'last_name' )->union ( $first );
+		$brokenId = Broken::select ( DB::raw ( 'Max(id)' ) )->groupBy ( 'itemNo' )->get ();
 		
-		$brokenItems = Item::where ( 'itemStatus', 'Broken' )->leftJoin ( 'broken_logs', function ($join) {
+		$brokenItems = Broken::leftJoin ( 'items', function ($join) {
 			$join->on ( 'items.itemNo', '=', 'broken_logs.itemNo' );
-		} )->leftJoin ( DB::raw ( '(SELECT agent_id,first_name, last_name from admin_profiles) assignedSupport' ), function ($join) {
+		} )->leftJoin ( DB::raw ( '(SELECT agent_id,first_name as agent_FN, last_name as agent_LN from admin_profiles) assignedSupport' ), function ($join) {
 			$join->on ( 'broken_logs.reported_by', '=', 'assignedSupport.agent_id' );
-		} )->orderBy ( 'broken_logs.created_at', 'desc' )->take ( $itemCount )->get ();
+		} )->leftJoin ( DB::raw ( "({$second->toSql()}) as names" ), function ($join) {
+			$join->on ( 'broken_logs.itemUser', '=', 'names.id' );
+		} )->where ( 'itemStatus', 'Broken' )->whereIn('broken_logs.id',$brokenId)
+		->orderBy ( 'broken_logs.created_at', 'desc' )->get ();
 		
-		$names = [ ];
-		
-		$agents = AProfile::select ( 'agent_id as id', 'first_name', 'last_name' )->get ();
-		$clients = CProfile::select ( 'client_id as id', 'first_name', 'last_name' )->get ();
-		
-		foreach ( $clients as $client ) {
-			array_push ( $names, $client );
-		}
-		foreach ( $agents as $agent ) {
-			array_push ( $names, $agent );
-		}
-		
-		foreach ( $brokenItems as $brokenItem ) {
-			foreach ( $names as $nm ) {
-				if ($nm->id == $brokenItem->itemUser) {
-					$brokenItem->itemUser = $nm->first_name . ' ' . $nm->last_name;
-				}
-			}
-		}
 		$itemNumbers = Item::select ( 'itemNo' )->get ();
 		return view ( "inventory.broken", [ 
 				'brokenItems' => $brokenItems,
-				'agents' => $agents,
-				'users' => $names,
+				'agents' => $first->get (),
+				'users' => $second->get (),
 				'itemNumbers' => $itemNumbers 
 		] );
 	}
 	public function brokenItem(Request $request) {
 		$validator = Validator::make ( $request->all (), [ 
-				'itemNo' => 'required|exists:items,itemNo,itemStatus,!"Broken"',
+				'itemNo' => 'required|exists:items,itemNo',
 				'damage' => 'required|max:255',
 				'item_user' => 'required',
 				'status' => 'required|max:255',
 				'summary' => 'required|min:15|max:10000',
-				'dateBroken' => 'required|date' 
+				'dateReported' => 'required|date' 
 		] );
 		
 		if ($validator->fails ()) {
@@ -790,9 +938,19 @@ class inventoryController extends Controller {
 					'errors' => $validator->getMessageBag ()->toArray () 
 			) );
 		} else {
+			$item = Broken::select ( 'damage', 'itemStatus' )->where ( 'broken_logs.itemNo', $request ['itemNo'] )->leftJoin ( 'items', 'items.itemNo', '=', 'broken_logs.itemNo' )->orderBy ( 'broken_logs.created_at', 'desc' )->first ();
+			
+			if ($item ['itemStatus'] == "With Issue" && $item ['itemStatus'] == "Broken") {
+				return response ()->json ( array (
+						'success' => false,
+						'errors' => [ 
+								'itemNo' => 'This Item is already Reported' 
+						] 
+				) );
+			}
 			$updatetime = Carbon::now ();
 			$time = Carbon::parse ( Carbon::now () );
-			$date = Carbon::parse ( $request ['dateBroken'] );
+			$date = Carbon::parse ( $request ['dateReported'] );
 			
 			$brokenItem = new Broken ();
 			
@@ -810,16 +968,16 @@ class inventoryController extends Controller {
 					'itemStatus' => 'Broken',
 					'updated_at' => $updatetime 
 			] );
+			$first = AProfile::select ( 'agent_id as id', 'first_name', 'last_name' );
+			$second = CProfile::select ( 'client_id as id', 'first_name', 'last_name' )->union ( $first );
 			
 			$result = Broken::where ( 'broken_logs.itemNo', $request ['itemNo'] )->leftJoin ( DB::raw ( '(SELECT unique_id,itemNo,itemType,brand,model from items) items' ), function ($join) {
 				$join->on ( 'broken_logs.itemNo', '=', 'items.itemNo' );
-			} )->leftJoin ( DB::raw ( '(SELECT agent_id,first_name, last_name from admin_profiles) assignedSupport' ), function ($join) {
+			} )->leftJoin ( DB::raw ( '(SELECT agent_id,first_name as agent_FN, last_name as agent_LN from admin_profiles) assignedSupport' ), function ($join) {
 				$join->on ( 'broken_logs.reported_by', '=', 'assignedSupport.agent_id' );
-			} )->orderby ( 'broken_logs.created_at', 'desc' )->first ();
-			
-			$name = (CProfile::where ( 'client_id', $result->itemUser )->first ()) ? CProfile::where ( 'client_id', $result->itemUser )->first () : Aprofile::where ( 'agent_id', $result->itemUser )->first ();
-			
-			$result ['itemUser'] = ($name != null) ? $name->first_name . ' ' . $name->last_name : '';
+			} )->leftJoin ( DB::raw ( "({$second->toSql()}) as names" ), function ($join) {
+				$join->on ( 'broken_logs.itemUser', '=', 'names.id' );
+			} )->first ();
 			
 			return response ()->json ( [ 
 					'success' => true,
@@ -828,10 +986,48 @@ class inventoryController extends Controller {
 		}
 		;
 	}
-	public function brokenSearch(request $request) {
-		$brokenItems = Item::where ( 'itemStatus', 'Broken' )->leftJoin ( 'broken_logs', function ($join) {
+	public function brokenSearch(Request $request) {
+		$columns = [ 
+				"broken_logs.itemNo",
+				"unique_id",
+				"itemType",
+				"brand",
+				"model",
+				"itemUser",
+				"first_name",
+				"last_name",
+				"agent_FN",
+				"agent_LN" 
+		];
+		$first = AProfile::select ( 'agent_id as id', 'first_name', 'last_name' );
+		$second = CProfile::select ( 'client_id as id', 'first_name', 'last_name' )->union ( $first );
+		
+		$brokenItems = Broken::leftJoin ( 'items', function ($join) {
 			$join->on ( 'items.itemNo', '=', 'broken_logs.itemNo' );
-		} )->leftJoin ( 'admin_profiles', 'broken_logs.reported_by', '=', 'admin_profiles.agent_id' );
+		} )->leftJoin ( DB::raw ( '(select agent_id, first_name as agent_FN, last_name as agent_LN
+				from admin_profiles) admin_profiles' ), 'broken_logs.reported_by', '=', 'admin_profiles.agent_id' )->leftJoin ( DB::raw ( "({$second->toSql()}) as names" ), function ($join) {
+			$join->on ( 'broken_logs.itemUser', '=', 'names.id' );
+		} )->orderBy ( 'broken_logs.created_at', 'desc' );
+		
+		$brokenItems = $brokenItems->newQuery ();
+		foreach ( $columns as $column ) {
+			$brokenItems->orWhere ( $column, $request ['brokenSearch'] );
+		}
+		return response ()->json ( [ 
+				'success' => true,
+				'response' => $brokenItems->get () 
+		] );
+	}
+	public function brokenAdvancedSearch(request $request) {
+		$first = AProfile::select ( 'agent_id as id', 'first_name', 'last_name' );
+		$second = CProfile::select ( 'client_id as id', 'first_name', 'last_name' )->union ( $first );
+		
+		$brokenItems = Broken::leftJoin ( 'items', function ($join) {
+			$join->on ( 'items.itemNo', '=', 'broken_logs.itemNo' );
+		} )->leftJoin ( DB::raw ( '(select agent_id, first_name as agent_FN, last_name as agent_LN
+				from admin_profiles) admin_profiles' ), 'broken_logs.reported_by', '=', 'admin_profiles.agent_id' )->leftJoin ( DB::raw ( "({$second->toSql()}) as names" ), function ($join) {
+			$join->on ( 'broken_logs.itemUser', '=', 'names.id' );
+		} )->orderBy ( 'broken_logs.created_at', 'desc' );
 		
 		$brokenItems = $brokenItems->newQuery ();
 		
@@ -851,25 +1047,7 @@ class inventoryController extends Controller {
 			$brokenItems->where ( 'created_at', 'like', '%' . $request ['dateBroken'] . '%' );
 		}
 		$brokenItems = $brokenItems->get ();
-		$names = [ ];
 		
-		$agents = AProfile::select ( 'agent_id as id', 'first_name', 'last_name' )->get ();
-		$clients = CProfile::select ( 'client_id as id', 'first_name', 'last_name' )->get ();
-		
-		foreach ( $clients as $client ) {
-			array_push ( $names, $client );
-		}
-		foreach ( $agents as $agent ) {
-			array_push ( $names, $agent );
-		}
-		
-		foreach ( $brokenItems as $brokenItem ) {
-			foreach ( $names as $nm ) {
-				if ($nm->id == $brokenItem->itemUser) {
-					$brokenItem->itemUser = $nm->first_name . ' ' . $nm->last_name;
-				}
-			}
-		}
 		return response ()->json ( [ 
 				'success' => true,
 				'response' => $brokenItems 
@@ -912,20 +1090,19 @@ class inventoryController extends Controller {
 		if ($request ['mark'] == "Repaired") {
 			$changeItemStatus;
 			foreach ( $items as $key => $value ) {
-				if ($key == 0) {
-					$broken_logs->where ( 'broken_logs.itemNo', $value );
-					$changeItemStatus = Item::where ( 'itemNo', $value );
-				} else {
-					$broken_logs->orWhere ( 'broken_logs.itemNo', $value );
-					$changeItemStatus->orWhere ( 'itemNo', $value );
-				}
+				$item = Broken::select ( 'damage' )->where ( 'issue_logs.itemNo', $request ['itemNo'] )->orderBy ( 'issue_logs.created_at', 'desc' )->first ();
+				
+				$repairItem = new Repair ();
+				$repairItem->itemNo = $request ['itemNo'];
+				$repairItem->damage = $item;
+				$repairItem->repaired_by = Auth::guard ( 'inventory' )->user ()->id;
+				$repairItem->save ();
+				
+				$itemStatus = Item::where ( 'itemNo', $request ['itemNo'] )->update ( [ 
+						'itemStatus' => 'In-stock',
+						'stationNo' => 0 
+				] );
 			}
-			$broken_logs = $broken_logs->update ( [ 
-					'brokenStatus' => $request ['mark'] 
-			] );
-			$changeItemStatus->update ( [ 
-					'itemStatus' => "Available" 
-			] );
 		} else {
 			foreach ( $items as $key => $value ) {
 				if ($key == 0) {
@@ -948,41 +1125,30 @@ class inventoryController extends Controller {
 	// end Broken Form
 	// Maintenance
 	public function showMaintenance() {
-		$schedules = mSchedule::leftJoin ( DB::raw ( '(select id as areaId, area from maintenance_areas) area' ), function ($join) {
-			$join->on ( 'maintenance_schedules.area', '=', 'area.areaId' );
-		} )->get ();
-		
+		$first = AProfile::select ( 'agent_id as id', 'first_name', 'last_name' );
+		$second = CProfile::select ( 'client_id as id', 'first_name', 'last_name' )->union ( $first );
 		$area = mArea::all ();
 		$activity = mActivity::all ();
-		$x = [ ];
-		foreach ( $schedules as $schedule ) {
-			
-			$startdate = explode ( ' ', $schedule ['start_date'] );
-			$enddate = explode ( ' ', $schedule ['end_date'] );
-			$schedActivities = explode ( ',', $schedule ['activities'] );
-			$schedText = "";
-			
-			foreach ( $schedActivities as $sched ) {
-				foreach ( $activity as $k ) {
-					if ($k->id == $sched)
-						$schedText = $schedText . $k->activity . ", ";
-				}
-			}
-			;
-			array_push ( $x, [ 
-					'id' => $schedule['id'],
-					'title' => $schedule ['title'],
-					'start' => $startdate [0] . 'T' . $startdate [1] . ".196Z",
-					'end' => $enddate [0] . 'T' . $enddate [1] . ".196Z",
-					'description' => $schedule ['area'] . "\n" . $schedText 
-			] );
-		};
-		$agents = AProfile::select ( 'agent_id as id', 'first_name', 'last_name' )->get ();
 		
+		$itemNumbers = Item::select ( 'itemNo' )->get ();
 		return view ( "inventory.maintenance", [ 
 				'areas' => $area,
 				'activities' => $activity,
-				'schedules' => $x, 'agents' => $agents 
+				'agents' => $first->get (),
+				'users' => $second->get (),
+				'itemNumbers' => $itemNumbers 
+		] );
+	}
+	public function getMaintenaceItems() {
+		$items = Item::where ( 'stationNo', '!=', 0 )->get ();
+		
+		return $items;
+	}
+	public function maintenanceItem($stationNo) {
+		$items = Item::where ( 'stationNo', $stationNo )->get ();
+		return response ()->json ( [ 
+				'success' => true,
+				'response' => $items 
 		] );
 	}
 	public function addSchedule(Request $request) {
@@ -1004,19 +1170,23 @@ class inventoryController extends Controller {
 		$activities = "";
 		foreach ( $request ['activity'] as $activity ) {
 			$activities = $activities . $activity . ",";
-		};
+		}
+		;
 		$agentNames = "";
-		foreach ($request['agents'] as $agent){
-			$agentNames = $agentNames. $agent . ",";
-		};
+		foreach ( $request ['agents'] as $agent ) {
+			$agentNames = $agentNames . $agent . ",";
+		}
+		;
 		
-		/*$request ['startScheduleTime'] = $this->merTime($request ['startScheduleTime']);
-		$request ['endScheduleTime'] = $this->merTime($request ['endScheduleTime']);*/
+		/*
+		 * $request ['startScheduleTime'] = $this->merTime($request ['startScheduleTime']);
+		 * $request ['endScheduleTime'] = $this->merTime($request ['endScheduleTime']);
+		 */
 		
 		$schedule = new mSchedule ();
 		$schedule->title = $request ['title'];
 		$schedule->agents = $agentNames;
-		$schedule->status = $request['status'];
+		$schedule->status = $request ['status'];
 		$schedule->activities = $activities;
 		$schedule->area = $request ['area'];
 		$schedule->start_date = $request ['startScheduleDate'] . ' ' . $request ['startScheduleTime'];
@@ -1025,18 +1195,19 @@ class inventoryController extends Controller {
 		
 		return response ()->json ( [ 
 				'success' => true,
-				'response' => [ 'id' => $schedule->id,
+				'response' => [ 
+						'id' => $schedule->id,
 						'start_date' => $request ['startScheduleDate'] . ' ' . $request ['startScheduleTime'] 
 				] 
 		] );
 	}
-	public function merTime($t){
-		$mer = substr($t,-2,2);
-		$time = chop($t,$mer);
-		if($mer == "PM"){
-			$adjustTime = explode(":",$time);
-			$adjustTime[0] = $adjustTime[0] + 12;
-			$time = $adjustTime[0] + ":" + $adjustTime[1];
+	public function merTime($t) {
+		$mer = substr ( $t, - 2, 2 );
+		$time = chop ( $t, $mer );
+		if ($mer == "PM") {
+			$adjustTime = explode ( ":", $time );
+			$adjustTime [0] = $adjustTime [0] + 12;
+			$time = $adjustTime [0] + ":" + $adjustTime [1];
 		}
 		return $time;
 	}
@@ -1064,70 +1235,81 @@ class inventoryController extends Controller {
 				'response' => $response 
 		] );
 	}
-	
-	public function viewMaintenanceDetail($id){
-		$schedule = mSchedule::where('id',$id)->get ();
+	public function viewMaintenanceDetail($id) {
+		$schedule = mSchedule::where ( 'id', $id )->get ();
 		return $schedule;
 	}
-	public function maintenanceSchedDetails(){
-		$mSchedToday = mSchedule::whereBetween ( 'start_date', [
-				Carbon::today (),
-				Carbon::today ()->addDays(7)
-		] )->get();
-		$schedules = [array(),array(),array(),array(),array(),array(),array()];
-		foreach ($mSchedToday as $sched){
-			if($sched->start_date < Carbon::tomorrow ()){
-				$schedules[0][]= [
-						'title' => $sched->title,
-						'activities' => $sched->activities,
-						'start_date' => $sched->start_date,
-						'status' => $sched->status
-				];
-			}else{
-				$day = Carbon::parse($sched->start_date);
-				$day = intval(Carbon::today ()->addDays(7)->diffInDays($day));
-				$schedules[$day][]= [
-						'title' => $sched->title,
-						'activities' => $sched->activities,
-						'start_date' => $sched->start_date,
-						'status' => $sched->status
-				];
-			}
-		}
+	public function maintenanceSchedules() {
+		$schedules = mSchedule::leftJoin ( DB::raw ( '(select id as areaId, area from maintenance_areas) area' ), function ($join) {
+			$join->on ( 'maintenance_schedules.area', '=', 'area.areaId' );
+		} )->get ();
 		
-		return $schedules;
+		$activity = mActivity::all ();
+		$mSched = [ ];
+		foreach ( $schedules as $schedule ) {
+			
+			$startdate = explode ( ' ', $schedule ['start_date'] );
+			$enddate = explode ( ' ', $schedule ['end_date'] );
+			$schedActivities = explode ( ',', $schedule ['activities'] );
+			$schedText = "";
+			
+			foreach ( $schedActivities as $sched ) {
+				foreach ( $activity as $k ) {
+					if ($k->id == $sched)
+						$schedText = $schedText . $k->activity . ", ";
+				}
+			}
+			;
+			array_push ( $mSched, [ 
+					'id' => $schedule ['id'],
+					'title' => $schedule ['title'],
+					'start' => $startdate [0] . 'T' . $startdate [1] . ".196Z",
+					'end' => $enddate [0] . 'T' . $enddate [1] . ".196Z",
+					'description' => $schedule ['area'] . "\n" . $schedText 
+			] );
+		}
+		;
+		
+		return $mSched;
 	}
-	public function updateMaintenanceSchedule(Request $request){
-		$schedule = mSchedule::find($request['schedID']);
+	public function maintenanceDashboard() {
+		$mSchedToday = mSchedule::whereBetween ( 'start_date', [ 
+				Carbon::today (),
+				Carbon::today ()->addDays ( 7 ) 
+		] )->orderBy ( 'start_date' )->get ();
+		return $mSchedToday;
+	}
+	public function updateMaintenanceSchedule(Request $request) {
+		$schedule = mSchedule::find ( $request ['schedID'] );
 		
 		$activities = "";
 		foreach ( $request ['activity'] as $activity ) {
 			$activities = $activities . $activity . ",";
-		};
+		}
+		;
 		$agentNames = "";
-		foreach ($request['agents'] as $agent){
-			$agentNames = $agentNames. $agent . ",";
-		};
+		foreach ( $request ['agents'] as $agent ) {
+			$agentNames = $agentNames . $agent . ",";
+		}
+		;
 		
-		$request ['startScheduleTime'] = $this->merTime($request ['startScheduleTime']);
-		$request ['endScheduleTime'] = $this->merTime($request ['endScheduleTime']);
+		$request ['startScheduleTime'] = $this->merTime ( $request ['startScheduleTime'] );
+		$request ['endScheduleTime'] = $this->merTime ( $request ['endScheduleTime'] );
 		
 		$schedule->title = $request ['title'];
 		$schedule->agents = $agentNames;
-		$schedule->status = $request['status'];
+		$schedule->status = $request ['status'];
 		$schedule->activities = $activities;
 		$schedule->area = $request ['area'];
 		$schedule->start_date = $request ['startScheduleDate'] . ' ' . $request ['startScheduleTime'];
 		$schedule->end_date = $request ['endScheduleDate'] . ' ' . $request ['endScheduleTime'];
 		$schedule->save ();
 		
-		return response ()->json ( [
+		return response ()->json ( [ 
 				'success' => true,
-				'response' => $schedule->id
-				
+				'response' => $schedule->id 
 		] );
 	}
-	
 	public function viewItemDetails($id) {
 		$item = Item::where ( 'itemNo', $id )->leftJoin ( DB::raw ( '(select client_id, first_name as morningFN, last_name as morningLN from client_profiles) morning' ), function ($join) {
 			$join->on ( 'items.morningClient', '=', 'morning.client_id' );
@@ -1434,35 +1616,52 @@ class inventoryController extends Controller {
 		) );
 	}
 	
-	// Detailed 
+	// Detailed
 	public function showDetailed(Request $request) {
-		$items = Item::all();
-		if ($request->ajax()) {
-			return view('inventory.stockItems', ['items' => $items])->render();
+		$items =$items = Item::leftJoin ( DB::raw ( '(select client_id,first_name as morning_FN, last_name as morning_LN from client_profiles) cProfile'),function($join){
+			$join->on('items.morningClient','=','cProfile.client_id');
+		} )->leftJoin ( DB::raw ( '(select client_id,first_name as night_FN, last_name as night_LN from client_profiles) cProfile2'),function($join){
+			$join->on('items.nightClient','=','cProfile2.client_id');
+		} )->get();
+		if ($request->ajax ()) {
+			return view ( 'inventory.stockItems', [ 
+					'items' => $items 
+			] )->render ();
 		}
-		return view ( "inventory.detailed", [
-				'items' => $items
+		return view ( "inventory.detailed", [ 
+				'items' => $items 
 		] );
 	}
-	public function itemLevel(Request $request){
-		
-		$itemTotalStock = ['In-stock'];
-		$itemTotalDeployed = ['Deployed'];
-		$xAxis = ['x'];		
-		$itemInStock = Item::select('itemType', DB::raw ( 'Count(*) as stockCount' ))->groupBy('itemType')->get();
-		$itemDeployed = Item::select('itemType', DB::raw ( 'Count(*) as deployedCount' ))
-		->where('itemStatus','!=','In-stock')->groupBy('itemType')->get();		
-		foreach ($itemInStock as $stock){
-			array_push($xAxis,$stock->itemType);
-			array_push($itemTotalStock,$stock->stockCount);
-		}
-		foreach ($itemDeployed as $deployed){
-			array_push($itemTotalDeployed,$deployed->deployedCount);
-		}
-		return [$xAxis,$itemTotalStock,$itemTotalDeployed];
+	public function detailedSearchResult() {
+		return view ( "inventory.detailedResults" );
 	}
-	public function stockItems(Request $request){
-		$stocks = Item::where('itemType',$request['itemType'])->get();
+	public function itemLevel(Request $request) {
+		$itemTotalStock = [ 
+				'In-stock' 
+		];
+		$itemTotalDeployed = [ 
+				'Deployed' 
+		];
+		$xAxis = [ 
+				'x' 
+		];
+		$itemInStock = Item::select ( 'itemType', DB::raw ( 'Count(*) as stockCount' ) )->groupBy ( 'itemType' )->get ();
+		$itemDeployed = Item::select ( 'itemType', DB::raw ( 'Count(*) as deployedCount' ) )->where ( 'itemStatus', '!=', 'In-stock' )->groupBy ( 'itemType' )->get ();
+		foreach ( $itemInStock as $stock ) {
+			array_push ( $xAxis, $stock->itemType );
+			array_push ( $itemTotalStock, $stock->stockCount );
+		}
+		foreach ( $itemDeployed as $deployed ) {
+			array_push ( $itemTotalDeployed, $deployed->deployedCount );
+		}
+		return [ 
+				$xAxis,
+				$itemTotalStock,
+				$itemTotalDeployed 
+		];
+	}
+	public function stockItems(Request $request) {
+		$stocks = Item::where ( 'itemType', $request ['itemType'] )->get ();
 		return $stocks;
 	}
 }

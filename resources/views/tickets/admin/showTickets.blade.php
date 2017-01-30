@@ -225,7 +225,7 @@
 
 							<td class="text-center"><span class="label label-default">{{$ticket->priority_level}}</span>
 							</td>
-							<td><?php echo date('M d, Y', strtotime($ticket->updated_at)); ?></td>
+							<td>{{$ticket->updated_at->diffForHumans()}}</td>
 
 
 						</tr>
