@@ -34,16 +34,14 @@ class inventoryController extends Controller {
 	}
 	// Dashboard
 	public function showIndex() {
-		
-		
-						
-		$items = Item::whereBetween ('updated_at',[Carbon::today (),Carbon::today ()->addDays(7)])->orderBy('updated_at','desc')
-		->leftJoin ( DB::raw ( '(select client_id,first_name as morning_FN, last_name as morning_LN from client_profiles) cProfile'),function($join){
-			$join->on('items.morningClient','=','cProfile.client_id');
-		} )->leftJoin ( DB::raw ( '(select client_id,first_name as night_FN, last_name as night_LN from client_profiles) cProfile2'),function($join){
-			$join->on('items.nightClient','=','cProfile2.client_id');
-		} )->get();
-		
+		$items = Item::whereBetween ( 'updated_at', [ 
+				Carbon::today (),
+				Carbon::today ()->addDays ( 7 ) 
+		] )->orderBy ( 'updated_at', 'desc' )->leftJoin ( DB::raw ( '(select client_id,first_name as morning_FN, last_name as morning_LN from client_profiles) cProfile' ), function ($join) {
+			$join->on ( 'items.morningClient', '=', 'cProfile.client_id' );
+		} )->leftJoin ( DB::raw ( '(select client_id,first_name as night_FN, last_name as night_LN from client_profiles) cProfile2' ), function ($join) {
+			$join->on ( 'items.nightClient', '=', 'cProfile2.client_id' );
+		} )->get ();
 		
 		$itemTypes = Item::select ( 'itemType as label', DB::raw ( 'Count(*) as value' ) )->groupBy ( 'itemType' )->get ();
 		$borrowCount = 0;
@@ -600,11 +598,18 @@ class inventoryController extends Controller {
 		] );
 	}
 	public function borrowAdvancedSearch(Request $request) {
+		$first = AProfile::select ( 'agent_id as id', 'first_name', 'last_name' );
+		$second = CProfile::select ( 'client_id as id', 'first_name', 'last_name' )->union ( $first );
+		
 		$borrows = Borrow::leftJoin ( DB::raw ( '(select unique_id, itemNo, itemType, brand, model
 				from items) items' ), function ($join) {
 			$join->on ( 'borrow_logs.itemNo', '=', 'items.itemNo' );
-		} )->leftJoin ( DB::raw ( '(select agent_id, first_name, last_name 
-				from admin_profiles) admin_profiles' ), 'borrow_logs.borrowee', '=', 'admin_profiles.agent_id' )->orderBy ( 'created_at', 'desc' );
+		} )->leftJoin ( DB::raw ( '(select agent_id, first_name as agent_FN, last_name as agent_LN
+				from admin_profiles) admin_profiles' ), 'borrow_logs.borrowee', '=', 'admin_profiles.agent_id' )
+				->leftJoin ( DB::raw ( "({$second->toSql()}) as names" ), function ($join) {
+					$join->on ( 'borrow_logs.borrower', '=', 'names.id' );
+				} )->orderBy ( 'created_at', 'desc' )
+		->orderBy ( 'created_at', 'desc' );
 		
 		$borrows = $borrows->newQuery ();
 		if ($request ['itemNo'] != null) {
@@ -624,20 +629,7 @@ class inventoryController extends Controller {
 			$borrows->where ( 'created_at', 'like', '%' . $request ['dateBorrowed'] . '%' );
 		}
 		
-		$names = DB::table ( 'admin_profiles' )->select ( 'agent_id as id', 'first_name', 'last_name' )->get ();
-		$clients = DB::table ( 'client_profiles' )->select ( 'client_id as id', 'first_name', 'last_name' )->get ();
-		
-		foreach ( $clients as $client ) {
-			array_push ( $names, $client );
-		}
 		$borrows = $borrows->get ();
-		foreach ( $borrows as $borrowedItem ) {
-			foreach ( $names as $nm ) {
-				if ($nm->id == $borrowedItem->borrower) {
-					$borrowedItem->borrower = $nm->first_name . ' ' . $nm->last_name;
-				}
-			}
-		}
 		
 		return response ()->json ( [ 
 				'success' => true,
@@ -715,15 +707,13 @@ class inventoryController extends Controller {
 		$first = AProfile::select ( 'agent_id as id', 'first_name', 'last_name' );
 		$second = CProfile::select ( 'client_id as id', 'first_name', 'last_name' )->union ( $first );
 		$issueId = Issue::select ( DB::raw ( 'Max(id)' ) )->groupBy ( 'itemNo' )->get ();
-
+		
 		$issueItems = Issue::leftJoin ( 'items', function ($join) {
 			$join->on ( 'items.itemNo', '=', 'issue_logs.itemNo' );
 		} )->leftJoin ( DB::raw ( '(select agent_id, first_name as agent_FN, last_name as agent_LN
-				from admin_profiles) admin_profiles' ), 'issue_logs.reported_by', '=', 'admin_profiles.agent_id' )
-		->leftJoin ( DB::raw ( "({$second->toSql()}) as names" ), function ($join) {
+				from admin_profiles) admin_profiles' ), 'issue_logs.reported_by', '=', 'admin_profiles.agent_id' )->leftJoin ( DB::raw ( "({$second->toSql()}) as names" ), function ($join) {
 			$join->on ( 'issue_logs.itemUser', '=', 'names.id' );
-		} )->where('itemStatus','With Issue')->whereIn('issue_logs.id',$issueId)
-		->orderBy ( 'issue_logs.created_at', 'desc' )->get ();
+		} )->where ( 'itemStatus', 'With Issue' )->whereIn ( 'issue_logs.id', $issueId )->orderBy ( 'issue_logs.created_at', 'desc' )->get ();
 		
 		$names = [ ];
 		$agents = AProfile::select ( 'agent_id as id', 'first_name', 'last_name' )->get ();
@@ -911,8 +901,7 @@ class inventoryController extends Controller {
 			$join->on ( 'broken_logs.reported_by', '=', 'assignedSupport.agent_id' );
 		} )->leftJoin ( DB::raw ( "({$second->toSql()}) as names" ), function ($join) {
 			$join->on ( 'broken_logs.itemUser', '=', 'names.id' );
-		} )->where ( 'itemStatus', 'Broken' )->whereIn('broken_logs.id',$brokenId)
-		->orderBy ( 'broken_logs.created_at', 'desc' )->get ();
+		} )->where ( 'itemStatus', 'Broken' )->whereIn ( 'broken_logs.id', $brokenId )->orderBy ( 'broken_logs.created_at', 'desc' )->get ();
 		
 		$itemNumbers = Item::select ( 'itemNo' )->get ();
 		return view ( "inventory.broken", [ 
@@ -1618,22 +1607,88 @@ class inventoryController extends Controller {
 	
 	// Detailed
 	public function showDetailed(Request $request) {
-		$items =$items = Item::leftJoin ( DB::raw ( '(select client_id,first_name as morning_FN, last_name as morning_LN from client_profiles) cProfile'),function($join){
-			$join->on('items.morningClient','=','cProfile.client_id');
-		} )->leftJoin ( DB::raw ( '(select client_id,first_name as night_FN, last_name as night_LN from client_profiles) cProfile2'),function($join){
-			$join->on('items.nightClient','=','cProfile2.client_id');
-		} )->get();
+		$first = CProfile::select ( 'client_id as id', 'first_name', 'last_name' );
+		$items = $items = Item::leftJoin ( DB::raw ( '(select client_id,first_name as morning_FN, last_name as morning_LN from client_profiles) cProfile' ), function ($join) {
+			$join->on ( 'items.morningClient', '=', 'cProfile.client_id' );
+		} )->leftJoin ( DB::raw ( '(select client_id,first_name as night_FN, last_name as night_LN from client_profiles) cProfile2' ), function ($join) {
+			$join->on ( 'items.nightClient', '=', 'cProfile2.client_id' );
+		} )->get ();
+		
+		$itemNumbers = Item::select ( 'itemNo' )->get ();
+		
 		if ($request->ajax ()) {
 			return view ( 'inventory.stockItems', [ 
 					'items' => $items 
 			] )->render ();
 		}
 		return view ( "inventory.detailed", [ 
-				'items' => $items 
+				'items' => $items,'itemNumbers' => $itemNumbers,
+				'names' => $first->get()
 		] );
 	}
-	public function detailedSearchResult() {
-		return view ( "inventory.detailedResults" );
+	public function detailSearch(Request $request) {
+		$columns = [ 
+				"itemNo",
+				"unique_id",
+				"itemType",
+				"brand",
+				"model",
+				"cProfile.morning_FN",
+				"cProfile.morning_LN",
+				"cProfile2.night_FN",
+				"cProfile2.night_LN",
+				"items.created_at" 
+		];
+		
+		$items = Item::leftJoin ( DB::raw ( '(select client_id,first_name as morning_FN, last_name as morning_LN from client_profiles) cProfile' ), function ($join) {
+			$join->on ( 'items.morningClient', '=', 'cProfile.client_id' );
+		} )->leftJoin ( DB::raw ( '(select client_id,first_name as night_FN, last_name as night_LN from client_profiles) cProfile2' ), function ($join) {
+			$join->on ( 'items.nightClient', '=', 'cProfile2.client_id' );
+		} );
+		$items = $items->newQuery ();
+		foreach ( $columns as $column ) {
+			$items->orWhere ( $column, $request ['detailSearch'] );
+		}
+		return response ()->json ( [ 
+				'success' => true,
+				'response' => $items->get () 
+		] );
+	}
+	public function detailAdvancedSearch(Request $request) {
+		$first = AProfile::select ( 'agent_id as id', 'first_name', 'last_name' );
+		$second = CProfile::select ( 'client_id as id', 'first_name', 'last_name' )->union ( $first );
+		
+		$items = Item::leftJoin ( DB::raw ( '(select client_id,first_name as morning_FN, last_name as morning_LN from client_profiles) cProfile' ), function ($join) {
+			$join->on ( 'items.morningClient', '=', 'cProfile.client_id' );
+		} )->leftJoin ( DB::raw ( '(select client_id,first_name as night_FN, last_name as night_LN from client_profiles) cProfile2' ), function ($join) {
+			$join->on ( 'items.nightClient', '=', 'cProfile2.client_id' );
+		} );
+		
+						$items = $items->newQuery ();
+						if ($request ['itemNo'] != null) {
+							$items->where ( 'itemNo', $request ['itemNo'] );
+						}
+						if ($request ['unique_id'] != null) {
+							$items->where ( 'unique_id', $request ['unique_id'] );
+						}
+						if ($request ['morning_user'] != null) {
+							$items->where ( 'morningClient', $request ['morning_user'] );
+						}
+						if ($request ['night_user'] != null) {
+							$items->where ( 'nightClient', $request ['night_user'] );
+						}
+		
+						if ($request ['dateArrived'] != null) {
+							$items->where ( 'created_at', 'like', '%' . $request ['dateArrived'] . '%' );
+						}
+		
+						$items = $items->get ();
+		
+						return response ()->json ( [
+								'success' => true,
+								'response' => $items
+						] );
+		
 	}
 	public function itemLevel(Request $request) {
 		$itemTotalStock = [ 
@@ -1661,7 +1716,11 @@ class inventoryController extends Controller {
 		];
 	}
 	public function stockItems(Request $request) {
-		$stocks = Item::where ( 'itemType', $request ['itemType'] )->get ();
+		$stocks = Item::where ( 'itemType', $request ['itemType'] )->leftJoin ( DB::raw ( '(select client_id,first_name as morning_FN, last_name as morning_LN from client_profiles) cProfile' ), function ($join) {
+			$join->on ( 'items.morningClient', '=', 'cProfile.client_id' );
+		} )->leftJoin ( DB::raw ( '(select client_id,first_name as night_FN, last_name as night_LN from client_profiles) cProfile2' ), function ($join) {
+			$join->on ( 'items.nightClient', '=', 'cProfile2.client_id' );
+		} )->get ();
 		return $stocks;
 	}
 }

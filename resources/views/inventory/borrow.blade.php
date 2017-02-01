@@ -279,7 +279,7 @@
 								<div class="input-group date dateBorrowed">
 									<span class="input-group-addon"><i class="fa fa-calendar"></i></span><input
 										type="text" class="form-control dateBorrowed"
-										placeholder="Name" name="dateBorrowed">
+										placeholder="Date" name="dateBorrowed">
 
 								</div>
 

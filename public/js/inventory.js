@@ -162,7 +162,7 @@ $(function() {
 					text : 'New user has been added',
 					type : 'success'
 				}, function() {
-					window.location.href = "/admin/agents";
+					window.location.href = "/inventory/agents";
 				});
 			},
 			error: function () {
