@@ -181,6 +181,11 @@ $(function() {
 			},
 			success : function(data){
 				issueItem.ladda('stop');
+				if($('tbody.issueItem').length <= 1){
+					$("tbody.issueItem>tr").each(function(index, elem){
+					        $(elem).remove();
+			     });
+				}
 				var table = $('table#issueResult').data('footable');
 				$('form.issueItem').trigger('reset');
 				$('tbody.issueItem').prepend("<tr><td><a href='/inventory/items/"+ data.response['itemNo'] +"'>"+ data.response['itemNo'] + "</a></td><td>" + data.response['unique_id']+ "</td>"+

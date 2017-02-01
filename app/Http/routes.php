@@ -53,6 +53,8 @@ Route::group ( [
 	Route::get ( "/inventory/deployed", "inventoryController@showDeployed" );
 	Route::get ( "/inventory/summaryMonYrs", "inventoryController@showSummaryMonYrs" );
 	Route::get ( "/inventory/summaryAll", "inventoryController@showSummaryAll" );
+	Route::get ( "/inventory/detailed/search", "inventoryController@detailSearch" );
+	Route::get ( "/inventory/detailed/advancedSearch", "inventoryController@detailAdvancedSearch" );
 	Route::get ( "/inventory/borrow/search", "inventoryController@borrowSearch" );
 	Route::get ( "/inventory/borrow/advancedSearch", "inventoryController@borrowAdvancedSearch" );
 	Route::get ( "/inventory/deploy/search", "inventoryController@deploySearch" );
@@ -79,7 +81,6 @@ Route::group ( [
 	Route::get("/inventory/maintenanceSched/{id}","inventoryController@viewMaintenanceDetail");
 	Route::get("/inventory/maintenanceSchedules","inventoryController@maintenanceSchedules");
 	Route::get ("/inventory/maintenanceDashboard","inventoryController@maintenanceDashboard");
-	Route::get("/inventory/detailed/results","inventoryController@detailedSearchResult");
 	
 	Route::post ( "/inventory/addItem", "inventoryController@addItem" );
 	Route::post ( "/inventory/borrowItem", "inventoryController@borrowItem" );

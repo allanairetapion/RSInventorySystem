@@ -36,10 +36,10 @@ $(function() {
 				if(data.response.length >= 1){
 					$.each(data.response,function(i, v) {
 						var newRow = "<tr><td><a href='/inventory/items/"+ v.itemNo +" '>" + v.itemNo + "</a></td><td>" + v.unique_id + " </td>"+
-									"<td>" + v.itemType + "</td><td>" + v.brand + "</td><td>" + v.model + "</td>" +
-									"<td>" + v.first_name + " " + v.last_name + "</td><td>" + v.borrower + "</td>"+
-									"<td>" + v.borrowerStationNo + "</td><td>" + v.created_at + "</td></tr>";
-						table.appendRow(newRow);
+						"<td>" + v.itemType + "</td><td>" + v.brand + "</td><td>" + v.model + "</td>" +
+						"<td>" + v.agent_FN + " " + v.agent_LN + "</td><td>" + v.first_name + " " + v.last_name + "</td>"+
+						"<td>" + v.borrowerStationNo + "</td><td>" + v.created_at + "</td></tr>";
+			table.appendRow(newRow);
 						});
 					}else{
 					table.appendRow("<tr><td colspan='9' class='text-center'> No Data Found.</td></tr>");

@@ -1,5 +1,5 @@
-@extends('inventory.inventory') @section('title', 'RS | Inventory
-Details') @section('header-page')
+@extends('layouts.inventory_basic') @section('title', 'RS |
+InventoryDetails') @section('header-page')
 <div class="col-lg-10">
 	<h2>Inventory Details</h2>
 	<ol class="breadcrumb">
@@ -17,7 +17,7 @@ Details') @section('header-page')
 
 				<div class="row">
 					<div class="col-lg-3">
-						<select id="stockType"class="form-control">
+						<select id="stockType" class="form-control">
 							<option selected value="">All</option>
 							<option value="In-stock">In-stock</option>
 							<option value="Borrowed">Borrowed</option>
@@ -29,33 +29,115 @@ Details') @section('header-page')
 						<button class="btn btn-primary btn-block" data-toggle="modal"
 							data-target="#itemLevel">Level</button>
 					</div>
-					<div class="col-lg-offset-2 col-lg-5">
+					<div class="col-md-offset-3 col-md-4">
 						<div class="input-group m-b">
-							<input type="text" class="form-control" id="filter"
-								placeholder="Search...">
+							<input type="text" class="form-control" id="detailedSearch"
+								name="detailedSearch" placeholder="Search...">
 							<div class="input-group-btn">
-								<button class="btn btn-white" id="itemAdvancedSearch"
+								<button id="detailedSearch" class="btn btn-primary"
 									type="button">
-									Search Options <span class="caret"></span>
+									<i class="fa fa-search"></i>
 								</button>
+								<button class="btn btn-success" id="itemAdvancedSearch"
+									type="button">
+									<span class="caret"></span>
+								</button>
+
 							</div>
 						</div>
+
 					</div>
-					<div class="col-lg-12">
+					</div>
+					<div id="itemAdvancedSearch" class="panel panel-default ">
+					<div class="panel-body">
+						<form class="form-horizontal" id="itemAdvancedSearch">
+							{!! csrf_field() !!}
+							<div class="row">
+								<div class="col-md-4">
+									<label class="control-label col-md-4">Item No:</label>
+									<div class="col-md-8">
+										<select class="form-control itemNo chosen-select"
+											name="itemNo">
+											<option value="" selected></option> @foreach($itemNumbers as
+											$id)
+											<option value="{{$id->itemNo}}">{{$id->itemNo}}</option>
+											@endforeach
+										</select>
+									</div>
+								</div>
+								<div class="col-md-4">
+									<label class="control-label col-md-4">Unique ID:</label>
+									<div class="col-md-8">
+										<input class="form-control" name="unique_id" type="text">
+									</div>
+								</div>
+								<div class="col-md-4">
+									<label class="control-label col-md-4">Morning User:</label>
+									<div class="col-md-8">
+										<select class="form-control chosen-select" name="morning_user">
+											<option value="" selected></option> @foreach($names as $name)
+											<option value="{{$name->id}}">{{$name->first_name.'
+												'.$name->last_name}}</option> @endforeach
+										</select>
+									</div>
+								</div>
+								<div class="col-md-4">
+									<br> <label class="control-label col-md-4">Night User:</label>
+									<div class="col-md-8">
+										<select class="form-control chosen-select" name="night_user">
+											<option value="" selected></option> @foreach($names as $name)
+											<option value="{{$name->id}}">{{$name->first_name.'
+												'.$name->last_name}}</option> @endforeach
+										</select>
+									</div>
+								</div>
+
+
+								<div class="col-md-4">
+									<br> <label class="control-label col-md-4">Date:</label>
+									<div class="col-md-8">
+										<div class="input-group date">
+											<span class="input-group-addon"><i class="fa fa-calendar"></i></span><input
+												type="text" class="form-control"
+												name="dateArrived">
+
+										</div>
+									</div>
+								</div>
+								<div class=" col-md-4 text-center">
+									<br>
+
+									<button type="button"
+										class="btn btn-primary" id="detailAdvanceSearch">
+										<i class="fa fa-search"></i> Search
+									</button>
+									<button type="reset" class="btn btn-warning">
+										<i class="fa fa-refresh"></i> Clear
+									</button>
+
+								</div>
+							</div>
+
+						</form>
+					</div>
+				</div>
+					
 						<div class="tabs-container">
 							<ul class="nav nav-tabs">
-								<li class="active"><a id="itemType" data-toggle="tab" href="#tab-1"> All</a></li>
-								<li class=""><a id="itemType"  data-toggle="tab" href="#tab-2">Laptop</a></li>
-								<li class=""><a id="itemType"  data-toggle="tab" href="#tab-3">Mouse</a></li>
-								<li class=""><a id="itemType"  data-toggle="tab" href="#tab-4">Headset</a></li>
-								<li class=""><a id="itemType"  data-toggle="tab" href="#tab-5">Projector</a></li>
+								<li class="active"><a id="itemType" data-toggle="tab"
+									href="#tab-1"> All</a></li>
+								<li class=""><a id="itemType" data-toggle="tab" href="#tab-2">Laptop</a></li>
+								<li class=""><a id="itemType" data-toggle="tab" href="#tab-3">Mouse</a></li>
+								<li class=""><a id="itemType" data-toggle="tab" href="#tab-4">Headset</a></li>
+								<li class=""><a id="itemType" data-toggle="tab" href="#tab-5">Projector</a></li>
 
 							</ul>
 							<div class="tab-content">
 								<div id="tab-1" class="tab-pane active">
 									<div class="panel-body">
 										<div class="table-responsive" id="stockAll">
-											<table id="detailed" class="footable table table-hover" data-striping="false">
+											<table id="detailed" class="footable table table-hover"
+												data-striping="false">
 												<thead>
 													<tr>
 														<th>Item No</th>
@@ -85,21 +167,22 @@ Details') @section('header-page')
 													@endforeach
 												</tbody>
 												<tfoot>
-                                <tr>
-                                    <td colspan="9">
-                                        <ul class="pagination pull-right"></ul>
-                                    </td>
-                                </tr>
-                                </tfoot>
+													<tr>
+														<td colspan="9">
+															<ul class="pagination pull-right"></ul>
+														</td>
+													</tr>
+												</tfoot>
 											</table>
-											
+
 										</div>
 									</div>
 								</div>
 								<div id="tab-2" class="tab-pane">
 									<div class="panel-body">
 										<div class="table-responsive">
-											<table class="footable table table-hover" data-striping="false">
+											<table class="footable table table-hover"
+												data-striping="false" id="stockLaptop">
 												<thead>
 													<tr>
 														<th>Item No</th>
@@ -131,8 +214,9 @@ Details') @section('header-page')
 								</div>
 								<div id="tab-3" class="tab-pane">
 									<div class="panel-body">
-										<div class="table-responsive" >
-											<table class="footable table  table-hover" data-striping="false">
+										<div class="table-responsive">
+											<table class="footable table  table-hover"
+												data-striping="false" id="stockMouse">
 												<thead>
 													<tr>
 														<th>Item No</th>
@@ -147,7 +231,7 @@ Details') @section('header-page')
 													</tr>
 												</thead>
 												<tbody id="stockMouse">
-<tr>
+													<tr>
 														<td colspan="9"><div class="spiner-example">
 																<div class="sk-spinner sk-spinner-three-bounce">
 																	<div class="sk-bounce1"></div>
@@ -164,8 +248,9 @@ Details') @section('header-page')
 								</div>
 								<div id="tab-4" class="tab-pane">
 									<div class="panel-body">
-										<div class="table-responsive" >
-											<table class="footable table table-hover" data-striping="false">
+										<div class="table-responsive">
+											<table class="footable table table-hover"
+												data-striping="false" id="stockHeadset">
 												<thead>
 													<tr>
 														<th>Item No</th>
@@ -197,8 +282,9 @@ Details') @section('header-page')
 								</div>
 								<div id="tab-5" class="tab-pane">
 									<div class="panel-body">
-										<div class="table-responsive" >
-											<table class="footable table table-hover" data-striping="false">
+										<div class="table-responsive">
+											<table class="footable table table-hover"
+												data-striping="false" id="stockProjector">
 												<thead>
 													<tr>
 														<th>Item No</th>
@@ -213,7 +299,41 @@ Details') @section('header-page')
 													</tr>
 												</thead>
 												<tbody id="stockProjector">
-<tr>
+													<tr>
+														<td colspan="9"><div class="spiner-example">
+																<div class="sk-spinner sk-spinner-three-bounce">
+																	<div class="sk-bounce1"></div>
+																	<div class="sk-bounce2"></div>
+																	<div class="sk-bounce3"></div>
+																</div>
+															</div></td>
+													</tr>
+												</tbody>
+
+											</table>
+										</div>
+									</div>
+								</div>
+								<div id="tab-6" class="tab-pane">
+									<div class="panel-body">
+										<div class="table-responsive">
+											<table class="footable table  table-hover"
+												data-striping="false" id="detailSearch">
+												<thead>
+													<tr>
+														<th>Item No</th>
+														<th>Unique Id</th>
+														<th>Station No</th>
+														<th>Brand</th>
+														<th>Model</th>
+														<th>Status</th>
+														<th>Morning Shift</th>
+														<th>Night Shift</th>
+														<th>Date Arrived</th>
+													</tr>
+												</thead>
+												<tbody id="detailSearch">
+													<tr>
 														<td colspan="9"><div class="spiner-example">
 																<div class="sk-spinner sk-spinner-three-bounce">
 																	<div class="sk-bounce1"></div>
@@ -233,8 +353,8 @@ Details') @section('header-page')
 
 						</div>
 
-					</div>
-				</div>
+					
+				
 			</div>
 		</div>
 	</div>
@@ -307,94 +427,9 @@ Details') @section('header-page')
 </div>
 
 <script>
-$(document).ready(function(){
-	$('.footable').footable();
 
-	
-});
-
-$('#itemLevel').on('shown.bs.modal', function() {
-	$.ajax({
-		type : "GET",
-		url : "/inventory/detailed/itemLevel"
-	}).done(function(data) {
-		console.log(data);
-		c3.generate({
-			bindto : '#stocked',
-			data : {
-				x : 'x',
-				columns : data,
-
-				type : 'bar',
-				groups : [['data1', 'data2']]
-			},
-			axis : {
-				x : {
-					type : 'category',
-
-				}
-			}
-		});
-
-	});
-	
-	
-	
-});
-
-
-
-
-$('.nav-tabs a').click(function(){
-	var iType = $(this).text();
-	if($('tbody#stock'+ iType +' tr td:eq(0)').attr('colspan') == 9 ){
-		$('tbody#stock'+ iType).html(
-				'<tr><td colspan="9"><div class="spiner-example">'+
-						'<div class="sk-spinner sk-spinner-three-bounce">'+
-							'<div class="sk-bounce1"></div>'+
-							'<div class="sk-bounce2"></div>'+
-							'<div class="sk-bounce3"></div>'+
-						'</div>'+
-					'</div></td></tr>');
-				$.ajax({
-					type : "GET",
-					url : "/inventory/detailed/stockItems",
-					data : {
-						itemType : iType,
-					},
-				}).done(function(data){
-					var html;
-					if(data == ""){
-						html = "<tr><td class='text-center' colspan='9'>No Result Found</td><tr>"
-					}else{
-						$.each(data,function(index, v) {
-							html += "<tr><td>" + v.itemNo +"</td><td>" + v.unique_id+ "</td>" +
-									"<td>" + v.stationNo +"</td><td>" + v.brand+ "</td>"+
-									"<td>" + v.model + "</td><td>"+ v.itemStatus+"</td>"+
-									"<td>" + v.morningClient + "</td><td>"+ v.nightClient + "</td>" +
-									"<td>" + v.created_at+ "</td></tr>";
-
-						});
-					}
-					
-
-					$('tbody#stock'+ iType).html(html);
-					 $('.footable').trigger('footable_filter', {filter: $('select#stockType').val()});
-					});
-		}
-	
-});
-$('select#stockType').change(function(){
-	
-	      $('.footable').trigger('footable_filter', {filter: $(this).val()});
-	  
-	
-});
-
-$('a#itemInfo').click(function(){
-	$('div#itemInfo').modal('toggle');
-	$('h4.modal-title').text($(this).text());
-	$('span#itemInfoStatus').text($(this).parents('tr:first').find('td:eq(4)').text());
-});
+</script>
+@endsection @section('scripts')
+<script type="text/javascript" src="/js/inventory/inventoryDetailed.js">
 </script>
 @endsection

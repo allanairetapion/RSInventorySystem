@@ -228,8 +228,8 @@ $(function() {
 				$('tbody#brokenItem').prepend(
 				"<tr><td> <input type='checkbox' class='i-checks brokenItem' value='"+ data.response['itemNo'] +"'/> &nbsp;"+ 
 				"<a href='/inventory/items/" + data.response['itemNo'] +"'>" +data.response['itemNo'] + "</a></td><td>" + data.response['unique_id'] + "</td>" +
-				"<td>" + data.response['damage'] + "</td><td>" + data.response['itemUser'] + "</td><td>"+data.response['brokenStatus']+"</td>" +
-				"<td>"+ data.response['first_name']+" "+ data.response['last_name']+"</td>" +
+				"<td>" + data.response['damage'] + "</td><td>" + v.first_name + " " + v.last_name + "</td><td>"+data.response['brokenStatus']+"</td>" +
+				"<td>"+ data.response['agent_FN']+" "+ data.response['agent_LN']+"</td>" +
 				"<td>" + data.response['created_at']+ "</td><td>" + data.response['itemType'] +"</td>" +
 				"<td>" + data.response['brand'] + "</td><td>" + data.response['model'] + "</td>" +
 				"<td>"+ decodeURI(data.response['brokenSummary']) +"</tr>");
