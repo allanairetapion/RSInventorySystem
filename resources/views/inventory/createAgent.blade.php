@@ -1,14 +1,14 @@
-@extends('inventory.inventory') 
+@extends('layouts.inventory_basic')
 @section('title', 'RS | Agents') 
 
 @section('header-page')
 <div class="col-lg-10">
-	<h2>Agents</h2>
+	<h2>Create New Agents</h2>
 	<ol class="breadcrumb">
-		<li><a href="index.html">Home</a></li>
+		<li><a href="/inventory/index">Home</a></li>
 
-		<li>Agents</li>
-		<li class="active"><strong>Create New Agent</strong></li>
+		<li><a href="/inventory/agents/">Agents</a></li>
+		<li class="active"><a href="/inventory/createAgent"><strong>Create New Agent</strong></a></li>
 	</ol>
 </div>
 @endsection 
@@ -17,9 +17,6 @@
 <div class="row">
 <div class="col-md-12">
 		<div class="ibox animated fadeInDown">
-			<div class="ibox-title">
-				<h3 class="font-bold">Create New User</h3>
-			</div>
 			<div class="ibox-content">
 
 				<form class="m-t agentForm">
@@ -70,11 +67,9 @@
 		</div>
 	</div>
 </div>
+@endsection
 
-<script>
-	$(document).ready(function(){
-		$('span.text-danger').hide();
-		$('label.text-danger').hide();
-	});
+@section('scripts')
+<script type="text/javascript" src="/js/inventory/inventoryCreateAgents.js">
 </script>
 @endsection

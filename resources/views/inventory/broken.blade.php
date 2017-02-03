@@ -38,17 +38,7 @@ Items') @section('header-page')
 								<li><a id="brokenMark" href="#">Cannot be Repaired</a></li>
 							</ul>
 						</div>
-						<div class="btn-group">
-							<button data-toggle="dropdown"
-								class="btn btn-primary btn-sm dropdown-toggle">
-								Export <span class="caret"></span>
-							</button>
-							<ul class="dropdown-menu">
-								<li><a href="#" id="exportExcel">excel</a></li>
-								<li><a href="#" id="exportCSV">csv</a></li>
-
-							</ul>
-						</div>
+						
 					</div>
 					<div class="col-md-offset-4 col-md-4">
 						<div class="input-group m-b">
@@ -58,7 +48,7 @@ Items') @section('header-page')
 								<button id="brokenSearch" class="btn btn-primary" type="button">
 									<i class="fa fa-search"></i>
 								</button>
-								<button class="btn btn-success" id="brokenAdvancedSearch"
+								<button class="btn btn-success" data-toggle="collapse" data-target="#advancedSearch"
 									type="button">
 									<span class="caret"></span>
 								</button>
@@ -70,7 +60,7 @@ Items') @section('header-page')
 				</div>
 
 
-				<div id="brokenAdvancedSearch" class="panel panel-default">
+				<div id="advancedSearch" class="panel panel-default collapse">
 					<div class="panel-body">
 						<form class="brokenTicketSearch form-horizontal">
 							{!! csrf_field() !!}
@@ -107,6 +97,8 @@ Items') @section('header-page')
 										</select>
 									</div>
 								</div>
+								</div>
+								<div class="row">
 								<div class="col-md-4">
 									<br> <label class="control-label col-md-4">Agent:</label>
 									<div class="col-md-8">
@@ -163,7 +155,8 @@ Items') @section('header-page')
 					</div>
 				</div>
 
-				<table id="brokenResult"
+				<div id="brokenResult">
+					<table id="broken"
 					class="footable table table-bordered table-hover toggle-arrow-tiny"
 					data-filter="#filter" data-striping="false">
 					<thead>
@@ -183,12 +176,7 @@ Items') @section('header-page')
 							<th data-hide="all">Summary</th>
 						</tr>
 					</thead>
-					<tbody id="brokenItem">
-						@if(count($brokenItems) == 0)
-							<tr class="text-center">
-								<td colspan="6">No item found.</td>
-							</tr>
-						@endif
+					<tbody id="broken">
 						@foreach($brokenItems as $brokenItem)
 
 						<tr id="{{$brokenItem->itemNo}}">
@@ -211,14 +199,8 @@ Items') @section('header-page')
 						@endforeach
 
 					</tbody>
-					<tfoot>
-						<tr>
-							<td colspan="7" class="text-right">
-								<ul class="pagination"></ul>
-							</td>
-						</tr>
-					</tfoot>
 				</table>
+				</div>
 	<table id="brokenSearchResult"
 					class="footable table table-bordered table-hover toggle-arrow-tiny hide"
 					data-filter="#filter" data-striping="false">
@@ -239,16 +221,10 @@ Items') @section('header-page')
 							<th data-hide="all">Summary</th>
 						</tr>
 					</thead>
-					<tbody id="brokenItem">
+					<tbody id="brokenSearchResult">
 
 					</tbody>
-					<tfoot>
-						<tr>
-							<td colspan="10" class="text-right">
-								<ul class="pagination"></ul>
-							</td>
-						</tr>
-					</tfoot>
+					
 				</table>
 
 			</div>
@@ -269,7 +245,7 @@ Items') @section('header-page')
 
 			<div class="modal-body">
 			<div class="row">
-				<form id="brokenItem" id="brokenItem">
+				<form id="brokenItem">
 					{!! csrf_field() !!}
 					
 						<div class="form-group brokenItemNo">
@@ -298,7 +274,7 @@ Items') @section('header-page')
 						</div>
 						<div class="form-group brokenitemUser">
 							<label class="control-label">Item User:</label> <select
-								type="text" name="item_user" class="form-control">
+								type="text" name="item_user" class="form-control chosen-select">
 								<option value="" selected></option> @foreach($users as $user)
 								<option value="{{$user->id}}">{{$user->first_name.'
 									'.$user->last_name}}</option> @endforeach

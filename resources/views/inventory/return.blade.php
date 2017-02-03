@@ -1,12 +1,12 @@
-@extends('layouts.inventory_basic') @section('title', 'RS | Return')
+@extends('layouts.inventory_basic') @section('title', 'RS | Returned Items')
 
 @section('header-page')
 <div class="col-lg-10">
 	<h2>Return Form</h2>
 	<ol class="breadcrumb">
-		<li><a href="index.html">Home</a></li>
+		<li><a href="/inventory/index/">Home</a></li>
 
-		<li class="active"><strong>Return Item</strong></li>
+		<li class="active"><a href="/inventory/return"><strong>Return Item</strong></a></li>
 	</ol>
 </div>
 
@@ -31,8 +31,8 @@
 								<button id="returnSearch" class="btn btn-primary" type="button">
 									<i class="fa fa-search"></i>
 								</button>
-								<button class="btn btn-success" id="returnAdvancedSearch"
-									type="button">
+								<button class="btn btn-success"
+									type="button" data-toggle="collapse" data-target="#advancedSearch">
 									<span class="caret"></span>
 								</button>
 
@@ -42,7 +42,7 @@
 					</div>
 
 				</div>
-				<div id="returnAdvancedSearch" class="panel panel-default">
+				<div id="advancedSearch" class="panel panel-default  collapse">
 					<div class="panel-body">
 						<form class="returnTicketSearch form-horizontal">
 							{!! csrf_field() !!}
@@ -78,6 +78,8 @@
 										</select>
 									</div>
 								</div>
+								</div>
+								<div class="row">
 								<div class="col-md-4">
 									<br> <label class="control-label col-md-4">Receiver:</label>
 									<div class="col-md-8">
@@ -106,7 +108,7 @@
 
 
 
-								<div class=" col-md-3 text-center">
+								<div class=" col-md-4 text-center">
 									<br>
 
 									<button type="button"
@@ -149,12 +151,7 @@
 
 							</tr>
 						</thead>
-						<tbody class="returnItem">
-							@if(count($returnedItems) == 0)
-							<tr class="text-center">
-								<td colspan="8">No item found.</td>
-							</tr>
-							@endif
+						<tbody class="return">
 							@foreach($returnedItems as $return) @if($return->dateReturned)
 							<tr>
 								<td><a href="/inventory/items/{{$return->itemNo}}">{{$return->itemNo}}</a></td>
@@ -170,13 +167,7 @@
 							@endif @endforeach
 
 						</tbody>
-						<tfoot>
-							<tr>
-								<td colspan="8" class="text-right">
-									<ul class="pagination"></ul>
-								</td>
-							</tr>
-						</tfoot>
+						
 					</table>
 				</div>
 				<table id="returnSearchResult"
@@ -197,17 +188,11 @@
 
 						</tr>
 					</thead>
-					<tbody>
+					<tbody id="returnSearchResult">
 
 
 					</tbody>
-					<tfoot>
-						<tr>
-							<td colspan="8" class="text-right">
-								<ul class="pagination"></ul>
-							</td>
-						</tr>
-					</tfoot>
+					
 				</table>
 			</div>
 		</div>

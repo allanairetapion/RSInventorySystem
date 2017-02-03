@@ -5,8 +5,29 @@ $(function() {
 		$('i.fa-pulse').hide();
 		$('div.itemNotfound').hide();
 		$('span.text-danger').hide();
+		$('.chosen-select', this).chosen();
 		$('div#brokenAdvancedSearch').hide();
-		$('table').footable();
+		$('table#broken').DataTable({
+            dom: '<"html5buttons"B>Tgitp',
+            buttons: [
+                { extend: 'copy'},
+                {extend: 'csv'},
+                {extend: 'excel', title: 'Remote Staff Inc. \n' + 'Broken Items'},
+                {extend: 'pdf', title: 'Remote Staff Inc. \n' + 'Broken Items', orientation: 'landscape',},
+
+                {extend: 'print',
+                 customize: function (win){
+                        $(win.document.body).addClass('white-bg');
+                        $(win.document.body).css('font-size', '10px');
+
+                        $(win.document.body).find('table')
+                                .addClass('compact')
+                                .css('font-size', 'inherit');
+                }
+                }
+            ]
+
+        });
 		$('div#brokenSummary').summernote({
 			height: 150,
 			minHeight: 150,             // set minimum height of editor
@@ -98,17 +119,17 @@ $(function() {
 
 	$('button.brokenTicketSearch').click(function(){
 		$('table#brokenSearchResult').addClass('hide');
-		$('table#brokenResult').hide(function(){
+		$('div#brokenResult').hide(function(){
 			$('div#spinner').removeClass('hide');
 			$.ajax({
 			type : "get",
 			url : "/inventory/broken/advancedSearch",
 			data : $('form.brokenTicketSearch').serialize(),
 			success: function(data){
-				var table = $('table#brokenSearchResult').data('footable');
-				$('tbody>tr').each(function(){
-					table.removeRow(this);
-					});
+				var table = $('table#brokenSearchResult').DataTable();
+				table.destroy();
+				
+				$('tbody#brokenSearchResult').html('');
 
 				if(data.response.length >= 1){
 					$.each(data.response,function(i, v) {
@@ -119,18 +140,19 @@ $(function() {
 						"<td>" + v.created_at + "</td><td>" + v.itemType + "</td>"+
 						"<td>" + v.brand + "</td><td>" + v.model + "</td>" + 
 						"<td>" + decodeURI(v.brokenSummary) + "</td></tr>";
-						table.appendRow(newRow);
+						$('tbody#brokenSearchResult').append(newRow);
 						});
 					}else{
-					table.appendRow("<tr><td colspan='9' class='text-center'> No Data Found.</td></tr>");
+						$('tbody#brokenSearchResult').append("<tr><td colspan='9' class='text-center'> No Data Found.</td></tr>");
 				}
+				dataTable();
 				$('div#spinner').addClass('hide');
 				$('table#brokenSearchResult').removeClass('hide');
 				$('.i-checks').iCheck({
 					checkboxClass : 'icheckbox_square-green',
 					radioClass : 'iradio_square-green',
 				});
-				$('.footable').trigger('footable_initialize');
+				
 			}
 		});
 		});
@@ -221,14 +243,14 @@ $(function() {
 				}
 			}else{
 				brokenItem.ladda('stop');
-				$('form.brokenItem').trigger('reset');
-				var table = $('table#brokenResult').data('footable');
+				$('form#brokenItem').trigger('reset');
+				var table = $('table#brokenResult').DataTable();
 					
 					
-				$('tbody#brokenItem').prepend(
+				$('tbody#broken').prepend(
 				"<tr><td> <input type='checkbox' class='i-checks brokenItem' value='"+ data.response['itemNo'] +"'/> &nbsp;"+ 
 				"<a href='/inventory/items/" + data.response['itemNo'] +"'>" +data.response['itemNo'] + "</a></td><td>" + data.response['unique_id'] + "</td>" +
-				"<td>" + data.response['damage'] + "</td><td>" + v.first_name + " " + v.last_name + "</td><td>"+data.response['brokenStatus']+"</td>" +
+				"<td>" + data.response['damage'] + "</td><td>" + data.response['first_name'] + " " + data.response['last_name'] + "</td><td>"+data.response['brokenStatus']+"</td>" +
 				"<td>"+ data.response['agent_FN']+" "+ data.response['agent_LN']+"</td>" +
 				"<td>" + data.response['created_at']+ "</td><td>" + data.response['itemType'] +"</td>" +
 				"<td>" + data.response['brand'] + "</td><td>" + data.response['model'] + "</td>" +
@@ -238,7 +260,7 @@ $(function() {
 					checkboxClass : 'icheckbox_square-green',
 					radioClass : 'iradio_square-green',
 				});
-				table.redraw();
+				table.draw();
 				$('div#brokenReport').modal('hide');
 				
 				swal('','Item Reported','success');
@@ -250,17 +272,17 @@ $(function() {
 	});
 	$('button#brokenSearch').click(function(){
 		$('table#brokenSearchResult').addClass('hide');
-		$('table#brokenResult').hide(function(){
+		$('div#brokenResult').hide(function(){
 			$('div#spinner').removeClass('hide');
 			$.ajax({
 			type : "get",
 			url : "/inventory/broken/search",
 			data : {brokenSearch : $("input#brokenSearch").val()},
 			success: function(data){
-				var table = $('table#brokenSearchResult').data('footable');
-				$('tbody>tr').each(function(){
-					table.removeRow(this);
-					});
+				var table = $('table#brokenSearchResult').DataTable();
+				table.destroy();
+				
+				$('tbody#brokenSearchResult').html('');
 
 				if(data.response.length >= 1){
 					$.each(data.response,function(i, v) {
@@ -271,22 +293,47 @@ $(function() {
 						"<td>" + v.created_at + "</td><td>" + v.itemType + "</td>"+
 						"<td>" + v.brand + "</td><td>" + v.model + "</td>" + 
 						"<td>" + decodeURI(v.brokenSummary) + "</td></tr>";
-						table.appendRow(newRow);
+						$('tbody#brokenSearchResult').append(newRow);
 						});
 					}else{
-					table.appendRow("<tr><td colspan='9' class='text-center'> No Data Found.</td></tr>");
+						$('tbody#brokenSearchResult').append("<tr><td colspan='9' class='text-center'> No Data Found.</td></tr>");
 				}
+				dataTable();
 				$('div#spinner').addClass('hide');
 				$('table#brokenSearchResult').removeClass('hide');
 				$('.i-checks').iCheck({
 					checkboxClass : 'icheckbox_square-green',
 					radioClass : 'iradio_square-green',
 				});
-				$('.footable').trigger('footable_initialize');
+				
 			}
 		});
 		});
 		
 		
 	});
+	function dataTable(){
+		
+		$('table#brokenSearchResult').DataTable({
+            dom: '<"html5buttons"B>Tgitp',
+            buttons: [
+                { extend: 'copy'},
+                {extend: 'csv'},
+                {extend: 'excel', title: 'Remote Staff Inc. \n' + 'Broken Items'},
+                {extend: 'pdf', title: 'Remote Staff Inc. \n' + 'Broken Items', orientation: 'landscape',},
+
+                {extend: 'print',
+                 customize: function (win){
+                        $(win.document.body).addClass('white-bg');
+                        $(win.document.body).css('font-size', '10px');
+
+                        $(win.document.body).find('table')
+                                .addClass('compact')
+                                .css('font-size', 'inherit');
+                }
+                }
+            ]
+
+        });
+	};
 });

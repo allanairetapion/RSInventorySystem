@@ -1,4 +1,4 @@
-@extends('layouts.inventory_basic') @section('title', 'RS | Borrow')
+@extends('layouts.inventory_basic') @section('title', 'RS | Borrowed Item')
 @section('header-page')
 
 <div class="col-lg-10">
@@ -6,7 +6,7 @@
 	<ol class="breadcrumb">
 		<li><a href="/inventory/index">Home</a></li>
 
-		<li class="active"><strong>Borrow Item</strong></li>
+		<li class="active"><a href="/inventory/borrow"><strong>Borrow Item</strong></a></li>
 	</ol>
 </div>
 
@@ -24,19 +24,8 @@
 			<div class="ibox-content">
 				<div class="row">
 					<div class="col-md-2">
-						<button type="button" class="btn btn-primary btn-sm"
-							data-toggle="modal" data-target="#myModal">Report</button>
-						<div class="btn-group">
-							<button data-toggle="dropdown"
-								class="btn btn-primary btn-sm dropdown-toggle">
-								Export <span class="caret"></span>
-							</button>
-							<ul class="dropdown-menu">
-								<li><a href="#" id="exportExcel">excel</a></li>
-								<li><a href="#" id="exportCSV">csv</a></li>
-
-							</ul>
-						</div>
+						<button type="button" class="btn btn-primary btn-sm btn-block"
+							data-toggle="modal" data-target="#myModal">Report Item</button>
 					</div>
 					<div class="col-md-offset-6 col-md-4">
 						<div class="input-group m-b">
@@ -46,8 +35,8 @@
 								<button id="borrowSearch" class="btn btn-primary" type="button">
 									<i class="fa fa-search"></i>
 								</button>
-								<button class="btn btn-success" id="borrowAdvancedSearch"
-									type="button">
+								<button class="btn btn-success"
+									type="button" data-toggle="collapse" data-target="#advancedSearch">
 									<span class="caret"></span>
 								</button>
 
@@ -57,7 +46,7 @@
 					</div>
 
 				</div>
-				<div id="borrowAdvancedSearch" class="panel panel-default hide">
+				<div id="advancedSearch" class="panel panel-default collapse">
 					<div class="panel-body">
 						<form class="borrowTicketSearch form-horizontal">
 							{!! csrf_field() !!}
@@ -91,6 +80,8 @@
 										</select>
 									</div>
 								</div>
+								</div>
+								<div class="row">
 								<div class="col-md-4">
 									<br> <label class="control-label col-md-4">Borrower:</label>
 									<div class="col-md-8">
@@ -159,11 +150,7 @@
 							</tr>
 						</thead>
 						<tbody id="borrow">
-							@if(count($borrowedItems) == 0)
-							<tr class="text-center">
-								<td colspan="9">No item found.</td>
-							</tr>
-							@endif
+							
 							@foreach($borrowedItems as $borrow) @if($borrow->dateBorrowed)
 							<tr>
 								<td><a href="/inventory/items/{{$borrow->itemNo}}">{{$borrow->itemNo}}</a></td>
@@ -182,13 +169,7 @@
 
 
 						</tbody>
-						<tfoot>
-							<tr>
-								<td colspan="9" class="text-right">
-									<ul class="pagination"></ul>
-								</td>
-							</tr>
-						</tfoot>
+						
 					</table>
 				</div>
 
@@ -199,7 +180,7 @@
 					<thead>
 						<tr>
 
-							<th>Item No.</th>
+							<th>Item No</th>
 							<th>Unique Identifier</th>
 							<th>Item Type</th>
 							<th>Brand</th>
@@ -216,13 +197,6 @@
 
 
 					</tbody>
-					<tfoot>
-						<tr>
-							<td colspan="9" class="text-right">
-								<ul class="pagination"></ul>
-							</td>
-						</tr>
-					</tfoot>
 				</table>
 
 			</div>

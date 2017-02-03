@@ -5,20 +5,36 @@ $(function() {
 		$('i.fa-pulse').hide();
 		$('div.itemNotfound').hide();
 		$('span.text-danger').hide();
-
 		$('.input-group.date.dateBorrowed').datepicker({
 		    format : 'yyyy-mm-dd',
 		    todayBtn: "linked"
 			});
 		$('div#borrowAdvancedSearch').hide();
-		$('table').footable();
-		
-	});
-	$('button#borrowAdvancedSearch').click(function(){
-		$('div#borrowAdvancedSearch').removeClass('hide');
-		$('div#borrowAdvancedSearch').slideToggle();
-	});
+		$('table#borrow').DataTable({
+            dom: '<"html5buttons"B>Tgitp',
+            buttons: [
+                { extend: 'copy'},
+                {extend: 'csv'},
+                {extend: 'excel', title: 'Remote Staff Inc. \n' + 'Borrowed Items'},
+                {extend: 'pdf', title: 'Remote Staff Inc. \n' + 'Borrowed Items', orientation: 'landscape',},
 
+                {extend: 'print',
+                 customize: function (win){
+                        $(win.document.body).addClass('white-bg');
+                        $(win.document.body).css('font-size', '10px');
+
+                        $(win.document.body).find('table')
+                                .addClass('compact')
+                                .css('font-size', 'inherit');
+                }
+                }
+            ]
+
+        });
+		$('.chosen-select', this).chosen();
+
+	});
+	
 	$('button.borrowTicketSearch').click(function(){
 		$('table#borrowSearchResult').addClass('hide');
 		$('div#borrowResult').hide(function(){
@@ -28,10 +44,10 @@ $(function() {
 			url : "/inventory/borrow/advancedSearch",
 			data : $('form.borrowTicketSearch').serialize(),
 			success: function(data){
-				var table = $('table#borrowSearchResult').data('footable');
-				$('tbody>tr').each(function(){
-					table.removeRow(this);
-					});
+				var table = $('table#borrowSearchResult').DataTable();
+				table.destroy();
+				
+				$('tbody#borrowSearchResult').html('');
 
 				if(data.response.length >= 1){
 					$.each(data.response,function(i, v) {
@@ -39,18 +55,43 @@ $(function() {
 						"<td>" + v.itemType + "</td><td>" + v.brand + "</td><td>" + v.model + "</td>" +
 						"<td>" + v.agent_FN + " " + v.agent_LN + "</td><td>" + v.first_name + " " + v.last_name + "</td>"+
 						"<td>" + v.borrowerStationNo + "</td><td>" + v.created_at + "</td></tr>";
-			table.appendRow(newRow);
+						$('tbody#borrowSearchResult').append(newRow);
 						});
 					}else{
-					table.appendRow("<tr><td colspan='9' class='text-center'> No Data Found.</td></tr>");
+						$('tbody#borrowSearchResult').append("<tr><td colspan='9' class='text-center'> No Data Found.</td></tr>");
 				}
+				dataTable();
 				$('div#spinner').addClass('hide');
 				$('table#borrowSearchResult').removeClass('hide');
 			}
 		});
 		});
 	});
+	
+	function dataTable(){
+		
+		$('table#borrowSearchResult').DataTable({
+            dom: '<"html5buttons"B>Tgitp',
+            buttons: [
+                { extend: 'copy'},
+                {extend: 'csv'},
+                {extend: 'excel', title: 'Remote Staff Inc. \n' + 'Borrowed Items'},
+                {extend: 'pdf', title: 'Remote Staff Inc. \n' + 'Borrowed Items', orientation: 'landscape',},
 
+                {extend: 'print',
+                 customize: function (win){
+                        $(win.document.body).addClass('white-bg');
+                        $(win.document.body).css('font-size', '10px');
+
+                        $(win.document.body).find('table')
+                                .addClass('compact')
+                                .css('font-size', 'inherit');
+                }
+                }
+            ]
+
+        });
+	};
 
 	$('#myModal').on('shown.bs.modal', function () {
 		  $('.chosen-select', this).chosen();
@@ -155,15 +196,15 @@ $(function() {
 					borrowItem.ladda('stop');
 					$('form.borrowItem').trigger('reset');
 					
-					var table = $('table#borrow').data('footable');
+					var table = $('table#borrow').DataTable();
 					
 					var newRow = "<tr><td><a href='/inventory/items/"+ data.response['itemNo'] +"'>" + data.response['itemNo'] + "</a></td><td>" + data.response['unique_id'] + " </td>"+
 						"<td>" + data.response.itemType + "</td><td>" + data.response['brand'] + "</td><td>" + data.response['model'] + "</td>" +
 						"<td>" + data.response['first_name'] + " " +data.response['last_name'] + "</td><td>" + data.response['borrower'] + "</td>"+
 						"<td>" + data.response['borrowerStationNo'] + "</td><td>" + data.response['created_at'] + "</td></tr>";
 					
-					$('tbody').prepend(newRow);
-					table.redraw();
+					$('tbody#borrow').prepend(newRow);
+					table.draw();
 			
 					$('#myModal').modal('hide');
 					swal('','Item Borrowed','success');
@@ -182,22 +223,23 @@ $(function() {
 				url : "/inventory/borrow/search",
 				data : {borrowSearch : $("input#borrowSearch").val()},
 				success: function(data){
-					var table = $('table#borrowSearchResult').data('footable');
-					$('tbody>tr').each(function(){
-						table.removeRow(this);
-						});
+					var table = $('table#borrowSearchResult').DataTable();
+					table.destroy();
+					
+					$('tbody#borrowSearchResult').html('');
 
 					if(data.response.length >= 1){
 						$.each(data.response,function(i, v) {
 							var newRow = "<tr><td><a href='/inventory/items/"+ v.itemNo +" '>" + v.itemNo + "</a></td><td>" + v.unique_id + " </td>"+
-										"<td>" + v.itemType + "</td><td>" + v.brand + "</td><td>" + v.model + "</td>" +
-										"<td>" + v.agent_FN + " " + v.agent_LN + "</td><td>" + v.first_name + " " + v.last_name + "</td>"+
-										"<td>" + v.borrowerStationNo + "</td><td>" + v.created_at + "</td></tr>";
-							table.appendRow(newRow);
+							"<td>" + v.itemType + "</td><td>" + v.brand + "</td><td>" + v.model + "</td>" +
+							"<td>" + v.agent_FN + " " + v.agent_LN + "</td><td>" + v.first_name + " " + v.last_name + "</td>"+
+							"<td>" + v.borrowerStationNo + "</td><td>" + v.created_at + "</td></tr>";
+							$('tbody#borrowSearchResult').append(newRow);
 							});
 						}else{
-						table.appendRow("<tr><td colspan='9' class='text-center'> No Data Found.</td></tr>");
+							$('tbody#borrowSearchResult').append("<tr><td colspan='9' class='text-center'> No Data Found.</td></tr>");
 					}
+					dataTable();
 					$('div#spinner').addClass('hide');
 					$('table#borrowSearchResult').removeClass('hide');
 				}
