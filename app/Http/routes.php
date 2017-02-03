@@ -74,6 +74,7 @@ Route::group ( [
 	Route::get ( "/inventory/editAccount", "inventoryController@showEditAccount" );
 	Route::get ( "/inventory/agents/{id}", "inventoryController@showAgentProfile" );
 	Route::get ( "/inventory/addItem/search", "inventoryController@addItemSearch" );
+	Route::get ( "/inventory/addItem/advancedSearch", "inventoryController@addItemAdvancedSearch" );
 	Route::get("/inventory/detailed/itemLevel","inventoryController@itemLevel");
 	Route::get("/inventory/detailed/stockItems","inventoryController@stockItems");
 	Route::get("/inventory/maintenanceItems","inventoryController@getMaintenaceItems");

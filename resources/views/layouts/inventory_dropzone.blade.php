@@ -21,6 +21,11 @@
 <link href="/css/plugins/ladda/ladda-themeless.min.css" rel="stylesheet">
 <link href="/css/plugins/chosen/chosen.css" rel="stylesheet">
 
+<!-- Dropzone -->
+<link href="/css/plugins/dropzone/basic.css" rel="stylesheet">
+<link href="/css/plugins/dropzone/dropzone.css" rel="stylesheet">
+<link href="/css/plugins/jasny/jasny-bootstrap.min.css" rel="stylesheet">
+
 <link href="/css/plugins/dataTables/datatables.min.css" rel="stylesheet">
 </head>
 
@@ -198,7 +203,8 @@
 <!-- Data Table -->
 <script src="/js/plugins/jeditable/jquery.jeditable.js"></script>
 <script src="/js/plugins/dataTables/datatables.min.js"></script>
-
+<!-- DROPZONE -->
+<script src="/js/plugins/dropzone/dropzone.js"></script>
 <script src="/js/inventory.js"></script>
 </body>
 

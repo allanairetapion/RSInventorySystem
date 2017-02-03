@@ -23,17 +23,7 @@ Issues') @section('header-page')
 						<button type="button" class="btn btn-primary btn-sm"
 							data-toggle="modal" data-target="#repairReport">Report Item
 							Repair</button>
-						<div class="btn-group">
-							<button data-toggle="dropdown"
-								class="btn btn-primary btn-sm dropdown-toggle">
-								Export <span class="caret"></span>
-							</button>
-							<ul class="dropdown-menu">
-								<li><a href="#" id="exportExcel">excel</a></li>
-								<li><a href="#" id="exportCSV">csv</a></li>
-
-							</ul>
-						</div>
+						
 					</div>
 					<div class="col-md-offset-4 col-md-4">
 						<div class="input-group m-b">
@@ -43,7 +33,7 @@ Issues') @section('header-page')
 								<button id="issueSearch" class="btn btn-primary" type="button">
 									<i class="fa fa-search"></i>
 								</button>
-								<button class="btn btn-success" id="issueAdvancedSearch"
+								<button class="btn btn-success" data-toggle="collapse" data-target="#advancedSearch"
 									type="button">
 									<span class="caret"></span>
 								</button>
@@ -54,7 +44,7 @@ Issues') @section('header-page')
 					</div>
 				</div>
 
-				<div id="issueAdvancedSearch" class="panel panel-default">
+				<div id="advancedSearch" class="panel panel-default collapse">
 					<div class="panel-body">
 						<form class="issueTicketSearch form-horizontal">
 							{!! csrf_field() !!}
@@ -90,8 +80,8 @@ Issues') @section('header-page')
 										</select>
 									</div>
 								</div>
-
-
+							</div>
+							<div class="row">
 								<div class="col-md-4">
 									<br> <label class="control-label col-md-4">Date:</label>
 									<div class="col-md-8">
@@ -130,7 +120,7 @@ Issues') @section('header-page')
 					</div>
 				</div>
 				<div class="table-responsive" id="issueResult">
-					<table id="issueResult"
+					<table id="issue"
 						class="footable table table-bordered toggle-arrow-tiny"
 						data-filter="#filter" data-striping="false">
 						<thead>
@@ -149,14 +139,9 @@ Issues') @section('header-page')
 
 							</tr>
 						</thead>
-						<tbody class="issueItem">
-							@if(count($issueItems) == 0)
-							<tr class="text-center">
-								<td colspan="9">No item found.</td>
-							</tr>
-							@endif
+						<tbody class="issue">
 							@foreach($issueItems as $issue)
-							<tr id="{{$issue->unique_id}}">
+							<tr id="{{$issue->itemNo}}">
 								<td><a href="/inventory/items/{{$issue->itemNo}}">{{$issue->itemNo}}</a></td>
 								<td>{{$issue->unique_id}}</td>
 								<td>{{$issue->itemType}}</td>
@@ -269,7 +254,7 @@ Issues') @section('header-page')
 						</div>
 						<div class="form-group col-lg-12 itemIssue">
 							<label class="control-label "> Issue:</label> <input
-								type="hidden" id="itemIssue" name="issue" rows="2">
+								type="hidden" id="itemIssue" name="summary" rows="2">
 							<div id="issueSummary"></div>
 							<span class="help-block text-danger itemIssue">192.168.100.200</span>
 
@@ -321,8 +306,8 @@ Issues') @section('header-page')
 			<div class="modal-body">
 				<div class="row">
 					<form class="form repairItem" id="repairItem">
-					{!! csrf_field() !!}
-					
+						{!! csrf_field() !!}
+
 
 						<div class="form-group repairItemNo">
 							<label class="control-label">Item No:</label> <select
@@ -334,8 +319,8 @@ Issues') @section('header-page')
 								@endforeach
 							</select> <span class="help-block text-danger repairItemNo">192.168.100.200</span>
 						</div>
-
-					</div>
+				
+				</div>
 
 				</form>
 

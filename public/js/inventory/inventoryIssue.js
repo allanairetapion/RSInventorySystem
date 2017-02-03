@@ -4,7 +4,7 @@ $(function() {
 		$('i.fa-pulse').hide();
 		$('div.itemNotfound').hide();
 		$('span.text-danger').hide();
-
+		$('.chosen-select', this).chosen();
 		$('.input-group.date.dateReported').datepicker({
 		    format : 'yyyy-mm-dd',
 		    todayBtn: "linked"
@@ -14,8 +14,27 @@ $(function() {
 	    format : 'yyyy-mm-dd',
 	    todayBtn: "linked"
 		});
-		$('table').footable();
-		$('div#issueAdvancedSearch').hide();
+		$('table#issue').DataTable({
+            dom: '<"html5buttons"B>Tgitp',
+            buttons: [
+                { extend: 'copy'},
+                {extend: 'csv'},
+                {extend: 'excel', title: 'Remote Staff Inc. \n' + 'Items With Issue'},
+                {extend: 'pdf', title: 'Remote Staff Inc. \n' + 'Items With Issue', orientation: 'landscape',},
+
+                {extend: 'print',
+                 customize: function (win){
+                        $(win.document.body).addClass('white-bg');
+                        $(win.document.body).css('font-size', '10px');
+
+                        $(win.document.body).find('table')
+                                .addClass('compact')
+                                .css('font-size', 'inherit');
+                }
+                }
+            ]
+
+        });
 		$('div#issueSummary').summernote({
 			height: 150,
 			minHeight: 150,             // set minimum height of editor
@@ -41,10 +60,6 @@ $(function() {
 		
 		});
 
-	$('button#issueAdvancedSearch').click(function(){
-		$('div#issueAdvancedSearch').slideToggle();
-	});
-
 	$('div.modal').on('hidden.bs.modal', function() {
 		$('form.itemInfo').hide();
 		$('i.fa-pulse').hide();
@@ -61,10 +76,10 @@ $(function() {
 			url : "/inventory/issue/advancedSearch",
 			data : $('form.issueTicketSearch').serialize(),
 			success: function(data){
-				var table = $('table#issueSearchResult').data('footable');
-				$('tbody>tr').each(function(){
-					table.removeRow(this);
-					});
+				var table = $('table#issueSearchResult').DataTable();
+				table.destroy();
+				
+				$('tbody#issueSearchResult').html('');
 
 				if(data.response.length >= 1){
 					$.each(data.response,function(i, v) {
@@ -73,14 +88,14 @@ $(function() {
 						"<td>" + v.damage + "</td><td>"+ v.first_name + " " + v.last_name +"</td><td>" + v.issue + "</td></td>" +
 						"<td>" + v.agent_FN + " " + v.agent_LN + "</td>" + 
 						"<td>" + v.created_at + "</td></tr>";
-			table.appendRow(newRow);
+					$('tbody#issueSearchResult').append(newRow);
 						});
-					}else{
-					table.appendRow("<tr><td colspan='9' class='text-center'> No Data Found.</td></tr>");
+				}else{
+					$('tbody#issueSearchResult').append("<tr><td colspan='9' class='text-center'> No Data Found.</td></tr>");
 				}
+				dataTable();
 				$('div#spinner').addClass('hide');
 				$('table#issueSearchResult').removeClass('hide');
-				$('.footable').trigger('footable_initialize');
 			}
 		});
 		});
@@ -181,12 +196,7 @@ $(function() {
 			},
 			success : function(data){
 				issueItem.ladda('stop');
-				if($('tbody.issueItem').length <= 1){
-					$("tbody.issueItem>tr").each(function(index, elem){
-					        $(elem).remove();
-			     });
-				}
-				var table = $('table#issueResult').data('footable');
+				var table = $('table#issueResult').DataTable();
 				$('form.issueItem').trigger('reset');
 				$('tbody.issueItem').prepend("<tr><td><a href='/inventory/items/"+ data.response['itemNo'] +"'>"+ data.response['itemNo'] + "</a></td><td>" + data.response['unique_id']+ "</td>"+
 						"<td>" + data.response['itemType'] + "</td><td>" + data.response['brand']+"</td>" +
@@ -194,10 +204,10 @@ $(function() {
 						"<td>" + data.response['first_name']+" "+ data.response['last_name'] + "</td>" +
 						"<td>" + decodeURI(data.response['issue']) +"</td><td>"+ data.response['agent_FN']+" "+ data.response['agent_LN']+"</td>" +
 						"<td>" + data.response['created_at']+ "</td></tr>");
-				table.redraw();
+				table.draw();
 				$('#issueReport').modal('hide');
 				swal('','Item Reported','success');
-				
+				$('form#issueItem').trigger('reset');
 				$('form.itemInfo').hide();
 				
 			}
@@ -255,6 +265,11 @@ $(function() {
 				}
 			}else{
 				repairItem.ladda('stop');
+				var table = $('table#issueResult').DataTable();
+				$('tr#'+$('repairItemNo').val()).remove();
+				table.draw();
+				$('div#repairReport').modal('toggle');
+				swal('','Item Repair Reported','Success');				
 				$('form.returnItem').trigger('reset');			
 				$('form.itemInfo').hide();			
 			}
@@ -271,10 +286,10 @@ $(function() {
 			url : "/inventory/issue/search",
 			data : {issueSearch : $("input#issueSearch").val()},
 			success: function(data){
-				var table = $('table#issueSearchResult').data('footable');
-				$('tbody>tr').each(function(){
-					table.removeRow(this);
-					});
+				var table = $('table#issueSearchResult').DataTable();
+				table.destroy();
+				
+				$('tbody#issueSearchResult').html('');
 
 				if(data.response.length >= 1){
 					$.each(data.response,function(i, v) {
@@ -283,19 +298,42 @@ $(function() {
 						"<td>" + v.damage + "</td><td>"+ v.first_name + " " + v.last_name +"</td><td>" + v.issue + "</td></td>" +
 						"<td>" + v.agent_FN + " " + v.agent_LN + "</td>" + 
 						"<td>" + v.created_at + "</td></tr>";
-			table.appendRow(newRow);
+					$('tbody#issueSearchResult').append(newRow);
 						});
-					}else{
-					table.appendRow("<tr><td colspan='9' class='text-center'> No Data Found.</td></tr>");
+				}else{
+					$('tbody#issueSearchResult').append("<tr><td colspan='9' class='text-center'> No Data Found.</td></tr>");
 				}
+				dataTable();
 				$('div#spinner').addClass('hide');
 				$('table#issueSearchResult').removeClass('hide');
-				$('.footable').trigger('footable_initialize');
 			}
 		});
 		});
 		
 		
 	});
-	
+	function dataTable(){
+		
+		$('table#issueSearchResult').DataTable({
+            dom: '<"html5buttons"B>Tgitp',
+            buttons: [
+                { extend: 'copy'},
+                {extend: 'csv'},
+                {extend: 'excel', title: 'Remote Staff Inc. \n' + 'Items With Issue'},
+                {extend: 'pdf', title: 'Remote Staff Inc. \n' + 'Items With Issue', orientation: 'landscape',},
+
+                {extend: 'print',
+                 customize: function (win){
+                        $(win.document.body).addClass('white-bg');
+                        $(win.document.body).css('font-size', '10px');
+
+                        $(win.document.body).find('table')
+                                .addClass('compact')
+                                .css('font-size', 'inherit');
+                }
+                }
+            ]
+
+        });
+	};
 });

@@ -638,6 +638,8 @@ class inventoryController extends Controller {
 	}
 	// Return Form search and advanced search
 	public function returnSearch(Request $request) {
+		$first = AProfile::select ( 'agent_id as id', 'first_name', 'last_name' );
+		$second = CProfile::select ( 'client_id as id', 'first_name', 'last_name' )->union ( $first );
 		$columns = [ 
 				"returnInfo.itemNo",
 				"unique_id",
@@ -739,7 +741,7 @@ class inventoryController extends Controller {
 				'itemNo' => 'required|exists:items,itemNo,itemStatus,!"With Issue"',
 				'item_user' => 'required|',
 				'damage' => 'required|max:255',
-				'issue' => 'required|min:15|max:10000',
+				'summary' => 'required|min:15|max:10000',
 				'dateReported' => 'required|date' 
 		] );
 		
@@ -757,7 +759,7 @@ class inventoryController extends Controller {
 			
 			$issueItem->itemNo = $request ['itemNo'];
 			$issueItem->damage = $request ['damage'];
-			$issueItem->issue = $request ['issue'];
+			$issueItem->issue = $request ['summary'];
 			$issueItem->itemUser = $request ['item_user'];
 			$issueItem->reported_by = Auth::guard ( 'inventory' )->user ()->id;
 			$issueItem->created_at = Carbon::create ( $date->year, $date->month, $date->day, $time->hour, $time->minute, $time->second );
@@ -1043,6 +1045,24 @@ class inventoryController extends Controller {
 		] );
 	}
 	public function addItemSearch(Request $request) {
+		$columns = [ 
+				"unique_id",
+				"itemType",
+				"brand",
+				"model",
+				"created_at"
+		];
+		$items = Item::orWhere ( 'itemNo', $request ['search'] );
+		
+		foreach ( $columns as $column ) {
+			$items->orWhere ( $column, $request ['search'] );
+		}
+		return response ()->json ( [ 
+				'success' => true,
+				'response' => $items->get () 
+		] );
+	}
+	public function addItemAdvancedSearch(Request $request) {
 		$items = Item::whereNotNull ( 'itemNo' );
 		$items = $items->newQuery ();
 		if ($request ['itemNo'] != null) {

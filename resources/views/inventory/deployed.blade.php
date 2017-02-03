@@ -1,4 +1,4 @@
-@extends('layouts.inventory_basic') @section('title', 'RS | Deploy')
+@extends('layouts.inventory_basic') @section('title', 'RS | Deployed Items')
 
 @section('header-page')
 <div class="col-lg-10">
@@ -137,11 +137,7 @@
 							</tr>
 						</thead>
 						<tbody class="deployItem">
-							@if(count($deployedItems) == 0)
-							<tr class="text-center">
-								<td colspan="8">No item found.</td>
-							</tr>
-							@endif
+							
 							@foreach($deployedItems as $item)
 								<tr>
 									<td><a href="/inventory/items/{{$item->itemNo}}">{{$item->itemNo}}</a></td>
@@ -155,13 +151,7 @@
 								</tr>
 							@endforeach
 						</tbody>
-						<tfoot>
-							<tr>
-								<td colspan="8" class="text-right">
-									<ul class="pagination"></ul>
-								</td>
-							</tr>
-						</tfoot>
+						
 					</table>
 				</div>
 				<table id="deploySearchResult"
@@ -179,17 +169,11 @@
 
 						</tr>
 					</thead>
-					<tbody>
+					<tbody id="deploySearchResult">
 
 
 					</tbody>
-					<tfoot>
-						<tr>
-							<td colspan="8" class="text-right">
-								<ul class="pagination"></ul>
-							</td>
-						</tr>
-					</tfoot>
+					
 				</table>
 			</div>
 		</div>
