@@ -303,10 +303,17 @@ $(document).ready(function(){
 
 					swal({
 						title : 'Success!',
-						text : "Your ticket has been created.",
+						text : "Your ticket has been created. Do You want to create another ticket?",
 						type : "success",
-					}, function() {
-						window.location.href = '/tickets';
+						showCancelButton: true,
+						confirmButtonText: "Yes",
+						closeOnConfirm: true
+					}, function(isConfirm) {
+						if(isConfirm){
+							window.location.href = '/tickets/createTicket';
+						}else{
+							window.location.href = '/tickets';
+						}
 					});
 
 						

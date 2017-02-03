@@ -35,8 +35,8 @@ class inventoryController extends Controller {
 	// Dashboard
 	public function showIndex() {
 		$items = Item::whereBetween ( 'updated_at', [ 
-				Carbon::today (),
-				Carbon::today ()->addDays ( 7 ) 
+				Carbon::today()->startOfWeek(),
+				Carbon::today()->endOfWeek()
 		] )->orderBy ( 'updated_at', 'desc' )->leftJoin ( DB::raw ( '(select client_id,first_name as morning_FN, last_name as morning_LN from client_profiles) cProfile' ), function ($join) {
 			$join->on ( 'items.morningClient', '=', 'cProfile.client_id' );
 		} )->leftJoin ( DB::raw ( '(select client_id,first_name as night_FN, last_name as night_LN from client_profiles) cProfile2' ), function ($join) {
@@ -44,27 +44,13 @@ class inventoryController extends Controller {
 		} )->get ();
 		
 		$itemTypes = Item::select ( 'itemType as label', DB::raw ( 'Count(*) as value' ) )->groupBy ( 'itemType' )->get ();
-		$borrowCount = 0;
-		$returnCount = 0;
-		$issueCount = 0;
-		$brokenCount = 0;
+		$itemCount = Item::select(DB::raw('itemStatus,count(unique_id) as counter'))->groupBy('itemStatus')->get();
 		$mSchedToday = mSchedule::whereBetween ( 'start_date', [ 
 				Carbon::today (),
 				Carbon::tomorrow () 
 		] )->count ();
 		
-		foreach ( $items as $item ) {
-			if ($item->itemStatus == "Available") {
-				$returnCount ++;
-			} elseif ($item->itemStatus == "Not Available") {
-				$borrowCount ++;
-			} elseif ($item->itemStatus == "With Issue") {
-				$issueCount ++;
-			} else {
-				$brokenCount ++;
-			}
-		}
-		;
+		
 		$borrowData = [ 
 				'label' => 'Borrowed',
 				'color' => '#1c84c6',
@@ -133,10 +119,7 @@ class inventoryController extends Controller {
 		
 		return view ( 'inventory.index', [ 
 				'items' => $items,
-				'borrowCount' => $borrowCount,
-				'returnCount' => $returnCount,
-				'issueCount' => $issueCount,
-				'brokenCount' => $brokenCount,
+				'itemCount' => $itemCount,
 				'types' => $itemTypes,
 				'mScheds' => $mSchedToday,
 				'summaryData' => [ 

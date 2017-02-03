@@ -38,9 +38,7 @@
 												class="btn btn-sm btn-warning btn-xs editDepartment"
 												value="{{$department->id}}" data-toggle="modal" data-target="#editDepartment">Edit</button>
 
-											<button type="button"
-												class="btn btn-sm btn-danger btn-xs deleteDepartment"
-												value="{{$department->id}}">Delete</button>
+											
 										</div>
 									</td> 
 								

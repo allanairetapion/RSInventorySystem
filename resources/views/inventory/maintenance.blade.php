@@ -524,16 +524,13 @@ Maintenance') @section('header-page')
 						<div class="form-group">
 							<label class="col-lg-2 control-label">Agents:</label>
 							<div class="col-lg-10">
-								<div class="input-group">
+								
 									<select data-placeholder="Choose an agent" id="agentSelect"
-										name="agents[]" class="chosen-select form-control" multiple
-										style="width: 350px;" tabindex="4">
+										name="agents[]" class="chosen-select form-control" multiple tabindex="4">
 										<option value="">Select</option> @foreach($agents as $agent)
 										<option value="{{$agent->id}}">{{$agent->first_name.'
 											'.$agent->last_name}}</option> @endforeach
 									</select>
-								</div>
-
 							</div>
 						</div>
 						<div class="form-group">

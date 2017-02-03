@@ -47,8 +47,7 @@
                                 <li><a href="#" id="clientPasswordResetLink" value="{{$client->email}}">Send Password Reset Link</a></li>
                                 <li><a href="#" id="clientChangePassword" value="{{$client->id}}">Change Password</a></li>
                                 <li><a href="#" id="changeClientStatus" name="{{$client->status}}" value="{{$client->id}}">Change Status</a></li>
-                                <li class="divider"></li>
-                                <li><a id="clientDelete" href="#" value="{{$client->id}}">Delete</a></li>
+                                
                             </ul>
                         </div>
 									</td>

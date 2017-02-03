@@ -1,6 +1,26 @@
 $(function() {
 	$(document).ready(function(){
-		$('.footable').footable();
+		$('table').DataTable({
+            dom: '<"html5buttons"B>Tgitp',
+            buttons: [
+                { extend: 'copy'},
+                {extend: 'csv'},
+                {extend: 'excel', title: 'Remote Staff Inc. \n' + 'Borrowed Items'},
+                {extend: 'pdf', title: 'Remote Staff Inc. \n' + 'Borrowed Items', orientation: 'landscape',},
+
+                {extend: 'print',
+                 customize: function (win){
+                        $(win.document.body).addClass('white-bg');
+                        $(win.document.body).css('font-size', '10px');
+
+                        $(win.document.body).find('table')
+                                .addClass('compact')
+                                .css('font-size', 'inherit');
+                }
+                }
+            ]
+
+        });
 		$('.input-group.date').datepicker({
 		    format : 'yyyy-mm-dd',
 		    todayBtn: "linked"
@@ -44,7 +64,7 @@ $(function() {
 
 	$('.nav-tabs a').click(function(){
 		var iType = $(this).text();
-		if($('tbody#stock'+ iType +' tr td:eq(0)').attr('colspan') == 9 ){
+	
 			$('tbody#stock'+ iType).html(
 					'<tr><td colspan="9"><div class="spiner-example">'+
 							'<div class="sk-spinner sk-spinner-three-bounce">'+
@@ -61,12 +81,11 @@ $(function() {
 						},
 					}).done(function(data){
 						var html;
-						var table = $('table#stock'+ iType).data('footable');
-						if(data == ""){
-							html = "<tr><td class='text-center' colspan='9'>No Result Found</td><tr>"
-						}else{
-							$.each(data,function(index, v) {
-								html += "<tr><td>" + v.itemNo +"</td><td>" + v.unique_id+ "</td>" +
+						var table = $('table#stock'+ iType).DataTable();
+						table.destroy();
+						$('tbody#stock'+ iType).html('');
+						$.each(data,function(index, v) {
+								html += "<tr><td><a href=/inventory/items/"+ v.itemNo +">" + v.itemNo +"</a></td><td>" + v.unique_id+ "</td>" +
 										"<td>" + v.stationNo +"</td><td>" + v.brand+ "</td>"+
 										"<td>" + v.model + "</td><td>"+ v.itemStatus+"</td>"+
 										"<td>" + v.morning_FN +" "+ v.morning_LN + "</td>"+
@@ -74,19 +93,17 @@ $(function() {
 										"<td>" + v.created_at+ "</td></tr>";
 
 							});
-						}
-						
-
 						$('tbody#stock'+ iType).html(html);
-						table.redraw();
-						 $('.footable').trigger('footable_filter', {filter: $('select#stockType').val()});
+						dataTable('stock'+ iType);
+						
+						 
 						});
-			}
+			
 		
 	});
 	$('select#stockType').change(function(){
-		
-		      $('.footable').trigger('footable_filter', {filter: $(this).val()});
+			var table = $('table').DataTable();
+			table.search($('select#stockType').val()).draw();
 		  
 		
 	});
@@ -120,12 +137,12 @@ $(function() {
 			success: function(data){
 				data = data.response
 				var html;
-				var table = $('table#detailSearch').data('footable');
-				if(data == ""){
-					html = "<tr><td class='text-center' colspan='9'>No Result Found</td><tr>"
-				}else{
+				var table = $('table#detailSearch').DataTable();
+				table.destroy();
+				$('tbody#detailSearch').html('');
+				
 					$.each(data,function(index, v) {
-						html += "<tr><td>" + v.itemNo +"</td><td>" + v.unique_id+ "</td>" +
+						html += "<tr><td><a href=/inventory/items/"+ v.itemNo +">" + v.itemNo +"</a></td><td>" + v.unique_id+ "</td>" +
 								"<td>" + v.stationNo +"</td><td>" + v.brand+ "</td>"+
 								"<td>" + v.model + "</td><td>"+ v.itemStatus+"</td>"+
 								"<td>" + v.morning_FN +" "+ v.morning_LN + "</td>"+
@@ -133,19 +150,14 @@ $(function() {
 								"<td>" + v.created_at+ "</td></tr>";
 
 					});
-				}
+				
 				
 
 				$('tbody#detailSearch').html(html);
-				table.redraw();
-				 $('.footable').trigger('footable_filter', {filter: $('select#stockType').val()});
+				dataTable('detailSearch');
 			}
 		})
 		
-	});
-	$('button#itemAdvancedSearch').click(function(){
-		$('div#itemAdvancedSearch').removeClass('hidden');
-		$('div#itemAdvancedSearch').slideToggle();
 	});
 	$('button#detailAdvanceSearch').click(function(){
 		if($('a#detailedSearch').length < 1){
@@ -168,12 +180,12 @@ $(function() {
 			success: function(data){
 				data = data.response
 				var html;
-				var table = $('table#detailSearch').data('footable');
-				if(data == ""){
-					html = "<tr><td class='text-center' colspan='9'>No Result Found</td><tr>"
-				}else{
+				var table = $('table#detailSearch').DataTable();
+				table.destroy();
+				$('tbody#detailSearch').html('');
+				
 					$.each(data,function(index, v) {
-						html += "<tr><td>" + v.itemNo +"</td><td>" + v.unique_id+ "</td>" +
+						html += "<tr><td><a href=/inventory/items/"+ v.itemNo +">" + v.itemNo +"</a></td><td>" + v.unique_id+ "</td>" +
 								"<td>" + v.stationNo +"</td><td>" + v.brand+ "</td>"+
 								"<td>" + v.model + "</td><td>"+ v.itemStatus+"</td>"+
 								"<td>" + v.morning_FN +" "+ v.morning_LN + "</td>"+
@@ -181,12 +193,11 @@ $(function() {
 								"<td>" + v.created_at+ "</td></tr>";
 
 					});
-				}
+				
 				
 
 				$('tbody#detailSearch').html(html);
-				table.redraw();
-				 $('.footable').trigger('footable_filter', {filter: $('select#stockType').val()});
+				dataTable('detailSearch');
 			}
 		})
 		
@@ -194,4 +205,31 @@ $(function() {
 	$('button.btn-warning').click(function(){
 		$(".chosen-select").val('').trigger("chosen:updated");
 	});
+	
+	function dataTable(tableName){	
+		$('table#'+tableName).DataTable({
+            dom: '<"html5buttons"B>Tgitp',
+            buttons: [
+                { extend: 'copy'},
+                {extend: 'csv'},
+                {extend: 'excel', title: 'Remote Staff Inc. \n' + 'Borrowed Items'},
+                {extend: 'pdf', title: 'Remote Staff Inc. \n' + 'Borrowed Items', orientation: 'landscape',},
+
+                {extend: 'print',
+                 customize: function (win){
+                        $(win.document.body).addClass('white-bg');
+                        $(win.document.body).css('font-size', '10px');
+
+                        $(win.document.body).find('table')
+                                .addClass('compact')
+                                .css('font-size', 'inherit');
+                }
+                }
+            ]
+
+        });
+		
+		var table = $('table').DataTable();
+		table.search($('select#stockType').val()).draw();
+	};
 });
