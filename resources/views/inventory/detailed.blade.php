@@ -38,7 +38,7 @@ InventoryDetails') @section('header-page')
 									type="button">
 									<i class="fa fa-search"></i>
 								</button>
-								<button class="btn btn-success" id="itemAdvancedSearch"
+								<button class="btn btn-success" data-toggle="collapse" data-target="#advancedSearch"
 									type="button">
 									<span class="caret"></span>
 								</button>
@@ -48,7 +48,7 @@ InventoryDetails') @section('header-page')
 
 					</div>
 					</div>
-					<div id="itemAdvancedSearch" class="panel panel-default ">
+					<div id="advancedSearch" class="panel panel-default collapse">
 					<div class="panel-body">
 						<form class="form-horizontal" id="itemAdvancedSearch">
 							{!! csrf_field() !!}
@@ -136,7 +136,7 @@ InventoryDetails') @section('header-page')
 								<div id="tab-1" class="tab-pane active">
 									<div class="panel-body">
 										<div class="table-responsive" id="stockAll">
-											<table id="detailed" class="footable table table-hover"
+											<table id="detailed" class="table table-bordered table-hover"
 												data-striping="false">
 												<thead>
 													<tr>
@@ -166,13 +166,6 @@ InventoryDetails') @section('header-page')
 													</tr>
 													@endforeach
 												</tbody>
-												<tfoot>
-													<tr>
-														<td colspan="9">
-															<ul class="pagination pull-right"></ul>
-														</td>
-													</tr>
-												</tfoot>
 											</table>
 
 										</div>
@@ -181,7 +174,7 @@ InventoryDetails') @section('header-page')
 								<div id="tab-2" class="tab-pane">
 									<div class="panel-body">
 										<div class="table-responsive">
-											<table class="footable table table-hover"
+											<table class="footable table table-bordered table-hover"
 												data-striping="false" id="stockLaptop">
 												<thead>
 													<tr>
@@ -197,15 +190,6 @@ InventoryDetails') @section('header-page')
 													</tr>
 												</thead>
 												<tbody id="stockLaptop">
-													<tr>
-														<td colspan="9"><div class="spiner-example">
-																<div class="sk-spinner sk-spinner-three-bounce">
-																	<div class="sk-bounce1"></div>
-																	<div class="sk-bounce2"></div>
-																	<div class="sk-bounce3"></div>
-																</div>
-															</div></td>
-													</tr>
 												</tbody>
 
 											</table>
@@ -215,7 +199,7 @@ InventoryDetails') @section('header-page')
 								<div id="tab-3" class="tab-pane">
 									<div class="panel-body">
 										<div class="table-responsive">
-											<table class="footable table  table-hover"
+											<table class="footable table  table-bordered table-hover"
 												data-striping="false" id="stockMouse">
 												<thead>
 													<tr>
@@ -231,15 +215,6 @@ InventoryDetails') @section('header-page')
 													</tr>
 												</thead>
 												<tbody id="stockMouse">
-													<tr>
-														<td colspan="9"><div class="spiner-example">
-																<div class="sk-spinner sk-spinner-three-bounce">
-																	<div class="sk-bounce1"></div>
-																	<div class="sk-bounce2"></div>
-																	<div class="sk-bounce3"></div>
-																</div>
-															</div></td>
-													</tr>
 												</tbody>
 
 											</table>
@@ -249,7 +224,7 @@ InventoryDetails') @section('header-page')
 								<div id="tab-4" class="tab-pane">
 									<div class="panel-body">
 										<div class="table-responsive">
-											<table class="footable table table-hover"
+											<table class="footable table table-bordered table-hover"
 												data-striping="false" id="stockHeadset">
 												<thead>
 													<tr>
@@ -265,15 +240,7 @@ InventoryDetails') @section('header-page')
 													</tr>
 												</thead>
 												<tbody id="stockHeadset">
-													<tr>
-														<td colspan="9"><div class="spiner-example">
-																<div class="sk-spinner sk-spinner-three-bounce">
-																	<div class="sk-bounce1"></div>
-																	<div class="sk-bounce2"></div>
-																	<div class="sk-bounce3"></div>
-																</div>
-															</div></td>
-													</tr>
+													
 												</tbody>
 
 											</table>
@@ -283,7 +250,7 @@ InventoryDetails') @section('header-page')
 								<div id="tab-5" class="tab-pane">
 									<div class="panel-body">
 										<div class="table-responsive">
-											<table class="footable table table-hover"
+											<table class="footable table table-bordered table-hover"
 												data-striping="false" id="stockProjector">
 												<thead>
 													<tr>
@@ -299,15 +266,7 @@ InventoryDetails') @section('header-page')
 													</tr>
 												</thead>
 												<tbody id="stockProjector">
-													<tr>
-														<td colspan="9"><div class="spiner-example">
-																<div class="sk-spinner sk-spinner-three-bounce">
-																	<div class="sk-bounce1"></div>
-																	<div class="sk-bounce2"></div>
-																	<div class="sk-bounce3"></div>
-																</div>
-															</div></td>
-													</tr>
+													
 												</tbody>
 
 											</table>
@@ -317,7 +276,7 @@ InventoryDetails') @section('header-page')
 								<div id="tab-6" class="tab-pane">
 									<div class="panel-body">
 										<div class="table-responsive">
-											<table class="footable table  table-hover"
+											<table class="footable table  table-bordered table-hover"
 												data-striping="false" id="detailSearch">
 												<thead>
 													<tr>
@@ -333,15 +292,7 @@ InventoryDetails') @section('header-page')
 													</tr>
 												</thead>
 												<tbody id="detailSearch">
-													<tr>
-														<td colspan="9"><div class="spiner-example">
-																<div class="sk-spinner sk-spinner-three-bounce">
-																	<div class="sk-bounce1"></div>
-																	<div class="sk-bounce2"></div>
-																	<div class="sk-bounce3"></div>
-																</div>
-															</div></td>
-													</tr>
+													
 												</tbody>
 
 											</table>

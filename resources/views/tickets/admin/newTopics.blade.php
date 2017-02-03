@@ -53,9 +53,7 @@
                                <button type="button"
 												class="btn btn-warning btn-xs editTopic"
 												value="{{$topic->topic_id}}">Edit</button>
-											<button type="button"
-												class="btn btn-danger btn-xs deleteTopic"
-												value="{{$topic->topic_id}}">Delete</button>
+											
                             </div>
 											
 										</td>

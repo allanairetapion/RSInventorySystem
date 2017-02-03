@@ -1,4 +1,4 @@
-@extends('inventory.inventory') @section('title', 'RS | Dashboard')
+@extends('layouts.inventory_basic') @section('title', 'RS | Dashboard')
 
 @section('sidebarDashboard')
 <li class="active"><a href="/inventory/index"><i class="fa fa-th-large"></i>
@@ -8,19 +8,25 @@
 
 
 <div class="col-lg-3">
-	<h2>Welcome {{
-		Auth::guard('inventory')->user()->adminProfile->first_name }}!</h2>
+	<br>
 	<h3>Summary</h3>
 	<ul class="list-group clear-list m-t">
+		@foreach($itemCount as $item) @if($item['itemStatus'] == "Borrowed")
 		<li class="list-group-item fist-item"><span class="pull-right">Borrowed
-				Items</span> <span class="label label-success">{{$brokenCount}}</span>
-		</li>
+				Items</span> <span class="label label-success">{{$item['counter']}}</span></li>
+		@elseif ($item['itemStatus'] == "In-stock")
 		<li class="list-group-item"><span class="pull-right">Returned Items</span>
-			<span class="label label-info">{{$returnCount}}</span></li>
+			<span class="label label-info">{{$item['counter']}}</span></li>
+		@elseif ($item['itemStatus'] == "With Issue")
 		<li class="list-group-item"><span class="pull-right">Items with Issues</span>
-			<span class="label label-warning">{{$issueCount}}</span></li>
+			<span class="label label-warning">{{$item['counter']}}</span></li>
+		@else
 		<li class="list-group-item"><span class="pull-right">Broken Items</span>
-			<span class="label label-danger">{{$brokenCount}}</span></li>
+			<span class="label label-danger">{{$item['counter']}}</span></li>
+		@endif @endforeach
+
+
+
 	</ul>
 
 </div>
@@ -146,14 +152,14 @@
 					<div class="col-lg-12">
 						<div class="tabs-container">
 							<ul class="nav nav-tabs">
-								<li class="active"><a data-toggle="tab" href="#tab-1"> Today</a></li>
-								<li class=""><a data-toggle="tab" href="#tab-2"></a></li>
-								<li class=""><a data-toggle="tab" href="#tab-3"></a></li>
-								<li class=""><a data-toggle="tab" href="#tab-4"></a></li>
-								<li class=""><a data-toggle="tab" href="#tab-5"></a></li>
-								<li class=""><a data-toggle="tab" href="#tab-6"></a></li>
-								<li class=""><a data-toggle="tab" href="#tab-7"></a></li>
-								<li class=""><a data-toggle="tab" href="#tab-8"></a></li>
+								<li class="active"><a data-toggle="tab" class="hide" href="#tab-1"> Today</a></li>
+								<li class=""><a data-toggle="tab" class="hide" href="#tab-2"></a></li>
+								<li class=""><a data-toggle="tab" class="hide" href="#tab-3"></a></li>
+								<li class=""><a data-toggle="tab" class="hide" href="#tab-4"></a></li>
+								<li class=""><a data-toggle="tab" class="hide" href="#tab-5"></a></li>
+								<li class=""><a data-toggle="tab" class="hide" href="#tab-6"></a></li>
+								<li class=""><a data-toggle="tab" class="hide" href="#tab-7"></a></li>
+								<li class=""><a data-toggle="tab" class="hide" href="#tab-8"></a></li>
 							</ul>
 							<div class="tab-content">
 
@@ -255,6 +261,9 @@
 	</div>
 </div>
 
+@endsection
+
+@section('scripts')
 <!-- Flot -->
 <script src="/js/plugins/flot/jquery.flot.js"></script>
 <script src="/js/plugins/flot/jquery.flot.tooltip.min.js"></script>
@@ -262,8 +271,6 @@
 <script src="/js/plugins/flot/jquery.flot.resize.js"></script>
 <script src="/js/plugins/flot/jquery.flot.pie.js"></script>
 
-<!-- ChartJS-->
-<script src="/js/plugins/chartJs/Chart.min.js"></script>
 <script>
 $(document).ready(function(){
 	$('.footable').footable();
@@ -275,7 +282,9 @@ $('#maintenance').click(function(){
 				type : "GET",
 				url : "/inventory/maintenanceDashboard/",
 				success: function(data){
-					var index = 7;
+					var index = 0;
+					var currentDate = "";
+					var previousDate = "";
 					$(data).each(function(i,e){
 						var html = "";
 					    $(e).each(function(i,e){
@@ -285,36 +294,34 @@ $('#maintenance').click(function(){
 							}else{
 								status = "navy-bg";
 							}
-						    if(e['start_date']){
-						    	html += '<div class="vertical-timeline-block">'+
+						   
+						    	html = '<div class="vertical-timeline-block">'+
 		                        		'<div class="vertical-timeline-icon ' + status + '">'+
 		                            		'<i class="fa fa-calendar"></i>'+
 		                        		'</div>'+
 		                        	'<div class="vertical-timeline-content ' + status + '">'+
 		                            '<h2>' + e['title']+ '</h2>'+
 		                            '<p>'+ e['activities'] + '</p>'+
-		                            '<span>' + e['start_date'] + '<span>'+
+		                            '<span>' + moment(e['start_date']).format("MMM DD") + '<span>'+
 		                            '</div> </div>';
-							}							                            
+	                            currentDate = moment(e['start_date']).format("MMM DD");   
+		                                       
 						});
-						if(data[i][0]){
-							var date = data[i][0]['start_date'];
-							$('a[href="#tab-' + (7- i) +'"').text(moment(date).format("MMM DD"));
+					    if(currentDate == previousDate){
+							$('#tab-'+(index)+' .vertical-container').append(html);
+							console.log('true');
 						}else{
-							if(i != 6){
-								$('a[href="#tab-' + (7- i) +'"').addClass('hide');
-							}
+							index = i + 1;
+							$('a[href="#tab-'+(index)+'"]').removeClass('hide').text(currentDate);
+							$('#tab-'+(index)+' .vertical-container').append(html);
 						}
+						previousDate = currentDate;     
 						
-						console.log(data[i][0] );
-					    $('#tab-'+(7- i)+' .vertical-container').html(html);
-						index--;
 					});
 					
 					}
 			});      	
 	
-	$('#vertical-timeline').toggleClass('center-orientation');
 	$('#mSchedule').modal('toggle');
 	
 	
@@ -376,5 +383,4 @@ $('a#itemType').click(function(){
          
 </script>
 @endsection
-
 

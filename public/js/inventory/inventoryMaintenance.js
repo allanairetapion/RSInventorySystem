@@ -1,6 +1,7 @@
 $(function(){
 	
 	$(document).ready(function() {
+		$('.chosen-select', this).chosen('destroy').chosen();
 		var maintenanceItems = null;
 		$.ajax(
 				{
@@ -337,9 +338,6 @@ $(function(){
 				});
 		
 	});
-	$('div#itemReport').on('shown.bs.modal', function () {
-		$('.chosen-select', this).chosen('destroy').chosen();
-		});
 	$('#addSchedule').on('shown.bs.modal', function () {
 		$('.chosen-select', this).chosen('destroy').chosen();
 		});
