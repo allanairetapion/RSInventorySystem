@@ -208,9 +208,16 @@
 										title : 'Success!',
 										text : "Your ticket has been created.",
 										type : "success",
-									}, function() {
-										window.location.href = '/admin/index';
-									});	
+										showCancelButton: true,
+										confirmButtonText: "Yes",
+										closeOnConfirm: true
+									}, function(isConfirm) {
+										if(isConfirm){
+											window.location.href = '/admin/createTicket';
+										}else{
+											window.location.href = '/admin/index';
+										}
+									});
 							},
 					  });
 					
@@ -273,13 +280,20 @@
 						$('div.subject').removeClass('has-error');
 						$('div.summary').removeClass('has-error');
 						createTicket.ladda('stop');
-
+						
 						swal({
 							title : 'Success!',
 							text : "Your ticket has been created.",
 							type : "success",
-						}, function() {
-							window.location.href = '/admin/index';
+							showCancelButton: true,
+							confirmButtonText: "Yes",
+							closeOnConfirm: true
+						}, function(isConfirm) {
+							if(isConfirm){
+								window.location.href = '/admin/createTicket';
+							}else{
+								window.location.href = '/admin/index';
+							}
 						});
 
 							
