@@ -143,7 +143,7 @@ $(function() {
 						$('tbody#brokenSearchResult').append(newRow);
 						});
 					}else{
-						$('tbody#brokenSearchResult').append("");
+						$('tbody#brokenSearchResult').append("<tr><td colspan='9' class='text-center'> No Data Found.</td></tr>");
 				}
 				dataTable();
 				$('div#spinner').addClass('hide');
@@ -287,7 +287,6 @@ $(function() {
 				if(data.response.length >= 1){
 					$.each(data.response,function(i, v) {
 						var newRow = "<tr id='" + v.itemNo + "'><td><input type='checkbox' class='i-checks brokenItem' value='" + v.itemNo +"' />" + 
-						var newRow = "<tr id='" + v.itemNo + "'><td><input type='checkbox' class='i-checks brokenItem' value='" + v.itemNo +"' />" + 
 						"<a href='/inventory/items/"+ v.itemNo +"'> " +v.itemNo + "</td><td>" + v.unique_id + " </td>"+
 						"<td>" + v.itemType + "</td>"+
 						"<td>" + v.brand + "</td><td>" + v.model + "</td>" + 
@@ -299,14 +298,14 @@ $(function() {
 					}else{
 						$('tbody#brokenSearchResult').append("");
 				}
-				dataTable();
+				
 				$('div#spinner').addClass('hide');
 				$('table#brokenSearchResult').removeClass('hide');
 				$('.i-checks').iCheck({
 					checkboxClass : 'icheckbox_square-green',
 					radioClass : 'iradio_square-green',
 				});
-				
+				dataTable();
 			}
 		});
 		});
