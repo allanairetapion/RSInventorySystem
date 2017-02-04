@@ -69,7 +69,6 @@ $(function() {
 	$('button.issueTicketSearch').click(function(){
 		$('table#issueSearchResult').addClass('hide');
 		$('div#issueResult').hide(function(){
-			console.log('click');
 			$('div#spinner').removeClass('hide');
 			$.ajax({
 			type : "get",
@@ -91,7 +90,7 @@ $(function() {
 					$('tbody#issueSearchResult').append(newRow);
 						});
 				}else{
-					$('tbody#issueSearchResult').append("<tr><td colspan='9' class='text-center'> No Data Found.</td></tr>");
+					$('tbody#issueSearchResult').append("");
 				}
 				dataTable();
 				$('div#spinner').addClass('hide');
@@ -301,7 +300,7 @@ $(function() {
 					$('tbody#issueSearchResult').append(newRow);
 						});
 				}else{
-					$('tbody#issueSearchResult').append("<tr><td colspan='9' class='text-center'> No Data Found.</td></tr>");
+					$('tbody#issueSearchResult').append("");
 				}
 				dataTable();
 				$('div#spinner').addClass('hide');

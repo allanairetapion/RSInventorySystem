@@ -209,16 +209,14 @@ Items') @section('header-page')
 							<th data-toggle="true"><input type="checkbox" class="i-checks" />
 								&nbsp; Item No.</th>
 							<th>Unique ID</th>
-
-							<th>Damage</th>
-							<th>Item User</th>
-							<th>Current Status</th>
-							<th>Reported By</th>
-							<th>Date Broken</th>
-							<th data-hide="all">ItemType</th>
-							<th data-hide="all">Brand</th>
-							<th data-hide="all">Model</th>
-							<th data-hide="all">Summary</th>
+								<th>ItemType</th>
+								<th>Brand</th>
+								<th>Model</th>
+								<th>Damage</th>
+								<th>Item User</th>
+								<th>Current Status</th>
+								<th>Reported By</th>
+								<th>Date Broken</th>
 						</tr>
 					</thead>
 					<tbody id="brokenSearchResult">
