@@ -233,7 +233,7 @@
 								<div class="input-group date dateReturned">
 									<span class="input-group-addon"><i class="fa fa-calendar"></i></span><input
 										type="text" class="form-control dateReturned"
-										placeholder="Name" name="dateReturned">
+										placeholder="Date Received" name="dateReturned">
 
 								</div>
 								<span class="help-block text-danger dateReturned">192.168.100.200</span>

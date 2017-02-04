@@ -1446,6 +1446,9 @@ $(function() {
 							"<td>" + data.response['head'] + "</td>"+
 							"<td>" + data.response['department_description'] + "</td></tr>";
 				$('tbody.department').prepend(html);
+				$('div#myModal').modal('toggle');
+				$('div.form-group').removeClass('has-error');
+				$('form').trigger('reset');
 			}
 		});
 	});

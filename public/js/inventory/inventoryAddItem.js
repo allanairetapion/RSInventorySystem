@@ -28,7 +28,7 @@ $(function() {
                 { extend: 'copy'},
                 {extend: 'csv'},
                 {extend: 'excel', title: 'Remote Staff Inc \n Add Items'},
-                {extend: 'pdf', title: 'Remote Staff Inc \n Add Items', orientation: 'landscape',},
+                {extend: 'pdf', title: 'Remote Staff Inc \n Add Items'},
 
                 {extend: 'print',
                  customize: function (win){
@@ -274,7 +274,7 @@ $('button#addItemSearch').click(function(){
 					$('tbody#itemList').append(newRow);
 					});
 				}else{
-					$('tbody#itemList').append("<tr><td colspan='9' class='text-center'> No Data Found.</td></tr>");
+					$('tbody#itemList').append("");
 				}
 			dataTable();
 			}
@@ -298,7 +298,7 @@ $('button#addSearch').click(function(){
 					$('tbody#itemList').append(newRow);
 					});
 				}else{
-					$('tbody#itemList').append("<tr><td colspan='9' class='text-center'> No Data Found.</td></tr>");
+					$('tbody#itemList').append("");
 				}
 			dataTable();
 			}
@@ -323,7 +323,7 @@ function dataTable(){
             { extend: 'copy'},
             {extend: 'csv'},
             {extend: 'excel', title: 'Remote Staff Inc \n Add Items'},
-            {extend: 'pdf', title: 'Remote Staff Inc \n Add Items', orientation: 'landscape',},
+            {extend: 'pdf', title: 'Remote Staff Inc \n Add Items'},
 
             {extend: 'print',
              customize: function (win){

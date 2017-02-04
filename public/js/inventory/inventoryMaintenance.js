@@ -369,7 +369,6 @@ $(function(){
 				$('div#itemReport').modal('show');
 				$('input#itemNo').val(itemNo);
 				$('div.itemStatus').show();
-				$('button.itemReport').attr('id','brokenItem');
 				$('button#issueItem').hide();
 				$('button#brokenItem').show();
 			});
@@ -475,7 +474,7 @@ var brokenItem = $('button#brokenItem').ladda();
 				brokenItem.ladda('stop');
 				$('div#itemReport').modal('hide');
 				swal('','Item Reported','success');
-				$('ellipse [id=' + $('input#itemNo').val() +' ]').attr('fill',"#ff0000");
+				$('ellipse[id=' + $('input#itemNo').val() +' ]').attr('fill',"#ff0000");
 				
 			}
 			
@@ -528,7 +527,7 @@ var issueItem = $('button#issueItem').ladda();
 				issueItem.ladda('stop');
 				$('div#itemReport').modal('hide');
 				swal('','Item Reported','success');
-				$('ellipse [id=' + $('input#itemNo').val() +' ]').attr('fill',"#ffff00");
+				$('ellipse[id=' + $('input#itemNo').val() +' ]').attr('fill',"#ffff00");
 			}
 		});
 		

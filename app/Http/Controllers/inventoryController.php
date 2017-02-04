@@ -51,85 +51,82 @@ class inventoryController extends Controller {
 		] )->count ();
 		
 		
-		$borrowData = [ 
-				'label' => 'Borrowed',
-				'color' => '#1c84c6',
-				'data' => [ ] 
-		];
-		$returnData = [ 
-				'label' => 'Returned',
-				'color' => '#23c6c8',
-				'data' => [ ] 
-		];
-		$issueData = [ 
-				'label' => 'With issues',
-				'color' => '#f8ac59',
-				'data' => [ ] 
-		];
-		$brokenData = [ 
-				'label' => 'Broken',
-				'color' => '#ed5565',
-				'data' => [ ] 
-		];
-		$summaryXaxis = [ ];
-		for($i = 11; $i >= 0; $i --) {
-			$date = Carbon::today ();
-			$dateStart = Carbon::today ()->subMonths ( $i )->startOfMonth ();
-			$dateEnd = Carbon::today ()->subMonths ( $i )->endOfMonth ();
-			
-			$data = [ 
-					11 - $i 
-			];
-			array_push ( $borrowData ['data'], [ 
-					11 - $i,
-					Borrow::whereBetween ( 'created_at', [ 
-							$dateStart,
-							$dateEnd 
-					] )->count () 
-			] );
-			
-			array_push ( $returnData ['data'], [ 
-					11 - $i,
-					ReturnItem::whereBetween ( 'created_at', [ 
-							$dateStart,
-							$dateEnd 
-					] )->count () 
-			] );
-			
-			array_push ( $issueData ['data'], [ 
-					11 - $i,
-					Issue::whereBetween ( 'created_at', [ 
-							$dateStart,
-							$dateEnd 
-					] )->count () 
-			] );
-			
-			array_push ( $brokenData ['data'], [ 
-					11 - $i,
-					Broken::whereBetween ( 'created_at', [ 
-							$dateStart,
-							$dateEnd 
-					] )->count () 
-			] );
-			array_push ( $summaryXaxis, [ 
-					11 - $i,
-					$dateStart->format ( 'M' ) 
-			] );
-		}
+		
+		$first = AProfile::select ( 'agent_id as id', 'first_name', 'last_name' );
+		$area = mArea::all ();
+		$activity = mActivity::all ();
+		
 		
 		return view ( 'inventory.index', [ 
 				'items' => $items,
 				'itemCount' => $itemCount,
+				'areas' => $area,
+				'activities' => $activity,
+				'agents' => $first->get (),
 				'types' => $itemTypes,
 				'mScheds' => $mSchedToday,
-				'summaryData' => [ 
+		] );
+	}
+	public function dashboardSummary(){
+		$borrowData = [
+				'label' => 'Borrowed',
+				'color' => '#1c84c6',
+				'data' => [[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0], ]
+		];
+		$returnData = [
+				'label' => 'Returned',
+				'color' => '#23c6c8',
+				'data' => [[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0], ]
+		];
+		$issueData = [
+				'label' => 'With issues',
+				'color' => '#f8ac59',
+				'data' => [[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0], ]
+		];
+		$brokenData = [
+				'label' => 'Broken',
+				'color' => '#ed5565',
+				'data' => [[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0], ]
+		];
+		$summaryXaxis = [ ];
+		$borrowCount = Borrow::select(DB::raw('count(id) as counter, date(created_at) as cdate'))->groupBy(DB::raw('cdate'))
+		->orderBy('cdate','desc')->take(11)->get();
+		$returnCount = ReturnItem::select(DB::raw('count(id) as counter, date(created_at) as cdate'))->groupBy(DB::raw('cdate'))
+		->orderBy('cdate','desc')->take(11)->get();
+		$issueCount = Issue::select(DB::raw('count(id) as counter, date(created_at) as cdate'))->groupBy(DB::raw('cdate'))
+		->orderBy('cdate','desc')->take(11)->get();
+		$brokenCount = Broken::select(DB::raw('count(id) as counter, date(created_at) as cdate'))->groupBy(DB::raw('cdate'))
+		->orderBy('cdate','desc')->take(11)->get();
+		
+		for($i = 11; $i >= 0; $i--){
+			$dateStart = Carbon::today ()->subMonths ( $i  )->startOfMonth ();
+			array_push ( $summaryXaxis, [
+					11 - $i,
+					$dateStart->format ( 'M' )
+			] );
+		}
+		foreach ($borrowCount as $i => $v){
+			$borrowData ['data'][11 - $i] = [11 - $i,$v->counter] ;
+		}
+		foreach ($returnCount as $i => $v){
+			$returnData ['data'][11 - $i] = [11 - $i,$v->counter] ;
+		}
+		foreach ($issueCount as $i => $v){
+			$issueData ['data'][11 - $i] = [11 - $i,$v->counter] ;
+		}
+		foreach ($brokenCount as $i => $v){
+			$brokenData ['data'][11 - $i] = [11 - $i,$v->counter] ;
+		}
+		
+		
+		
+		return ['summaryData' => [ 
 						$borrowData,
 						$returnData,
 						$issueData,
 						$brokenData 
 				],
-				'summaryXaxis' => $summaryXaxis 
-		] );
+				'summaryXaxis' => $summaryXaxis ];
 	}
 	public function itemTypeSummary(Request $request) {
 		$items = Item::where ( 'itemType', $request ['itemType'] )->get ();

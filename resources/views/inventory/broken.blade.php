@@ -38,7 +38,7 @@ Items') @section('header-page')
 								<li><a id="brokenMark" href="#">Cannot be Repaired</a></li>
 							</ul>
 						</div>
-						
+
 					</div>
 					<div class="col-md-offset-4 col-md-4">
 						<div class="input-group m-b">
@@ -48,8 +48,8 @@ Items') @section('header-page')
 								<button id="brokenSearch" class="btn btn-primary" type="button">
 									<i class="fa fa-search"></i>
 								</button>
-								<button class="btn btn-success" data-toggle="collapse" data-target="#advancedSearch"
-									type="button">
+								<button class="btn btn-success" data-toggle="collapse"
+									data-target="#advancedSearch" type="button">
 									<span class="caret"></span>
 								</button>
 
@@ -97,8 +97,8 @@ Items') @section('header-page')
 										</select>
 									</div>
 								</div>
-								</div>
-								<div class="row">
+							</div>
+							<div class="row">
 								<div class="col-md-4">
 									<br> <label class="control-label col-md-4">Agent:</label>
 									<div class="col-md-8">
@@ -157,51 +157,51 @@ Items') @section('header-page')
 
 				<div id="brokenResult">
 					<table id="broken"
-					class="footable table table-bordered table-hover toggle-arrow-tiny"
-					data-filter="#filter" data-striping="false">
-					<thead>
-						<tr>
-							<th data-toggle="true"><input type="checkbox" class="i-checks" />
-								&nbsp; Item No.</th>
-							<th>Unique ID</th>
+						class="footable table table-bordered table-hover toggle-arrow-tiny"
+						data-filter="#filter" data-striping="false">
+						<thead>
+							<tr>
+								<th data-toggle="true"><input type="checkbox" class="i-checks" />
+									&nbsp; Item No.</th>
+								<th>Unique ID</th>
+								<th>ItemType</th>
+								<th>Brand</th>
+								<th>Model</th>
+								<th>Damage</th>
+								<th>Item User</th>
+								<th>Current Status</th>
+								<th>Reported By</th>
+								<th>Date Broken</th>
+								
 
-							<th>Damage</th>
-							<th>Item User</th>
-							<th>Current Status</th>
-							<th>Reported By</th>
-							<th>Date Broken</th>
-							<th data-hide="all">ItemType</th>
-							<th data-hide="all">Brand</th>
-							<th data-hide="all">Model</th>
-							<th data-hide="all">Summary</th>
-						</tr>
-					</thead>
-					<tbody id="broken">
-						@foreach($brokenItems as $brokenItem)
 
-						<tr id="{{$brokenItem->itemNo}}">
-							<td><input type="checkbox" class="i-checks brokenItem"
-								value="{{$brokenItem->itemNo}}" /> &nbsp;<a
-								href="/inventory/items/{{$brokenItem->itemNo}}">{{$brokenItem->itemNo}}</a></td>
-							<td>{{$brokenItem->unique_id}}</td>
+							</tr>
+						</thead>
+						<tbody id="broken">
+							@foreach($brokenItems as $brokenItem)
 
-							<td>{{$brokenItem->damage}}</td>
-							<td>{{$brokenItem->first_name.' '.$brokenItem->last_name}}</td>
-							<td>{{$brokenItem->brokenStatus}}</td>
-							<td>{{$brokenItem->agent_FN.' '.$brokenItem->agent_LN}}</td>
-							<td>{{$brokenItem->created_at}}</td>
-							<td>{{$brokenItem->itemType}}</td>
-							<td>{{$brokenItem->brand}}</td>
-							<td>{{$brokenItem->model}}</td>
-							<td>{!!html_entity_decode($brokenItem->brokenSummary)!!}</td>
-						</tr>
+							<tr id="{{$brokenItem->itemNo}}">
+								<td><input type="checkbox" class="i-checks brokenItem"
+									value="{{$brokenItem->itemNo}}" /> &nbsp;<a
+									href="/inventory/items/{{$brokenItem->itemNo}}">{{$brokenItem->itemNo}}</a></td>
+								<td>{{$brokenItem->unique_id}}</td>
+								<td>{{$brokenItem->itemType}}</td>
+								<td>{{$brokenItem->brand}}</td>
+								<td>{{$brokenItem->model}}</td>
+								<td>{{$brokenItem->damage}}</td>
+								<td>{{$brokenItem->first_name.' '.$brokenItem->last_name}}</td>
+								<td>{{$brokenItem->brokenStatus}}</td>
+								<td>{{$brokenItem->agent_FN.' '.$brokenItem->agent_LN}}</td>
+								<td>{{$brokenItem->created_at}}</td>
 
-						@endforeach
+							</tr>
 
-					</tbody>
-				</table>
+							@endforeach
+
+						</tbody>
+					</table>
 				</div>
-	<table id="brokenSearchResult"
+				<table id="brokenSearchResult"
 					class="footable table table-bordered table-hover toggle-arrow-tiny hide"
 					data-filter="#filter" data-striping="false">
 					<thead>
@@ -224,7 +224,7 @@ Items') @section('header-page')
 					<tbody id="brokenSearchResult">
 
 					</tbody>
-					
+
 				</table>
 
 			</div>
@@ -244,10 +244,10 @@ Items') @section('header-page')
 			</div>
 
 			<div class="modal-body">
-			<div class="row">
-				<form id="brokenItem">
-					{!! csrf_field() !!}
-					
+				<div class="row">
+					<form id="brokenItem">
+						{!! csrf_field() !!}
+
 						<div class="form-group brokenItemNo">
 							<label class="control-label"> Item No:</label> <select
 								id="brokenItemNo" class="form-control chosen-select"
@@ -311,9 +311,8 @@ Items') @section('header-page')
 
 
 						</div>
-
-
-					</div>
+				
+				</div>
 
 				</form>
 				<center>

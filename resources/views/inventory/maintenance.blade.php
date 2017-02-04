@@ -578,9 +578,6 @@ Maintenance') @section('header-page')
 
 		</div>
 	</div>
-
-	...
-
 	<div id="updateSchedule" class="modal fade" role="dialog">
 		<div class="modal-dialog modal-lg">
 

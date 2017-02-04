@@ -40,6 +40,7 @@ Route::group ( [
 ], function () {
 	
 	Route::get ( '/inventory/index', 'inventoryController@showIndex' );
+	Route::get('/inventory/dashboardSummary','inventoryController@dashboardSummary');
 	Route::get ( "/uniqueId", 'HomeController@uniqueId' );
 	Route::get ( "/inventory/itemInfo", 'inventoryController@itemInfo' );
 	Route::get ( "/inventory/borrowInfo", 'inventoryController@borrowInfo' );	
