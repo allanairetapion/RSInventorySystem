@@ -20,7 +20,8 @@
 <link href="/css/plugins/footable/footable.core.css" rel="stylesheet">
 <link href="/css/plugins/ladda/ladda-themeless.min.css" rel="stylesheet">
 <link href="/css/plugins/chosen/chosen.css" rel="stylesheet">
-
+<!-- Clock Picker -->
+<link href="/css/plugins/clockpicker/clockpicker.css" rel="stylesheet">
 <link href="/css/plugins/dataTables/datatables.min.css" rel="stylesheet">
 </head>
 
@@ -195,6 +196,8 @@
 <script src="/js/plugins/datapicker/bootstrap-datepicker.js"></script>
 <!-- Chosen -->
 <script src="/js/plugins/chosen/chosen.jquery.js"></script>
+<!-- Clock picker -->
+<script src="/js/plugins/clockpicker/clockpicker.js"></script>
 <!-- Data Table -->
 <script src="/js/plugins/jeditable/jquery.jeditable.js"></script>
 <script src="/js/plugins/dataTables/datatables.min.js"></script>

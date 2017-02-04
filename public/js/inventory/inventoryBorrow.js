@@ -58,7 +58,7 @@ $(function() {
 						$('tbody#borrowSearchResult').append(newRow);
 						});
 					}else{
-						$('tbody#borrowSearchResult').append("<tr><td colspan='9' class='text-center'> No Data Found.</td></tr>");
+						$('tbody#borrowSearchResult').append("");
 				}
 				dataTable();
 				$('div#spinner').addClass('hide');
@@ -237,7 +237,7 @@ $(function() {
 							$('tbody#borrowSearchResult').append(newRow);
 							});
 						}else{
-							$('tbody#borrowSearchResult').append("<tr><td colspan='9' class='text-center'> No Data Found.</td></tr>");
+							$('tbody#borrowSearchResult').append("");
 					}
 					dataTable();
 					$('div#spinner').addClass('hide');

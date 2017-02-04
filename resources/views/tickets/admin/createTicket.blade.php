@@ -210,6 +210,8 @@
 										type : "success",
 										showCancelButton: true,
 										confirmButtonText: "Yes",
+										cancelButtonText: "No",
+										cancelButtonColor: "#DD6B55",
 										closeOnConfirm: true
 									}, function(isConfirm) {
 										if(isConfirm){
@@ -287,6 +289,8 @@
 							type : "success",
 							showCancelButton: true,
 							confirmButtonText: "Yes",
+							cancelButtonText: "No",
+							cancelButtonColor: "#DD6B55",
 							closeOnConfirm: true
 						}, function(isConfirm) {
 							if(isConfirm){

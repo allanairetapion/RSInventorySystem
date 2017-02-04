@@ -26,7 +26,7 @@
 					
 						@foreach ($tickets as $ticket)
 						
-						<tr class="read" data-href="/tickets/{{$ticket->id}}" >
+						<tr class="read" >
 							<td class="text-center">@if($ticket->ticket_status == "Open") <span
 								class="label label-success">{{$ticket->ticket_status}}</span>
 								@elseif($ticket->ticket_status == "Pending") <span
@@ -39,7 +39,7 @@
 							</td>
 
 
-						<td>{{$ticket->id}}</td>
+						<td><a href="/tickets/{{$ticket->id}}">{{$ticket->id}}</a></td>
 						<td>{{$ticket->description}}</td>
 						
 						<td >{{$ticket->created_at}}</td>

@@ -5,8 +5,8 @@ $(function() {
             buttons: [
                 { extend: 'copy'},
                 {extend: 'csv'},
-                {extend: 'excel', title: 'Remote Staff Inc. \n' + 'Borrowed Items'},
-                {extend: 'pdf', title: 'Remote Staff Inc. \n' + 'Borrowed Items', orientation: 'landscape',},
+                {extend: 'excel', title: 'Remote Staff Inc. \n' + 'Detailed Items'},
+                {extend: 'pdf', title: 'Remote Staff Inc. \n' + 'Detailed Items'},
 
                 {extend: 'print',
                  customize: function (win){
@@ -212,8 +212,8 @@ $(function() {
             buttons: [
                 { extend: 'copy'},
                 {extend: 'csv'},
-                {extend: 'excel', title: 'Remote Staff Inc. \n' + 'Borrowed Items'},
-                {extend: 'pdf', title: 'Remote Staff Inc. \n' + 'Borrowed Items', orientation: 'landscape',},
+                {extend: 'excel', title: 'Remote Staff Inc. \n' + 'Detailed Items'},
+                {extend: 'pdf', title: 'Remote Staff Inc. \n' + 'Detailed Items'},
 
                 {extend: 'print',
                  customize: function (win){

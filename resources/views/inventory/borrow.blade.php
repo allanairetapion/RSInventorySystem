@@ -25,7 +25,7 @@
 				<div class="row">
 					<div class="col-md-2">
 						<button type="button" class="btn btn-primary btn-sm btn-block"
-							data-toggle="modal" data-target="#myModal">Report Item</button>
+							data-toggle="modal" data-target="#myModal">Borrow Item</button>
 					</div>
 					<div class="col-md-offset-6 col-md-4">
 						<div class="input-group m-b">
