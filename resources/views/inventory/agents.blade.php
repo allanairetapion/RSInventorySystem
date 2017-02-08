@@ -49,10 +49,8 @@
 							<tbody>
 								@foreach ($agents as $agent)
 								<tr>
-									@if(Auth::guard('inventory')->user()->user_type == 'admin')
+									
 									<td><a href="agents/{{$agent->id}}">{{$agent->id}}</a></td>
-									@else
-									<td>{{$agent->id}}</td> @endif
 									<td>{{$agent->email}}</td>
 									<td>{{$agent->first_name.' '.$agent->last_name}}
 									
@@ -67,7 +65,7 @@
 												Actions <span class="caret"></span>
 											</button>
 											<ul class="dropdown-menu">
-												<li><a href="/admin/agents/{{$agent->id}}">View Profile</a>
+												<li><a href="/inventory/agents/{{$agent->id}}">View Profile</a>
 												
 												<li><a href="#" id="agentPasswordResetLink"
 													value="{{$agent->email}}">Send Reset Link</a></li>
@@ -99,8 +97,110 @@
 @endsection @section('scripts')
 <script>
 $(document).ready(function(){
-	$('.footable').footable();
+	$('table').DataTable({
+        dom: '<"html5buttons"B>Tgitp',
+        buttons: [
+            { extend: 'copy'},
+            {extend: 'csv'},
+            {extend: 'excel', title: 'Remote Staff Inc \n Agents'},
+            {extend: 'pdf', title: 'Remote Staff Inc \n Agents'},
+
+            {extend: 'print',
+             customize: function (win){
+                    $(win.document.body).addClass('white-bg');
+                    $(win.document.body).css('font-size', '10px');
+
+                    $(win.document.body).find('table')
+                            .addClass('compact')
+                            .css('font-size', 'inherit');
+            }
+            }
+        ]
+
+    });
 	
 });
+
+$('#agentPasswordResetLink').on('click', function(e) {
+	
+	$('input.email').val($(this).attr('value'));
+	
+	swal({
+		title : "Are You Sure?",
+		type : 'info',
+		showCancelButton : true,
+		closeOnConfirm : false,
+		confirmButtonText : "Yes",
+		showLoaderOnConfirm : true,
+		disableButtonsOnConfirm : true,
+	}, function() {
+		$.ajax({
+			type : "POST",
+			url : "/admin/forgotPassword",
+			data : $('form.agentPassword').serialize(),
+		}).done(function() {
+			swal('','Password Reset Link has been sent!', 'success');
+		});
+
+	});
+
+});
+
+$('a#agentChangeUserType').on('click',
+		function() {
+			var agentId = $(this).attr('value');
+			var agentUserType = $(this).attr('name');
+
+			if (agentUserType == 'agent') {
+				agentUserType = 'admin';
+			} else {
+				agentUserType = 'agent';
+			}
+			$(this).attr('name',agentUserType);
+			swal({
+				title : "Are You Sure?",
+				type : 'info',
+				showCancelButton : true,
+				closeOnConfirm : false,
+				confirmButtonText : "Yes",
+				showLoaderOnConfirm : true,
+				disableButtonsOnConfirm : true,
+			}, function() {
+				$.ajax({
+					headers : {
+						'X-CSRF-Token' : $(
+								'input[name="_token"]')
+								.val()
+					},
+					type : 'PUT',
+					url : '/inventory/changeAgentUserType',
+					data : {
+						id : agentId,
+						userType : agentUserType
+					}
+				})
+		.done(
+				function(
+						data) {
+					if (data.success != true) {
+						swal('',data.errors['id'],'warning');
+						return false;
+					} else {
+						swal(
+								{
+									title : 'Success!',
+									text : 'User type has been changed',
+									type : 'success'
+								},
+								function() {
+									$('td#'+ agentId).text(agentUserType);
+								});
+					}
+				});
+
+			});
+			
+		
+		});
 </script>
 @endsection

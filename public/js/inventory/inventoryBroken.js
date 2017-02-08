@@ -92,7 +92,8 @@ $(function() {
 				url : "/inventory/brokenMark",
 				data : {items : items, mark : mark},
 				success: function(data){
-					var table = $('table#broken').data('footable');
+					var table = $('table#broken').DataTable();
+					
 					swal({
 						title:"Success",
 						text: "Successfully Marked as "+ mark,
@@ -106,7 +107,7 @@ $(function() {
 								}else{								 
 										table.removeRow($('tr#'+$(this).val()));
 									}
-								table.redraw();
+								table.draw();
 							});
 							});
 					
@@ -246,7 +247,6 @@ $(function() {
 				$('form#brokenItem').trigger('reset');
 				var table = $('table#brokenResult').DataTable();
 					
-					
 				$('tbody#broken').prepend(
 				"<tr><td> <input type='checkbox' class='i-checks brokenItem' value='"+ data.response['itemNo'] +"'/> &nbsp;"+ 
 				"<a href='/inventory/items/" + data.response['itemNo'] +"'>" +data.response['itemNo'] + "</a></td><td>" + data.response['unique_id'] + "</td>" +
@@ -260,7 +260,7 @@ $(function() {
 					checkboxClass : 'icheckbox_square-green',
 					radioClass : 'iradio_square-green',
 				});
-				dataTable();
+				table.draw();
 				$('div#brokenReport').modal('hide');
 				
 				swal('','Item Reported','success');

@@ -7,7 +7,7 @@ $(function() {
 	$(document)
 			.ready(
 					function() {
-						$('div#advancedSearch').toggle();
+						
 
 						$('.i-checks').iCheck({
 							checkboxClass : 'icheckbox_square-green',
@@ -108,57 +108,6 @@ $(function() {
 	});
 
 	// ticket report
-	$('button.advancedTicketSearch').click(
-					function() {
-						console.log($('form.advancedTicket').serialize());
-						$
-								.ajax(
-										{
-											type : "POST",
-											url : "/admin/advancedSearch",
-											data : $('form.advancedTicket')
-													.serialize(),
-										})
-								.done(
-										function(data) {
-
-											
-											var html;
-											var table = $('table.ticketReport').DataTable();
-											table.clear();
-											$.each(data.response,function(i, v) {
-
-												if ((data.closed[i]['first_name'] == null)
-														|| (data.closed[i]['closed_by'] == 0)) {
-													data.closed[i]['first_name'] = '';
-												}
-
-												if ((data.closed[i]['last_name'] == null)
-														|| (data.closed[i]['closed_by'] == 0)) {
-													data.closed[i]['last_name'] = '';
-												}
-
-												if ((data.assigned[i]['first_name'] == null)
-														|| (data.assigned[i]['assigned_support'] == 0)) {
-													data.assigned[i]['first_name'] = '';
-												}
-
-												if ((data.assigned[i]['last_name'] == null)
-														|| (data.assigned[i]['assigned_support'] == 0)) {
-													data.assigned[i]['last_name'] = '';
-												}
-												
-												var rowNode = table.row.add(['', v.id, v.description,
-																               v.description, v.subject,v.ticket_status,
-																               v.department, data.assigned[i]['first_name']+ " "+ data.assigned[i]['last_name'],
-																               data.closed[i]['first_name'] +" "+ data.closed[i]['last_name'],
-																               v.created_at, v.updated_at] ).draw();															
-															});
-										});
-					});
-	
-	
-	
 	
 	// end ticket report
 	$('button.ticketDelete').on('click',function() {
@@ -731,37 +680,49 @@ $(function() {
 							agentUserType = 'agent';
 						}
 						$(this).attr('name',agentUserType);
-						$.ajax({
-							headers : {
-								'X-CSRF-Token' : $(
-										'input[name="_token"]')
-										.val()
-							},
-							type : 'PUT',
-							url : '/admin/changeAgentUserType',
-							data : {
-								id : agentId,
-								userType : agentUserType
-							}
-						})
-				.done(
-						function(
-								data) {
-							if (data.success != true) {
-								swal('',data.errors['id'],'warning');
-								return false;
-							} else {
-								swal(
-										{
-											title : 'Success!',
-											text : 'User type has been changed',
-											type : 'success'
-										},
-										function() {
-											$('td#'+ agentId).text(agentUserType);
-										});
-							}
+						swal({
+							title : "Are You Sure?",
+							type : 'info',
+							showCancelButton : true,
+							closeOnConfirm : false,
+							confirmButtonText : "Yes",
+							showLoaderOnConfirm : true,
+							disableButtonsOnConfirm : true,
+						}, function() {
+							$.ajax({
+								headers : {
+									'X-CSRF-Token' : $(
+											'input[name="_token"]')
+											.val()
+								},
+								type : 'PUT',
+								url : '/admin/changeAgentUserType',
+								data : {
+									id : agentId,
+									userType : agentUserType
+								}
+							})
+					.done(
+							function(
+									data) {
+								if (data.success != true) {
+									swal('',data.errors['id'],'warning');
+									return false;
+								} else {
+									swal(
+											{
+												title : 'Success!',
+												text : 'User type has been changed',
+												type : 'success'
+											},
+											function() {
+												$('td#'+ agentId).text(agentUserType);
+											});
+								}
+							});
+
 						});
+						
 					
 					});
 
