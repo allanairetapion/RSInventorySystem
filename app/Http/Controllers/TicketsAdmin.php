@@ -466,7 +466,8 @@ class TicketsAdmin extends Controller {
 	}
 	public function showTickets() {
 		$topics = Topics::get ();
-		$tickets = Tickets::leftJoin ( 'ticket_topics', 'tickets.topic_id', '=', 'ticket_topics.topic_id' )->orderBy ( 'updated_at', 'desc' )->paginate ( 15 );
+		$tickets = Tickets::leftJoin ( 'ticket_topics', 'tickets.topic_id', '=', 'ticket_topics.topic_id' )
+		->orderBy ( 'updated_at', 'desc' )->get();
 		
 		foreach ( $tickets as $ticket ) {
 			$name = DB::table ( 'admin_profiles' )->where ( 'agent_id', $ticket->sender_id )->first ();
@@ -483,7 +484,9 @@ class TicketsAdmin extends Controller {
 	}
 	public function showTicketsAssigned() {
 		$topics = Topics::get ();
-		$tickets = Tickets::leftJoin ( 'ticket_topics', 'tickets.topic_id', '=', 'ticket_topics.topic_id' )->where ( 'ticket_status', '!=', 'Closed' )->where ( 'assigned_support', Auth::guard ( 'admin' )->user ()->id )->orderBy ( 'updated_at', 'desc' )->paginate ( 15 );
+		$tickets = Tickets::leftJoin ( 'ticket_topics', 'tickets.topic_id', '=', 'ticket_topics.topic_id' )
+		->where ( 'ticket_status', '!=', 'Closed' )
+		->where ( 'assigned_support', Auth::guard ( 'admin' )->user ()->id )->orderBy ( 'updated_at', 'desc' )->get();
 		foreach ( $tickets as $ticket ) {
 			$name = DB::table ( 'admin_profiles' )->where ( 'agent_id', $ticket->sender_id )->first ();
 			if ($name == null) {
@@ -499,10 +502,11 @@ class TicketsAdmin extends Controller {
 	}
 	public function showTicketsOpen() {
 		$topics = Topics::get ();
-		$tickets = Tickets::leftJoin ( 'ticket_topics', 'tickets.topic_id', '=', 'ticket_topics.topic_id' )->where ( 'ticket_status', 'Open' )->whereBetween ( 'updated_at', [ 
+		$tickets = Tickets::leftJoin ( 'ticket_topics', 'tickets.topic_id', '=', 'ticket_topics.topic_id' )
+		->where ( 'ticket_status', 'Open' )->whereBetween ( 'updated_at', [ 
 				Carbon::yesterday (),
 				Carbon::tomorrow () 
-		] )->orderBy ( 'updated_at', 'desc' )->paginate ( 15 );
+		] )->orderBy ( 'updated_at', 'desc' )->get();
 		
 		foreach ( $tickets as $ticket ) {
 			$name = DB::table ( 'admin_profiles' )->where ( 'agent_id', $ticket->sender_id )->first ();
@@ -520,7 +524,8 @@ class TicketsAdmin extends Controller {
 	public function showTicketsPending() {
 		$topics = Topics::get ();
 		
-		$tickets = Tickets::leftJoin ( 'ticket_topics', 'tickets.topic_id', '=', 'ticket_topics.topic_id' )->where ( 'ticket_status', 'Pending' )->paginate ( 15 );
+		$tickets = Tickets::leftJoin ( 'ticket_topics', 'tickets.topic_id', '=', 'ticket_topics.topic_id' )
+		->where ( 'ticket_status', 'Pending' )->get();
 		
 		foreach ( $tickets as $ticket ) {
 			$name = DB::table ( 'admin_profiles' )->where ( 'agent_id', $ticket->sender_id )->first ();
@@ -537,11 +542,8 @@ class TicketsAdmin extends Controller {
 	}
 	public function showTicketsUnresolved() {
 		$topics = Topics::get ();
-		if (Auth::guard ( 'admin' )->user ()->user_type == "admin") {
-			$tickets = Tickets::leftJoin ( 'ticket_topics', 'tickets.topic_id', '=', 'ticket_topics.topic_id' )->where ( 'ticket_status', 'Unresolved' )->orderBy ( 'updated_at', 'desc' )->paginate ( 15 );
-		} else {
-			$tickets = Tickets::leftJoin ( 'ticket_topics', 'tickets.topic_id', '=', 'ticket_topics.topic_id' )->where ( 'assigned_support', Auth::guard ( 'admin' )->user ()->id )->where ( 'ticket_status', 'Unresolved' )->orderBy ( 'updated_at', 'desc' )->paginate ( 15 );
-		}
+			$tickets = Tickets::leftJoin ( 'ticket_topics', 'tickets.topic_id', '=', 'ticket_topics.topic_id' )
+			->where ( 'ticket_status', 'Unresolved' )->orderBy ( 'updated_at', 'desc' )->get();
 		
 		foreach ( $tickets as $ticket ) {
 			$name = DB::table ( 'admin_profiles' )->where ( 'agent_id', $ticket->sender_id )->first ();
@@ -558,7 +560,8 @@ class TicketsAdmin extends Controller {
 	}
 	public function showTicketsClosed() {
 		$topics = Topics::get ();
-		$tickets = Tickets::leftJoin ( 'ticket_topics', 'tickets.topic_id', '=', 'ticket_topics.topic_id' )->where ( 'ticket_status', 'Closed' )->orderBy ( 'updated_at', 'desc' )->paginate ( 15 );
+		$tickets = Tickets::leftJoin ( 'ticket_topics', 'tickets.topic_id', '=', 'ticket_topics.topic_id' )
+		->where ( 'ticket_status', 'Closed' )->orderBy ( 'updated_at', 'desc' )->get();
 		
 		foreach ( $tickets as $ticket ) {
 			$name = DB::table ( 'admin_profiles' )->where ( 'agent_id', $ticket->sender_id )->first ();
