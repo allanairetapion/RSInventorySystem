@@ -566,5 +566,17 @@ var repairItem = $('button.repairItem').ladda();
 			
 		});
 	});
-	
+	$('button#accomplishSchedule').click(function(){
+		
+		$.ajax({
+			headers : {'X-CSRF-Token' : $('input[name="_token"]').val()},
+			type : "PUT",
+			url : "/inventory/accomplishMSched",
+			data : { id : $('input#schedID').val()} ,
+			success: function(data){
+				$("#updateSchedule").modal('toggle');
+				swal('','Schedule Accomplished','success');
+			},
+		});
+	});
 });

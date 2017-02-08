@@ -1,4 +1,4 @@
-@extends('tickets.ticketadminlayout') @section('body')
+@extends('layouts.ticket_basic') @section('body')
 <div class="row">
 	<div class="col-lg-3">
 		<div class="ibox float-e-margins">
@@ -52,10 +52,10 @@
 		<div class="mail-box-header">
 			<form class="pull-right mail-search">
 				<div class="input-group m-b">
-							<input type="text" class="form-control" id="brokenSearch"
-								name="brokenSearch" placeholder="Search...">
+							<input type="text" class="form-control" id="ticketSearch"
+								name="search" placeholder="Search...">
 							<div class="input-group-btn">
-								<button id="brokenSearch" class="btn btn-primary" type="button">
+								<button id="ticketSearch" class="btn btn-primary" type="button">
 									<i class="fa fa-search"></i>
 								</button>
 								<button class="btn btn-success" data-toggle="collapse"
@@ -219,7 +219,7 @@
 
 							<td class="text-center"><span class="label label-default">{{$ticket->priority_level}}</span>
 							</td>
-							<td>{{$ticket->updated_at->diffForHumans()}}</td>
+							<td><?php echo date('M d', strtotime($ticket->updated_at)); ?></td>
 
 
 						</tr>
@@ -272,25 +272,8 @@
 			</div>
 		</div>
 	</div>
-	<script>
-		$(document).ready(function() {
-			$.ajax({
-				type : 'get',
-				url : '/admin/ticketCount',
-			}).done(function(data) {
-				console.log(data);
-				$('span.openTickets').text(data.openTickets);
-				$('span.pendingTickets').text(data.pendingTickets);
-				$('span.unresolvedTickets').text(data.overdueTickets);
-				$('span.assignedTickets').text(data.assignedTickets);
-				$('span.closedTickets').text(data.closedTickets);
-			});
-			$('div.spinner').hide();
-			//$('table.showTickets').footable();
-		});
-		$(document).on('click', 'a#closeTicket', function() {
-			$('input[type="hidden"]#ticketId').val($(this).attr('name'));
-			});
-		
-	</script>
 	@endsection
+	@section('scripts')
+<script type="text/javascript" src="/js/ticketing/ticketShowTickets.js">
+</script>
+@endsection

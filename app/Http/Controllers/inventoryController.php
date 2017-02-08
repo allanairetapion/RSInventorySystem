@@ -1309,10 +1309,25 @@ class inventoryController extends Controller {
 				'response' => $schedule->id 
 		] );
 	}
+	public function accomplishMaintenanceSchedule(Request $request){
+		$validator = Validator::make ( $request->all (), [
+				'id' => 'required|exists:maintenance_schedules,id',
+		] );
+		if ($validator->fails ()) {
+			return response ()->json ( array (
+					'success' => false,
+					'errors' => $validator->getMessageBag ()->toArray ()
+			), 400 );
+		}
+		$accomplish =  mSchedule::find ( $request ['id'] )->update(['status' => 'accomplished']);
+		return response ()->json ( [
+				'success' => true,
+		] );
+	}
 	public function viewItemDetails($id) {
 		$item = Item::where ( 'itemNo', $id )->leftJoin ( DB::raw ( '(select client_id, first_name as morningFN, last_name as morningLN from client_profiles) morning' ), function ($join) {
 			$join->on ( 'items.morningClient', '=', 'morning.client_id' );
-		} )->leftJoin ( DB::raw ( '(select client_id, first_name as eveningFN, last_name as eveningLN from client_profiles) evening' ), function ($join) {
+		} )->leftJoin ( DB::raw ( '(select client_id, first_name as nightFN, last_name as nightLN from client_profiles) evening' ), function ($join) {
 			$join->on ( 'items.nightClient', '=', 'evening.client_id' );
 		} )->first ();
 		$borrows = Borrow::where ( 'itemNo', $id )->leftJoin ( DB::raw ( '(Select agent_id,first_name,last_name from admin_profiles) admin_profiles' ), function ($join) {

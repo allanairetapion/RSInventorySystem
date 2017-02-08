@@ -1,9 +1,4 @@
-@extends('tickets.ticketadminlayout')
-
-@section('body')
-<?php
-$ntime = date ( 'Y-m-d' );
-?>
+@extends('layouts.ticket_basic') @section('body')
 
 <div class="row">
 
@@ -118,11 +113,10 @@ $ntime = date ( 'Y-m-d' );
 	</div>
 
 	@if(Auth::guard('admin')->user()->user_type == 'admin')
-	<div class="col-lg-9">
+	<div class="col-lg-12">
 		<div class="ibox animated fadeInDown ">
 			<div class="ibox-title">
-				<div class="pull-right">
-				</div>
+				<div class="pull-right"></div>
 				<h3 class="font-bold">Assign a Support</h3>
 
 			</div>
@@ -145,27 +139,26 @@ $ntime = date ( 'Y-m-d' );
 								</tr>
 							</thead>
 							<tbody>
-								@foreach($noSupport as $noSup) 
-								@if($noSup->assigned_support == 0 && $noSup->ticket_status != "Closed")
+								@foreach($noSupport as $noSup) @if($noSup->assigned_support == 0
+								&& $noSup->ticket_status != "Closed")
 								<tr>
 
-									<td><a href="/admin/tickets/{{$noSup->id}}">{{$noSup->id}}</a></td>
-									<td class="text-center">
-							@if($noSup->ticket_status == "Open") 
-								<span class="label label-success">{{$noSup->ticket_status}}</span>
-							@elseif($noSup->ticket_status == "Pending") 
-								<span class="label label-warning">{{$noSup->ticket_status}}</span>
-							@elseif($noSup->ticket_status == "Closed") 
-								<span class="label label-primary">{{$noSup->ticket_status}}</span>
-							@elseif($noSup->ticket_status == "Unresolved") 
-								<span class="label label-danger">{{$noSup->ticket_status}}</span>
-							@endif
+									<td class="control-label"><a href="/admin/tickets/{{$noSup->id}}">{{$noSup->id}}</a></td>
+									<td class="text-center control-label">@if($noSup->ticket_status == "Open") <span
+										class="label label-success">{{$noSup->ticket_status}}</span>
+										@elseif($noSup->ticket_status == "Pending") <span
+										class="label label-warning">{{$noSup->ticket_status}}</span>
+										@elseif($noSup->ticket_status == "Closed") <span
+										class="label label-primary">{{$noSup->ticket_status}}</span>
+										@elseif($noSup->ticket_status == "Unresolved") <span
+										class="label label-danger">{{$noSup->ticket_status}}</span>
+										@endif
 
-							</td>
-									<td>{{$noSup->description}}</td>
-									<td>{{$noSup->subject}}</td>
-									<td>{{$noSup->created_at}}</td>
-									<td><select name="{{$noSup->id}}"
+									</td>
+									<td class="control-label">{{$noSup->description}}</td>
+									<td class="control-label">{{$noSup->subject}}</td>
+									<td class="control-label">{{$noSup->created_at}}</td>
+									<td ><select name="{{$noSup->id}}"
 										class="form-control noSupport">
 											<option value="" selected>Assign a support...</option>
 											@foreach ($agent as $agents)
@@ -187,34 +180,7 @@ $ntime = date ( 'Y-m-d' );
 			</div>
 		</div>
 	</div>
-	<div class="col-md-3">
-		<div class="ibox animated fadeInDown float-e-margins">
-			<div class="ibox-title">
-				<h5>Top Support</h5>
 
-			</div>
-			<div class="ibox-content">
-				<center>
-					<div class="btn-group">
-						<button type="button"
-							class="btn btn-xs btn-default topSupportWeek">This Week</button>
-						<button type="button"
-							class="btn btn-xs btn-default topSupportMonth">This Month</button>
-						<button type="button"
-							class="btn btn-xs btn-default topSupportYear">This Year</button>
-					</div>
-				</center>
-				<br>
-				<table class="table table-striped">
-					<tbody class="topSupport">
-						<tr>
-							<td>No Support Found</td>
-						</tr>
-					</tbody>
-				</table>
-			</div>
-		</div>
-	</div>
 	@endif
 </div>
 
@@ -230,13 +196,14 @@ $ntime = date ( 'Y-m-d' );
 
 			<div class="ibox-content">
 				<div class="spiner">
-                                <div class="sk-spinner sk-spinner-three-bounce">
-                                    <div class="sk-bounce1"></div>
-                                    <div class="sk-bounce2"></div>
-                                    <div class="sk-bounce3"></div>
-                                </div>
-                 </div>
-				<table class="table table-bordered ticketStatusInfo" data-striping="false">
+					<div class="sk-spinner sk-spinner-three-bounce">
+						<div class="sk-bounce1"></div>
+						<div class="sk-bounce2"></div>
+						<div class="sk-bounce3"></div>
+					</div>
+				</div>
+				<table class="table table-bordered ticketStatusInfo"
+					data-striping="false">
 					<thead>
 						<tr>
 							<th>Id</th>
@@ -249,15 +216,8 @@ $ntime = date ( 'Y-m-d' );
 						</tr>
 					</thead>
 					<tbody class="ticketStatusInfo">
-						
+
 					</tbody>
-					<tfoot>
-                                <tr>
-                                    <td colspan="7">
-                                        <ul class="pagination pull-right"></ul>
-                                    </td>
-                                </tr>
-                                </tfoot>
 				</table>
 
 			</div>
@@ -280,13 +240,14 @@ $ntime = date ( 'Y-m-d' );
 
 			<div class="ibox-content">
 				<div class="spiner">
-                                <div class="sk-spinner sk-spinner-three-bounce">
-                                    <div class="sk-bounce1"></div>
-                                    <div class="sk-bounce2"></div>
-                                    <div class="sk-bounce3"></div>
-                                </div>
-                 </div>
-				<table class="table table-bordered topIssueInfo" data-striping="false">
+					<div class="sk-spinner sk-spinner-three-bounce">
+						<div class="sk-bounce1"></div>
+						<div class="sk-bounce2"></div>
+						<div class="sk-bounce3"></div>
+					</div>
+				</div>
+				<table class="table table-bordered topIssueInfo"
+					data-striping="false">
 					<thead>
 						<tr>
 							<th>Id</th>
@@ -300,15 +261,8 @@ $ntime = date ( 'Y-m-d' );
 						</tr>
 					</thead>
 					<tbody class="topIssueInfo">
-						
+
 					</tbody>
-					<tfoot>
-                                <tr>
-                                    <td colspan="8">
-                                        <ul class="pagination pull-right"></ul>
-                                    </td>
-                                </tr>
-                                </tfoot>
 				</table>
 
 			</div>
@@ -318,218 +272,9 @@ $ntime = date ( 'Y-m-d' );
 
 	</div>
 </div>
-
-
-
-<script type="text/javascript">
-	$(document).ready(function() {
-			$('table.ticketStatusInfo').footable();
-			$('table.topIssueInfo').footable();
-			$.ajax({
-			type:'get',
-			url:'/admin/ticketCount',
-		}).done(function(data){
-			console.log(data);
-			$('h2.newTickets').text(data.openTickets);
-			$('h2.pendingTickets').text(data.pendingTickets);
-			$('h2.overdueTickets').text(data.overdueTickets);
-			$('h2.closedTickets').text(data.closedTicketsToday);
-		});
-		$.ajax({
-			type : "GET",
-			url : "/admin/ticketStatus",
-			
-		}).done(function(data) {
-			console.log(data);
-			c3.generate({
-				bindto : '#pie',
-				
-
-				data : {
-					json : data,
-					type : 'pie',
-					onclick: function (d,e){
-						$('table.ticketStatusInfo').hide();
-						$('div.spiner').show();
-						if(d.id != "Closed"){
-							$('th.status').text('Assigned To');
-						}else{
-							$('th.status').text('Closed By');
-						}
-						
-						var html;
-						$.ajax({
-							type : 'GET',
-							url : '/admin/ticketStatus/info',
-							data : d,
-						}).done(function(data) {
-							$.each(data.tickets, function( i, v ) {
-								if (v.ticket_status == "Open") {
-									html += "<tr class='bg-primary'>";
-								} else if (v.ticket_status == "Pending") {
-									html += "<tr style='background-color: #F2F256;'>";
-								} else if (v.ticket_status == "Closed") {
-									html += "<tr class='navy-bg'>";
-								}else{
-									html += "<tr class='red-bg'>";
-								}
-								html +=  "<td>" + v.id + "</td>" +
-								"<td>" + v.sender_id + "</td>"+
-								"<td>" + v.description + "</td>" +
-								"<td>" + v.ticket_status + "</td>";
-								
-						if(v.ticket_status != "Closed"){
-							html += "<td>" + v.assigned_support + "</td>";
-						}else{
-							html += "<td>" + v.closed_by + "</td>";
-						}
-						
-						html += "<td>" + v.created_at + "</td>" +
-								"<td>" + v.updated_at + "</td> </tr>" ;
-								});
-							
-						$('tbody.ticketStatusInfo').html(html);
-						$('table.ticketStatusInfo').trigger('footable_initialize');	
-						$('div.spiner').hide();
-						
-						$('table.ticketStatusInfo').show();
-						$('div#myModal').modal('show');
-						});
-					
-						console.log(d);
-						
-						}
-				},
-				pie : {
-					label : {
-						format : function(value, ratio, id) {
-							return value;
-						}
-					}
-				}
-
-			});
-
-		});
-// Issues Pie Graph
-
-		$.ajax({
-			type : "GET",
-			url : "/admin/topIssue",
-			
-		}).done(function(data) {
-			console.log(data);
-			c3.generate({
-				legend: {
-			        show: false
-			    },
-				bindto : '#pie2',	
-				data : {
-					json : data,
-					type : 'pie',
-					onclick: function (d,e){
-						$('table.topIssueInfo').hide();
-						$('div.spiner').show();
-						var html;
-						$.ajax({
-							type : 'GET',
-							url : '/admin/topIssue/info',
-							data : d,
-						}).done(function(data) {
-							console.log(data.topic)
-							$.each(data.tickets, function( i, v ) {
-								if (v.ticket_status == "Open") {
-									html += "<tr class='bg-primary'>";
-								} else if (v.ticket_status == "Pending") {
-									html += "<tr style='background-color: #F2F256;'>";
-								} else if (v.ticket_status == "Closed") {
-									html += "<tr class='navy-bg'>";
-								}else{
-									html += "<tr class='red-bg'>";
-								}
-								
-								html +=  "<td>" + v.id + "</td>" +
-								"<td>" + v.sender_id + "</td>"+
-								"<td>" + v.topic_id + "</td>" +
-								"<td>" + v.ticket_status + "</td>" +
-								"<td>" + v.assigned_support + "</td>" +
-								"<td>" + v.closed_by + "</td>"+
-								"<td>" + v.created_at + "</td>" +
-								"<td>" + v.updated_at + "</td> </tr>" ;
-							});
-							
-						$('tbody.topIssueInfo').html(html);
-						$('table.topeIssueInfo').trigger('footable_initialize');	
-						$('div.spiner').hide();
-						$('table.topIssueInfo').show();
-						$('div#myModal2').modal('show');
-						});
-						
-						console.log(d);
-						
-						}
-						
-						
-				},
-				pie : {
-					label : {
-						format : function(value, ratio, id) {
-							return value;
-						}
-					}
-				}
-
-			});
-		});
-		
-		$.ajax({
-			type : "GET",
-			url : "/admin/ticketSummary"
-		}).done(function(data) {
-			console.log(data);
-			c3.generate({
-				bindto : '#stocked',
-				data : {
-					x : 'x',
-					columns : data,
-
-					type : 'spline',
-					groups : [['data1', 'data2']]
-				},
-				axis : {
-					x : {
-						type : 'category',
-
-					}
-				}
-			});
-
-		});
-
-		$.ajax({
-			type : "GET",
-			url : "/admin/topSupport",
-			data : {
-				topSupport : "Week"
-			},
-		}).done(function(data) {
-			var html;
-			
-			console.log(data);
-			$.each(data, function(index, v) {
-				if(index == 5){
-					return false;
-				}
-				html += "<tr><td><span class='label label-info'>" + v.total + "</span></td><td>" + v.name + "</td></tr>";
-
-			});
-
-			$('tbody.topSupport').html(html);
-		});
-
-	});
-
+@endsection
+@section('scripts')
+<script type="text/javascript" src="/js/ticketing/ticketDashboard.js">
 </script>
-
 @endsection
 

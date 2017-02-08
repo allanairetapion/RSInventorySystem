@@ -103,6 +103,7 @@ Route::group ( [
 	Route::put ( '/inventory/changeProfilePicture', 'inventoryController@changeProfilePicture' );
 	Route::put ( '/inventory/updateItemDetails', 'inventoryController@updateItemDetails' );
 	Route::put ('/inventory/updateMaintenanceSched','inventoryController@updateMaintenanceSchedule');
+	Route::put ('/inventory/accomplishMSched','inventoryController@accomplishMaintenanceSchedule');
 	Route::put ('/inventory/changeAgentUserType','inventoryController@changeAgentUserType');
 	
 	Route::delete ( "/inventory/deleteItemPhoto", "inventoryController@deleteItemPhoto" );
@@ -200,7 +201,6 @@ Route::group ( [
 	Route::get ( '/admin/printTicketClosed', 'TicketsAdmin@printTicketClosed' );
 	Route::get ( '/admin/topIssue', 'TicketsAdmin@topIssue' );
 	Route::get ( '/admin/ticketSummary', 'TicketsAdmin@ticketSummary' );
-	Route::get ( '/admin/topSupport', 'TicketsAdmin@topSupport' );
 	Route::get ( '/admin/createClient', 'TicketsAdmin@showCreateClient' );
 	Route::get ( '/admin/editAccount', 'TicketsAdmin@editAccount' );
 	Route::get ( '/admin/topicInfo', 'TicketsAdmin@editTopicDetails' );

@@ -47,7 +47,7 @@
 										<td class="topicDescription{{$topic->topic_id}}">
 											{{$topic->description}}</td>
 										<td class="topicPriority{{$topic->topic_id}}">
-											{{$topic->default_priority}}</td>
+											{{$topic->priority_level}}</td>
 										<td>
 										<div class="btn-group">
                                <button type="button"
@@ -182,7 +182,7 @@
 			</div>
 
 			<div class="modal-footer">
-				<button type="button" class="btn btn-primary btn-w-m addTopic">Add
+				<button type="button" class="btn btn-primary btn-w-m" id="addTopic">Add
 					topic</button>
 				<button type="button" class="btn btn-w-m btn-danger"
 					data-dismiss="modal">
@@ -199,5 +199,75 @@
 		$('label.text-danger').hide();
 		$('div.spiner').hide();
 	}); 
+	$('button#addTopic').click(
+			function(e) {
+				$('span.addTopic').hide();
+				$('div.form-group').removeClass(
+						'has-error');
+				
+				$('label.text-danger').hide();
+
+				$.ajax({
+							type : "POST",
+							url : "/admin/addTopic",
+							data : $('form.addTopic').serialize(),
+						})
+						.done(
+								function(data) {
+
+									var msg = "";
+									if (data.success == false) {
+										if (data.errors['description']) {
+											$('div.addTopic').addClass(
+													'has-error');
+											$('label.addTopic')
+													.text(
+															'*'
+																	+ data.errors['description'])
+													.show();
+										}
+										if (data.errors['priority']) {
+											$('div.priority').addClass(
+													'has-error');
+											$('label.priority')
+													.text(
+															'*'
+																	+ data.errors['priority'])
+													.show();
+										}
+
+									} else {
+										$('form.addTopic').trigger(
+												'reset');
+										var html;
+										var table = $('table.ticket_topics').data('footable');
+										
+
+										html += "<tr id=" + data.response['topic_id'] + "><td class='text-center'><input class='topic' type='checkbox' name ="
+																	+ data.response['topic_id']
+																	+ " value="
+																	+ data.response['topic_id']
+																	+ " checked></td>"
+																	+ "<td>"
+																	+ data.response['description']
+																	+ "</td>"
+																	+ "<td class='text-center'>"
+																	+ data.response['priority_level']
+																	+ "</td>"
+																	+ "<td><button type='button' class='btn btn-warning btn-xs editTopic' value="
+																	+ data.response['topic_id']
+																	+ ">Edit</button> </td></tr>";
+														
+										$('tbody.topics').append(html);
+										$('table').trigger('footable_redraw');
+										$('div#myModal').modal('hide');
+						
+										toastr.success('New Topic has been added.');
+
+									}
+								});
+
+			});
+
 </script>
 @endsection
