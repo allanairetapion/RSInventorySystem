@@ -51,22 +51,26 @@
 	<div class="col-lg-9 animated fadeInRight mail">
 		<div class="mail-box-header">
 			<form class="pull-right mail-search">
-				<div class="input-group">
-					<input type="text" class="form-control input-sm" id="filter"
-						placeholder="Quick Search">
-					<div class="input-group-btn">
-						<button type="button"
-							class="btn btn-sm btn-primary advancedSearch">
-							<i class="fa fa-caret-down"></i>
-						</button>
-					</div>
-				</div>
+				<div class="input-group m-b">
+							<input type="text" class="form-control" id="brokenSearch"
+								name="brokenSearch" placeholder="Search...">
+							<div class="input-group-btn">
+								<button id="brokenSearch" class="btn btn-primary" type="button">
+									<i class="fa fa-search"></i>
+								</button>
+								<button class="btn btn-success" data-toggle="collapse"
+									data-target="#advancedSearch" type="button">
+									<span class="caret"></span>
+								</button>
+
+							</div>
+						</div>
 			</form>
 
 			<h2>Inbox</h2>
-			<div id="advancedSearch" class=" gray-bg" style="padding: 5px;">
-
-				<form class="advancedTicket">
+			<div id="advancedSearch" class="panel panel-default collapse">
+				<div class="panel-body">
+					<form class="advancedTicket">
 
 					<div class="row">
 
@@ -130,23 +134,13 @@
 					</div>
 
 				</form>
-
+					
+				</div>
 			</div>
 
 			<div class="mail-tools tooltip-demo m-t-md">
 			
-				<div class="btn-group pull-right">
-					@if(1 == $tickets->currentPage())
-					<a href="{{$tickets->previousPageUrl()}}" disabled class="btn btn-white btn-sm"> <i class="fa fa-arrow-left"></i> </a>
-					@else
-					<a href="{{$tickets->previousPageUrl()}}" class="btn btn-white btn-sm"> <i class="fa fa-arrow-left"></i> </a>
-					@endif
-					@if($tickets->hasMorePages())
-					<a href="{{$tickets->nextPageUrl()}}" class="btn btn-white btn-sm"> <i class="fa fa-arrow-right"></i> </a>
-					@else
-					<a href="{{$tickets->nextPageUrl()}}" disabled class="btn btn-white btn-sm"> <i class="fa fa-arrow-right"></i> </a>
-					@endif
-				</div>
+			
 				<button class="btn btn-white btn-sm refreshBtn"
 					data-toggle="tooltip" data-placement="left" title="Refresh inbox">
 					<i class="fa fa-refresh"></i> Refresh
@@ -174,7 +168,7 @@
 							<th>Topic & Subject</th>
 							<th>Sender</th>
 							<th>Priority</th>
-							<th>Date Updated</th>
+							<th>Date</th>
 
 						</tr>
 					</thead>

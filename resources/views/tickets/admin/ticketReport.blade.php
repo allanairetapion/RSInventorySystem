@@ -29,8 +29,29 @@
 <br>
 			<div class="tab-content">
 				<div id="home" class="tab-pane fade in active">
-			
-			<form class="advancedTicket form-horizontal">
+				<div class="row">
+					<div class="col-md-offset-8 col-md-4">
+						<div class="input-group m-b">
+							<input type="text" class="form-control" id="brokenSearch"
+								name="brokenSearch" placeholder="Search...">
+							<div class="input-group-btn">
+								<button id="brokenSearch" class="btn btn-primary" type="button">
+									<i class="fa fa-search"></i>
+								</button>
+								<button class="btn btn-success" data-toggle="collapse"
+									data-target="#advancedSearch" type="button">
+									<span class="caret"></span>
+								</button>
+
+							</div>
+						</div>
+
+					</div>
+				</div>
+				
+				<div id="advancedSearch" class="panel panel-default collapse">
+					<div class="panel-body">
+						<form class="advancedTicket form-horizontal">
 					{!! csrf_field() !!}
 
 					<div class="row">
@@ -59,28 +80,7 @@
 							</select>
 							</div>
 						</div>
-						
 					<div class="form-group col-md-4">
-
-							<label class="control-label col-md-2">Date:</label>
-							<div class="col-md-4">
-							<select name="dateSort"class="topic form-control">
-								<option value="1">Date Sent  </option>
-								<option value="2">Date Updated  </option>
-							</select>
-							</div>
-						
-						
-						<div class="input-daterange input-group col-md-6" id="datepicker">
-									<span class="input-group-addon">From</span>
-                                    <input type="text" class=" form-control" data-mask="9999-99-99" name="dateStart" value=""/>
-                                    <span class="input-group-addon">to</span>
-                                    <input type="text" class=" form-control" data-mask="9999-99-99" name="dateEnd" value="" />
-                                </div>
-                                
-						</div>
-						
-						<div class="form-group col-md-4">
 							<label class="control-label col-md-4">Assigned to:</label>
 							<div class="col-md-8">
 							<select name="agentSent" class="agentSent form-control">
@@ -103,13 +103,34 @@
 							</div>
 						</div>
 						
+					<div class="form-group col-md-6">
 
-						<div class="col-md-4 text-right" >
+							<label class="control-label col-md-2">Date:</label>
+							<div class="col-md-4">
+							<select name="dateSort"class="topic form-control">
+								<option value="1">Date Sent  </option>
+								<option value="2">Date Updated  </option>
+							</select>
+							</div>
 						
-							<button type="button" class="btn btn-primary btn-w-m advancedTicketSearch">
+						
+						<div class="input-daterange input-group col-md-6" id="datepicker">
+									<span class="input-group-addon">From</span>
+                                    <input type="text" class=" form-control" data-mask="9999-99-99" name="dateStart" value=""/>
+                                    <span class="input-group-addon">to</span>
+                                    <input type="text" class=" form-control" data-mask="9999-99-99" name="dateEnd" value="" />
+                                </div>
+                                
+						</div>
+						
+						
+
+						<div class="col-md-2 text-right" >
+						
+							<button type="button" class="btn btn-primary advancedTicketSearch">
 								<i class="fa fa-search"></i> Search
 							</button>
-							<button type="button" class="btn btn-warning btn-w-m advancedTicketReset">
+							<button type="button" class="btn btn-warning advancedTicketReset">
 								<i class="fa fa-refresh"></i> Reset
 							</button>
 
@@ -117,8 +138,9 @@
 					</div>
 
 				</form>
-				
-				<br>
+					</div>
+				</div>
+		
 			
 					<div class="table-responsive">
 						<form class="selectedTickets">
@@ -150,20 +172,14 @@
 										<td>
 										
 										</td>
-										<td>{{$ticketStat->id}}</td>
-										
-										<td>{{$ticketStat->sender_id}}</td>
+										<td>{{$ticketStat->id}}</td>										
+										<td>{{$ticketStat->first_name.' '.$ticketStat->last_name}}</td>
 										<td>{{$ticketStat->description}}</td>
 										<td>{{$ticketStat->subject}}</td>
-
 										<td>{{$ticketStat->ticket_status}}</td>
 										<td>{{$ticketStat->department}}</td>
-										
-										<td>{{$ticketStat->assignFN.' '.$ticketStat->assignLN}}</td>
-										
-										
-										<td>{{$ticketStat->closedFN.' '.$ticketStat->closedLN}}</td>
-										
+										<td>{{$ticketStat->assign_FN.' '.$ticketStat->assign_LN}}</td>																			
+										<td>{{$ticketStat->close_FN.' '.$ticketStat->close_LN}}</td>
 										<td>{{$ticketStat->created_at}}</td>
 										<td>{{$ticketStat->updated_at}}</td>
 									</tr>
@@ -215,18 +231,14 @@
 									<tr class="bg-primary" id="{{$ticketStat->id}}">
 										
 										<td><input class="Open" type="checkbox"></td>
-										<td>{{$ticketStat->id}}</td>
-										
-										<td>{{$ticketStat->sender_id}}</td>
+										<td>{{$ticketStat->id}}</td>										
+										<td>{{$ticketStat->first_name.' '.$ticketStat->last_name}}</td>
 										<td>{{$ticketStat->description}}</td>
 										<td>{{$ticketStat->subject}}</td>
-
 										<td>{{$ticketStat->ticket_status}}</td>
 										<td>{{$ticketStat->department}}</td>
-										<td>{{$ticketStat->assignFN.' '.$ticketStat->assignLN}}</td>
-										
-										
-										<td>{{$ticketStat->closedFN.' '.$ticketStat->closedLN}}</td>
+										<td>{{$ticketStat->assign_FN.' '.$ticketStat->assign_LN}}</td>																			
+										<td>{{$ticketStat->close_FN.' '.$ticketStat->close_LN}}</td>
 										<td>{{$ticketStat->created_at}}</td>
 										<td>{{$ticketStat->updated_at}}</td>
 									</tr>
@@ -275,18 +287,14 @@
 										
 										
 										<td><input class="Pending" type="checkbox"></td>
-										<td>{{$ticketStat->id}}</td>
-										
-										<td>{{$ticketStat->sender_id}}</td>
+										<td>{{$ticketStat->id}}</td>										
+										<td>{{$ticketStat->first_name.' '.$ticketStat->last_name}}</td>
 										<td>{{$ticketStat->description}}</td>
 										<td>{{$ticketStat->subject}}</td>
-
 										<td>{{$ticketStat->ticket_status}}</td>
 										<td>{{$ticketStat->department}}</td>
-										<td>{{$ticketStat->assignFN.' '.$ticketStat->assignLN}}</td>
-										
-										
-										<td>{{$ticketStat->closedFN.' '.$ticketStat->closedLN}}</td>
+										<td>{{$ticketStat->assign_FN.' '.$ticketStat->assign_LN}}</td>																			
+										<td>{{$ticketStat->close_FN.' '.$ticketStat->close_LN}}</td>
 										<td>{{$ticketStat->created_at}}</td>
 										<td>{{$ticketStat->updated_at}}</td>
 									</tr>
@@ -338,18 +346,14 @@
 										
 										
 										<td><input class="Closed" type="checkbox"></td>
-										<td>{{$ticketStat->id}}</td>
-										
-										<td>{{$ticketStat->sender_id}}</td>
+										<td>{{$ticketStat->id}}</td>										
+										<td>{{$ticketStat->first_name.' '.$ticketStat->last_name}}</td>
 										<td>{{$ticketStat->description}}</td>
 										<td>{{$ticketStat->subject}}</td>
-
 										<td>{{$ticketStat->ticket_status}}</td>
 										<td>{{$ticketStat->department}}</td>
-										<td>{{$ticketStat->assignFN.' '.$ticketStat->assignLN}}</td>
-										
-										
-										<td>{{$ticketStat->closedFN.' '.$ticketStat->closedLN}}</td>
+										<td>{{$ticketStat->assign_FN.' '.$ticketStat->assign_LN}}</td>																			
+										<td>{{$ticketStat->close_FN.' '.$ticketStat->close_LN}}</td>
 										<td>{{$ticketStat->created_at}}</td>
 										<td>{{$ticketStat->updated_at}}</td>
 									</tr>
@@ -399,18 +403,14 @@
 									<tr class="red-bg" id="{{$ticketStat->id}}">
 										
 										<td><input class="Unresolved" type="checkbox"></td>
-										<td>{{$ticketStat->id}}</td>
-										
-										<td>{{$ticketStat->sender_id}}</td>
+										<td>{{$ticketStat->id}}</td>										
+										<td>{{$ticketStat->first_name.' '.$ticketStat->last_name}}</td>
 										<td>{{$ticketStat->description}}</td>
 										<td>{{$ticketStat->subject}}</td>
-
 										<td>{{$ticketStat->ticket_status}}</td>
 										<td>{{$ticketStat->department}}</td>
-										<td>{{$ticketStat->assignFN.' '.$ticketStat->assignLN}}</td>
-										
-										
-										<td>{{$ticketStat->closedFN.' '.$ticketStat->closedLN}}</td>
+										<td>{{$ticketStat->assign_FN.' '.$ticketStat->assign_LN}}</td>																			
+										<td>{{$ticketStat->close_FN.' '.$ticketStat->close_LN}}</td>
 										<td>{{$ticketStat->created_at}}</td>
 										<td>{{$ticketStat->updated_at}}</td>
 									</tr>
@@ -459,12 +459,7 @@ $('table.ticketReport')
 			"bSort" : false,
 			dom : '<"html5buttons"B>lTfgtip',
 			buttons : [
-					{
-						text : '<i class="fa fa-trash"></i> Delete',
-						action : function(){
-							ticketReportDelete('ticketReport')
-						}
-					},
+					
 					{
 						extend : 'csv'
 					},
@@ -495,17 +490,44 @@ $('table.ticketReport')
 					} ]
 
 		});
+
+$('button.advancedTicketSearch').click(
+		function() {
+			console.log($('form.advancedTicket').serialize());
+			$
+					.ajax(
+							{
+								type : "GET",
+								url : "/admin/advancedSearch",
+								data : $('form.advancedTicket')
+										.serialize(),
+							})
+					.done(
+							function(data) {
+
+								
+								var html;
+								var table = $('table.ticketReport').DataTable();
+								table.clear();
+								$.each(data.response,function(i, v) {
+									
+									var rowNode = table.row.add(['', v.id, v.first_name+' '+v.last_name,
+													               v.description, v.subject,v.ticket_status,
+													               v.department,v.assign_FN+' '+v.assign_LN,
+													              v.close_FN+' '+v.close_LN,
+													               v.created_at, v.updated_at] ).draw();															
+												});
+							});
+		});
+
+
+
+
 
 $('table.ticketReport2').dataTable({
 			"bSort" : false,
 			dom : '<"html5buttons"B>lTfgtip',
-			buttons : [{
-						text : '<i class="fa fa-trash"></i> Delete',
-						action : function() {
-							ticketReportDelete($('li.ticketReport.active a').text());
-
-						}
-					},
+			buttons : [
 					{
 						extend : 'csv'
 					},
@@ -537,83 +559,6 @@ $('table.ticketReport2').dataTable({
 					} ]
 
 		});
-function ticketReportDelete(ticketStatus){
-	console.log(ticketStatus);
-	var tickets = [ 'x' ];
-	var usrtype = <?php echo json_encode(Auth::guard('admin')->user()->user_type); ?>;
-	if(usrtype == "agent"){
-		swal('Oops...','Action not allowed','info');
-		return false;
-		}
-	$('input.'+ ticketStatus + ':checkbox:checked').each(function() {
-						tickets.push($(this).closest('tr').find('td:eq(1)').text());
-						
-					});
-	console.log(tickets);
-	if (tickets[1] == ''
-			|| tickets[1] == null) {
-		swal(
-				'Ooops...',
-				"You haven't selected any ticket",
-				'info');
-		return false;
-	}
 
-	console
-			.log($(
-					'form.selectedTickets')
-					.serializeArray());
-	swal(
-			{
-				title : "Are you sure?",
-				text : "This action can't be undone",
-				type : "warning",
-				showCancelButton : true,
-				closeOnConfirm : false,
-				confirmButtonText : "Yes",
-			},
-			function() {
-
-				swal({
-					title : 'Are you sure?',
-					text : "This Action can't be undone",
-					type : 'warning',
-					showCancelButton : true,
-					showCancelButton : true,
-					closeOnConfirm : false,
-					showLoaderOnConfirm : true,
-					disableButtonsOnConfirm : true,
-				}, function() {
-					
-
-					$.ajax({
-							headers : {'X-CSRF-Token' : $('input[name="_token"]').val()},
-							type : "DELETE",
-							url : "/admin/deleteTicket",
-							data : {tickets : tickets},
-							}).done(function(data) {
-									swal({
-											title : "Deleted",
-											text : "Tickets has been deleted",
-											type : "success",
-										},function() {
-											var table = $('table.ticketReport').DataTable();
-											 
-											
-											    table.rows( $('input:checkbox:checked').parents('tr') )
-											    .remove().draw();
-											
-											
-										
-							});
-					
-				});
-
-			});
-
-			});
-
-
-}
 </script>
 @endsection
