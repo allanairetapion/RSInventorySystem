@@ -55,9 +55,7 @@
 							</a>
 
 							<ul class="dropdown-menu animated fadeInRight m-t-xs">
-								<li><a href="profile.html">Profile</a></li>
-								<li><a href="contacts.html">Contacts</a></li>
-								<li><a href="mailbox.html">Mailbox</a></li>
+								<li><a href="agents/{{Auth::guard('inventory')->user()->id}}">Profile</a></li>
 								<li class="divider"></li>
 								<li><a href="/inventory/logout">Logout</a></li>
 							</ul>

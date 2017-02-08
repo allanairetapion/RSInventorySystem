@@ -35,6 +35,7 @@
 	<div></div>
 </div>
 <div class="col-lg-4">
+	<h3>Status: {{$item->itemStatus}}</h3>
 	<h3>Unique ID: <span id="itemUniqueID">{{$item->unique_id}}</span></h3>
 	<h3>Item No: {{$item->itemNo}}</h3>
 	<h4>Current Location:  
@@ -45,7 +46,6 @@
 	@endif
 	</h4>
 	<h4>Item Type: {{$item->itemType}}</h4>
-	<h4>Status: {{$item->itemStatus}}</h4>
 	<h4>Brand: {{$item->brand}}</h4>
 	<h4>Model: {{$item->model}}</h4>
 
@@ -150,13 +150,13 @@
 							<tbody>
 								@foreach($issues as $issue)
 								<tr>
-									<td>{{$issue->id}}</td>
+									<td>{{$issue->id}}</td>									
+									<td>{{$issue->damage}}</td>
 									<td>
 										<button type="button" class="btn btn-primary btn-xs issue"
 											data-toggle="modal" data-target="#myModal"
 											value='{{$issue->issue}}'>Click to view full details</button>
 									</td>
-									<td>{{$issue->damage}}</td>
 									<td>{{$issue->first_name.' '.$issue->last_name}}</td>
 									<td>{{$issue->created_at}}</td>
 								</tr>
@@ -180,7 +180,7 @@
 							<thead>
 								<th data-toggle="true">ID</th>
 								<th>Damage</th>
-								<th data-hide="all">Summary</th>
+								<th>Summary</th>
 								<th>Status</th>
 								<th>Reported By</th>
 								<th>Date Reported</th>
@@ -353,7 +353,7 @@ $('button#updateItemDetails').click(function(){
 			$('span#itemMorningClient').text($('select.morning_user :selected').text());
 			}
 			if($('select.evening_user').val() != null){
-			$('span#itemNightClient').text($('select.evening_user :selected').val());
+			$('span#itemNightClient').text($('select.evening_user :selected').text());
 			}
 			toastr.success('Detail succesfully updated.');
 			},

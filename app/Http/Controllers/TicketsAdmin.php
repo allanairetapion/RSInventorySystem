@@ -8,6 +8,7 @@ use App\TicketMessages as TicketMessages;
 use App\TicketTopics as Topics;
 use App\Admin as Admin;
 use App\AdminProfile as AProfile;
+use App\ClientProfile as CProfile;
 use App\Departments as Department;
 use App\TicketTopics;
 use Illuminate\Support\Facades\Input;
@@ -222,38 +223,22 @@ class TicketsAdmin extends Controller {
 	public function showTicketReport() {
 		$topics = Topics::get ();
 		
+		$first = AProfile::select ( 'agent_id as id', 'first_name', 'last_name' );
+		$second = CProfile::select ( 'client_id as id', 'first_name', 'last_name' )->union ( $first );
+		
 		$tickets = Tickets::leftJoin ( 'ticket_topics', 'tickets.topic_id', '=', 'ticket_topics.topic_id' )
-		->leftJoin ( DB::raw ( '(SELECT agent_id,first_name as assignFN, last_name as assignLN from admin_profiles) assignedSupport' ),
-				function ($join) {
-					$join->on ( 'tickets.assigned_support', '=', 'assignedSupport.agent_id' );
-				} )
-				->leftJoin ( DB::raw ( '(SELECT agent_id,first_name as closedFN, last_name as closedLN from admin_profiles) closedBy' ),
-						function ($join) {
-							$join->on ( 'tickets.closed_by', '=', 'closedBy.agent_id' );
-						} )
-		->orderBy ( 'tickets.updated_at', 'desc' )->get ();
-		
-		$names = DB::table('admin_profiles')->select('agent_id as id','first_name','last_name')->get();
-		$clients = DB::table('client_profiles')->select('client_id as id','first_name','last_name')->get();
-		
-		foreach($clients as $client){
-			array_push($names,$client);
-		}
-		
-		foreach($tickets as $ticket){
-			foreach($names as $nm){
-				if($nm->id == $ticket->sender_id){
-					$ticket->sender_id = $nm->first_name.' '.$nm->last_name;
-						
-				}
-			}
-		}	
-		$agents = DB::table ( 'admin' )->join ( 'admin_profiles', 'admin.id', '=', 'admin_profiles.agent_id' )->orderBy ( 'last_name' )->get ();
+		->leftJoin ( DB::raw ( '(select agent_id, first_name as assign_FN, last_name as assign_LN
+				from admin_profiles) assignedTo' ), 'tickets.assigned_support', '=', 'assignedTo.agent_id' )
+		->leftJoin ( DB::raw ( '(select agent_id, first_name as close_FN, last_name as close_LN
+				from admin_profiles) closedBy' ), 'tickets.assigned_support', '=', 'closedBy.agent_id' )
+		->leftJoin ( DB::raw ( "({$second->toSql()}) as names" ), function ($join) {
+			$join->on ( 'tickets.sender_id', '=', 'names.id' );
+		} )->get();
 		
 		return view ( 'tickets.admin.ticketReport', [ 
 				'topics' => $topics,
 				'tickets' => $tickets,
-				'agent' => $agents 
+				'agent' => $first->get() 
 		] );
 	}
 	public function updateRestriction(Request $request) {
@@ -411,11 +396,17 @@ class TicketsAdmin extends Controller {
 		$agentSent = $request ['agentSent'];
 		$agentClosed = $request ['agentClosed'];
 		
-		$tickets = Tickets::leftJoin ( 'ticket_topics', 'tickets.topic_id', '=', 'ticket_topics.topic_id' );
+		$first = AProfile::select ( 'agent_id as id', 'first_name', 'last_name' );
+		$second = CProfile::select ( 'client_id as id', 'first_name', 'last_name' )->union ( $first );
 		
-		$assigned_to = Tickets::leftJoin ( 'ticket_topics', 'tickets.topic_id', '=', 'ticket_topics.topic_id' )->leftJoin ( 'admin_profiles', 'tickets.assigned_support', '=', 'admin_profiles.agent_id' );
-		
-		$closed_by = Tickets::leftJoin ( 'ticket_topics', 'tickets.topic_id', '=', 'ticket_topics.topic_id' )->leftJoin ( 'admin_profiles', 'tickets.closed_by', '=', 'admin_profiles.agent_id' );
+		$tickets = Tickets::leftJoin ( 'ticket_topics', 'tickets.topic_id', '=', 'ticket_topics.topic_id' )
+		->leftJoin ( DB::raw ( '(select agent_id, first_name as assign_FN, last_name as assign_LN
+				from admin_profiles) assignedTo' ), 'tickets.assigned_support', '=', 'assignedTo.agent_id' )
+		->leftJoin ( DB::raw ( '(select agent_id, first_name as close_FN, last_name as close_LN
+				from admin_profiles) closedBy' ), 'tickets.assigned_support', '=', 'closedBy.agent_id' )
+		->leftJoin ( DB::raw ( "({$second->toSql()}) as names" ), function ($join) {
+			$join->on ( 'tickets.sender_id', '=', 'names.id' );
+		} );
 		
 		if ($status != "") {
 			$tickets->where ( 'ticket_status', $status );
@@ -469,18 +460,8 @@ class TicketsAdmin extends Controller {
 		
 		$tickets = $tickets->get ();
 		
-		foreach ( $tickets as $ticket ) {
-			$name = DB::table ( 'admin_profiles' )->where ( 'agent_id', $ticket->sender_id )->first ();
-			if ($name == null) {
-				$name = DB::table ( 'client_profiles' )->where ( 'client_id', $ticket->sender_id )->first ();
-			}
-			$ticket->sender_id = $name->first_name . ' ' . $name->last_name;
-		}
-		
 		return response ()->json ( array (
 				'response' => $tickets,
-				'assigned' => $assigned_to->get (),
-				'closed' => $closed_by->get () 
 		) );
 	}
 	public function showTickets() {

@@ -1269,6 +1269,15 @@ class inventoryController extends Controller {
 		return $mSchedToday;
 	}
 	public function updateMaintenanceSchedule(Request $request) {
+		$validator = Validator::make ( $request->all (), [
+				'activity' => 'required|max:255',
+		] );
+		if ($validator->fails ()) {
+			return response ()->json ( array (
+					'success' => false,
+					'errors' => $validator->getMessageBag ()->toArray ()
+			), 400 );
+		}
 		$schedule = mSchedule::find ( $request ['schedID'] );
 		
 		$activities = "";
@@ -1440,7 +1449,7 @@ class inventoryController extends Controller {
 	}
 	public function changePassword(Request $request) {
 		if (Auth::guard ( 'inventory' )->attempt ( [ 
-				'email' => Auth::guard ( 'admin' )->user ()->email,
+				'email' => Auth::guard ( 'inventory' )->user ()->email,
 				'password' => $request ['oldPassword'] 
 		] )) {
 			$validator = Validator::make ( $request->all (), [ 
@@ -1722,5 +1731,34 @@ class inventoryController extends Controller {
 			$join->on ( 'items.nightClient', '=', 'cProfile2.client_id' );
 		} )->get ();
 		return $stocks;
+	}
+	public function changeAgentUserType(Request $request){
+		$validator = Validator::make ( $request->all (), [
+				'id' => 'exists:admin'
+		] );
+		
+		if ($validator->fails ()) {
+			return response ()->json ( array (
+					'success' => false,
+					'errors' => $validator->getMessageBag ()->toArray ()
+			) );
+		} else {
+			$changeAgentStatus = DB::table ( 'admin' )->where ( 'id', $request ['id'] )->update ( [
+					'user_type' => $request ['userType'],
+					'updated_at' => Carbon::now ()
+			] );
+				
+			$agent_profile = DB::table ( 'admin_profiles' )->where ( 'agent_id', $request ['id'] )->update ( [
+					'updated_at' => Carbon::now ()
+			] );
+				
+			return response ()->json ( array (
+					'success' => true,
+					'input' => [
+							'id' => $request ['id'],
+							'user' => $request ['userType']
+					]
+			) );
+		}
 	}
 }
