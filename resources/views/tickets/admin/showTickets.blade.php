@@ -215,7 +215,7 @@
 									class="font-bold">{{$ticket->description}} - {{$ticket->id}}</span>
 									<small>{{$ticket->subject}}</small></a></td>
 
-							<td>{{$ticket->sender_id}}</td>
+							<td>{{$ticket->first_name.' '.$ticket->last_name}}</td>
 
 							<td class="text-center"><span class="label label-default">{{$ticket->priority_level}}</span>
 							</td>

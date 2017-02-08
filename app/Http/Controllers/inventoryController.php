@@ -353,7 +353,8 @@ class inventoryController extends Controller {
 				created_at as dateReturned ,updated_at from return_logs) returnInfo' ), function ($join) {
 			$join->on ( 'items.itemNo', '=', 'returnInfo.itemNo' );
 		} )->leftJoin ( DB::raw ( '(select agent_id, first_name as agent_FN, last_name as agent_LN
-				from admin_profiles) admin_profiles' ), 'returnInfo.receiver', '=', 'admin_profiles.agent_id' )->leftJoin ( DB::raw ( "({$second->toSql()}) as names" ), function ($join) {
+				from admin_profiles) admin_profiles' ), 'returnInfo.receiver', '=', 'admin_profiles.agent_id' )
+			->leftJoin ( DB::raw ( "({$second->toSql()}) as names" ), function ($join) {
 			$join->on ( 'returnInfo.borrower', '=', 'names.id' );
 		} )->orderby ( 'dateReturned', 'desc' )->get ();
 		
