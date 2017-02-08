@@ -201,7 +201,7 @@
 <script src="/js/plugins/dataTables/datatables.min.js"></script>
 
 <script src="/js/inventory.js"></script>
-</body>
 
 @yield('scripts')
+</body>
 </html>

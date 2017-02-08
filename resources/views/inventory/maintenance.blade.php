@@ -710,6 +710,9 @@ Maintenance') @section('header-page')
 					<button type="button"
 						class="ladda-button btn btn-w-m btn-primary updateSchedule"
 						data-style="zoom-in" id="updateSchedule">Save</button>
+					<button type="button"
+						class="ladda-button btn btn-w-m btn-primary"
+						data-style="zoom-in" id="accomplishSchedule">Accomplish</button>
 					<button type="button" class="btn btn-w-m btn-danger btn-outline"
 						data-dismiss="modal">Cancel</button>
 				</div>
@@ -773,6 +776,7 @@ Maintenance') @section('header-page')
 								<tr class="text-center">
 									<td>Item</td>
 									<td>Status</td>
+									<td> I.P. Address </td>
 								</tr>
 							</thead>
 							<tbody id="stationStatus">
@@ -782,6 +786,9 @@ Maintenance') @section('header-page')
 											<option>Working</option>
 											<option>With Issue/Broken</option>
 									</select></td>
+									<td>
+									<input type="text" name="ipAddress" class="form-control">ahsjahsjahsja
+									</td>
 								</tr>
 							</tbody>
 						</table>

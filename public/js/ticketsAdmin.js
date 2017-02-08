@@ -170,124 +170,13 @@ $(function() {
 				});
 			});
 	
-	$('button.advancedSearch').click(function() {
-		$('div#advancedSearch').slideToggle();
-	});
+	
 	// create ticket
 
 
 	// Add Topic
-	$('button.addTopic').click(
-					function(e) {
-						$('span.addTopic').hide();
-						$('div.form-group').removeClass(
-								'has-error');
-						
-						$('label.text-danger').hide();
-						e.preventDefault();
-
-						$.ajax({
-									type : "POST",
-									url : "/admin/addTopic",
-									data : $('form.addTopic').serialize(),
-								})
-								.done(
-										function(data) {
-
-											var msg = "";
-											if (data.success == false) {
-												if (data.errors['description']) {
-													$('div.addTopic').addClass(
-															'has-error');
-													$('label.addTopic')
-															.text(
-																	'*'
-																			+ data.errors['description'])
-															.show();
-												}
-												if (data.errors['priority']) {
-													$('div.priority').addClass(
-															'has-error');
-													$('label.priority')
-															.text(
-																	'*'
-																			+ data.errors['priority'])
-															.show();
-												}
-
-											} else {
-												$('form.addTopic').trigger(
-														'reset');
-												var html;
-												var table = $('table.ticket_topics').data('footable');
-												
-
-												html += "<tr id=" + data.response['topic_id'] + "><td class='text-center'><input class='topic' type='checkbox' name ="
-																			+ data.response['topic_id']
-																			+ " value="
-																			+ data.response['topic_id']
-																			+ " checked></td>"
-																			+ "<td>"
-																			+ data.response['description']
-																			+ "</td>"
-																			+ "<td class='text-center'>"
-																			+ data.response['default_priority']
-																			+ "</td>"
-																			+ "<td><button type='button' class='btn btn-warning btn-xs editTopic' value="
-																			+ data.response['topic_id']
-																			+ ">Edit</button>"
-																			+ "<button type='button' class='btn btn-danger btn-xs deleteTopic'  value="
-																			+ data.response['topic_id']
-																			+ ">Delete</button> </td></tr>";
-																
-												$('tbody.topics').append(html);
-												$('table').trigger('footable_redraw');
-												$('div#myModal').modal('hide');
-								
-												toastr.success('New Topic has been added.');
-
-											}
-										});
-
-					});
-
-	// Delete Topic
-	$(document).on(
-			'click',
-			'button.deleteTopic',
-			function() {
-				var deleteTopic = $(this).val();
-				console.log($('form.topic').serializeArray());
-
-				swal({
-					title : "Are you sure?",
-					text : "Selected topic will be deleted. ",
-					type : "warning",
-					showCancelButton : true,
-					confirmButtonColor : "#DD6B55",
-					confirmButtonText : "Yes",
-					closeOnConfirm : false,
-					showLoaderOnConfirm : true,
-					disableButtonsOnConfirm : true,
-				}, function() {
-
-					$.ajax({
-						headers : {
-							'X-CSRF-Token' : $('input[name="_token"]').val()
-						},
-						type : "DELETE",
-						url : "/admin/deleteTopic",
-						data : {
-							deleteTopic : deleteTopic,
-						},
-					}).done(
-							function(data) {
-								$('button.deleteTopic[value=' + deleteTopic + ']').parents('tr').remove();
-								$('table').trigger('footable_redraw');
-								swal('Topics has been deleted', '', 'success');
-							});
-				});
-			});
+	
+	
 	// edit topic
 	$(document).on('click', 'button.editTopic', function() {
 		var editTopic = $(this).val();
@@ -1126,28 +1015,6 @@ $(function() {
 
 	// Assign Support section @ admin dashboard
 	
-	$('select.noSupport').change(function(){
-		
-		$.ajax({
-			headers : {
-				'X-CSRF-Token' : $('input[name="_token"]').val()
-			},
-			type : 'PUT',
-			url : '/admin/assignSupport',
-			data : {
-				id : $(this).attr('name'),
-				support : $(this).val()
-			},
-		}).done(function(data) {
-			if(data.success == true){
-				toastr.success('Ticket succesfully assigned to support');
-			}else{
-				toastr.error(data.errors['id']);
-			}
-			console.log(data);
-		});
-		
-	});
 	
 
 	// Admin/Agent create client acount page
@@ -1314,72 +1181,7 @@ $(function() {
 	
 	// All tickets Advanced Search
 	
-	var allTicketSearch = $('button.allTicketSearch').ladda();
 	
-	allTicketSearch.click(function(){
-		allTicketSearch.ladda('start');
-		$.ajax({
-			type : 'GET',
-			url : '/admin/ticketSearch',
-			data : $('form.advancedTicket').serialize(),
-			success:function(data){
-				var html;
-				$.each(data.response,function(i,v) {
-					html += "<tr><td>"+
-								"<div class='input-group'>" +
-									"<input type='checkbox' class='i-checks' name='id'" +
-										"value=" + v.id +"> <span class='input-group-btn'>" +
-										"<button data-toggle='dropdown'"+
-											"class='btn btn-primary btn-xs dropdown-toggle'>" +
-											"<span class='caret'></span>" +
-										"</button>"+
-										"<ul class='dropdown-menu'>" +
-											"<li><a href=/admin/tickets/" + v.id +">View</a></li>" +
-											"<li><a href='#' id='closeTicket' data-toggle='modal'" +
-												"data-target='#closedBy' name=" + v.id +">Close</a></li>" +
-										"</ul></span></div></td>";
-					
-					if(v.ticket_status == "Open"){
-						html += "<td class='text-center'><span class='label label-success'>" 
-							+ v.ticket_status + "</span></td>";
-						
-					}else if(v.ticket_status == "Pending"){
-						html += "<td class='text-center'><span class='label label-warning'>"
-							+ v.ticket_status +"</span></td>";
-					}else if (v.ticket_status == "Closed"){
-						html += "<td class='text-center'><span class='label label-primary'>"
-							+ v.ticket_status + "</span></td>";
-					}else{
-						html += "<td class='text-center'><span class='label label-danger'>"
-							+ v.ticket_status + "</span></td>";
-					}
-					
-					html += "<td class='issue-info'><a href='/admin/tickets/'" + v.id +">" +
-							"<span class='font-bold'>" + v.description + " - " + v.id + "</span>" +
-							"<small>" + v.subject + "</small></a></td>"+
-							"<td>" + v.sender_id + "</td>" +
-							"<td class='text-center'><span class='label label-default'>" + 
-							v.priority_level + "</span></td>" +
-							"<td>" + v.updated_at + "</td></tr>";
-					
-					});
-				$('tbody.allTickets').empty();
-				allTicketSearch.ladda('stop');
-				$('tbody.allTickets').append(html);
-				
-				$('.i-checks').iCheck({
-					checkboxClass : 'icheckbox_square-green',
-					radioClass : 'iradio_square-green',
-				});
-				$('table.showTickets').trigger('footable_initialize');	
-			},
-			error : function(xhr, statusText, error) { 
-				allTicketSearch.ladda('stop');
-		        swal('No Results found','','info');
-		    }
-		});
-		
-	});
 	// Department
 	$('button.addDeparment').click(function(){
 		$.ajax({
