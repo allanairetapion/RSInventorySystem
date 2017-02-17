@@ -17,7 +17,7 @@
 <link href="/css/plugins/datapicker/datepicker3.css" rel="stylesheet">
 <link href="/css/plugins/summernote/summernote.css" rel="stylesheet">
 <link rel="stylesheet" type="text/css" href="/css/plugins/jQueryUI/jquery-ui.css" />
-<link href="/css/plugins/footable/footable.core.css" rel="stylesheet">
+<link href="/css/plugins/dataTables/datatables.min.css" rel="stylesheet">
 <link href="/css/plugins/ladda/ladda-themeless.min.css" rel="stylesheet">
 <link href="/css/plugins/chosen/chosen.css" rel="stylesheet">
 <!-- Clock Picker -->
@@ -181,8 +181,6 @@
 <!-- Custom and plugin javascript -->
 <script src="/js/inspinia.js"></script>
 <script src="/js/plugins/pace/pace.min.js"></script>
-<!-- FooTable -->
-<script src="/js/plugins/footable/footable.all.min.js"></script>
 <!-- Table Export -->
 <script src="/js/plugins/tableExport/jquery.table2excel.js"></script>
 <script src="/js/plugins/tableExport/jquery.tabletoCSV.js"></script>
@@ -205,6 +203,9 @@
 <script src="/js/plugins/clockpicker/clockpicker.js"></script>
 <!-- Date picker -->
 <script src="/js/plugins/datapicker/bootstrap-datepicker.js"></script>
+<!-- Data Table -->
+<script src="/js/plugins/jeditable/jquery.jeditable.js"></script>
+<script src="/js/plugins/dataTables/datatables.min.js"></script>
 <!-- Chosen -->
 <script src="/js/plugins/chosen/chosen.jquery.js"></script>
 <script src="/js/inventory.js"></script>

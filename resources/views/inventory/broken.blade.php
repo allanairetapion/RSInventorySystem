@@ -156,38 +156,27 @@ Items') @section('header-page')
 				</div>
 
 				<div id="brokenResult">
-					<table id="broken"
-						class="footable table table-bordered table-hover toggle-arrow-tiny"
-						data-filter="#filter" data-striping="false">
+					<table id="broken" class="table table-bordered table-hover">
 						<thead>
 							<tr>
-								<th data-toggle="true"><input type="checkbox" class="i-checks" />
-									&nbsp; Item No.</th>
-								<th>Unique ID</th>
+								<th><input type="checkbox" class="i-checks" /> &nbsp; Item No.</th>
 								<th>ItemType</th>
-								<th>Brand</th>
-								<th>Model</th>
+								<th>Brand + Model</th>
 								<th>Damage</th>
 								<th>Item User</th>
 								<th>Current Status</th>
 								<th>Reported By</th>
 								<th>Date Broken</th>
-								
-
-
 							</tr>
 						</thead>
 						<tbody id="broken">
 							@foreach($brokenItems as $brokenItem)
 
-							<tr id="{{$brokenItem->itemNo}}">
+							<tr id="{{$brokenItem->itemNo}}" value="{{$brokenItem->brokenSummary}}">
 								<td><input type="checkbox" class="i-checks brokenItem"
-									value="{{$brokenItem->itemNo}}" /> &nbsp;<a
-									href="/inventory/items/{{$brokenItem->itemNo}}">{{$brokenItem->itemNo}}</a></td>
-								<td>{{$brokenItem->unique_id}}</td>
+									id="{{$brokenItem->itemNo}}" /> {{$brokenItem->itemNo}}</td>
 								<td>{{$brokenItem->itemType}}</td>
-								<td>{{$brokenItem->brand}}</td>
-								<td>{{$brokenItem->model}}</td>
+								<td>{{$brokenItem->brand}} - {{$brokenItem->model}}</td>
 								<td>{{$brokenItem->damage}}</td>
 								<td>{{$brokenItem->first_name.' '.$brokenItem->last_name}}</td>
 								<td>{{$brokenItem->brokenStatus}}</td>
@@ -201,30 +190,27 @@ Items') @section('header-page')
 						</tbody>
 					</table>
 				</div>
-				<table id="brokenSearchResult"
-					class="footable table table-bordered table-hover toggle-arrow-tiny hide"
-					data-filter="#filter" data-striping="false">
-					<thead>
-						<tr>
-							<th data-toggle="true"><input type="checkbox" class="i-checks" />
-								&nbsp; Item No.</th>
-							<th>Unique ID</th>
+				<div id="brokenSearchResult" class="hide">
+					<table id="brokenSearchResult"
+						class="table table-bordered table-hover">
+						<thead>
+							<tr>
+								<th><input type="checkbox" class="i-checks" /> Item No.</th>
 								<th>ItemType</th>
-								<th>Brand</th>
-								<th>Model</th>
+								<th>Brand + Model</th>
 								<th>Damage</th>
 								<th>Item User</th>
 								<th>Current Status</th>
 								<th>Reported By</th>
 								<th>Date Broken</th>
-						</tr>
-					</thead>
-					<tbody id="brokenSearchResult">
+							</tr>
+						</thead>
+						<tbody id="brokenSearchResult">
 
-					</tbody>
+						</tbody>
 
-				</table>
-
+					</table>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -338,6 +324,34 @@ Items') @section('header-page')
 			</div>
 		</div>
 
+	</div>
+</div>
+<div class="modal inmodal" id="itemBroken" tabindex="-1" role="dialog"
+	aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content animated bounceInRight">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">
+					<span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+				</button>
+
+				<h4 class="modal-title itemBroken">Modal title</h4>
+
+			</div>
+			<div class="modal-body">
+				<p>
+					Damage: <span class="brokenDamage font-bold"></span>
+				</p>
+				<p>
+					Summary: <span class="brokenSummary"></span>
+				</p>
+			</div>
+			<div class="modal-footer">
+				<a class="btn btn-primary itemDetails" href="#">View Item Details</a>
+				<button type="button" class="btn btn-white" data-dismiss="modal">Close</button>
+
+			</div>
+		</div>
 	</div>
 </div>
 @endsection @section('scripts')

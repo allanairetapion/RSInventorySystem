@@ -15,25 +15,8 @@ $(function() {
 		radioClass : 'iradio_square-green',
 	});
 	
-	$('a#exportExcel').click(function(){
-		$('table').table2excel({
-		
-		    exclude: ".noExl",
-		    name: "Worksheet Name",
-		    filename: "SomeFile" //do not include extension
-		  }); 
-		});
 	
-	$('a#exportCSV').click(function(){
-		$("table").tableToCSV();
-		});
 	
-	});
-
-	
-	$('button.advancedSearch').click(function() {
-		$('div#advancedSearch').slideToggle();
-	});
 	$('.input-group.date.dateArrived').datepicker({
 	    
 	    format : 'yyyy-mm-dd',

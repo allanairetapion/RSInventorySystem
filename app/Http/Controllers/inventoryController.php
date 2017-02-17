@@ -35,8 +35,8 @@ class inventoryController extends Controller {
 	// Dashboard
 	public function showIndex() {
 		$items = Item::whereBetween ( 'updated_at', [ 
-				Carbon::today()->startOfWeek(),
-				Carbon::today()->endOfWeek()
+				Carbon::today ()->startOfWeek (),
+				Carbon::today ()->endOfWeek () 
 		] )->orderBy ( 'updated_at', 'desc' )->leftJoin ( DB::raw ( '(select client_id,first_name as morning_FN, last_name as morning_LN from client_profiles) cProfile' ), function ($join) {
 			$join->on ( 'items.morningClient', '=', 'cProfile.client_id' );
 		} )->leftJoin ( DB::raw ( '(select client_id,first_name as night_FN, last_name as night_LN from client_profiles) cProfile2' ), function ($join) {
@@ -44,18 +44,15 @@ class inventoryController extends Controller {
 		} )->get ();
 		
 		$itemTypes = Item::select ( 'itemType as label', DB::raw ( 'Count(*) as value' ) )->groupBy ( 'itemType' )->get ();
-		$itemCount = Item::select(DB::raw('itemStatus,count(unique_id) as counter'))->groupBy('itemStatus')->get();
+		$itemCount = Item::select ( DB::raw ( 'itemStatus,count(unique_id) as counter' ) )->groupBy ( 'itemStatus' )->get ();
 		$mSchedToday = mSchedule::whereBetween ( 'start_date', [ 
 				Carbon::today (),
 				Carbon::tomorrow () 
 		] )->count ();
 		
-		
-		
 		$first = AProfile::select ( 'agent_id as id', 'first_name', 'last_name' );
 		$area = mArea::all ();
 		$activity = mActivity::all ();
-		
 		
 		return view ( 'inventory.index', [ 
 				'items' => $items,
@@ -64,69 +61,257 @@ class inventoryController extends Controller {
 				'activities' => $activity,
 				'agents' => $first->get (),
 				'types' => $itemTypes,
-				'mScheds' => $mSchedToday,
+				'mScheds' => $mSchedToday 
 		] );
 	}
-	public function dashboardSummary(){
-		$borrowData = [
+	public function dashboardSummary() {
+		$borrowData = [ 
 				'label' => 'Borrowed',
 				'color' => '#1c84c6',
-				'data' => [[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0], ]
+				'data' => [ 
+						[ 
+								0,
+								0 
+						],
+						[ 
+								0,
+								0 
+						],
+						[ 
+								0,
+								0 
+						],
+						[ 
+								0,
+								0 
+						],
+						[ 
+								0,
+								0 
+						],
+						[ 
+								0,
+								0 
+						],
+						[ 
+								0,
+								0 
+						],
+						[ 
+								0,
+								0 
+						],
+						[ 
+								0,
+								0 
+						],
+						[ 
+								0,
+								0 
+						],
+						[ 
+								0,
+								0 
+						] 
+				] 
 		];
-		$returnData = [
+		$returnData = [ 
 				'label' => 'Returned',
 				'color' => '#23c6c8',
-				'data' => [[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0], ]
+				'data' => [ 
+						[ 
+								0,
+								0 
+						],
+						[ 
+								0,
+								0 
+						],
+						[ 
+								0,
+								0 
+						],
+						[ 
+								0,
+								0 
+						],
+						[ 
+								0,
+								0 
+						],
+						[ 
+								0,
+								0 
+						],
+						[ 
+								0,
+								0 
+						],
+						[ 
+								0,
+								0 
+						],
+						[ 
+								0,
+								0 
+						],
+						[ 
+								0,
+								0 
+						],
+						[ 
+								0,
+								0 
+						] 
+				] 
 		];
-		$issueData = [
+		$issueData = [ 
 				'label' => 'With issues',
 				'color' => '#f8ac59',
-				'data' => [[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0], ]
+				'data' => [ 
+						[ 
+								0,
+								0 
+						],
+						[ 
+								0,
+								0 
+						],
+						[ 
+								0,
+								0 
+						],
+						[ 
+								0,
+								0 
+						],
+						[ 
+								0,
+								0 
+						],
+						[ 
+								0,
+								0 
+						],
+						[ 
+								0,
+								0 
+						],
+						[ 
+								0,
+								0 
+						],
+						[ 
+								0,
+								0 
+						],
+						[ 
+								0,
+								0 
+						],
+						[ 
+								0,
+								0 
+						] 
+				] 
 		];
-		$brokenData = [
+		$brokenData = [ 
 				'label' => 'Broken',
 				'color' => '#ed5565',
-				'data' => [[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0], ]
+				'data' => [ 
+						[ 
+								0,
+								0 
+						],
+						[ 
+								0,
+								0 
+						],
+						[ 
+								0,
+								0 
+						],
+						[ 
+								0,
+								0 
+						],
+						[ 
+								0,
+								0 
+						],
+						[ 
+								0,
+								0 
+						],
+						[ 
+								0,
+								0 
+						],
+						[ 
+								0,
+								0 
+						],
+						[ 
+								0,
+								0 
+						],
+						[ 
+								0,
+								0 
+						],
+						[ 
+								0,
+								0 
+						] 
+				] 
 		];
 		$summaryXaxis = [ ];
-		$borrowCount = Borrow::select(DB::raw('count(id) as counter, date(created_at) as cdate'))->groupBy(DB::raw('cdate'))
-		->orderBy('cdate','desc')->take(11)->get();
-		$returnCount = ReturnItem::select(DB::raw('count(id) as counter, date(created_at) as cdate'))->groupBy(DB::raw('cdate'))
-		->orderBy('cdate','desc')->take(11)->get();
-		$issueCount = Issue::select(DB::raw('count(id) as counter, date(created_at) as cdate'))->groupBy(DB::raw('cdate'))
-		->orderBy('cdate','desc')->take(11)->get();
-		$brokenCount = Broken::select(DB::raw('count(id) as counter, date(created_at) as cdate'))->groupBy(DB::raw('cdate'))
-		->orderBy('cdate','desc')->take(11)->get();
+		$borrowCount = Borrow::select ( DB::raw ( 'count(id) as counter, date(created_at) as cdate' ) )->groupBy ( DB::raw ( 'cdate' ) )->orderBy ( 'cdate', 'desc' )->take ( 11 )->get ();
+		$returnCount = ReturnItem::select ( DB::raw ( 'count(id) as counter, date(created_at) as cdate' ) )->groupBy ( DB::raw ( 'cdate' ) )->orderBy ( 'cdate', 'desc' )->take ( 11 )->get ();
+		$issueCount = Issue::select ( DB::raw ( 'count(id) as counter, date(created_at) as cdate' ) )->groupBy ( DB::raw ( 'cdate' ) )->orderBy ( 'cdate', 'desc' )->take ( 11 )->get ();
+		$brokenCount = Broken::select ( DB::raw ( 'count(id) as counter, date(created_at) as cdate' ) )->groupBy ( DB::raw ( 'cdate' ) )->orderBy ( 'cdate', 'desc' )->take ( 11 )->get ();
 		
-		for($i = 11; $i >= 0; $i--){
-			$dateStart = Carbon::today ()->subMonths ( $i  )->startOfMonth ();
-			array_push ( $summaryXaxis, [
+		for($i = 11; $i >= 0; $i --) {
+			$dateStart = Carbon::today ()->subMonths ( $i )->startOfMonth ();
+			array_push ( $summaryXaxis, [ 
 					11 - $i,
-					$dateStart->format ( 'M' )
+					$dateStart->format ( 'M' ) 
 			] );
 		}
-		foreach ($borrowCount as $i => $v){
-			$borrowData ['data'][11 - $i] = [11 - $i,$v->counter] ;
+		foreach ( $borrowCount as $i => $v ) {
+			$borrowData ['data'] [11 - $i] = [ 
+					11 - $i,
+					$v->counter 
+			];
 		}
-		foreach ($returnCount as $i => $v){
-			$returnData ['data'][11 - $i] = [11 - $i,$v->counter] ;
+		foreach ( $returnCount as $i => $v ) {
+			$returnData ['data'] [11 - $i] = [ 
+					11 - $i,
+					$v->counter 
+			];
 		}
-		foreach ($issueCount as $i => $v){
-			$issueData ['data'][11 - $i] = [11 - $i,$v->counter] ;
+		foreach ( $issueCount as $i => $v ) {
+			$issueData ['data'] [11 - $i] = [ 
+					11 - $i,
+					$v->counter 
+			];
 		}
-		foreach ($brokenCount as $i => $v){
-			$brokenData ['data'][11 - $i] = [11 - $i,$v->counter] ;
+		foreach ( $brokenCount as $i => $v ) {
+			$brokenData ['data'] [11 - $i] = [ 
+					11 - $i,
+					$v->counter 
+			];
 		}
 		
-		
-		
-		return ['summaryData' => [ 
+		return [ 
+				'summaryData' => [ 
 						$borrowData,
 						$returnData,
 						$issueData,
 						$brokenData 
 				],
-				'summaryXaxis' => $summaryXaxis ];
+				'summaryXaxis' => $summaryXaxis 
+		];
 	}
 	public function itemTypeSummary(Request $request) {
 		$items = Item::where ( 'itemType', $request ['itemType'] )->get ();
@@ -141,36 +326,22 @@ class inventoryController extends Controller {
 	public function showBorrow() {
 		$borrowedId = Borrow::select ( DB::raw ( 'Max(id)' ) )->groupBy ( 'itemNo' )->get ();
 		
+		$first = AProfile::select ( 'agent_id as id', 'first_name', 'last_name' );
+		$second = CProfile::select ( 'client_id as id', 'first_name', 'last_name' )->union ( $first );
+		
 		$borrowedItems = Item::leftJoin ( DB::raw ( '(select id,itemNo, borrowee,borrower,borrowerStationNo,created_at as dateBorrowed,updated_at from borrow_logs) borrow' ), function ($join) {
 			$join->on ( 'items.itemNo', '=', 'borrow.itemNo' );
-		} )->leftJoin ( 'admin_profiles', 'borrow.borrowee', '=', 'admin_profiles.agent_id' )->where ( 'itemStatus', 'Borrowed' )->whereIn ( 'borrow.id', $borrowedId )->orderBy ( 'dateBorrowed', 'desc' )->get ();
-		
-		$names = [ ];
-		
-		$agents = AProfile::select ( 'agent_id as id', 'first_name', 'last_name' )->get ();
-		$clients = CProfile::select ( 'client_id as id', 'first_name', 'last_name' )->get ();
-		
-		foreach ( $clients as $client ) {
-			array_push ( $names, $client );
-		}
-		foreach ( $agents as $agent ) {
-			array_push ( $names, $agent );
-		}
-		
-		foreach ( $borrowedItems as $borrowedItem ) {
-			foreach ( $names as $nm ) {
-				if ($nm->id == $borrowedItem->borrower) {
-					$borrowedItem->borrower = $nm->first_name . ' ' . $nm->last_name;
-				}
-			}
-		}
+		} )->leftJoin ( DB::raw ( '(select agent_id, first_name as agent_FN, last_name as agent_LN
+				from admin_profiles) admin_profiles' ), 'borrow.borrowee', '=', 'admin_profiles.agent_id' )->leftJoin ( DB::raw ( "({$second->toSql()}) as names" ), function ($join) {
+			$join->on ( 'borrow.borrower', '=', 'names.id' );
+		} )->where ( 'itemStatus', 'Borrowed' )->whereIn ( 'borrow.id', $borrowedId )->orderBy ( 'dateBorrowed', 'desc' )->get ();
 		
 		$itemNumbers = Item::select ( 'itemNo' )->get ();
 		
 		return view ( "inventory.borrow", [ 
 				'borrowedItems' => $borrowedItems,
-				'names' => $names,
-				'agents' => $agents,
+				'names' => $second->get (),
+				'agents' => $first->get (),
 				'itemNumbers' => $itemNumbers 
 		] );
 	}
@@ -202,7 +373,7 @@ class inventoryController extends Controller {
 		$validator = Validator::make ( $request->all (), [ 
 				'itemNo' => 'required|exists:items,itemNo,itemStatus,"In-stock"',
 				'borrower' => 'required|numeric',
-				'stationNo' => 'required|numeric|max:255',
+				'stationNo' => 'required|max:255',
 				'dateBorrowed' => 'required|date' 
 		] );
 		
@@ -230,18 +401,14 @@ class inventoryController extends Controller {
 			$borrowItem->updated_at = $updatetime;
 			$borrowItem->save ();
 			
-			$result = Borrow::where ( 'borrow_logs.itemNo', $request ['itemNo'] )->leftJoin ( DB::raw ( '(select unique_id, itemNo, itemType, brand, model from items) items' ), 'borrow_logs.itemNo', '=', 'items.itemNo' )->leftJoin ( DB::raw ( '(select agent_id, first_name, last_name from admin_profiles) admin_profiles' ), 'borrow_logs.borrowee', '=', 'admin_profiles.agent_id' )->
-
-			orderBy ( 'borrow_logs.created_at', 'desc' )->first ();
+			$first = AProfile::select ( 'agent_id as id', 'first_name', 'last_name' );
+			$second = CProfile::select ( 'client_id as id', 'first_name', 'last_name' )->union ( $first );
 			
-			$name = DB::table ( 'admin_profiles' )->where ( 'agent_id', $result ['borrower'] )->first ();
-			if ($name == null) {
-				$name = DB::table ( 'client_profiles' )->where ( 'client_id', $result ['borrower'] )->first ();
-			}
+			$result = Borrow::where ( 'borrow_logs.itemNo', $request ['itemNo'] )->leftJoin ( DB::raw ( '(select unique_id, itemNo, itemType, brand, model from items) items' ), 'borrow_logs.itemNo', '=', 'items.itemNo' )->leftJoin ( DB::raw ( '(select agent_id, first_name as agent_FN, last_name as agent_LN
+				from admin_profiles) admin_profiles' ), 'borrow_logs.borrowee', '=', 'admin_profiles.agent_id' )->leftJoin ( DB::raw ( "({$second->toSql()}) as names" ), function ($join) {
+				$join->on ( 'borrow_logs.borrower', '=', 'names.id' );
+			} )->orderBy ( 'created_at', 'desc' )->orderBy ( 'created_at', 'desc' )->first();
 			
-			if ($name != null) {
-				$result ['borrower'] = $name->first_name . ' ' . $name->last_name;
-			}
 			return response ()->json ( [ 
 					'success' => true,
 					'response' => $result 
@@ -353,8 +520,7 @@ class inventoryController extends Controller {
 				created_at as dateReturned ,updated_at from return_logs) returnInfo' ), function ($join) {
 			$join->on ( 'items.itemNo', '=', 'returnInfo.itemNo' );
 		} )->leftJoin ( DB::raw ( '(select agent_id, first_name as agent_FN, last_name as agent_LN
-				from admin_profiles) admin_profiles' ), 'returnInfo.receiver', '=', 'admin_profiles.agent_id' )
-			->leftJoin ( DB::raw ( "({$second->toSql()}) as names" ), function ($join) {
+				from admin_profiles) admin_profiles' ), 'returnInfo.receiver', '=', 'admin_profiles.agent_id' )->leftJoin ( DB::raw ( "({$second->toSql()}) as names" ), function ($join) {
 			$join->on ( 'returnInfo.borrower', '=', 'names.id' );
 		} )->orderby ( 'dateReturned', 'desc' )->get ();
 		
@@ -390,35 +556,35 @@ class inventoryController extends Controller {
 					'errors' => $validator->getMessageBag ()->toArray () 
 			) );
 		} else {
-			$updatetime = Carbon::now ();
 			$time = Carbon::parse ( Carbon::now () );
 			$date = Carbon::parse ( $request ['dateReturned'] );
 			
 			$returnItem = new ReturnItem ();
-			
 			$returnItem->itemNo = $request ['itemNo'];
 			$returnItem->receiver = Auth::guard ( 'inventory' )->user ()->id;
 			$returnItem->borrower = $request ['borrower'];
 			$returnItem->created_at = Carbon::create ( $date->year, $date->month, $date->day, $time->hour, $time->minute, $time->second );
-			$returnItem->updated_at = $updatetime;
 			$returnItem->save ();
-			
-			$result = ReturnItem::where ( 'return_logs.itemNo', $request ['itemNo'] )->leftJoin ( DB::raw ( '(select unique_id, itemNo, itemType, brand, model from items) items' ), 'return_logs.itemNo', '=', 'items.itemNo' )->leftJoin ( DB::raw ( '(select agent_id, first_name, last_name from admin_profiles) admin_profiles' ), 'return_logs.receiver', '=', 'admin_profiles.agent_id' )->orderby ( 'created_at', 'desc' )->first ();
-			
+
 			$itemStatus = Item::where ( 'itemNo', $request ['itemNo'] )->update ( [ 
 					'itemStatus' => 'In-stock',
-					'stationNo' => $result ['id'],
-					'updated_at' => $updatetime 
+					'stationNo' => 0,
 			] );
 			
-			$name = DB::table ( 'admin_profiles' )->where ( 'agent_id', $result ['borrower'] )->first ();
-			if ($name == null) {
-				$name = DB::table ( 'client_profiles' )->where ( 'client_id', $result ['borrower'] )->first ();
-			}
+			$first = AProfile::select ( 'agent_id as id', 'first_name', 'last_name' );
+			$second = CProfile::select ( 'client_id as id', 'first_name', 'last_name' )->union ( $first );
 			
-			if ($name != null) {
-				$result ['borrower'] = $name->first_name . ' ' . $name->last_name;
-			}
+			
+							
+			$result = ReturnItem::where ( 'return_logs.itemNo', $request ['itemNo'] )
+			->leftJoin ( DB::raw ( '(select unique_id, itemNo, itemType, brand, model from items) items' ),
+					'return_logs.itemNo', '=', 'items.itemNo' )
+			->leftJoin ( DB::raw ( '(select agent_id, first_name as agent_FN, last_name as agent_LN
+				from admin_profiles) admin_profiles' ), 'return_logs.receiver', '=', 'admin_profiles.agent_id' )->leftJoin ( DB::raw ( "({$second->toSql()}) as names" ), function ($join) {
+			$join->on ( 'return_logs.borrower', '=', 'names.id' );
+		} )->orderby ( 'return_logs.created_at', 'desc' )->first ();
+				
+			
 			
 			return response ()->json ( [ 
 					'success' => true,
@@ -428,9 +594,31 @@ class inventoryController extends Controller {
 		;
 	}
 	public function showAgents() {
-		$users = DB::table ( 'admin' )->leftJoin ( DB::raw ( '(select agent_id, first_name, last_name from admin_profiles) agents' ), 'admin.id', '=', 'agents.agent_id' )->get ();
+		$users = Admin::leftJoin ( DB::raw ( '(select agent_id, first_name, last_name from admin_profiles) agents' ), 'admin.id', '=', 'agents.agent_id' )->get ();
+		
 		return view ( "inventory.agents", [ 
 				'agents' => $users 
+		] );
+	}
+	public function deleteAgent(Request $request) {
+		$validator = Validator::make ( $request->all (), [ 
+				'id' => 'required|exists:admin,id' 
+		] );
+		
+		if ($validator->fails ()) {
+			return response ()->json ( array (
+					'success' => false,
+					'errors' => $validator->getMessageBag ()->toArray () 
+			) );
+		}
+		
+		$agent = Admin::find ( $request ['id'] );
+		$agent->delete ();
+		
+		$agent = AProfile::where ( 'agent_id', $request ['id'] );
+		$agent->delete ();
+		return response ()->json ( [ 
+				'success' => true 
 		] );
 	}
 	public function showCreateAgent() {
@@ -460,7 +648,9 @@ class inventoryController extends Controller {
 	}
 	public function addItem(Request $request) {
 		$validator = Validator::make ( $request->all (), [ 
-				'serial_no' => 'required|alpha_num|unique:items,unique_id',
+				'itemTag' => 'required|numeric|max:255|unique:items,itemNo',
+				'serial_no' => 'required|alpha_num|unique:items,unique_id|max:255',
+				'serviceTag' => 'required|max:255',
 				'company' => 'required|max:255',
 				'brand' => 'required|max:255',
 				'model' => 'required|max:255',
@@ -491,38 +681,24 @@ class inventoryController extends Controller {
 					$attachmentpath = $attachmentpath . "/inventory/" . $imageName . ",";
 				}
 			}
-			
-			$itemPrefix = explode ( " ", $request ['company'] );
-			$itemNo = "";
-			foreach ( $itemPrefix as $prefix ) {
-				$itemNo = $itemNo . substr ( $prefix, 0, 1 );
-			}
-			;
-			$itemNo = $itemNo . (Item::where ( 'company', $request ['company'] )->count () + 1);
 			$time = Carbon::parse ( Carbon::now () );
 			$date = Carbon::parse ( $request ['dateArrived'] );
 			$dateArrived = Carbon::create ( $date->year, $date->month, $date->day, $time->hour, $time->minute, $time->second );
 			$newItem = Item::create ( [ 
 					'unique_id' => $request ['serial_no'],
-					'itemNo' => $itemNo,
+					'itemNo' => $request ['itemTag'],
 					'company' => $request ['company'],
 					'stationNo' => 0,
 					'brand' => $request ['brand'],
 					'model' => $request ['model'],
+					'serviceTag' => $request ['serviceTag'],
 					'itemType' => $request ['itemType'],
 					'specification' => $request ['specification'],
 					'photo' => $attachmentpath,
 					'created_at' => $dateArrived,
 					'itemStatus' => "In-stock" 
 			] );
-			$result = [ 
-					'unique_id' => $request ['serial_no'],
-					'itemNo' => $itemNo,
-					'itemType' => $request ['itemType'],
-					'brand' => $request ['brand'],
-					'model' => $request ['model'],
-					'dateArrived' => $dateArrived 
-			];
+			$result = item::where ( 'itemNo', $request ['itemTag'] )->first ();
 			return response ()->json ( [ 
 					'success' => true,
 					'response' => $result 
@@ -586,11 +762,9 @@ class inventoryController extends Controller {
 				from items) items' ), function ($join) {
 			$join->on ( 'borrow_logs.itemNo', '=', 'items.itemNo' );
 		} )->leftJoin ( DB::raw ( '(select agent_id, first_name as agent_FN, last_name as agent_LN
-				from admin_profiles) admin_profiles' ), 'borrow_logs.borrowee', '=', 'admin_profiles.agent_id' )
-				->leftJoin ( DB::raw ( "({$second->toSql()}) as names" ), function ($join) {
-					$join->on ( 'borrow_logs.borrower', '=', 'names.id' );
-				} )->orderBy ( 'created_at', 'desc' )
-		->orderBy ( 'created_at', 'desc' );
+				from admin_profiles) admin_profiles' ), 'borrow_logs.borrowee', '=', 'admin_profiles.agent_id' )->leftJoin ( DB::raw ( "({$second->toSql()}) as names" ), function ($join) {
+			$join->on ( 'borrow_logs.borrower', '=', 'names.id' );
+		} )->orderBy ( 'created_at', 'desc' )->orderBy ( 'created_at', 'desc' );
 		
 		$borrows = $borrows->newQuery ();
 		if ($request ['itemNo'] != null) {
@@ -938,6 +1112,7 @@ class inventoryController extends Controller {
 			
 			$itemStatus = Item::where ( 'itemNo', $request ['itemNo'] )->update ( [ 
 					'itemStatus' => 'Broken',
+					'stationNo' => 0,
 					'updated_at' => $updatetime 
 			] );
 			$first = AProfile::select ( 'agent_id as id', 'first_name', 'last_name' );
@@ -1031,7 +1206,7 @@ class inventoryController extends Controller {
 				"itemType",
 				"brand",
 				"model",
-				"created_at"
+				"created_at" 
 		];
 		$items = Item::orWhere ( 'itemNo', $request ['search'] );
 		
@@ -1071,45 +1246,40 @@ class inventoryController extends Controller {
 	}
 	public function updateBroken(Request $request) {
 		$items = $request ['items'];
-		
-		$broken_logs = Broken::select ( DB::raw ( 'max(created_at) as created_at, unique_id, brokenStatus' ) )->groupBy ( 'itemNo' )->join ( DB::raw ( '(Select unique_id,itemNo,updated_at as dateUpdate from items) items' ), function ($join) {
-			$join->on ( 'broken_logs.updated_at', '>=', 'items.dateUpdate' );
-			$join->on ( 'broken_logs.itemNo', '=', 'items.itemNo' );
-		} );
-		
+		$brokenId = Broken::select ( DB::raw ( 'Max(id)' ) )->groupBy ( 'itemNo' )->get ();
 		if ($request ['mark'] == "Repaired") {
 			$changeItemStatus;
 			foreach ( $items as $key => $value ) {
-				$item = Broken::select ( 'damage' )->where ( 'issue_logs.itemNo', $request ['itemNo'] )->orderBy ( 'issue_logs.created_at', 'desc' )->first ();
+				$item = Broken::select ( 'id','damage' )
+				->where ( 'broken_logs.itemNo', $value )->whereIn ( 'id', $brokenId )->first();
 				
 				$repairItem = new Repair ();
-				$repairItem->itemNo = $request ['itemNo'];
-				$repairItem->damage = $item;
+				$repairItem->itemNo = $value;
+				$repairItem->damage = $item->damage;
 				$repairItem->repaired_by = Auth::guard ( 'inventory' )->user ()->id;
 				$repairItem->save ();
 				
-				$itemStatus = Item::where ( 'itemNo', $request ['itemNo'] )->update ( [ 
+				Item::where ( 'itemNo', $value )->update ( [ 
 						'itemStatus' => 'In-stock',
 						'stationNo' => 0 
 				] );
+				Broken::where('itemNo',$value)->whereIn ( 'id', $brokenId )->update ( [
+						'brokenStatus' => "Repaired"
+				] );
 			}
 		} else {
+			
 			foreach ( $items as $key => $value ) {
-				if ($key == 0) {
-					$broken_logs->where ( 'broken_logs.itemNo', $value );
-				} else {
-					$broken_logs->orWhere ( 'broken_logs.itemNo', $value );
-				}
-			}
-			$broken_logs = $broken_logs->update ( [ 
+				Broken::where('itemNo',$value)->whereIn ( 'id', $brokenId )->update ( [ 
 					'brokenStatus' => $request ['mark'] 
 			] );
+				
+			}
+			
 		}
 		
-		$result = Broken::select ( DB::raw ( 'max(created_at) as created_at, itemNo, brokenStatus, max(updated_at) as updated_at' ) )->groupBy ( 'itemNo' )->get ();
 		return response ()->json ( [ 
 				'success' => true,
-				'response' => $result 
 		] );
 	}
 	// end Broken Form
@@ -1191,6 +1361,23 @@ class inventoryController extends Controller {
 				] 
 		] );
 	}
+	public function deleteSchedule(Request $request) {
+		$validator = Validator::make ( $request->all (), [
+				'schedID' => 'required|exists:maintenance_schedules,id',
+		] );
+		if ($validator->fails ()) {
+			return response ()->json ( array (
+					'success' => false,
+					'errors' => $validator->getMessageBag ()->toArray ()
+			), 400 );
+		}
+		$schedule = mSchedule::find ( $request ['schedID'] );
+		$schedule->delete();
+		
+		return response ()->json ( [
+				'success' => true,				
+		] );
+	}
 	public function merTime($t) {
 		$mer = substr ( $t, - 2, 2 );
 		$time = chop ( $t, $mer );
@@ -1225,8 +1412,67 @@ class inventoryController extends Controller {
 				'response' => $response 
 		] );
 	}
+	public function updateActivity(Request $request) {
+		$validator = Validator::make ( $request->all (), [ 
+				'id' => 'required|exists:maintenance_activities,id',
+				'activity' => 'required|max:255',
+				'description' => 'required|max:255' 
+		] );
+		if ($validator->fails ()) {
+			return response ()->json ( array (
+					'success' => false,
+					'errors' => $validator->getMessageBag ()->toArray () 
+			), 400 );
+		}
+		$activity = mActivity::find ( $request ['id'] );
+		$prevActivity = $activity->activity;
+		$prevDescription = $activity->description;
+		
+		$activity->activity = $request ['activity'];
+		$activity->description = $request ['description'];
+		$activity->save ();
+		
+		return response ()->json ( [ 
+				'success' => true,
+				'response' => [ 
+						'activity' => $prevActivity,
+						'description' => $prevDescription 
+				] 
+		] );
+	}
+	public function deleteActivity(Request $request) {
+		$validator = Validator::make ( $request->all (), [ 
+				'id' => 'required|exists:maintenance_activities,id' 
+		] );
+		if ($validator->fails ()) {
+			return response ()->json ( array (
+					'success' => false,
+					'errors' => $validator->getMessageBag ()->toArray () 
+			), 400 );
+		}
+		
+		$activity = mActivity::find ( $request ['id'] );
+		$activity->delete ();
+		
+		return response ()->json ( [ 
+				'success' => true 
+		] );
+	}
+	public function viewActivityDetail(Request $request) {
+		$validator = Validator::make ( $request->all (), [ 
+				'id' => 'required|exists:maintenance_activities,id' 
+		] );
+		if ($validator->fails ()) {
+			return response ()->json ( array (
+					'success' => false,
+					'errors' => $validator->getMessageBag ()->toArray () 
+			), 400 );
+		}
+		$activity = mActivity::find ( $request ['id'] );
+		return $activity;
+	}
 	public function viewMaintenanceDetail($id) {
-		$schedule = mSchedule::where ( 'id', $id )->get ();
+		$schedule = mSchedule::find ( $id );
 		return $schedule;
 	}
 	public function maintenanceSchedules() {
@@ -1270,13 +1516,20 @@ class inventoryController extends Controller {
 		return $mSchedToday;
 	}
 	public function updateMaintenanceSchedule(Request $request) {
-		$validator = Validator::make ( $request->all (), [
-				'activity' => 'required|max:255',
+		$validator = Validator::make ( $request->all (), [ 
+				'schedID' => 'required|exists:maintenance_schedules,id',
+				'title' => 'required',
+				'activity' => 'required|min:1',
+				'area' => 'required',
+				'startScheduleDate' => 'required',
+				'startScheduleTime' => 'required',
+				'endScheduleDate' => 'required',
+				'endScheduleTime' => 'required'
 		] );
 		if ($validator->fails ()) {
 			return response ()->json ( array (
 					'success' => false,
-					'errors' => $validator->getMessageBag ()->toArray ()
+					'errors' => $validator->getMessageBag ()->toArray () 
 			), 400 );
 		}
 		$schedule = mSchedule::find ( $request ['schedID'] );
@@ -1309,19 +1562,21 @@ class inventoryController extends Controller {
 				'response' => $schedule->id 
 		] );
 	}
-	public function accomplishMaintenanceSchedule(Request $request){
-		$validator = Validator::make ( $request->all (), [
-				'id' => 'required|exists:maintenance_schedules,id',
+	public function accomplishMaintenanceSchedule(Request $request) {
+		$validator = Validator::make ( $request->all (), [ 
+				'id' => 'required|exists:maintenance_schedules,id' 
 		] );
 		if ($validator->fails ()) {
 			return response ()->json ( array (
 					'success' => false,
-					'errors' => $validator->getMessageBag ()->toArray ()
+					'errors' => $validator->getMessageBag ()->toArray () 
 			), 400 );
 		}
-		$accomplish =  mSchedule::find ( $request ['id'] )->update(['status' => 'accomplished']);
-		return response ()->json ( [
-				'success' => true,
+		$accomplish = mSchedule::find ( $request ['id'] )->update ( [ 
+				'status' => 'accomplished' 
+		] );
+		return response ()->json ( [ 
+				'success' => true 
 		] );
 	}
 	public function viewItemDetails($id) {
@@ -1647,8 +1902,9 @@ class inventoryController extends Controller {
 			] )->render ();
 		}
 		return view ( "inventory.detailed", [ 
-				'items' => $items,'itemNumbers' => $itemNumbers,
-				'names' => $first->get()
+				'items' => $items,
+				'itemNumbers' => $itemNumbers,
+				'names' => $first->get () 
 		] );
 	}
 	public function detailSearch(Request $request) {
@@ -1689,46 +1945,50 @@ class inventoryController extends Controller {
 			$join->on ( 'items.nightClient', '=', 'cProfile2.client_id' );
 		} );
 		
-						$items = $items->newQuery ();
-						if ($request ['itemNo'] != null) {
-							$items->where ( 'itemNo', $request ['itemNo'] );
-						}
-						if ($request ['unique_id'] != null) {
-							$items->where ( 'unique_id', $request ['unique_id'] );
-						}
-						if ($request ['morning_user'] != null) {
-							$items->where ( 'morningClient', $request ['morning_user'] );
-						}
-						if ($request ['night_user'] != null) {
-							$items->where ( 'nightClient', $request ['night_user'] );
-						}
+		$items = $items->newQuery ();
+		if ($request ['itemNo'] != null) {
+			$items->where ( 'itemNo', $request ['itemNo'] );
+		}
+		if ($request ['unique_id'] != null) {
+			$items->where ( 'unique_id', $request ['unique_id'] );
+		}
+		if ($request ['morning_user'] != null) {
+			$items->where ( 'morningClient', $request ['morning_user'] );
+		}
+		if ($request ['night_user'] != null) {
+			$items->where ( 'nightClient', $request ['night_user'] );
+		}
 		
-						if ($request ['dateArrived'] != null) {
-							$items->where ( 'created_at', 'like', '%' . $request ['dateArrived'] . '%' );
-						}
+		if ($request ['dateArrived'] != null) {
+			$items->where ( 'created_at', 'like', '%' . $request ['dateArrived'] . '%' );
+		}
 		
-						$items = $items->get ();
+		$items = $items->get ();
 		
-						return response ()->json ( [
-								'success' => true,
-								'response' => $items
-						] );
-		
+		return response ()->json ( [ 
+				'success' => true,
+				'response' => $items 
+		] );
 	}
 	public function itemLevel(Request $request) {
 		$itemTotalStock = [ 
 				'In-stock' 
 		];
 		$itemTotalDeployed = [ 
-				'Deployed' 
+				'In used' 
 		];
 		$xAxis = [ 
 				'x' 
 		];
 		$itemInStock = Item::select ( 'itemType', DB::raw ( 'Count(*) as stockCount' ) )->groupBy ( 'itemType' )->get ();
 		$itemDeployed = Item::select ( 'itemType', DB::raw ( 'Count(*) as deployedCount' ) )->where ( 'itemStatus', '!=', 'In-stock' )->groupBy ( 'itemType' )->get ();
+		$itemTypes = Item::select ( 'itemType')->distinct()->get();
+		foreach ( $itemTypes as $type ) {
+			array_push($xAxis,$type->itemType);
+		}
+		
 		foreach ( $itemInStock as $stock ) {
-			array_push ( $xAxis, $stock->itemType );
+			
 			array_push ( $itemTotalStock, $stock->stockCount );
 		}
 		foreach ( $itemDeployed as $deployed ) {
@@ -1748,32 +2008,32 @@ class inventoryController extends Controller {
 		} )->get ();
 		return $stocks;
 	}
-	public function changeAgentUserType(Request $request){
-		$validator = Validator::make ( $request->all (), [
-				'id' => 'exists:admin'
+	public function changeAgentUserType(Request $request) {
+		$validator = Validator::make ( $request->all (), [ 
+				'id' => 'exists:admin' 
 		] );
 		
 		if ($validator->fails ()) {
 			return response ()->json ( array (
 					'success' => false,
-					'errors' => $validator->getMessageBag ()->toArray ()
+					'errors' => $validator->getMessageBag ()->toArray () 
 			) );
 		} else {
-			$changeAgentStatus = DB::table ( 'admin' )->where ( 'id', $request ['id'] )->update ( [
+			$changeAgentStatus = DB::table ( 'admin' )->where ( 'id', $request ['id'] )->update ( [ 
 					'user_type' => $request ['userType'],
-					'updated_at' => Carbon::now ()
+					'updated_at' => Carbon::now () 
 			] );
-				
-			$agent_profile = DB::table ( 'admin_profiles' )->where ( 'agent_id', $request ['id'] )->update ( [
-					'updated_at' => Carbon::now ()
+			
+			$agent_profile = DB::table ( 'admin_profiles' )->where ( 'agent_id', $request ['id'] )->update ( [ 
+					'updated_at' => Carbon::now () 
 			] );
-				
+			
 			return response ()->json ( array (
 					'success' => true,
-					'input' => [
+					'input' => [ 
 							'id' => $request ['id'],
-							'user' => $request ['userType']
-					]
+							'user' => $request ['userType'] 
+					] 
 			) );
 		}
 	}

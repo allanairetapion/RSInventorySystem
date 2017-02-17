@@ -11,7 +11,7 @@ $(function() {
 		    todayBtn: "linked"
 			});
 		$("div#returnAdvancedSearch").hide();
-		$('table#return').DataTable({
+		$('table').DataTable({
             dom: '<"html5buttons"B>Tgitp',
             buttons: [
                 { extend: 'copy'},
@@ -29,7 +29,10 @@ $(function() {
                                 .css('font-size', 'inherit');
                 }
                 }
-            ]
+            ],
+            "createdRow": function( row, data, dataIndex ) {        		
+            	$('td',row).eq(0).wrapInner("<a href='items/"+ data[0] +"' id="+ data[0] +"></a>");											
+		    }
 
         });
 		
@@ -49,7 +52,7 @@ $(function() {
 	}); 
 
 	$('button.returnTicketSearch').click(function(){
-		$('table#returnSearchResult').addClass('hide');
+		$('div#returnSearchResult').addClass('hide');
 		$('div#returnResult').hide(function(){
 			$('div#spinner').removeClass('hide');
 			$.ajax({
@@ -58,24 +61,21 @@ $(function() {
 			data : $('form.returnTicketSearch').serialize(),
 			success: function(data){
 				var table = $('table#returnSearchResult').DataTable();
-				table.destroy();
+				table.clear();				
 				
-				$('tbody#returnSearchResult').html('');
-
-				if(data.response.length >= 1){
-					$.each(data.response,function(i, v) {
-						var newRow = "<tr><td><a href='/inventory/items/"+ v.itemNo +" '>" + v.itemNo + "</a></td><td>" + v.unique_id + " </td>"+
-									"<td>" + v.itemType + "</td><td>" + v.brand + "</td><td>" + v.model + "</td>" +
-									"<td>" + v.agent_FN + " " + v.agent_LN + "</td><td>" + v.first_name + " " + v.last_name + "</td>"+
-									"</td><td>" + v.created_at + "</td></tr>";
-						$('tbody#returnSearchResult').append(newRow);
+				$.each(data.response,function(i, v) {
+					table.row.add([
+					               v.itemNo,
+					               v.itemType,
+					               v.brand + " - " + v.model,
+					               v.agent_FN + " " + v.agent_LN,
+					               v.first_name + " " + v.last_name,
+					               v.created_at]);						
 						});
-					}else{
-						$('tbody#returnSearchResult').append("");
-				}
-				dataTable();
+					
+				table.draw();
 				$('div#spinner').addClass('hide');
-				$('table#returnSearchResult').removeClass('hide');
+				$('div#returnSearchResult').removeClass('hide');
 			}
 		});
 		});
@@ -173,15 +173,15 @@ $(function() {
 				returnItem.ladda('stop');
 				$('form.returnItem').trigger('reset');
 				var table = $('table#return').DataTable();
+				table.row.add([
+				               data.response['itemNo'],
+				               data.response['itemType'],
+				               data.response['brand'] + " - " +data.response['model'],
+				               data.response['first_name'] + " " +data.response['last_name'],
+				               data.response['agent_FN'] + " " +data.response['agent_LN'],				              
+				               data.response['created_at']
+				               ]);
 				
-				var newRow = "<tr><td><a href='/inventory/items/"+ data.response['itemNo'] +"'>" + data.response['itemNo'] + "</a></td>"+
-				"<td>" + data.response['unique_id'] + "</td><td>" + data.response['itemType']+" </td>" +
-				"<td>" + data.response['brand'] +"</td><td>"+ data.response['model']+"</td>" +
-				"<td>" + data.response['borrower'] +"</td>"+
-				"<td>" + data.response['first_name']+" "+data.response['last_name']+"</td>"+
-				"<td>"+ data.response['created_at'] +"</td></tr>";
-				
-				$('tbody#return').prepend(newRow);
 				table.draw();
 				
 				$('#myModal').modal('hide');
@@ -193,7 +193,7 @@ $(function() {
 		});
 	});
 	$('button#returnSearch').click(function(){
-		$('table#returnSearchResult').addClass('hide');
+		$('div#returnSearchResult').addClass('hide');
 		$('div#returnResult').hide(function(){
 			$('div#spinner').removeClass('hide');
 			$.ajax({
@@ -202,24 +202,21 @@ $(function() {
 			data : {returnSearch : $("input#returnSearch").val()},
 			success: function(data){
 				var table = $('table#returnSearchResult').DataTable();
-				table.destroy();
+				table.clear();				
 				
-				$('tbody#returnSearchResult').html('');
-
-				if(data.response.length >= 1){
-					$.each(data.response,function(i, v) {
-						var newRow = "<tr><td><a href='/inventory/items/"+ v.itemNo +" '>" + v.itemNo + "</a></td><td>" + v.unique_id + " </td>"+
-									"<td>" + v.itemType + "</td><td>" + v.brand + "</td><td>" + v.model + "</td>" +
-									"<td>" + v.agent_FN + " " + v.agent_LN + "</td><td>" + v.first_name + " " + v.last_name + "</td>"+
-									"</td><td>" + v.created_at + "</td></tr>";
-						$('tbody#returnSearchResult').append(newRow);
+				$.each(data.response,function(i, v) {
+					table.row.add([
+					               v.itemNo,
+					               v.itemType,
+					               v.brand + " - " + v.model,
+					               v.agent_FN + " " + v.agent_LN,
+					               v.first_name + " " + v.last_name,
+					               v.created_at]);						
 						});
-					}else{
-						$('tbody#returnSearchResult').append("");
-				}
-				dataTable();
+					
+				table.draw();
 				$('div#spinner').addClass('hide');
-				$('table#returnSearchResult').removeClass('hide');
+				$('div#returnSearchResult').removeClass('hide');
 			}
 		});
 		});
@@ -229,28 +226,4 @@ $(function() {
 	$('#myModal').on('shown.bs.modal', function () {
 		  $('.chosen-select', this).chosen();
 		});
-function dataTable(){
-		
-		$('table#returnSearchResult').DataTable({
-            dom: '<"html5buttons"B>Tgitp',
-            buttons: [
-                { extend: 'copy'},
-                {extend: 'csv'},
-                {extend: 'excel', title: 'Remote Staff Inc. \n' + 'Returned Items'},
-                {extend: 'pdf', title: 'Remote Staff Inc. \n' + 'Returned Items', orientation: 'landscape',},
-
-                {extend: 'print',
-                 customize: function (win){
-                        $(win.document.body).addClass('white-bg');
-                        $(win.document.body).css('font-size', '10px');
-
-                        $(win.document.body).find('table')
-                                .addClass('compact')
-                                .css('font-size', 'inherit');
-                }
-                }
-            ]
-
-        });
-	};
 });

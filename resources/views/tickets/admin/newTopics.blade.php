@@ -1,10 +1,10 @@
-@extends('tickets.ticketadminlayout') @section('body')
+@extends('layouts.ticket_basic') @section('body')
 <div class="row">
 	<div class="  ibox animated fadeInDown">
 		<div class=" col-md-12">
 			<div class="ibox">
 				<div class="ibox-title">
-					
+
 
 					<div class="pull-right">
 						<button type="button" data-style="zoom-in"
@@ -16,14 +16,15 @@
 							<i class="fa fa-plus-circle"></i> Add Topic
 						</button>
 					</div>
-					
+
 					<h2 class="font-bold ">Topics</h2>
 				</div>
 				<div class="ibox-content">
 					<form class="topic form-horizontal">
 						{!! csrf_field() !!}
 						<div>
-							<table class="table table-bordered ticket_topics" data-sort="false">
+							<table class="footable table table-bordered ticket_topics"
+								data-sort="false">
 								<thead>
 									<tr>
 										<th class="text-center"><input type="checkbox" class="topicCB">
@@ -48,25 +49,31 @@
 											{{$topic->description}}</td>
 										<td class="topicPriority{{$topic->topic_id}}">
 											{{$topic->priority_level}}</td>
-										<td>
-										<div class="btn-group">
-                               <button type="button"
-												class="btn btn-warning btn-xs editTopic"
-												value="{{$topic->topic_id}}">Edit</button>
-											
-                            </div>
-											
+										<td>											
+											<div class="btn-group">
+												<button data-toggle="dropdown"
+													class="btn btn-primary btn-xs dropdown-toggle">
+													Action <span class="caret"></span>
+												</button>
+												<ul class="dropdown-menu">
+													<li><a href="#editTopic"
+														id="{{$topic->topic_id}}">Edit </a></li>
+													<li><a href="#deleteTopic" id="{{$topic->topic_id}}">Delete</a></li>
+
+												</ul>
+											</div>
+
 										</td>
 									</tr>
 									@endforeach
 								</tbody>
 								<tfoot>
-						<tr>
-							<td colspan="4">
-								<ul class="pagination pull-right"></ul>
-							</td>
-						</tr>
-					</tfoot>
+									<tr>
+										<td colspan="4">
+											<ul class="pagination pull-right"></ul>
+										</td>
+									</tr>
+								</tfoot>
 							</table>
 
 						</div>
@@ -96,13 +103,13 @@
 
 			</div>
 			<div class="modal-body">
-			<div class="spiner">
-                                <div class="sk-spinner sk-spinner-three-bounce">
-                                    <div class="sk-bounce1"></div>
-                                    <div class="sk-bounce2"></div>
-                                    <div class="sk-bounce3"></div>
-                                </div>
-                            </div>
+				<div class="spiner">
+					<div class="sk-spinner sk-spinner-three-bounce">
+						<div class="sk-bounce1"></div>
+						<div class="sk-bounce2"></div>
+						<div class="sk-bounce3"></div>
+					</div>
+				</div>
 				<div class="row">
 
 					<form class="editTopic form-horizontal">
@@ -193,81 +200,8 @@
 
 	</div>
 </div>
-<script>
-	$(document).ready(function() {
-		$('table.ticket_topics').footable();
-		$('label.text-danger').hide();
-		$('div.spiner').hide();
-	}); 
-	$('button#addTopic').click(
-			function(e) {
-				$('span.addTopic').hide();
-				$('div.form-group').removeClass(
-						'has-error');
-				
-				$('label.text-danger').hide();
 
-				$.ajax({
-							type : "POST",
-							url : "/admin/addTopic",
-							data : $('form.addTopic').serialize(),
-						})
-						.done(
-								function(data) {
-
-									var msg = "";
-									if (data.success == false) {
-										if (data.errors['description']) {
-											$('div.addTopic').addClass(
-													'has-error');
-											$('label.addTopic')
-													.text(
-															'*'
-																	+ data.errors['description'])
-													.show();
-										}
-										if (data.errors['priority']) {
-											$('div.priority').addClass(
-													'has-error');
-											$('label.priority')
-													.text(
-															'*'
-																	+ data.errors['priority'])
-													.show();
-										}
-
-									} else {
-										$('form.addTopic').trigger(
-												'reset');
-										var html;
-										var table = $('table.ticket_topics').data('footable');
-										
-
-										html += "<tr id=" + data.response['topic_id'] + "><td class='text-center'><input class='topic' type='checkbox' name ="
-																	+ data.response['topic_id']
-																	+ " value="
-																	+ data.response['topic_id']
-																	+ " checked></td>"
-																	+ "<td>"
-																	+ data.response['description']
-																	+ "</td>"
-																	+ "<td class='text-center'>"
-																	+ data.response['priority_level']
-																	+ "</td>"
-																	+ "<td><button type='button' class='btn btn-warning btn-xs editTopic' value="
-																	+ data.response['topic_id']
-																	+ ">Edit</button> </td></tr>";
-														
-										$('tbody.topics').append(html);
-										$('table').trigger('footable_redraw');
-										$('div#myModal').modal('hide');
-						
-										toastr.success('New Topic has been added.');
-
-									}
-								});
-
-			});
-
+@endsection @section('scripts')
+<script type="text/javascript" src="/js/ticketing/ticketTopics.js">
 </script>
 @endsection

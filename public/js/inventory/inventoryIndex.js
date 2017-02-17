@@ -72,6 +72,7 @@ $(function(){
 	});
 	         
 	$('#maintenance').click(function(){
+		$('.vertical-container').html('');
 		$.ajax(
 				{
 					type : "GET",

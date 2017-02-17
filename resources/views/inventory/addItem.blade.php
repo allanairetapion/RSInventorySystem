@@ -118,11 +118,11 @@
 					data-filter="#filter" data-striping="false">
 					<thead>
 						<tr>
-							<th>Item No.</th>
+							<th>Item Tag</th>
 							<th>Item Type</th>
-							<th>Unique ID</th>
-							<th>Brand</th>
-							<th>Model</th>
+							<th>Serial No</th>
+							<th>Service Tag</th>
+							<th>Brand + Model</th>
 							<th>Date Arrived</th>
 						</tr>
 					</thead>
@@ -132,8 +132,8 @@
 							<td>{{$item->itemNo}}</td>
 							<td>{{$item->itemType}}</td>
 							<td>{{$item->unique_id}}</td>
-							<td>{{$item->brand}}</td>
-							<td>{{$item->model}}</td>
+							<td>{{$item->serviceTag}}</td>
+							<td>{{$item->brand}} - {{$item->model}}</td>
 							<td>{{$item->created_at}}</td>
 						</tr>
 						@endforeach
@@ -162,6 +162,14 @@
 					{!! csrf_field() !!}
 					<div class="row">
 						<div class="col-lg-12">
+							<div class="form-group itemTag">
+								<label class="control-label"> Item Tag:</label> <input type="text"
+									class="form-control" placeholder="Item Tag" name="itemTag"
+									id="itemTag"> <span class="help-block text-danger itemTag">192.168.100.200</span>
+
+							</div>
+						</div>
+						<div class="col-lg-12">
 							<div class="form-group brand">
 								<label class="control-label"> Brand:</label> <input type="text"
 									class="form-control" placeholder="Brand" name="brand"
@@ -183,6 +191,14 @@
 									type="text" class="form-control" placeholder="Serial Number"
 									id="serial_no" name="serial_no" required> <span
 									class="help-block text-danger serial_no">192.168.100.200</span>
+							</div>
+						</div>
+						<div class="col-lg-12">
+							<div class="form-group serviceTag">
+								<label class="control-label">Service Tag:</label> <input
+									type="text" class="form-control" placeholder="Service Tag"
+									id="serial_no" name="serviceTag" required> <span
+									class="help-block text-danger serviceTag">192.168.100.200</span>
 							</div>
 						</div>
 						<div class="col-lg-12">

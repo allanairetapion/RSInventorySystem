@@ -4,11 +4,13 @@ namespace App;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Auth\Passwords\CanResetPassword;
 
 class User extends Authenticatable
 {
-	public $timestamps = false;
+	use SoftDeletes;
+	protected $dates = ['deleted_at'];
 	protected $table = "clients";
     /**
      * The attributes that are mass assignable.
@@ -16,7 +18,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-         'id','email', 'password','department','status','date_registered'
+         'id','email', 'password','department','status',
     ];
 
     /**

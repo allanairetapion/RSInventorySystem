@@ -1,4 +1,4 @@
-@extends('tickets.ticketadminlayout') @section('body')
+@extends('layouts.ticket_basic') @section('body')
 <div class="row animated fadeInRight">
 	<div class="col-md-3">
 		<div class="ibox float-e-margins">
@@ -15,7 +15,7 @@
 				</div>
 				<div class="ibox-content profile-content">
 					<p>
-						<i class="fa fa-user"></i> : {{$profile->id}}
+						<i class="fa fa-user"></i> : <span id="agentId">{{$profile->id}}</span>
 					</p>
 					<p>
 						<i class="fa fa-envelope-o"></i> : {{$profile->email}}
@@ -26,16 +26,16 @@
 						<table class="table">
 							<tbody>
 								<tr>
-									<td><label class="label label-success m-r-sm">{{count($closedTickets)}}</label> Closed
-									</td>
+									<td><label class="label label-success m-r-sm">{{$ticketCounts[0]->ticketCount}}</label>
+										{{$ticketCounts[0]->ticket_status}}</td>
 								</tr>
 								<tr>
-									<td><label class="label label-primary m-r-sm">{{count($assignedTickets)}}</label>
-										Assigned</td>
+									<td><label class="label label-primary m-r-sm">{{$ticketCounts[1]->ticketCount}}</label>
+										{{$ticketCounts[1]->ticket_status}}</td>
 								</tr>
 								<tr>
-									<td><label class="label label-danger m-r-sm">{{count($unresolvedTickets)}}</label>
-										Unresolved</td>
+									<td><label class="label label-danger m-r-sm">{{$ticketCounts[2]->ticketCount}}</label>
+										{{$ticketCounts[2]->ticket_status}}</td>
 								</tr>
 							</tbody>
 						</table>
@@ -53,46 +53,42 @@
 
 			<div class="ibox-content ">
 				<div>
-                                <div id="slineChart" ></div>
-                            </div>
-				
+					<div id="slineChart"></div>
+				</div>
+			</div>
+		</div>
+		<div class="ibox">
+			<div class="ibox-content">				
+					<table class="table table-bordered table-hover" id="agentTickets">
+						<thead>
+							<tr>
+								<th>Ticket Id</th>
+								<th>Sender</th>
+								<th>Topic</th>
+								<th>Status</th>
+								<th>Date Sent</th>
+								<th>Date Updated</th>
+							</tr>
+						</thead>
+						<tbody>
+							@foreach($tickets as $ticket)
+							<tr>
+								<td>{{$ticket->id}}</td>
+								<td>{{$ticket->first_name.' '.$ticket->last_name}}</td>
+								<td>{{$ticket->description}}</td>
+								<td>{{$ticket->ticket_status}}</td>
+								<td>{{$ticket->created_at}}</td>
+								<td>{{$ticket->updated_at}}</td>
+							</tr>
+							@endforeach
+						</tbody>
+					</table>				
 			</div>
 		</div>
 	</div>
-	
-	
-<script type="text/javascript">
-$(document).ready(function(){
-	$.ajax({
-		type : "GET",
-		url : "/agents/ticketStats"
-	}).done(function(data) {
-		console.log(data);
-		c3.generate({
-			bindto : '#slineChart',
-			data : {
-				x : 'x',
-				columns : data,
-				colors:{
-                    Assigned: '#5cb85c',
-                    Unresolved:'#d9534f',
-                    Closed: '#337ab7'
-                },
-				type : 'spline',
-				groups : [['data1', 'data2']]
-			},
-			axis : {
-				x : {
-					type : 'category',
 
-				}
-			}
-		});
-		
-	
-});
-
-});
-
+	@endsection @section('scripts')
+	<script type="text/javascript"
+		src="/js/ticketing/ticketAgentProfile.js">
 </script>
 	@endsection

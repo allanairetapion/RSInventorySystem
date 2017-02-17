@@ -2,6 +2,9 @@ $(function(){
 	
 	$(document).ready(function() {
 		$('.chosen-select', this).chosen('destroy').chosen();
+		$('table#activityList').DataTable({
+			dom: 'fgtp',
+		});
 		var maintenanceItems = null;
 		$.ajax(
 				{
@@ -150,21 +153,21 @@ $(function(){
 	    						type : "GET",
 	    						url : "/inventory/maintenanceSched/" + calEvent.id,
 	    						success: function(data){
-	        						var sched = data[0];
-	        						var activities = sched['activities'].split(",");
+	        						
+	        						var activities = data['activities'].split(",");
 	        						console.log(activities);
-	        							$('input#schedID').val(sched['id']);
-	    								$('input#editTitle').val(sched['title']);
-	    								$('select#editArea').val(sched['area']);
-	    								$('input#updateStartScheduleDate').val(moment(sched['start_date']).format("YYYY-MM-DD"));
-	    								$('input#updateStartScheduleTime').val(moment(sched['start_date']).format("hh:mma"));
-	    								$('input#updateEndScheduleDate').val(moment(sched['end_date']).format("YYYY-MM-DD"));
-	    								$('input#updateEndScheduleTime').val(moment(sched['end_date']).format("hh:mma"));
-										$('select#editAgentSelect').val(sched['agents'].split(','));
-										$('select#editStatus').val(sched['status']);
+	        							$('input#schedID').val(data['id']);
+	    								$('input#editTitle').val(data['title']);
+	    								$('select#editArea').val(data['area']);
+	    								$('input#updateStartScheduleDate').val(moment(data['start_date']).format("YYYY-MM-DD"));
+	    								$('input#updateStartScheduleTime').val(moment(data['start_date']).format("hh:mma"));
+	    								$('input#updateEndScheduleDate').val(moment(data['end_date']).format("YYYY-MM-DD"));
+	    								$('input#updateEndScheduleTime').val(moment(data['end_date']).format("hh:mma"));
+										$('select#editAgentSelect').val(data['agents'].split(','));
+										$('select#editStatus').val(data['status']);
 	    								$(activities).each(function(i,e){
-											$('#activity'+e).prop( "checked", true );
-											$('#activity'+e).parent().addClass('checked');
+											$('#activity'+i).prop( "checked", true );
+											$('#activity'+i).parent().addClass('checked');
 	        							});
 
 	    								$("#updateSchedule").modal('show');
@@ -578,5 +581,90 @@ var repairItem = $('button.repairItem').ladda();
 				swal('','Schedule Accomplished','success');
 			},
 		});
+	});
+	$('button#updateActivity').click(function(){
+		
+		$.ajax({
+			headers : {'X-CSRF-Token' : $('input[name="_token"]').val()},
+			type : "PUT",
+			url : "/inventory/updateActivity",
+			data : $('form#updateActivity').serialize() ,
+			success: function(data){
+				const prevActivity = data.response['activity'];
+				const prevDescription = data.response['description'];
+				console.log(prevActivity);
+				$("div#updateActivity").modal('toggle');
+				$("label:contains('" + prevActivity + "')").text($('input#editActivity').val());
+				$("td:contains('" + prevActivity + "')").text($('input#editActivity').val());
+				$("td:contains('" + prevDescription + "')").text($('input#editDescription').val());
+				swal('','Activity Updated','success');
+			},
+		});
+	});
+	$(document).on('click', 'a[href="#updateActivity"]', function() {
+		const activityId = $(this).attr('id');
+		$.ajax({
+			headers : {'X-CSRF-Token' : $('input[name="_token"]').val()},
+			type : "get",
+			url : "/inventory/activityDetail",
+			data : { id : activityId} ,
+			success: function(data){
+				$('form#updateActivity').trigger('reset');
+				$('input#editActivityID').val(data.id);
+				$('input#editActivity').val(data.activity);
+				$('textarea#editDescription').val(data.description);
+				$('div#updateActivity').modal('toggle');
+			},
+		});
+	});
+	$(document).on('click', 'a[href="#deleteActivity"]', function() {
+		const activityId = $(this).attr('id');
+		const rowActivity = $(this);
+		swal({
+			  title: "Are you sure?",
+			  type: "warning",
+			  showCancelButton: true,
+			  confirmButtonText: "Yes",
+			  closeOnConfirm: false
+			},
+			function(){
+				$.ajax({
+					headers : {'X-CSRF-Token' : $('input[name="_token"]').val()},
+					type : "Delete",
+					url : "/inventory/deleteActivity",
+					data : { id : activityId} ,
+					success: function(data){
+						var table = $('table#activityList').DataTable();
+						table.row($(rowActivity).parents('tr')).remove().draw();
+						swal('','Activity Deleted','success');
+						
+					},
+				});
+			});
+		
+	});
+	$('button#deleteSchedule').click(function(){
+		const deleteSchedule = $('input#schedID').val();
+		console.log(deleteSchedule);
+		swal({
+			  title: "Are you sure?",
+			  type: "warning",
+			  showCancelButton: true,
+			  confirmButtonText: "Yes",
+			  closeOnConfirm: false
+			},
+			function(){
+				$.ajax({					
+					type : "Delete",
+					url : "/inventory/deleteSchedule",
+					data : $('form#updateSchedule').serialize() ,
+					success: function(data){
+						var calendar = $('#calendar').fullCalendar( 'removeEvents', deleteSchedule );
+						$('div#updateSchedule').modal('toggle');
+						$('form').trigger('reset');
+						swal('','Schedule Deleted','success');						
+					},
+				});
+			});
 	});
 });

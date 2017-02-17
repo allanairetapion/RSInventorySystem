@@ -1,4 +1,4 @@
-@extends('tickets.ticketadminlayout') @section('body')
+@extends('layouts.ticket_summernote') @section('body')
 
 
 <div class="row">
@@ -52,12 +52,7 @@
 
 	<div class="col-md-9 animated fadeInRight mailView">
 		<div class="mail-box-header">
-			<div class="pull-right tooltip-demo">
-
-				<a href="/admin/tickets" class="btn btn-danger btn-sm"
-					data-toggle="tooltip" data-placement="top" title="Discard email"><i
-					class="fa fa-times"></i> Discard</a>
-			</div>
+			
 			<h2 class="font-bold">Reply</h2>
 		</div>
 		<div class="mail-box">
@@ -67,7 +62,7 @@
 				<input type="hidden" name="ticket_id" value="{{ Session::get('ticket_id') }}" class="ticket_id">
 				<input type="hidden" name="message" value="" class="ticketReply">
 			</form>
-			<div class="mail-text h-200">
+			<div class="mail-text ">
 				<div class="ticketReplySummernote "></div>
 				<div class="clearfix"></div>
 			</div>
@@ -88,23 +83,8 @@
 	</div>
 
 </div>
-
-<script>
-	$(document).ready(function(){
-		$('label.email').hide()
-		
-		$.ajax({
-				type : 'get',
-				url : '/admin/ticketCount',
-			}).done(function(data) {
-				console.log(data);
-				$('span.openTickets').text(data.openTickets);
-				$('span.pendingTickets').text(data.pendingTickets);
-				$('span.unresolvedTickets').text(data.overdueTickets);
-				$('span.assignedTickets').text(data.assignedTickets);
-				$('span.closedTickets').text(data.closedTickets);
-			});
-	});		
+@endsection
+@section('scripts')
+<script type="text/javascript" src="/js/ticketing/ticketReply.js">
 </script>
-
 @endsection

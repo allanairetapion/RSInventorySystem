@@ -229,7 +229,9 @@
 					<tfoot>
 						<tr>
 							<td colspan="7" class="text-right">
-								{{ $tickets->links() }}
+								<div class="paging">
+                <ul class="pagination"></ul>
+            </div>
 
 							</td>
 						</tr>

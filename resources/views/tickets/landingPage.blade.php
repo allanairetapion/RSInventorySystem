@@ -1,79 +1,82 @@
-@extends('tickets.ticketclientlayout')
-@section('body')
+@extends('tickets.ticketclientlayout') @section('body')
 <div class="row">
-<div class="col-md-6">
-	<div class="col-md-6 animated bounceInLeft">
-		<div class="widget style2 yellow-bg">
-			<div class="row">
-				<div class="col-xs-4">
-					<i class="glyphicon glyphicon-time  fa-5x"></i>
+
+	<div class="col-md-5">
+		<div class="col-md-6 animated bounceInLeft">
+			<a href="/tickets/createTicket">
+				<div class="widget style2 navy-bg">
+					<div class="row">
+						<div class="col-xs-4">
+							<i class="fa fa-ticket fa-5x"></i>
+						</div>
+						<div class="col-xs-8 text-right">
+							<span>To submit a ticket</span>
+							<h3 class="font-bold">Click here</h3>
+						</div>
+					</div>
 				</div>
-				<div class="col-xs-8 text-right">
-					<span> Pending Tickets </span>
-					<h2 class="font-bold">{{count($pendingTickets)}}</h2>
-					<small>Total</small>
+			</a>
+		</div>
+		<div class="col-md-6 animated bounceInLeft">
+			<div class="widget style2 yellow-bg">
+				<div class="row">
+					<div class="col-xs-4">
+						<i class="glyphicon glyphicon-time  fa-5x"></i>
+					</div>
+					<div class="col-xs-8 text-right">
+						<span> Pending Tickets </span>
+						<h2 class="font-bold">{{count($pendingTickets)}}</h2>
+						<small>Total</small>
+					</div>
 				</div>
 			</div>
 		</div>
-	</div>
 
-	<div class="col-md-6 animated bounceInLeft">
-		<a href="/tickets/createTicket">
-		<div class="widget style2 navy-bg">
-			<div class="row">
-				<div class="col-xs-4">
-					<i class="fa fa-ticket fa-5x"></i>
+
+		<div class="col-md-12 animated bounceInLeft">
+			<div class="ibox float-e-margins">
+				<div class="ibox-title">
+					<h5>Common Issue</h5>
 				</div>
-				<div class="col-xs-8 text-right">
-					<span>To submit a ticket</span>
-					<h2 class="font-bold">Click here</h2>
+				<div class="ibox-content">
+					<div>
+						<div id="pie"></div>
+					</div>
 				</div>
 			</div>
-		</div> </a>
+		</div>
+
+
+
 	</div>
-	<div class="col-md-12 animated bounceInLeft">
-		<div class="ibox float-e-margins">
+	<div class="col-md-7 animated bounceInLeft">
+		<div class="ibox ">
 			<div class="ibox-title">
-				<h5>Common Issue</h5>
+				<div class="pull-right">
+					<a href="/tickets/ticketStatus" class="btn btn-primary btn-sm">
+						View All </a>
+				</div>
+				<h3 class="font-bold">Your recent tickets</h3>
 			</div>
 			<div class="ibox-content">
-				<div>
-					<div id="pie"></div>
-				</div>
-			</div>
-		</div>
-	</div>
+				<table class="table table-hover ">
+					<thead>
+						<tr>
+							<th>Ticket No:</th>
+							<th>Status</th>
 
+							<th>Topic</th>
+							<th>Date Sent</th>
+							<th>Assigned to:</th>
 
+						</tr>
+					</thead>
+					<tbody>
 
-</div>
-<div class="col-md-6 animated bounceInLeft">
-	<div class="ibox ">
-		<div class="ibox-title">
-			<div class="pull-right">
-				<a href="/tickets/ticketStatus" class="btn btn-primary btn-sm"> View All </a>
-				</div>
-			<h3 class="font-bold">Your recent tickets</h3>
-		</div>
-		<div class="ibox-content">
-			<table class="table table-hover issue-tracker">
-				<thead>
-					<tr>
-					<th>Status</th>
-						<th>Ticket No:</th>
-						<th>Topic</th>
-						
-						
-						<th>Date Sent</th>
-						<th>Assigned to:</th>
-
-					</tr>
-				</thead>
-				<tbody>
-					
 						@foreach ($tickets as $ticket)
-						
-						<tr class="read" >
+
+						<tr>
+							<td><a href="/tickets/{{$ticket->id}}">{{$ticket->id}}</a></td>
 							<td class="text-center">@if($ticket->ticket_status == "Open") <span
 								class="label label-success">{{$ticket->ticket_status}}</span>
 								@elseif($ticket->ticket_status == "Pending") <span
@@ -84,23 +87,20 @@
 								class="label label-danger">{{$ticket->ticket_status}}</span>
 								@endif
 							</td>
+							<td>{{$ticket->description}}</td>
 
+							<td>{{$ticket->created_at}}</td>
+							<td>{{$ticket->first_name.' '.$ticket->last_name}}</td>
+						</tr>
+						@endforeach
 
-						<td><a href="/tickets/{{$ticket->id}}">{{$ticket->id}}</a></td>
-						<td>{{$ticket->description}}</td>
-						
-						<td >{{$ticket->created_at}}</td>
-						<td>{{$ticket->first_name.' '.$ticket->last_name}}</td>
-					</tr>
-					@endforeach				
-										
-				</tbody>
-			</table>
-			
+					</tbody>
+				</table>
+
+			</div>
+
 		</div>
-
 	</div>
-</div>
 </div>
 <script src="/js/jquery-2.1.1.js"></script>
 <script>

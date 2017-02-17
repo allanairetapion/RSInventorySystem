@@ -126,7 +126,7 @@
 							<tr>
 
 								<th>Item No.</th>
-							<th>Unique Identifier</th>
+							
 							<th>Item Type</th>
 							<th>Brand</th>
 							<th>Model</th>
@@ -140,8 +140,8 @@
 							
 							@foreach($deployedItems as $item)
 								<tr>
-									<td><a href="/inventory/items/{{$item->itemNo}}">{{$item->itemNo}}</a></td>
-									<td>{{$item->unique_id}}</td>
+									<td>{{$item->itemNo}}</td>
+									
 									<td>{{$item->itemType}}</td>
 									<td>{{$item->brand}}</td>
 									<td>{{$item->model}}</td>
@@ -154,13 +154,13 @@
 						
 					</table>
 				</div>
+				<div id="deploySearchResult" class="hide">
 				<table id="deploySearchResult"
-					class="table table-bordered table-hover hide" data-striping="false">
+					class="table table-bordered table-hover" data-striping="false">
 					<thead>
 						<tr>
 
-							<th>Item No.</th>
-							<th>Unique Identifier</th>
+							<th>Item No.</th>						
 							<th>Item Type</th>
 							<th>Brand</th>
 							<th>Model</th>
@@ -175,6 +175,7 @@
 					</tbody>
 					
 				</table>
+				</div>
 			</div>
 		</div>
 	</div>

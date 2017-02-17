@@ -11,86 +11,82 @@
 </div>
 @endsection @section('content')
 <div class="row">
-	<div class="col-md-12">
-		<div class="  ibox animated fadeInDown">
 
-			<div class="ibox">
-
-				<div class="ibox-content">
-					<div class="row">
-						@if(Auth::guard('inventory')->user()->user_type == 'admin')
-						<div class="col-md-offset-10 col-md-2 text-right">
-							<a href="/inventory/createAgent" class="btn btn-sm btn-primary"><i
-								class="fa fa-user-plus"></i> Create New User </a>
-						</div>
-						@endif
-					</div>
-					<form class="topic form-horizontal agentPassword">
-						{!! csrf_field() !!} <input type="hidden" name="email"
-							class="email">
-					</form>
-					<div class="table-responsive">
-					<br>
-						<table
-							class="table footable table-bordered table-hover agentPassword">
-							<thead>
-								<tr>
-									<th>Id</th>
-									<th>Email</th>
-									<th>Name</th>
-									<th>User Type</th>
-									<th>Date Registered</th>
-									<th>Date Updated</th>
-									@if(Auth::guard('inventory')->user()->user_type== 'admin')
-									<th class="text-center">Actions</th> @endif
-
-								</tr>
-							</thead>
-							<tbody>
-								@foreach ($agents as $agent)
-								<tr>
-									
-									<td><a href="agents/{{$agent->id}}">{{$agent->id}}</a></td>
-									<td>{{$agent->email}}</td>
-									<td>{{$agent->first_name.' '.$agent->last_name}}
-									
-									<td id="{{$agent->id}}">{{$agent->user_type}}</td>
-									<td>{{$agent->created_at}}</td>
-									<td>{{$agent->updated_at}}</td>
-									@if(Auth::guard('inventory')->user()->user_type == 'admin')
-									<td class="text-center">
-										<div class="btn-group">
-											<button data-toggle="dropdown"
-												class="btn btn-primary btn-xs dropdown-toggle">
-												Actions <span class="caret"></span>
-											</button>
-											<ul class="dropdown-menu">
-												<li><a href="/inventory/agents/{{$agent->id}}">View Profile</a>
-												
-												<li><a href="#" id="agentPasswordResetLink"
-													value="{{$agent->email}}">Send Reset Link</a></li>
-												<li><a href="#" id="agentChangeUserType"
-													name="{{$agent->user_type}}" value="{{$agent->id}}">Change
-														User Type</a></li>
-
-											</ul>
-										</div>
-									</td> @endif
-								</tr>
-								@endforeach
-
-							</tbody>
-
-						</table>
-
-					</div>
+	<div class="  ibox float-e-margins animated fadeInDown">
 
 
-
+		<div class="ibox-content">
+			<div class="row">
+				@if(Auth::guard('inventory')->user()->user_type == 'admin')
+				<div class="col-md-offset-10 col-md-2 text-right">
+					<a href="/inventory/createAgent" class="btn btn-sm btn-primary"><i
+						class="fa fa-user-plus"></i> Create New User </a>
 				</div>
+				@endif
 			</div>
+			<form class="topic form-horizontal agentPassword">
+				{!! csrf_field() !!} <input type="hidden" name="email" class="email">
+			</form>
+			<br>
+			<table class="table table-bordered table-hover agentPassword">
+				<thead>
+					<tr>
+						<th>Id</th>
+						<th>Email</th>
+						<th>Name</th>
+						<th>User Type</th>
+						<th>Date Registered</th>
+						<th>Date Updated</th>
+						@if(Auth::guard('inventory')->user()->user_type== 'admin')
+						<th class="text-center">Actions</th> @endif
+
+					</tr>
+				</thead>
+				<tbody>
+					@foreach ($agents as $agent)
+					<tr>
+
+						<td>{{$agent->id}}</td>
+						<td>{{$agent->email}}</td>
+						<td>{{$agent->first_name.' '.$agent->last_name}}
+						
+						<td id="{{$agent->id}}">{{$agent->user_type}}</td>
+						<td>{{$agent->created_at}}</td>
+						<td>{{$agent->updated_at}}</td>
+						@if(Auth::guard('inventory')->user()->user_type == 'admin')
+						<td class="text-center">
+							<div class="btn-group">
+								<button data-toggle="dropdown"
+									class="btn btn-primary btn-xs dropdown-toggle">
+									Actions <span class="caret"></span>
+								</button>
+								<ul class="dropdown-menu">
+									<li><a href="/inventory/agents/{{$agent->id}}">View Profile</a>
+									
+									<li><a href="#" id="agentPasswordResetLink"
+										value="{{$agent->email}}">Send Reset Link</a></li>
+									<li><a href="#" id="agentChangeUserType"
+										name="{{$agent->user_type}}" value="{{$agent->id}}">Change
+											User Type</a></li>
+									<li><a href="#deleteAgent" id="{{$agent->id}}">Delete/Retire</a></li>
+								</ul>
+							</div>
+						</td> @endif
+					</tr>
+					@endforeach
+
+				</tbody>
+
+			</table>
+
+
+
+
 
 		</div>
+
+
+
 	</div>
 
 </div>
@@ -115,7 +111,14 @@ $(document).ready(function(){
                             .css('font-size', 'inherit');
             }
             }
-        ]
+        ],
+        "createdRow": function( row, data, dataIndex ) {
+    		
+		    	$("td:contains('" + data[0] +"')").wrapInner("<a href='agents/"+ data[0] +"' id="+ data[0] +"></a>");
+				
+				
+			
+		    }
 
     });
 	
@@ -201,6 +204,31 @@ $('a#agentChangeUserType').on('click',
 			});
 			
 		
+		});
+
+	$('a[href="#deleteAgent"]').click(function(){
+		const agentId = $(this).attr('id');
+		const rowDelete = $(this);
+		swal({
+			  title: "Are you sure?",
+			  type: "warning",
+			  showCancelButton: true,
+			  confirmButtonText: "Yes",
+			  closeOnConfirm: false
+			},
+			function(){
+				$.ajax({
+					headers : {'X-CSRF-Token' : $('input[name="_token"]').val()},
+					type : "Delete",
+					url : "/inventory/deleteAgent",
+					data : { id : agentId} ,
+					success: function(data){
+						var table = $('table').DataTable();
+						table.row($(rowDelete).parents('tr')).remove().draw();
+						swal('','Account Deleted','success');
+					},
+				});
+			});
 		});
 </script>
 @endsection

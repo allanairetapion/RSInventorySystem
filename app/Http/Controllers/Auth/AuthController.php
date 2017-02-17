@@ -92,14 +92,14 @@ class AuthController extends Controller
             'email' => $data['email'],
             'password' => bcrypt($data['password']),
             'status' => 'Not Activated',
-            'date_registered' => Carbon::now(),
+            
         ]);
 		
 		$client_profiles = ClientProfile::create([
 			'first_name' => $data['first_name'],
 			'client_id' => $ida,
 			'last_name' => $data['last_name'],
-			'date_registered' => Carbon::now(),
+			
 		]);
 		
 		$activate = DB::table('password_resets')->insert(['id' => $ida, 'email' => $data['email'],'token' => $data['_token']]);

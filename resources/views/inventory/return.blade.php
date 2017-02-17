@@ -1,12 +1,11 @@
-@extends('layouts.inventory_basic') @section('title', 'RS | Returned Items')
-
-@section('header-page')
+@extends('layouts.inventory_basic') @section('title', 'RS | Returned
+Items') @section('header-page')
 <div class="col-lg-10">
-	<h2>Return Form</h2>
+	<h2>Returned Items</h2>
 	<ol class="breadcrumb">
 		<li><a href="/inventory/index/">Home</a></li>
 
-		<li class="active"><a href="/inventory/return"><strong>Return Item</strong></a></li>
+		<li class="active"><a href="/inventory/return"><strong>Returned Item</strong></a></li>
 	</ol>
 </div>
 
@@ -31,8 +30,8 @@
 								<button id="returnSearch" class="btn btn-primary" type="button">
 									<i class="fa fa-search"></i>
 								</button>
-								<button class="btn btn-success"
-									type="button" data-toggle="collapse" data-target="#advancedSearch">
+								<button class="btn btn-success" type="button"
+									data-toggle="collapse" data-target="#advancedSearch">
 									<span class="caret"></span>
 								</button>
 
@@ -78,8 +77,8 @@
 										</select>
 									</div>
 								</div>
-								</div>
-								<div class="row">
+							</div>
+							<div class="row">
 								<div class="col-md-4">
 									<br> <label class="control-label col-md-4">Receiver:</label>
 									<div class="col-md-8">
@@ -139,12 +138,8 @@
 							<tr>
 
 								<th>Item No.</th>
-								<th>Unique Identifier</th>
 								<th>Item Type</th>
-
-								<th>Brand</th>
-								<th>Model</th>
-
+								<th>Brand + Model</th>
 								<th>Borrower</th>
 								<th>Receiver</th>
 								<th>Date Returned</th>
@@ -154,11 +149,10 @@
 						<tbody class="return">
 							@foreach($returnedItems as $return) @if($return->dateReturned)
 							<tr>
-								<td><a href="/inventory/items/{{$return->itemNo}}">{{$return->itemNo}}</a></td>
-								<td>{{$return->unique_id}}</td>
+								<td>{{$return->itemNo}}</td>
+
 								<td>{{$return->itemType}}</td>
-								<td>{{$return->brand}}</td>
-								<td>{{$return->model}}</td>
+								<td>{{$return->brand}} - {{$return->model}}</td>
 								<td>{{$return->first_name.' '.$return->last_name}}</td>
 								<td>{{$return->agent_FN.' '.$return->agent_LN}}</td>
 								<td>{{$return->dateReturned}}</td>
@@ -167,33 +161,34 @@
 							@endif @endforeach
 
 						</tbody>
-						
+
 					</table>
 				</div>
-				<table id="returnSearchResult"
-					class="table table-bordered table-hover hide" data-striping="false">
-					<thead>
-						<tr>
+				<div id="returnSearchResult" class="hide">
+					<table id="returnSearchResult"
+						class="table table-bordered table-hover"
+						data-striping="false">
+						<thead>
+							<tr>
 
-							<th>Item No.</th>
-							<th>Unique Identifier</th>
-							<th>Item Type</th>
+								<th>Item No.</th>
+								<th>Item Type</th>
 
-							<th>Brand</th>
-							<th>Model</th>
+								<th>Brand + Model</th>
 
-							<th>Borrower</th>
-							<th>Receiver</th>
-							<th>Date Returned</th>
+								<th>Borrower</th>
+								<th>Receiver</th>
+								<th>Date Returned</th>
 
-						</tr>
-					</thead>
-					<tbody id="returnSearchResult">
+							</tr>
+						</thead>
+						<tbody id="returnSearchResult">
 
 
-					</tbody>
-					
-				</table>
+						</tbody>
+
+					</table>
+				</div>
 			</div>
 		</div>
 	</div>

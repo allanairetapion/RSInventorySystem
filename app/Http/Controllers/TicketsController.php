@@ -24,7 +24,11 @@ class TicketsController extends Controller{
    }	 
 	public function landingPage(Request $request){
 	 	if(Auth::guard('user')->check()){
-	 		$tickets = DB::table('tickets')->leftJoin('ticket_topics','tickets.topic_id','=','ticket_topics.topic_id')->leftJoin('admin_profiles','tickets.assigned_support','=','admin_profiles.agent_id')->where('sender_id',Auth::guard('user')->user()->id)->take(11)->get();
+	 		$tickets = Ticket::leftJoin('ticket_topics','tickets.topic_id','=','ticket_topics.topic_id')
+	 		->leftJoin('admin_profiles','tickets.assigned_support','=','admin_profiles.agent_id')
+	 		->where('sender_id',Auth::guard('user')->user()->id)
+	 		->orderBy('tickets.created_at','desc')
+	 		->take(10)->get();
 	 		
 	 		
 	 		$pendingTickets = DB::table('tickets')->where('ticket_status',"!=",'Closed')->where('sender_id',Auth::guard('user')->user()->id)->get();

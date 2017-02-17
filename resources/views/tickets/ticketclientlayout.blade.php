@@ -13,7 +13,7 @@
 		<link href="/css/animate.css" rel="stylesheet">
 		<link href="/css/style.css" rel="stylesheet">
 		<link href="/css/plugins/sweetalert/sweetalert.css" rel="stylesheet">
-		<link href="/css/plugins/ladda/ladda-themeless.min.css" rel="stylesheet">
+		
 		<link href="/css/plugins/ladda/ladda-themeless.min.css" rel="stylesheet">
 		<link href="/css/plugins/dataTables/datatables.min.css" rel="stylesheet">
 		<link href="/css/plugins/summernote/summernote.css" rel="stylesheet">
@@ -22,42 +22,7 @@
 		<!-- Dropzone -->
 		<link href="/css/plugins/dropzone/basic.css" rel="stylesheet">
     	<link href="/css/plugins/dropzone/dropzone.css" rel="stylesheet">
-		<!-- Mainly scripts -->
-		<script src="/js/jquery-2.1.1.js"></script>
-		<script src="/js/bootstrap.min.js"></script>
-		<script src="/js/plugins/metisMenu/jquery.metisMenu.js"></script>
-		<script src="/js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
-		<!-- Custom and plugin javascript -->
-		<script src="/js/inspinia.js"></script>
-		<script src="/js/plugins/pace/pace.min.js"></script>
-		<!-- Sweet Alert -->
-		<script src="/js/plugins/sweetalert/sweetalert.min.js"></script>
-		<!-- DROPZONE -->
-    	<script src="/js/plugins/dropzone/dropzone.js"></script>
-		<!-- Flot -->
-		<script src="/js/plugins/flot/jquery.flot.js"></script>
-		<script src="/js/plugins/flot/jquery.flot.tooltip.min.js"></script>
-		<script src="/js/plugins/flot/jquery.flot.resize.js"></script>
-		<!-- Ladda -->
-		<script src="/js/plugins/ladda/spin.min.js"></script>
-		<script src="/js/plugins/ladda/ladda.min.js"></script>
-		<script src="/js/plugins/ladda/ladda.jquery.min.js"></script>
-		<!-- d3 and c3 charts -->
-		<script src="/js/plugins/d3/d3.min.js"></script>
-		<script src="/js/plugins/c3/c3.min.js"></script>
-		<!-- ChartJS-->
-		<script src="/js/plugins/chartJs/Chart.min.js"></script>
-		<!-- Peity -->
-		<script src="/js/plugins/peity/jquery.peity.min.js"></script>
-		<!-- Peity demo -->
-		<script src="/js/demo/peity-demo.js"></script>
-		<!--datatable-->
-		<script src="/js/plugins/jeditable/jquery.jeditable.js"></script>
-		<script src="/js/plugins/dataTables/datatables.min.js"></script>
-		<!-- SUMMERNOTE -->
-		<script src="/js/plugins/summernote/summernote.min.js"></script>
 		
-		<script src="/js/ticketsClients.js"></script>
 	</head>
 
 	<body class="top-navigation">
@@ -104,12 +69,12 @@
 					</nav>
 				</div>
 				<div class="wrapper wrapper-content">
-					<div class="container">
+					
 
 						@section('body')
 						@show
 
-					</div>
+					
 				</div>
 
 				<div class="footer">
@@ -125,23 +90,28 @@
 		</div>
 
 	
-<script>
-	 c3.generate({
-                bindto: '#pie',
-                data:{
-                    columns: [
-                        ['data1', 30],
-                        ['data2', 120]
-                    ],
-                    colors:{
-                        data1: '#1ab394',
-                        data2: '#BABABA'
-                    },
-                    type : 'pie'
-                }
-            });
-
-</script>
+<!-- Mainly scripts -->
+		<script src="/js/jquery-2.1.1.js"></script>
+		<script src="/js/bootstrap.min.js"></script>
+		<script src="/js/plugins/metisMenu/jquery.metisMenu.js"></script>
+		<script src="/js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+		<!-- Custom and plugin javascript -->
+		<script src="/js/inspinia.js"></script>
+		<script src="/js/plugins/pace/pace.min.js"></script>
+		<!-- Sweet Alert -->
+		<script src="/js/plugins/sweetalert/sweetalert.min.js"></script>
+		<!-- DROPZONE -->
+    	<script src="/js/plugins/dropzone/dropzone.js"></script>
+		<!-- Ladda -->
+		<script src="/js/plugins/ladda/spin.min.js"></script>
+		<script src="/js/plugins/ladda/ladda.min.js"></script>
+		<script src="/js/plugins/ladda/ladda.jquery.min.js"></script>
+		<!-- d3 and c3 charts -->
+		<script src="/js/plugins/d3/d3.min.js"></script>
+		<script src="/js/plugins/c3/c3.min.js"></script>
+		<script src="/js/plugins/summernote/summernote.min.js"></script>
+		<script src="/js/ticketsClients.js"></script>
+		@yield('scripts')
 </body>
 
 </html>

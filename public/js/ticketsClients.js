@@ -1,6 +1,4 @@
-/**
- * @author ITojt01 Luis Philip M. CastaÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â±eda
- */
+
 
 $(function() {
 	$(document).ready(function() {
@@ -133,9 +131,6 @@ $(function() {
 		});
 	});
 	
-	$(document).on('click', 'tr.read', function() {
-		window.document.location = $(this).data("href");
-	});
 	// Suggest Topic
 	$('button.suggestTopic').click(function(){
 		$.ajax({
@@ -179,46 +174,5 @@ $(function() {
 	});
 	// Reply
 	
-	var ticketReply = $('button.ticketReply').ladda();
-
-	ticketReply.click(function(e) {
-
-		$('label.email').hide();
-		$('div.email').removeClass('has-error');
-
-		$('input[type="hidden"].ticketReply').val(
-				$('div.summernote').code());
-		console.log($('form.ticketReply').serialize());
-		ticketReply.ladda('start');
-
-		$.ajax({
-			type : "POST",
-			url : "/tickets/ticketReply",
-			data : $('form.ticketReply').serialize(),
-		}).done(
-				function(data) {
-					ticketReply.ladda('stop');
-					if (data.success != false) {
-						swal({
-							title : 'Success',
-							text : 'A reply has been added successfully',
-							type : 'success'
-						}, function() {
-							window.location.href = "/tickets/"
-									+ $('input.ticket_id').val();
-						});
-
-					} else {
-						if (data.errors['email']) {
-							$('label.email').text('*' + data.errors['email'])
-									.show();
-							$('div.email').addClass('has-error');
-						}
-						if (data.errors['message']) {
-							swal('Oops...', data.errors['message'], 'warning');
-						}
-					}
-				});
-
-	});
+	
 });

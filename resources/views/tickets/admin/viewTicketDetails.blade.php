@@ -1,4 +1,4 @@
-@extends('tickets.ticketadminlayout')
+@extends('layouts.ticket_basic')
 @section('style')
 <style type="text/css">
 	@media print {
@@ -65,7 +65,7 @@
 		</div>
 	</div>
 	<div class="col-lg-9 animated fadeInRight mailView">
-		@if(Carbon\Carbon::today()->subDays(2)->endOfDay()  >=  $ticket->updated_at && $ticket->ticket_status != "Closed")
+		@if(Carbon\Carbon::today()->subDays(2)->endOfDay()  <=  $ticket->updated_at && $ticket->ticket_status != "Closed")
 		<div class="alert alert-danger">
 			<i class="fa fa-warning fa-2x"></i><strong> &emsp;This ticket has been unresolved for more than two days</strong>
 		</div>
@@ -351,23 +351,9 @@
 		</div>
 	</div>
 </div>
-
-<script>
-
-		$(document).ready(function() {
-			$.ajax({
-				type : 'get',
-				url : '/admin/ticketCount',
-			}).done(function(data) {
-				console.log(data);
-				$('span.openTickets').text(data.openTickets);
-				$('span.pendingTickets').text(data.pendingTickets);
-				$('span.unresolvedTickets').text(data.overdueTickets);
-				$('span.assignedTickets').text(data.assignedTickets);
-				$('span.closedTickets').text(data.closedTickets);
-			});
-
-			
-		});
-	</script>
 @endsection
+ @section('scripts')
+	<script type="text/javascript"
+		src="/js/ticketing/ticketViewTicketDetails.js">
+</script>
+	@endsection

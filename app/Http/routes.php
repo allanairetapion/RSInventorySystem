@@ -40,10 +40,10 @@ Route::group ( [
 ], function () {
 	
 	Route::get ( '/inventory/index', 'inventoryController@showIndex' );
-	Route::get('/inventory/dashboardSummary','inventoryController@dashboardSummary');
+	Route::get ( '/inventory/dashboardSummary', 'inventoryController@dashboardSummary' );
 	Route::get ( "/uniqueId", 'HomeController@uniqueId' );
 	Route::get ( "/inventory/itemInfo", 'inventoryController@itemInfo' );
-	Route::get ( "/inventory/borrowInfo", 'inventoryController@borrowInfo' );	
+	Route::get ( "/inventory/borrowInfo", 'inventoryController@borrowInfo' );
 	Route::get ( "/inventory/addItems", 'inventoryController@showAddItem' );
 	Route::get ( "/inventory/manageAccounts", 'inventoryController@showManageAccounts' );
 	Route::get ( "/inventory/borrow", "inventoryController@showBorrow" );
@@ -69,20 +69,23 @@ Route::group ( [
 	Route::get ( "/inventory/agents", "inventoryController@showAgents" );
 	Route::get ( "/inventory/createAgent", "inventoryController@showCreateAgent" );
 	Route::get ( "/inventory/maintenance", "inventoryController@showMaintenance" );
-	// Route::get("/skin-config.html", function(){return view("inventory.skin-config");} );
+	Route::get ( "inventory/skin-config.html", function () {
+		return view ( "inventory.skin-config" );
+	} );
 	Route::get ( "/inventory/itemTypeSummary", 'inventoryController@itemTypeSummary' );
 	Route::get ( "/inventory/items/{id}", "inventoryController@viewItemDetails" );
 	Route::get ( "/inventory/editAccount", "inventoryController@showEditAccount" );
 	Route::get ( "/inventory/agents/{id}", "inventoryController@showAgentProfile" );
 	Route::get ( "/inventory/addItem/search", "inventoryController@addItemSearch" );
 	Route::get ( "/inventory/addItem/advancedSearch", "inventoryController@addItemAdvancedSearch" );
-	Route::get("/inventory/detailed/itemLevel","inventoryController@itemLevel");
-	Route::get("/inventory/detailed/stockItems","inventoryController@stockItems");
-	Route::get("/inventory/maintenanceItems","inventoryController@getMaintenaceItems");
-	Route::get("/inventory/maintenanceItem/{id}","inventoryController@maintenanceItem");
-	Route::get("/inventory/maintenanceSched/{id}","inventoryController@viewMaintenanceDetail");
-	Route::get("/inventory/maintenanceSchedules","inventoryController@maintenanceSchedules");
-	Route::get ("/inventory/maintenanceDashboard","inventoryController@maintenanceDashboard");
+	Route::get ( "/inventory/detailed/itemLevel", "inventoryController@itemLevel" );
+	Route::get ( "/inventory/detailed/stockItems", "inventoryController@stockItems" );
+	Route::get ( "/inventory/maintenanceItems", "inventoryController@getMaintenaceItems" );
+	Route::get ( "/inventory/maintenanceItem/{id}", "inventoryController@maintenanceItem" );
+	Route::get ( "/inventory/maintenanceSched/{id}", "inventoryController@viewMaintenanceDetail" );
+	Route::get ( "/inventory/activityDetail", "inventoryController@viewActivityDetail" );
+	Route::get ( "/inventory/maintenanceSchedules", "inventoryController@maintenanceSchedules" );
+	Route::get ( "/inventory/maintenanceDashboard", "inventoryController@maintenanceDashboard" );
 	
 	Route::post ( "/inventory/addItem", "inventoryController@addItem" );
 	Route::post ( "/inventory/borrowItem", "inventoryController@borrowItem" );
@@ -102,11 +105,15 @@ Route::group ( [
 	Route::put ( '/inventory/changePassword', 'inventoryController@changePassword' );
 	Route::put ( '/inventory/changeProfilePicture', 'inventoryController@changeProfilePicture' );
 	Route::put ( '/inventory/updateItemDetails', 'inventoryController@updateItemDetails' );
-	Route::put ('/inventory/updateMaintenanceSched','inventoryController@updateMaintenanceSchedule');
-	Route::put ('/inventory/accomplishMSched','inventoryController@accomplishMaintenanceSchedule');
-	Route::put ('/inventory/changeAgentUserType','inventoryController@changeAgentUserType');
+	Route::put ( '/inventory/updateMaintenanceSched', 'inventoryController@updateMaintenanceSchedule' );
+	Route::put ( '/inventory/accomplishMSched', 'inventoryController@accomplishMaintenanceSchedule' );
+	Route::put ( '/inventory/changeAgentUserType', 'inventoryController@changeAgentUserType' );
+	Route::put ( '/inventory/updateActivity', 'inventoryController@updateActivity' );
 	
 	Route::delete ( "/inventory/deleteItemPhoto", "inventoryController@deleteItemPhoto" );
+	Route::delete ( "/inventory/deleteActivity", "inventoryController@deleteActivity" );
+	Route::delete ( "/inventory/deleteSchedule", "inventoryController@deleteSchedule" );
+	Route::delete ( "inventory/deleteAgent", "inventoryController@deleteAgent" );
 } );
 
 // Tickets
@@ -195,10 +202,10 @@ Route::group ( [
 	Route::get ( '/admin/tickets-Unresolved', 'TicketsAdmin@showTicketsUnresolved' );
 	Route::get ( '/admin/tickets-Closed', 'TicketsAdmin@showTicketsClosed' );
 	Route::get ( '/admin/tickets/{id}', 'TicketsAdmin@showTicketDetails' );
-	Route::get ( '/admin/printTickets/{id}', 'TicketsAdmin@printTicketDetails' );
+	Route::get('/admin/printTickets/{id}','TicketsAdmin@printTicketDetails');
 	Route::get ( '/admin/ticketReply', 'TicketsAdmin@showTicketReply' );
 	Route::get ( '/admin/ticketReply/{id}', 'TicketsAdmin@showTicketReply' );
-	Route::get ( '/admin/printTicketClosed', 'TicketsAdmin@printTicketClosed' );
+	
 	Route::get ( '/admin/topIssue', 'TicketsAdmin@topIssue' );
 	Route::get ( '/admin/ticketSummary', 'TicketsAdmin@ticketSummary' );
 	Route::get ( '/admin/createClient', 'TicketsAdmin@showCreateClient' );
@@ -237,10 +244,11 @@ Route::group ( [
 	Route::put ( '/admin/changePassword', 'TicketsAdmin@changePassword' );
 	Route::put ( '/admin/changeProfilePicture', 'TicketsAdmin@changeProfilePicture' );
 	Route::put ( '/admin/updateDepartment', 'TicketsAdmin@updateDepartment' );
-	
-	Route::delete ( '/admin/deleteTopic', 'TicketsAdmin@deleteTopic' );
+		
 	Route::delete ( '/admin/deleteTicket', 'TicketsAdmin@deleteTicket' );
 	Route::delete ( '/admin/clientDelete', 'TicketsAdmin@clientDelete' );
+	Route::delete ( "/admin/agentDelete", "TicketsAdmin@agentDelete" );
+	Route::delete ( "/admin/topicDelete", "TicketsAdmin@topicDelete" );
 } );
 
 Route::auth ();

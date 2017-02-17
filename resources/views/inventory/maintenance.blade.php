@@ -11,7 +11,8 @@ Maintenance') @section('header-page')
 
 @endsection @section('content')
 <div class="row">
-	<div class="col-lg-6 sample">
+	<div class="col-lg-6">
+
 		<div class="ibox float-e-margins">
 			<div class="ibox-title">
 				<div class="pull-right">
@@ -23,6 +24,45 @@ Maintenance') @section('header-page')
 			</div>
 			<div class="ibox-content">
 				<div id="calendar"></div>
+			</div>
+		</div>
+		<div class="ibox float-e-margins">
+			<div class="ibox-title">
+				<div class="pull-right">
+					<button class="btn btn-primary btn-sm addSchedule"
+						data-toggle="modal" data-target="#newActivity">Add New Activity</button>
+				</div>
+				<h4>Activities</h4>
+
+			</div>
+			<div class="ibox-content">
+				<table class="table table-bordered text-center" id="activityList">
+					<thead>
+						<tr>
+							<th>Activity</th>
+							<th>Description</th>
+							<th>Action</th>
+						</tr>
+					</thead>
+					<tbody>
+						@foreach($activities as $activity)
+						<tr>
+							<td class="control-label">{{$activity->activity}}</td>
+							<td class="control-label">{{$activity->description}}</td>
+							<td><div class="btn-group">
+									<button data-toggle="dropdown"
+										class="btn btn-xs btn-primary dropdown-toggle">
+										Action <span class="caret"></span>
+									</button>
+									<ul class="dropdown-menu">
+										<li><a href="#updateActivity" id="{{$activity->id}}">Update</a></li>
+										<li><a href="#deleteActivity" id="{{$activity->id}}">Delete</a></li>
+									</ul>
+								</div></td>
+						</tr>
+						@endforeach
+					</tbody>
+				</table>
 			</div>
 		</div>
 	</div>
@@ -437,392 +477,432 @@ Maintenance') @section('header-page')
 			</div>
 		</div>
 	</div>
+</div>
 
-	<div id="addSchedule" class="modal fade" role="dialog">
-		<div class="modal-dialog modal-lg">
+<div id="addSchedule" class="modal fade" role="dialog">
+	<div class="modal-dialog modal-lg">
 
-			<!-- Modal content-->
-			<div class="modal-content">
-				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal">&times;</button>
-					<h4 class="modal-title">Add Schedule</h4>
-				</div>
+		<!-- Modal content-->
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+				<h4 class="modal-title">Add Schedule</h4>
+			</div>
 
-				<div class="modal-body">
-					<form class="form-horizontal" id="addSchedule">
-						{!! csrf_field() !!}
-						<div class="form-group">
-							<div class="title">
-								<label class="col-lg-2 control-label">Title :</label>
+			<div class="modal-body">
+				<form class="form-horizontal" id="addSchedule">
+					{!! csrf_field() !!}
+					<div class="form-group">
+						<div class="title">
+							<label class="col-lg-2 control-label">Title :</label>
 
-								<div class="col-lg-10">
-									<input type="text" name="title" value="Scheduled Maintenance"
-										class="form-control"> <span
-										class="help-block text-danger title">Example block-level help
-										text here.</span>
-								</div>
-							</div>
-						</div>
-						<div class="form-group">
-							<div class="area">
-								<label class="col-lg-2 control-label">Area :</label>
-
-								<div class="col-lg-10">
-									<select name="area" class="col-lg-5 form-control">
-										<option value="" selected></option> @foreach($areas as $area)
-										<option value="{{$area->id}}">{{$area->area}}</option>
-										@endforeach
-
-
-									</select> <span class="help-block text-danger area">Example
-										block-level help text here.</span>
-								</div>
-							</div>
-						</div>
-						<div class="form-group">
-							<div class="startScheduleDate">
-								<label class="col-lg-2 control-label">From:</label>
-
-								<div class="col-lg-5">
-									<input type="text" name="startScheduleDate"
-										placeholder="Start Date" id="startScheduleDate"
-										class="form-control datePicker"> <span
-										class="help-block text-danger startScheduleDate">Example
-										block-level help text here.</span>
-								</div>
-							</div>
-							<div class="startScheduleTime">
-								<div class="col-lg-5">
-									<input type="text" name="startScheduleTime"
-										id="startScheduleTime" class="clockPicker form-control"
-										placeholder="Start Time"> <span
-										class="help-block text-danger startScheduleTime">Example
-										block-level help text here.</span>
-								</div>
-							</div>
-						</div>
-						<div class="form-group">
-							<div class="endScheduleDate">
-								<label class="col-lg-2 control-label">To:</label>
-
-								<div class="col-lg-5">
-									<input type="text" name="endScheduleDate" id="endScheduleDate"
-										placeholder="End Date" class="form-control datePicker"> <span
-										class="help-block text-danger endScheduleDate">Example
-										block-level help text here.</span>
-								</div>
-							</div>
-							<div class="endScheduleTime">
-								<div class="col-lg-5">
-									<input type="text" name="endScheduleTime" id="endScheduleTime"
-										class="clockPicker form-control" placeholder="End Time"> <span
-										class="help-block text-danger endScheduleTime">Example
-										block-level help text here.</span>
-								</div>
-							</div>
-						</div>
-						<div class="form-group">
-							<label class="col-lg-2 control-label">Agents:</label>
 							<div class="col-lg-10">
-								
-									<select data-placeholder="Choose an agent" id="agentSelect"
-										name="agents[]" class="chosen-select form-control" multiple tabindex="4">
-										<option value="">Select</option> @foreach($agents as $agent)
-										<option value="{{$agent->id}}">{{$agent->first_name.'
-											'.$agent->last_name}}</option> @endforeach
-									</select>
+								<input type="text" name="title" value="Scheduled Maintenance"
+									class="form-control"> <span
+									class="help-block text-danger title">Example block-level help
+									text here.</span>
 							</div>
 						</div>
-						<div class="form-group">
-							<label class="col-lg-2 control-label">Status:</label>
+					</div>
+					<div class="form-group">
+						<div class="area">
+							<label class="col-lg-2 control-label">Area :</label>
+
 							<div class="col-lg-10">
-								<select name="status" class="form-control">
-									<option value="" selected></option>
-									<option value="urgent">Urgent</option>
-									<option value="normal">Normal</option>
+								<select name="area" class="col-lg-5 form-control">
+									<option value="" selected></option> @foreach($areas as $area)
+									<option value="{{$area->id}}">{{$area->area}}</option>
+									@endforeach
+
+
+								</select> <span class="help-block text-danger area">Example
+									block-level help text here.</span>
+							</div>
+						</div>
+					</div>
+					<div class="form-group">
+						<div class="startScheduleDate">
+							<label class="col-lg-2 control-label">From:</label>
+
+							<div class="col-lg-5">
+								<input type="text" name="startScheduleDate"
+									placeholder="Start Date" id="startScheduleDate"
+									class="form-control datePicker"> <span
+									class="help-block text-danger startScheduleDate">Example
+									block-level help text here.</span>
+							</div>
+						</div>
+						<div class="startScheduleTime">
+							<div class="col-lg-5">
+								<input type="text" name="startScheduleTime"
+									id="startScheduleTime" class="clockPicker form-control"
+									placeholder="Start Time"> <span
+									class="help-block text-danger startScheduleTime">Example
+									block-level help text here.</span>
+							</div>
+						</div>
+					</div>
+					<div class="form-group">
+						<div class="endScheduleDate">
+							<label class="col-lg-2 control-label">To:</label>
+
+							<div class="col-lg-5">
+								<input type="text" name="endScheduleDate" id="endScheduleDate"
+									placeholder="End Date" class="form-control datePicker"> <span
+									class="help-block text-danger endScheduleDate">Example
+									block-level help text here.</span>
+							</div>
+						</div>
+						<div class="endScheduleTime">
+							<div class="col-lg-5">
+								<input type="text" name="endScheduleTime" id="endScheduleTime"
+									class="clockPicker form-control" placeholder="End Time"> <span
+									class="help-block text-danger endScheduleTime">Example
+									block-level help text here.</span>
+							</div>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-lg-2 control-label">Agents:</label>
+						<div class="col-lg-10">
+
+							<select data-placeholder="Choose an agent" id="agentSelect"
+								name="agents[]" class="chosen-select form-control" multiple
+								tabindex="4">
+								<option value="">Select</option> @foreach($agents as $agent)
+								<option value="{{$agent->id}}">{{$agent->first_name.'
+									'.$agent->last_name}}</option> @endforeach
+							</select>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-lg-2 control-label">Status:</label>
+						<div class="col-lg-10">
+							<select name="status" class="form-control">
+								<option value="" selected></option>
+								<option value="urgent">Urgent</option>
+								<option value="normal">Normal</option>
+							</select>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-lg-2 control-label">Activities:</label>
+						<div class="activity">
+							@foreach($activities as $activity)
+							<div class="col-lg-3">
+								<input type="checkbox" class="i-checks activity"
+									name="activity[]" value="{{$activity->activity}}"> <label
+									id="{{$activity->id}}">{{$activity->activity}}</label>
+							</div>
+							@endforeach
+						</div>
+						<div class="col-lg-3">
+							<a href="#" data-toggle="modal" data-target="#newActivity"><i
+								class="fa fa-plus"></i> Add new Activity...</a>
+						</div>
+					</div>
+
+
+
+				</form>
+
+
+			</div>
+
+			<div class="modal-footer">
+				<button type="button"
+					class="ladda-button btn btn-w-m btn-primary saveSchedule"
+					data-style="zoom-in">Save</button>
+				<button type="button" class="btn btn-w-m btn-danger btn-outline"
+					data-dismiss="modal">Cancel</button>
+			</div>
+		</div>
+
+	</div>
+</div>
+<div id="updateSchedule" class="modal fade" role="dialog">
+	<div class="modal-dialog modal-lg">
+
+		<!-- Modal content-->
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+				<h4 class="modal-title">Edit Schedule</h4>
+			</div>
+
+			<div class="modal-body">
+				<form class="form-horizontal" id="updateSchedule">
+					{!! csrf_field() !!} <input name="schedID" id="schedID" type="hidden">
+					<div class="form-group">
+						<div class="title">
+							<label class="col-lg-2 control-label">Title :</label>
+
+							<div class="col-lg-10">
+								<input type="text" name="title" value="Scheduled Maintenance"
+									id="editTitle" class="form-control"> <span
+									class="help-block text-danger title">Example block-level help
+									text here.</span>
+							</div>
+						</div>
+					</div>
+					<div class="form-group">
+						<div class="area">
+							<label class="col-lg-2 control-label">Area :</label>
+							<div class="col-lg-10">
+								<select name="area" id="editArea" class="col-lg-5 form-control">
+									<option value="" selected></option> @foreach($areas as $area)
+									<option value="{{$area->id}}">{{$area->area}}</option>
+									@endforeach
+
+
+								</select> <span class="help-block text-danger area">Example
+									block-level help text here.</span>
+							</div>
+						</div>
+					</div>
+					<div class="form-group">
+						<div class="startScheduleDate">
+							<label class="col-lg-2 control-label">From:</label>
+							<div class="col-lg-5">
+								<input type="text" name="startScheduleDate"
+									placeholder="Start Date" id="updateStartScheduleDate"
+									class="form-control datePicker"> <span
+									class="help-block text-danger startScheduleDate">Example
+									block-level help text here.</span>
+							</div>
+						</div>
+						<div class="startScheduleTime">
+							<div class="col-lg-5">
+								<input type="text" name="startScheduleTime"
+									id="updateStartScheduleTime" class="clockPicker form-control"
+									placeholder="Start Time"> <span
+									class="help-block text-danger startScheduleTime">Example
+									block-level help text here.</span>
+							</div>
+						</div>
+					</div>
+					<div class="form-group">
+						<div class="endScheduleDate">
+							<label class="col-lg-2 control-label">To:</label>
+
+							<div class="col-lg-5">
+								<input type="text" name="endScheduleDate"
+									id="updateEndScheduleDate" placeholder="End Date"
+									class="form-control datePicker"> <span
+									class="help-block text-danger endScheduleDate">Example
+									block-level help text here.</span>
+							</div>
+						</div>
+						<div class="endScheduleTime">
+							<div class="col-lg-5">
+								<input type="text" name="endScheduleTime"
+									id="updateEndScheduleTime" class="clockPicker form-control"
+									placeholder="End Time"> <span
+									class="help-block text-danger endScheduleTime">Example
+									block-level help text here.</span>
+							</div>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-lg-2 control-label">Agents:</label>
+						<div class="col-lg-10">
+							<div class="input-group">
+								<select data-placeholder="Choose an agent" id="editAgentSelect"
+									name="agents[]" class="chosen-select form-control" multiple
+									style="width: 350px;" tabindex="4">
+									<option value="">Select</option> @foreach($agents as $agent)
+									<option value="{{$agent->id}}">{{$agent->first_name.'
+										'.$agent->last_name}}</option> @endforeach
 								</select>
 							</div>
+
 						</div>
-						<div class="form-group">
-							<label class="col-lg-2 control-label">Activities:</label>
-							<div class="activity">
-								@foreach($activities as $activity)
-								<div class="col-lg-3">
-									<input type="checkbox" class="i-checks activity"
-										name="activity[]" value="{{$activity->activity}}"> <label
-										id="{{$activity->id}}">{{$activity->activity}}</label>
-								</div>
-								@endforeach
-							</div>
+					</div>
+					<div class="form-group">
+						<label class="col-lg-2 control-label">Status:</label>
+						<div class="col-lg-10">
+							<select name="status" class="form-control" id="editStatus">
+								<option value="" selected></option>
+								<option value="urgent">Urgent</option>
+								<option value="normal">Normal</option>
+								<option value="accomplish">Accomplished</option>
+							</select>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-lg-2 control-label">Activities:</label>
+						<div class="activity">
+							@foreach($activities as $activity)
 							<div class="col-lg-3">
-								<a href="#" data-toggle="modal" data-target="#newActivity"><i
-									class="fa fa-plus"></i> Add new Activity...</a>
+								<input type="checkbox" class="i-checks activity"
+									name="activity[]" id="activity{{$activity->id}}"
+									value="{{$activity->activity}}"> <label id="{{$activity->id}}">{{$activity->activity}}</label>
 							</div>
+							@endforeach
 						</div>
-
-
-
-					</form>
-
-
-				</div>
-
-				<div class="modal-footer">
-					<button type="button"
-						class="ladda-button btn btn-w-m btn-primary saveSchedule"
-						data-style="zoom-in">Save</button>
-					<button type="button" class="btn btn-w-m btn-danger btn-outline"
-						data-dismiss="modal">Cancel</button>
-				</div>
+						<div class="col-lg-3">
+							<a href="#" data-toggle="modal" data-target="#newActivity"><i
+								class="fa fa-plus"></i> Add new Activity...</a>
+						</div>
+					</div>
+				</form>
 			</div>
 
-		</div>
-	</div>
-	<div id="updateSchedule" class="modal fade" role="dialog">
-		<div class="modal-dialog modal-lg">
-
-			<!-- Modal content-->
-			<div class="modal-content">
-				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal">&times;</button>
-					<h4 class="modal-title">Edit Schedule</h4>
-				</div>
-
-				<div class="modal-body">
-					<form class="form-horizontal" id="updateSchedule">
-						{!! csrf_field() !!} <input name="schedID" id="schedID"
-							type="hidden">
-						<div class="form-group">
-							<div class="title">
-								<label class="col-lg-2 control-label">Title :</label>
-
-								<div class="col-lg-10">
-									<input type="text" name="title" value="Scheduled Maintenance"
-										id="editTitle" class="form-control"> <span
-										class="help-block text-danger title">Example block-level help
-										text here.</span>
-								</div>
-							</div>
-						</div>
-						<div class="form-group">
-							<div class="area">
-								<label class="col-lg-2 control-label">Area :</label>
-								<div class="col-lg-10">
-									<select name="area" id="editArea" class="col-lg-5 form-control">
-										<option value="" selected></option> @foreach($areas as $area)
-										<option value="{{$area->id}}">{{$area->area}}</option>
-										@endforeach
-
-
-									</select> <span class="help-block text-danger area">Example
-										block-level help text here.</span>
-								</div>
-							</div>
-						</div>
-						<div class="form-group">
-							<div class="startScheduleDate">
-								<label class="col-lg-2 control-label">From:</label>
-								<div class="col-lg-5">
-									<input type="text" name="startScheduleDate"
-										placeholder="Start Date" id="updateStartScheduleDate"
-										class="form-control datePicker"> <span
-										class="help-block text-danger startScheduleDate">Example
-										block-level help text here.</span>
-								</div>
-							</div>
-							<div class="startScheduleTime">
-								<div class="col-lg-5">
-									<input type="text" name="startScheduleTime"
-										id="updateStartScheduleTime" class="clockPicker form-control"
-										placeholder="Start Time"> <span
-										class="help-block text-danger startScheduleTime">Example
-										block-level help text here.</span>
-								</div>
-							</div>
-						</div>
-						<div class="form-group">
-							<div class="endScheduleDate">
-								<label class="col-lg-2 control-label">To:</label>
-
-								<div class="col-lg-5">
-									<input type="text" name="endScheduleDate"
-										id="updateEndScheduleDate" placeholder="End Date"
-										class="form-control datePicker"> <span
-										class="help-block text-danger endScheduleDate">Example
-										block-level help text here.</span>
-								</div>
-							</div>
-							<div class="endScheduleTime">
-								<div class="col-lg-5">
-									<input type="text" name="endScheduleTime"
-										id="updateEndScheduleTime" class="clockPicker form-control"
-										placeholder="End Time"> <span
-										class="help-block text-danger endScheduleTime">Example
-										block-level help text here.</span>
-								</div>
-							</div>
-						</div>
-						<div class="form-group">
-							<label class="col-lg-2 control-label">Agents:</label>
-							<div class="col-lg-10">
-								<div class="input-group">
-									<select data-placeholder="Choose an agent" id="editAgentSelect"
-										name="agents[]" class="chosen-select form-control" multiple
-										style="width: 350px;" tabindex="4">
-										<option value="">Select</option> @foreach($agents as $agent)
-										<option value="{{$agent->id}}">{{$agent->first_name.'
-											'.$agent->last_name}}</option> @endforeach
-									</select>
-								</div>
-
-							</div>
-						</div>
-						<div class="form-group">
-							<label class="col-lg-2 control-label">Status:</label>
-							<div class="col-lg-10">
-								<select name="status" class="form-control" id="editStatus">
-									<option value="" selected></option>
-									<option value="urgent">Urgent</option>
-									<option value="normal">Normal</option>
-								</select>
-							</div>
-						</div>
-						<div class="form-group">
-							<label class="col-lg-2 control-label">Activities:</label>
-							<div class="activity">
-								@foreach($activities as $activity)
-								<div class="col-lg-3">
-									<input type="checkbox" class="i-checks activity"
-										name="activity[]" id="activity{{$activity->id}}"
-										value="{{$activity->activity}}"> <label id="{{$activity->id}}">{{$activity->activity}}</label>
-								</div>
-								@endforeach
-							</div>
-							<div class="col-lg-3">
-								<a href="#" data-toggle="modal" data-target="#newActivity"><i
-									class="fa fa-plus"></i> Add new Activity...</a>
-							</div>
-						</div>
-					</form>
-				</div>
-
-				<div class="modal-footer">
-					<button type="button"
-						class="ladda-button btn btn-w-m btn-primary updateSchedule"
-						data-style="zoom-in" id="updateSchedule">Save</button>
-					<button type="button"
-						class="ladda-button btn btn-w-m btn-primary"
-						data-style="zoom-in" id="accomplishSchedule">Accomplish</button>
-					<button type="button" class="btn btn-w-m btn-danger btn-outline"
-						data-dismiss="modal">Cancel</button>
-				</div>
+			<div class="modal-footer">
+				<button type="button"
+					class="ladda-button btn btn-w-m btn-primary updateSchedule"
+					data-style="zoom-in" id="updateSchedule">Save</button>				
+				<button type="button" class="ladda-button btn btn-w-m btn-warning"
+					data-style="zoom-in" id="deleteSchedule">Delete</button>
+				<button type="button" class="btn btn-w-m btn-danger btn-outline"
+					data-dismiss="modal">Cancel</button>
 			</div>
 		</div>
 	</div>
+</div>
 
-	<div id="newActivity" class="modal fade" role="dialog">
-		<div class="modal-dialog modal-lg">
+<div id="newActivity" class="modal fade" role="dialog">
+	<div class="modal-dialog modal-lg">
 
-			<!-- Modal content-->
-			<div class="modal-content">
-				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal">&times;</button>
-					<h4 class="modal-title">Edit Schedule</h4>
-				</div>
+		<!-- Modal content-->
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+				<h4 class="modal-title">New Activity</h4>
+			</div>
 
-				<div class="modal-body">
-					<form class="form-horizontal" id="addActivity">
-						{!! csrf_field() !!}
-						<div class="form-group">
-							<label class="col-lg-2 control-label">Activity:</label>
-							<div class="col-lg-10">
-								<input type="text" class="form-control" name="activity">
-							</div>
-
+			<div class="modal-body">
+				<form class="form-horizontal" id="addActivity">
+					{!! csrf_field() !!}
+					<div class="form-group">
+						<label class="col-lg-2 control-label">Activity:</label>
+						<div class="col-lg-10">
+							<input type="text" class="form-control" name="activity">
 						</div>
-						<div class="form-group">
-							<label class="col-lg-2 control-label">Description:</label>
-							<div class="col-lg-10">
-								<textarea name="description" class="form-control"></textarea>
-							</div>
 
+					</div>
+					<div class="form-group">
+						<label class="col-lg-2 control-label">Description:</label>
+						<div class="col-lg-10">
+							<textarea name="description" class="form-control"></textarea>
 						</div>
-					</form>
-				</div>
 
-				<div class="modal-footer">
-					<button type="button" class="ladda-button btn btn-w-m btn-primary"
-						data-style="zoom-in" id="addActivity">Save</button>
-					<button type="button" class="btn btn-w-m btn-danger btn-outline"
-						data-dismiss="modal">Cancel</button>
-				</div>
+					</div>
+				</form>
+			</div>
+
+			<div class="modal-footer">
+				<button type="button" class="ladda-button btn btn-w-m btn-primary"
+					data-style="zoom-in" id="addActivity">Save</button>
+				<button type="button" class="btn btn-w-m btn-danger btn-outline"
+					data-dismiss="modal">Cancel</button>
 			</div>
 		</div>
 	</div>
-	<div id="stationStatus" class="modal fade" role="dialog">
-		<div class="modal-dialog inmodal">
+</div>
+<div id="updateActivity" class="modal fade" role="dialog">
+	<div class="modal-dialog modal-lg">
 
-			<!-- Modal content-->
-			<div class="modal-content">
-				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal">&times;</button>
-					<h4 class="modal-title" id="stationStatus">Edit Schedule</h4>
-				</div>
+		<!-- Modal content-->
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+				<h4 class="modal-title">Edit Activity</h4>
+			</div>
 
-				<div class="modal-body">
-					<form class="form-horizontal" id="stationStatus">
-						<table class="table table-hover">
-							<thead>
-								<tr class="text-center">
-									<td>Item</td>
-									<td>Status</td>
-									<td> I.P. Address </td>
-								</tr>
-							</thead>
-							<tbody id="stationStatus">
-								<tr>
-									<td>Item</td>
-									<td><select class="form-control">
-											<option>Working</option>
-											<option>With Issue/Broken</option>
-									</select></td>
-									<td>
-									<input type="text" name="ipAddress" class="form-control">ahsjahsjahsja
-									</td>
-								</tr>
-							</tbody>
-						</table>
+			<div class="modal-body">
+				<form class="form-horizontal" id="updateActivity">
+					{!! csrf_field() !!}
+					<input type="hidden" id="editActivityID" name="id">
+					<div class="form-group">
+						<label class="col-lg-2 control-label">Activity:</label>
+						<div class="col-lg-10">
+							<input type="text" class="form-control" id="editActivity" name="activity">
+						</div>
 
+					</div>
+					<div class="form-group">
+						<label class="col-lg-2 control-label">Description:</label>
+						<div class="col-lg-10">
+							<textarea name="description" id="editDescription" class="form-control"></textarea>
+						</div>
 
-					</form>
-				</div>
+					</div>
+				</form>
+			</div>
 
-				<div class="modal-footer">
-					<button type="button" class="ladda-button btn btn-w-m btn-primary"
-						data-style="zoom-in" id="addActivity">Save</button>
-					<button type="button" class="btn btn-w-m btn-danger btn-outline"
-						data-dismiss="modal">Cancel</button>
-				</div>
+			<div class="modal-footer">
+				<button type="button" class="ladda-button btn btn-w-m btn-primary"
+					data-style="zoom-in" id="updateActivity">Save</button>
+				<button type="button" class="btn btn-w-m btn-danger btn-outline"
+					data-dismiss="modal">Cancel</button>
 			</div>
 		</div>
 	</div>
+</div>
+<div id="stationStatus" class="modal fade" role="dialog">
+	<div class="modal-dialog inmodal">
 
-	<div id="itemReport" class="modal fade" role="dialog">
-		<div class="modal-dialog modal-lg">
+		<!-- Modal content-->
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+				<h4 class="modal-title" id="stationStatus">Edit Schedule</h4>
+			</div>
 
-			<!-- Modal content-->
-			<div class="modal-content">
-				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal">&times;</button>
-					<h4 class="modal-title">Item Report</h4>
-				</div>
+			<div class="modal-body">
+				<form class="form-horizontal" id="stationStatus">
+					<table class="table table-hover">
+						<thead>
+							<tr class="text-center">
+								<td>Item</td>
+								<td>Status</td>
+								<td>I.P. Address</td>
+							</tr>
+						</thead>
+						<tbody id="stationStatus">
+							<tr>
+								<td>Item</td>
+								<td><select class="form-control">
+										<option>Working</option>
+										<option>With Issue/Broken</option>
+								</select></td>
+								<td><input type="text" name="ipAddress" class="form-control">ahsjahsjahsja
+								</td>
+							</tr>
+						</tbody>
+					</table>
 
-				<div class="modal-body">
+
+				</form>
+			</div>
+
+			<div class="modal-footer">
+				<button type="button" class="ladda-button btn btn-w-m btn-primary"
+					data-style="zoom-in" id="addActivity">Save</button>
+				<button type="button" class="btn btn-w-m btn-danger btn-outline"
+					data-dismiss="modal">Cancel</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div id="itemReport" class="modal fade" role="dialog">
+	<div class="modal-dialog modal-lg">
+
+		<!-- Modal content-->
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+				<h4 class="modal-title">Item Report</h4>
+			</div>
+
+			<div class="modal-body">
 				<div class="row">
-				<div class="col-lg-8 b-r">
-				<form id="itemReport">
-						{!! csrf_field() !!}
-						
+					<div class="col-lg-8 b-r">
+						<form id="itemReport">
+							{!! csrf_field() !!}
+
 							<div class="form-group itemNo">
 								<label class="control-label"> Item No:</label> <input
 									id="itemNo" class="form-control" name="itemNo" readonly="true">
@@ -879,34 +959,33 @@ Maintenance') @section('header-page')
 
 
 							</div>
-
-
-						</div>
+					
+					</div>
 
 					</form>
 				</div>
-					
-				</div>
 
-				<div class="modal-footer">
-					<button class="ladda-button btn btn-w-m btn-primary itemReport"
-						id="brokenItem" type="button" data-style="zoom-in">
-						<strong>Save</strong>
-					</button>
-					<button class="ladda-button btn btn-w-m btn-primary itemReport"
-						id="issueItem" type="button" data-style="zoom-in">
-						<strong>Save</strong>
-					</button>
-					<button type="button" class="btn btn-w-m btn-danger"
-						data-dismiss="modal">
-						<strong>Cancel</strong>
-					</button>
-				</div>
 			</div>
 
+			<div class="modal-footer">
+				<button class="ladda-button btn btn-w-m btn-primary itemReport"
+					id="brokenItem" type="button" data-style="zoom-in">
+					<strong>Save</strong>
+				</button>
+				<button class="ladda-button btn btn-w-m btn-primary itemReport"
+					id="issueItem" type="button" data-style="zoom-in">
+					<strong>Save</strong>
+				</button>
+				<button type="button" class="btn btn-w-m btn-danger"
+					data-dismiss="modal">
+					<strong>Cancel</strong>
+				</button>
+			</div>
 		</div>
+
 	</div>
-	<div id="repairReport" class="modal fade" role="dialog">
+</div>
+<div id="repairReport" class="modal fade" role="dialog">
 	<div class="modal-dialog">
 
 		<!-- Modal content-->
@@ -919,14 +998,14 @@ Maintenance') @section('header-page')
 			<div class="modal-body">
 				<div class="row">
 					<form class="form repairItem" id="repairItem">
-					{!! csrf_field() !!}
+						{!! csrf_field() !!}
 						<div class="form-group repairItemNo">
 							<label class="control-label">Item No:</label> <input
-								id="repairItemNo" class="form-control "
-								name="itemNo" readonly="true">
-							</select> 
+								id="repairItemNo" class="form-control " name="itemNo"
+								readonly="true"> </select>
 						</div>
-					</div>
+				
+				</div>
 				</form>
 			</div>
 
@@ -943,7 +1022,7 @@ Maintenance') @section('header-page')
 		</div>
 	</div>
 </div>
-	@endsection @section('scripts')
-	<script type="text/javascript"
-		src="/js/inventory/inventoryMaintenance.js"></script>
-	@endsection
+@endsection @section('scripts')
+<script type="text/javascript"
+	src="/js/inventory/inventoryMaintenance.js"></script>
+@endsection

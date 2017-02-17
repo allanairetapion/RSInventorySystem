@@ -30,7 +30,7 @@
 					<div class="pull-right">																	
 						<div class="form-group">
 							<label class="">Status: </label>
-							@if((Session::get('status') == "Closed" || $restrictions[0]->agent == "0")&& Auth::guard('admin')->user()->user_type == "agent")
+							@if((Session::get('status') == "Closed"))
 							<select readonly name="ticket_status" class="form-control ticketStatus">
 								<option selected value="{{Session::get('status')}}">{{Session::get('status')}}</option>
 							@else
