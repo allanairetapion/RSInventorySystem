@@ -20,6 +20,8 @@
 <link href="/css/plugins/footable/footable.core.css" rel="stylesheet">
 <link href="/css/plugins/ladda/ladda-themeless.min.css" rel="stylesheet">
 <link href="/css/plugins/chosen/chosen.css" rel="stylesheet">
+<!-- c3 Charts -->
+<link href="/css/plugins/c3/c3.min.css" rel="stylesheet">
 <!-- Clock Picker -->
 <link href="/css/plugins/clockpicker/clockpicker.css" rel="stylesheet">
 <link href="/css/plugins/dataTables/datatables.min.css" rel="stylesheet">
@@ -82,19 +84,10 @@
 							class="nav-label">Inventory Details</span>
 					</a></li>
 
-
-
-
-
-
-
-
-
-
 					<li><a target="_blank" href="/inventory/maintenance"><i
 							class="fa fa-calendar"></i> <span class="nav-label">Maintenance</span></a>
 					</li>
-					<li><a target="_blank" href="/admin/index"><i class="fa fa-ticket"></i>
+					<li><a target="_blank" href="/admin/login"><i class="fa fa-ticket"></i>
 							<span class="nav-label">Ticketing</span></a></li>
 
 
@@ -199,8 +192,9 @@
 <!-- Data Table -->
 <script src="/js/plugins/jeditable/jquery.jeditable.js"></script>
 <script src="/js/plugins/dataTables/datatables.min.js"></script>
-
-<script src="/js/inventory.js"></script>
+<!-- d3 and c3 charts -->
+<script src="/js/plugins/d3/d3.min.js"></script>
+<script src="/js/plugins/c3/c3.min.js"></script>
 
 @yield('scripts')
 </body>

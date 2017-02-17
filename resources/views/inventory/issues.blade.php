@@ -126,14 +126,11 @@ Issues') @section('header-page')
 						<thead>
 							<tr>
 
-								<th data-toggle="true">Item No</th>
-								<th>Unique Id</th>
+								<th data-toggle="true">Item No</th>								
 								<th>Item Type</th>
-								<th>Brand</th>
-								<th>Model</th>
+								<th>Brand + Model</th>
 								<th>Damage</th>
-								<th>Item User</th>
-								<th data-hide="all">Issue</th>
+								<th>Item User</th>								
 								<th>Reported By</th>
 								<th>Date Reported</th>
 
@@ -141,15 +138,12 @@ Issues') @section('header-page')
 						</thead>
 						<tbody class="issue">
 							@foreach($issueItems as $issue)
-							<tr id="{{$issue->itemNo}}">
-								<td><a href="/inventory/items/{{$issue->itemNo}}">{{$issue->itemNo}}</a></td>
-								<td>{{$issue->unique_id}}</td>
+							<tr id="{{$issue->itemNo}}" value="{{$issue->issue}}">
+								<td>{{$issue->itemNo}}</td>								
 								<td>{{$issue->itemType}}</td>
-								<td>{{$issue->brand}}</td>
-								<td>{{$issue->model}}</td>
+								<td>{{$issue->brand}} - {{$issue->model}}</td>
 								<td>{{$issue->damage}}</td>
-								<td>{{$issue->first_name.' '.$issue->last_name}}</td>
-								<td>{!!html_entity_decode($issue->issue)!!}</td>
+								<td>{{$issue->first_name.' '.$issue->last_name}}</td>								
 								<td>{{$issue->agent_FN.' '.$issue->agent_LN}}</td>
 								<td>{{$issue->created_at}}</td>
 
@@ -159,20 +153,17 @@ Issues') @section('header-page')
 
 					</table>
 				</div>
+				<div id="issueSearchResult" class="hide">
 				<table id="issueSearchResult"
-					class="footable table table-bordered hide toggle-arrow-tiny"
-					data-filter="#filter" data-striping="false">
+					class="table table-bordered toggle-arrow-tiny">
 					<thead>
 						<tr>
 
-							<th data-toggle="true">Item No</th>
-							<th>Unique Id</th>
+							<th>Item No</th>
 							<th>Item Type</th>
-							<th>Brand</th>
-							<th>Model</th>
+							<th>Brand + Model</th>
 							<th>Damage</th>
-							<th>Item User</th>
-							<th data-hide="all">Issue</th>
+							<th>Item User</th>							
 							<th>Reported By</th>
 							<th>Date Reported</th>
 
@@ -183,7 +174,7 @@ Issues') @section('header-page')
 					</tbody>
 
 				</table>
-
+</div>
 			</div>
 		</div>
 	</div>
@@ -340,6 +331,30 @@ Issues') @section('header-page')
 			</div>
 		</div>
 
+	</div>
+</div>
+<div class="modal inmodal" id="itemIssue" tabindex="-1" role="dialog"
+	aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content animated bounceInRight">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">
+					<span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+				</button>
+
+				<h4 class="modal-title itemIssue">Modal title</h4>
+
+			</div>
+			<div class="modal-body">
+				<p> Damage: <span class="issueDamage font-bold"></span> </p>
+				<p>Summary: <span class="issueSummary"></span></p>
+			</div>
+			<div class="modal-footer">
+				<a class="btn btn-primary itemDetails" href="#">View Item Details</a>
+				<button type="button" class="btn btn-white" data-dismiss="modal">Close</button>
+
+			</div>
+		</div>
 	</div>
 </div>
 @endsection @section('scripts')

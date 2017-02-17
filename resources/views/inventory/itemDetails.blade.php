@@ -368,7 +368,6 @@ $(document).ready(function(){
 	$('div.item:first').addClass('active');
 	$('button.issue').click(function(){
 			$('h4.modal-title').text('Issue Log ID: ' + $('td:first', $(this).parents('tr')).text());
-		
 			$('div.itemlogs').html($(this).val());
 		});
 	$('button.broken').click(function(){

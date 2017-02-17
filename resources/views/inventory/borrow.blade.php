@@ -138,10 +138,9 @@
 							<tr>
 
 								<th>Item No.</th>
-								<th>Unique Identifier</th>
+								
 								<th>Item Type</th>
-								<th>Brand</th>
-								<th>Model</th>
+								<th>Brand + Model</th>
 								<th>Borrowee</th>
 								<th>Borrower</th>
 								<th>Station No</th>
@@ -153,14 +152,12 @@
 							
 							@foreach($borrowedItems as $borrow) @if($borrow->dateBorrowed)
 							<tr>
-								<td><a href="/inventory/items/{{$borrow->itemNo}}">{{$borrow->itemNo}}</a></td>
-								<td>{{$borrow->unique_id}}</td>
+								<td>{{$borrow->itemNo}}</td>
+								
 								<td>{{$borrow->itemType}}</td>
-								<td>{{$borrow->brand}}</td>
-								<td>{{$borrow->model}}</td>
-
+								<td>{{$borrow->brand}} - {{$borrow->model}}</td>
+								<td>{{$borrow->agent_FN.' '.$borrow->agent_LN}}</td>
 								<td>{{$borrow->first_name.' '.$borrow->last_name}}</td>
-								<td>{{$borrow->borrower}}</td>
 								<td>{{$borrow->borrowerStationNo}}</td>
 								<td>{{$borrow->dateBorrowed}}</td>
 
@@ -174,17 +171,15 @@
 				</div>
 
 				<!-- search result -->
-
+				<div id="borrowSearchResult" class="hide">
 				<table id="borrowSearchResult"
-					class="table table-bordered table-hover hide" data-striping="false">
+					class="table table-bordered table-hover" data-striping="false">
 					<thead>
 						<tr>
 
-							<th>Item No</th>
-							<th>Unique Identifier</th>
+							<th>Item No</th>							
 							<th>Item Type</th>
-							<th>Brand</th>
-							<th>Model</th>
+							<th>Brand + >Model</th>
 							<th>Borrowee</th>
 							<th>Borrower</th>
 							<th>Station No</th>
@@ -198,7 +193,7 @@
 
 					</tbody>
 				</table>
-
+</div>
 			</div>
 		</div>
 	</div>
@@ -242,7 +237,7 @@
 							</div>
 							<div class="form-group stationNo">
 								<label class="control-label"> Station No:</label> <input
-									type="number" class="form-control" placeholder="Station No."
+									type="text" class="form-control" placeholder="Station No."
 									name="stationNo"> <span
 									class="help-block text-danger stationNo">192.168.100.200</span>
 

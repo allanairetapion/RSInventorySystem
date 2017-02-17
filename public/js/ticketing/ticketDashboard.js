@@ -2,20 +2,21 @@ $(function() {
 	$(document).ready(function() {
 		$('table').dataTable( {
 			  "createdRow": function( row, data, dataIndex ) {
-		
+				  
 				    if (data[3] == "Open") {
-						$(row).addClass('bg-primary');
+						$('td',row).addClass('bg-primary');
 						
 					} else if (data[3] == "Pending") {
-						$(row).css('background-color','rgb(242, 242, 86)');
+						$('td',row).css('background-color','rgb(242, 242, 86)');
 						
 					} else if (data[3] == "Closed") {
-						$(row).addClass('navy-bg');
+						$('td',row).addClass('navy-bg');
 						
 					}else if (data[3] == "Unresolved"){
-						$(row).addClass('red-bg');
+						$('td',row).addClass('red-bg');
 						
 					}
+				    $('td',row).eq(0).wrapInner("<a href='/admin/tickets/"+ data[0] +"' id="+ data[0] +"></a>").removeClass();	
 				    }
 				  } );
 			
@@ -81,7 +82,7 @@ $(function() {
 						table.draw();
 						$('div.spiner').hide();				
 						$('table.ticketStatusInfo').show();
-						$('div#myModal').modal('show');
+						$('div#myModal').modal('toggle');
 						});
 					
 						console.log(d);

@@ -40,7 +40,11 @@ $(function() {
                                 .css('font-size', 'inherit');
                 }
                 }
-            ]
+            ],
+            "createdRow": function( row, data, dataIndex ) {        		
+		    	$('td',row).eq(0).wrapInner("<a href='items/"+ data[0] +"' id="+ data[0] +"></a>");								
+		    }
+
 
         });
 		$('form').trigger('reset');
@@ -84,6 +88,7 @@ $(function() {
                 this.on("completemultiple", function(file) {
                 	file.status = Dropzone.QUEUED;
                 });
+                
 			    $('button.addItem').click(function(e) {
 			    	$('div.form-group').removeClass('has-error');
 					$('span.text-danger').hide();
@@ -112,13 +117,17 @@ $(function() {
 								data :  $("form.addItem").serialize(),
 								error: function(data){
 									var errors = data.responseJSON;
+									if(errors.errors["itemTag"]){
+										$('span.itemTag').text(errors.errors["itemTag"]).show();
+										$('div.itemTag').addClass('has-error');
+									}
 									if(errors.errors["serial_no"]){
 										$('span.serial_no').text(errors.errors["serial_no"]).show();
 										$('div.serial_no').addClass('has-error');
 									}
-									if(errors.errors["itemNo"]){
-										$('span.itemNo').text(errors.errors["itemNo"]).show();
-										$('div.itemNo').addClass('has-error');
+									if(errors.errors["serviceTag"]){
+										$('span.serviceTag').text(errors.errors["serviceTag"]).show();
+										$('div.serviceTag').addClass('has-error');
 									}
 									if(errors.errors["company"]){
 										$('span.company').text(errors.errors["company"]).show();
@@ -240,11 +249,14 @@ $(function() {
 function addNewRow(data){
 	$('div').removeClass('has-error');
 	var table = $('table#itemList').DataTable();
-	var newRow = "<tr><td>" + data.response['itemNo'] + "</td><td>" + data.response['itemType'] + "</td>" +
-				"<td>" + data.response['unique_id'] + "</td><td>" + data.response['brand'] + "</td>" +
-				"<td>" + data.response['model'] + "</td><td>" + data.response['dateArrived']['date'] + "</td></tr>";
-	$('table#itemList > tbody').prepend(newRow);
-	table.draw();
+	table.row.add([
+		data.response['itemNo'],
+		data.response['itemType'],
+		data.response['unique_id'],
+		data.response['serviceTag'],
+		data.response['brand'] + " - " + data.response['model'],
+		data.response['created_at']
+	]).draw();
 	swal({
 		title : "",
 		text : "New Item Added",
@@ -263,20 +275,21 @@ $('button#addItemSearch').click(function(){
 		data : $('form#addItemSearch').serialize(),
 		success: function(data){
 			var table = $('table#itemList').DataTable();
-			table.destroy();
-			$('tbody#itemList').html('');
-
+			table.clear();
+			
 			if(data.response.length >= 1){
 				$.each(data.response,function(i, v) {
-					var newRow = "<tr><td><a href='/inventory/items/"+ v.itemNo +" '>" + v.itemNo + "</a></td><td>" + v.itemType + " </td>"+
-								"<td>" + v.unique_id + "</td><td>" + v.brand + "</td><td>" + v.model + "</td>" +
-								"<td>" + v.created_at + "</td></tr>";
-					$('tbody#itemList').append(newRow);
+					table.row.add([
+					               v.itemNo,
+					               v.itemType,
+					               v.unique_id,
+					               v.serviceTag,
+					               v.brand + " - " + v.model,
+					               v.created_at]);
+					
 					});
-				}else{
-					$('tbody#itemList').append("");
 				}
-			dataTable();
+			table.draw();
 			}
 	});
 });
@@ -287,20 +300,21 @@ $('button#addSearch').click(function(){
 		data : {search : $('input#addSearch').val()},
 		success: function(data){
 			var table = $('table#itemList').DataTable();
-			table.destroy();
-			$('tbody#itemList').html('');
-
+			table.clear();
+			
 			if(data.response.length >= 1){
 				$.each(data.response,function(i, v) {
-					var newRow = "<tr><td><a href='/inventory/items/"+ v.itemNo +" '>" + v.itemNo + "</a></td><td>" + v.itemType + " </td>"+
-								"<td>" + v.unique_id + "</td><td>" + v.brand + "</td><td>" + v.model + "</td>" +
-								"<td>" + v.created_at + "</td></tr>";
-					$('tbody#itemList').append(newRow);
+					table.row.add([
+					               v.itemNo,
+					               v.itemType,
+					               v.unique_id,
+					               v.serviceTag,
+					               v.brand + " - " + v.model,
+					               v.created_at]);
+					
 					});
-				}else{
-					$('tbody#itemList').append("");
 				}
-			dataTable();
+			table.draw();
 			}
 	});
 });
@@ -314,29 +328,4 @@ $('select#itemType').change(function(){
 				$('input#otherItemType').addClass('hidden');
 				}
 	});
-
-function dataTable(){
-	
-	$('table#itemList').DataTable({
-        dom: '<"html5buttons"B>Tgitp',
-        buttons: [
-            { extend: 'copy'},
-            {extend: 'csv'},
-            {extend: 'excel', title: 'Remote Staff Inc \n Add Items'},
-            {extend: 'pdf', title: 'Remote Staff Inc \n Add Items'},
-
-            {extend: 'print',
-             customize: function (win){
-                    $(win.document.body).addClass('white-bg');
-                    $(win.document.body).css('font-size', '10px');
-
-                    $(win.document.body).find('table')
-                            .addClass('compact')
-                            .css('font-size', 'inherit');
-            }
-            }
-        ]
-
-    });
-};
 });

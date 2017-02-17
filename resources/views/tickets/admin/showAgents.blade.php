@@ -1,4 +1,4 @@
-@extends('tickets.ticketadminlayout') @section('body')
+@extends('layouts.ticket_basic') @section('body')
 
 <div class="row">
 	<div class="col-md-12">
@@ -21,7 +21,7 @@
 						{!! csrf_field() !!} <input type="hidden" name="email"
 							class="email">
 					</form>
-					<table class="table  table-bordered table-hover agentPassword">
+					<table class="table  table-bordered table-hover agents">
 						<thead>
 							<tr>
 								<th>Id</th>
@@ -59,12 +59,12 @@
 										<ul class="dropdown-menu">
 											<li><a href="/admin/agents/{{$agent->id}}">View Profile</a>
 											
-											<li><a href="#" id="agentPasswordResetLink"
+											<li><a href="#agentPasswordResetLink"
 												value="{{$agent->email}}">Send Reset Link</a></li>
-											<li><a href="#" id="agentChangeUserType"
-												name="{{$agent->user_type}}" value="{{$agent->id}}">Change
+											<li><a href="#agentChangeUserType"
+												value="{{$agent->user_type}}" id="{{$agent->id}}">Change
 													User Type</a></li>
-
+											<li><a href="#agentDelete" id="{{$agent->id}}">Delete/Retire</a></li>
 										</ul>
 									</div>
 								</td> @endif
@@ -85,4 +85,8 @@
 
 </div>
 
+@endsection
+@section('scripts')
+<script type="text/javascript" src="/js/ticketing/ticketAgents.js">
+</script>
 @endsection

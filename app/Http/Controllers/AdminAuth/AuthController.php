@@ -119,8 +119,15 @@ class AuthController extends Controller
     }
 	public function showLoginForm()
 	{
-		if(Auth::guard('admin')->check()){
+		if(Auth::guard ( 'admin' )->check ()) {
+			return redirect('/admin/index');
+		}
+		else if(Auth::guard ( 'inventory' )->check ()){
+			if(Auth::guard('inventory')->user()->user_type == "admin"){
+				Auth::guard ( 'admin' )->loginUsingId ( Auth::guard ( 'inventory' )->user ()->id);
 				return redirect('/admin/index');
+			}
+			
 		}
 		else{
 				return view('tickets.admin.login');
@@ -183,5 +190,11 @@ class AuthController extends Controller
 
         return $this->sendFailedLoginResponse($request);
     } 
+    public function logout()
+    {
+    	Auth::guard($this->getGuard())->logout();
+    	Auth::guard('inventory')->logout();
+    	return redirect(property_exists($this, 'redirectAfterLogout') ? $this->redirectAfterLogout : '/');
+    }
     
 }

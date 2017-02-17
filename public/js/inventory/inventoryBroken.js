@@ -7,7 +7,7 @@ $(function() {
 		$('span.text-danger').hide();
 		$('.chosen-select', this).chosen();
 		$('div#brokenAdvancedSearch').hide();
-		$('table#broken').DataTable({
+		$('table').DataTable({
             dom: '<"html5buttons"B>Tgitp',
             buttons: [
                 { extend: 'copy'},
@@ -25,7 +25,10 @@ $(function() {
                                 .css('font-size', 'inherit');
                 }
                 }
-            ]
+            ],
+            "createdRow": function( row, data, dataIndex ) {        		
+            	$('td',row).eq(0).wrapInner("<a href='#' class='itemBroken'></a>");	
+		    }
 
         });
 		$('div#brokenSummary').summernote({
@@ -65,8 +68,8 @@ $(function() {
 
 		$('input:checkbox.brokenItem:checked').each(function () {
 		       if(this.checked){
-			       items.push($(this).val());
-			   		$('tr#'+$(this).val()+' td').eq(3).text(mark);
+			       items.push($(this).attr('id'));
+			   		$(this).parents('tr').find("td:nth-child(6)").text(mark);
 		       }
 		  });
 		console.log(items);
@@ -101,13 +104,10 @@ $(function() {
 						},function(){
 							$('input:checkbox.brokenItem:checked').each(function () {
 								if(mark != "Repaired"){
-									
-								   		$('tr#'+$(this).val()+' td').eq(3).text(mark);	   		
-							       		
-								}else{								 
-										table.removeRow($('tr#'+$(this).val()));
-									}
-								table.draw();
+									$(this).parents('tr').find("td:nth-child(6)").text(mark);
+								}else{									
+									table.row( $(this).parents('tr') ).remove().draw();
+								}
 							});
 							});
 					
@@ -128,32 +128,28 @@ $(function() {
 			data : $('form.brokenTicketSearch').serialize(),
 			success: function(data){
 				var table = $('table#brokenSearchResult').DataTable();
-				table.destroy();
+				table.clear();
 				
-				$('tbody#brokenSearchResult').html('');
-
-				if(data.response.length >= 1){
-					$.each(data.response,function(i, v) {
-						var newRow = "<tr id='" + v.itemNo + "'><td><input type='checkbox' class='i-checks brokenItem' value='" + v.itemNo +"' />" + 
-						"<a href='/inventory/items/"+ v.itemNo +"'> " +v.itemNo + "</td><td>" + v.unique_id + " </td>"+
-						"<td>" + v.itemType + "</td>"+
-						"<td>" + v.brand + "</td><td>" + v.model + "</td>" + 
-						"<td>" + v.damage + "</td><td>" + v.first_name + " " + v.last_name + "</td><td>" + v.brokenStatus + "</td>" +
-						"<td>" + v.agent_FN + " " + v.agent_LN + "</td>" + 
-						"<td>" + v.created_at + "</td></tr>";
-						$('tbody#brokenSearchResult').append(newRow);
-						});
-					}else{
-						$('tbody#brokenSearchResult').append("<tr><td colspan='9' class='text-center'> No Data Found.</td></tr>");
-				}
-				dataTable();
+				$.each(data.response,function(i, v) {
+					var node = table.row.add([
+								               v.itemNo,
+								               v.itemType,
+								               v.brand + " - " + v.model,
+								               v.damage,
+								               v.first_name + " " + v.last_name,
+								               v.brokenStatus,
+								               v.agent_FN + " " + v.agent_LN,
+								               v.created_at]).node();
+					$(node).attr('value', v.brokenSummary);
+				});
+					
+				table.draw();
 				$('div#spinner').addClass('hide');
-				$('table#brokenSearchResult').removeClass('hide');
+				$('div#brokenSearchResult').removeClass('hide');
 				$('.i-checks').iCheck({
 					checkboxClass : 'icheckbox_square-green',
 					radioClass : 'iradio_square-green',
 				});
-				
 			}
 		});
 		});
@@ -246,21 +242,20 @@ $(function() {
 				brokenItem.ladda('stop');
 				$('form#brokenItem').trigger('reset');
 				var table = $('table#brokenResult').DataTable();
-					
-				$('tbody#broken').prepend(
-				"<tr><td> <input type='checkbox' class='i-checks brokenItem' value='"+ data.response['itemNo'] +"'/> &nbsp;"+ 
-				"<a href='/inventory/items/" + data.response['itemNo'] +"'>" +data.response['itemNo'] + "</a></td><td>" + data.response['unique_id'] + "</td>" +
-				"<td>" + data.response['itemType'] +"</td>" +
-				"<td>" + data.response['brand'] + "</td><td>" + data.response['model'] + "</td>" +
-				"<td>" + data.response['damage'] + "</td><td>" + data.response['first_name'] + " " + data.response['last_name'] + "</td><td>"+data.response['brokenStatus']+"</td>" +
-				"<td>"+ data.response['agent_FN']+" "+ data.response['agent_LN']+"</td>" +
-				"<td>" + data.response['created_at']+ "</td></tr>");
-				
+				table.row.add([
+				               data.response['itemNo'],
+				               data.response['itemType'],
+				               data.response['brand'] + " - " + data.response['model'],
+				               data.response['damage'],
+				               data.response['first_name'] + " " + data.response['last_name'],
+				               data.response['brokenStatus'],
+				               data.response['created_at']
+				               ]);
+				table.draw();
 				$('.i-checks').iCheck({
 					checkboxClass : 'icheckbox_square-green',
 					radioClass : 'iradio_square-green',
-				});
-				table.draw();
+				});				
 				$('div#brokenReport').modal('hide');
 				
 				swal('','Item Reported','success');
@@ -271,7 +266,7 @@ $(function() {
 		});
 	});
 	$('button#brokenSearch').click(function(){
-		$('table#brokenSearchResult').addClass('hide');
+		$('div#brokenSearchResult').addClass('hide');
 		$('div#brokenResult').hide(function(){
 			$('div#spinner').removeClass('hide');
 			$.ajax({
@@ -280,60 +275,40 @@ $(function() {
 			data : {brokenSearch : $("input#brokenSearch").val()},
 			success: function(data){
 				var table = $('table#brokenSearchResult').DataTable();
-				table.destroy();
+				table.clear();
 				
-				$('tbody#brokenSearchResult').html('');
-
-				if(data.response.length >= 1){
-					$.each(data.response,function(i, v) {
-						var newRow = "<tr id='" + v.itemNo + "'><td><input type='checkbox' class='i-checks brokenItem' value='" + v.itemNo +"' />" + 
-						"<a href='/inventory/items/"+ v.itemNo +"'> " +v.itemNo + "</td><td>" + v.unique_id + " </td>"+
-						"<td>" + v.itemType + "</td>"+
-						"<td>" + v.brand + "</td><td>" + v.model + "</td>" + 
-						"<td>" + v.damage + "</td><td>" + v.first_name + " " + v.last_name + "</td><td>" + v.brokenStatus + "</td>" +
-						"<td>" + v.agent_FN + " " + v.agent_LN + "</td>" + 
-						"<td>" + v.created_at + "</td></tr>";
-						$('tbody#brokenSearchResult').append(newRow);
-						});
-					}else{
-						$('tbody#brokenSearchResult').append("");
-				}
-				
+				$.each(data.response,function(i, v) {
+					var node = table.row.add([
+								               v.itemNo,
+								               v.itemType,
+								               v.brand + " - " + v.model,
+								               v.damage,
+								               v.first_name + " " + v.last_name,
+								               v.brokenStatus,
+								               v.agent_FN + " " + v.agent_LN,
+								               v.created_at]).node();
+					$(node).attr('value', v.brokenSummary);
+				});
+					
+				table.draw();
 				$('div#spinner').addClass('hide');
-				$('table#brokenSearchResult').removeClass('hide');
+				$('div#brokenSearchResult').removeClass('hide');
 				$('.i-checks').iCheck({
 					checkboxClass : 'icheckbox_square-green',
 					radioClass : 'iradio_square-green',
 				});
-				dataTable();
 			}
 		});
 		});
 		
 		
 	});
-	function dataTable(){
-		
-		$('table#brokenSearchResult').DataTable({
-            dom: '<"html5buttons"B>Tgitp',
-            buttons: [
-                { extend: 'copy'},
-                {extend: 'csv'},
-                {extend: 'excel', title: 'Remote Staff Inc. \n' + 'Broken Items'},
-                {extend: 'pdf', title: 'Remote Staff Inc. \n' + 'Broken Items', orientation: 'landscape',},
-
-                {extend: 'print',
-                 customize: function (win){
-                        $(win.document.body).addClass('white-bg');
-                        $(win.document.body).css('font-size', '10px');
-
-                        $(win.document.body).find('table')
-                                .addClass('compact')
-                                .css('font-size', 'inherit');
-                }
-                }
-            ]
-
-        });
-	};
+	$(document).on('click', 'a.itemBroken', function() {
+		var item = $(this);
+		$('h4.itemBroken').text($(item).text());
+		$('a.itemDetails').attr('href','/inventory/items/' + $(item).text());
+		$('span.brokenDamage').text($(item).parents('tr').find("td:nth-child(4)").text());
+		$('span.brokenSummary').html($(item).parents('tr').attr('value'));
+		$('div#itemBroken').modal('toggle');
+	});
 });

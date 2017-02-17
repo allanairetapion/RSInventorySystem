@@ -6,7 +6,7 @@ $(function() {
 		$('div.itemNotfound').hide();
 		$('span.text-danger').hide();
 		$('div#deployAdvancedSearch').hide();
-		$('table#deploy').DataTable({
+		$('table').DataTable({
             dom: '<"html5buttons"B>Tgitp',
             buttons: [
                 { extend: 'copy'},
@@ -24,7 +24,10 @@ $(function() {
                                 .css('font-size', 'inherit');
                 }
                 }
-            ]
+            ],
+            "createdRow": function( row, data, dataIndex ) {        		
+            	$('td',row).eq(0).wrapInner("<a href='items/"+ data[0] +"' id="+ data[0] +"></a>");											
+		    }
 
         });
 		
@@ -102,16 +105,15 @@ $(function() {
 				deployItem.ladda('stop');
 				$('form.deployItem').trigger('reset');
 				var table = $('table#deploy').DataTable();
-				
-				var newRow = "<tr><td><a href='/inventory/items/"+ data.response['itemNo'] +"'>" + data.response['itemNo'] + "</a></td>"+
-				"<td>" + data.response['unique_id'] + "</td><td>" + data.response['itemType']+" </td>" +
-				"<td>" + data.response['brand'] +"</td><td>"+ data.response['model']+"</td>" +
-				"<td>" + data.response['stationNo'] +"</td>"+
-				"<td>" + data.response['first_name']+" "+data.response['last_name']+"</td>"+
-				"<td>"+ data.response['created_at'] +"</td></tr>";
-				
-				
-				$('tbody#deploy').prepend(newRow);
+				table.row.add([
+				               data.response['itemNo'],
+				               data.response['itemType'],
+				               data.response['brand'],
+				               data.response['model'],
+				               data.response['stationNo'],
+				               data.response['first_name']+" "+data.response['last_name'],
+				               data.response['created_at']            
+				]);
 				table.draw();
 				$('#myModal').modal('hide');
 				swal('','Item Deployed','success');
@@ -141,7 +143,7 @@ $(function() {
 	});
 	
 	$('button#deploySearch').click(function(){
-		$('table#deploySearchResult').addClass('hide');
+		$('div#deploySearchResult').addClass('hide');
 		$('div#deployResult').hide(function(){
 			$('div#spinner').removeClass('hide');
 			$.ajax({
@@ -150,25 +152,20 @@ $(function() {
 			data : {deploySearch : $("input#deploySearch").val()},
 			success: function(data){
 				var table = $('table#deploySearchResult').DataTable();
-				table.destroy();
-				
-
-				$('tbody#deploySearchResult').html('');
-				
-				if(data.response.length >= 1){
+				table.clear()
+			
 					$.each(data.response,function(i, v) {
-						var newRow = "<tr><td><a href='/inventory/items/"+ v.itemNo +" '>" + v.itemNo + "</a></td><td>" + v.unique_id + " </td>"+
-									"<td>" + v.itemType + "</td><td>" + v.brand + "</td><td>" + v.model + "</td>" +
-									"<td>" + v.first_name + " " + v.last_name + "</td>"+
-									"</td><td>" + v.created_at + "</td></tr>";
-						$('tbody#deploySearchResult').append(newRow);
+						table.row.add([
+						               v.itemNo,
+						               v.itemType,
+						               v.brand,
+						               v.model,
+						               v.first_name + " " + v.last_name ,
+						               v.created_at]);
 						});
-					}else{
-						$('tbody#deploySearchResult').append("");
-				}
-				dataTable();
+				table.draw();
 				$('div#spinner').addClass('hide');
-				$('table#deploySearchResult').removeClass('hide');
+				$('div#deploySearchResult').removeClass('hide');
 			}
 		});
 		});
@@ -177,7 +174,7 @@ $(function() {
 	});
 	
 	$('button.deployTicketSearch').click(function(){
-		$('table#deploySearchResult').addClass('hide');
+		$('div#deploySearchResult').addClass('hide');
 		$('div#deployResult').hide(function(){
 			$('div#spinner').removeClass('hide');
 			$.ajax({
@@ -186,51 +183,22 @@ $(function() {
 			data : $('form.deployTicketSearch').serialize(),
 			success: function(data){
 				var table = $('table#deploySearchResult').DataTable();
-				table.destroy();
-				
-
-				$('tbody#deploySearchResult').html('');
-				
-				if(data.response.length >= 1){
+				table.clear()
+			
 					$.each(data.response,function(i, v) {
-						var newRow = "<tr><td><a href='/inventory/items/"+ v.itemNo +" '>" + v.itemNo + "</a></td><td>" + v.unique_id + " </td>"+
-									"<td>" + v.itemType + "</td><td>" + v.brand + "</td><td>" + v.model + "</td>" +
-									"<td>" + v.first_name + " " + v.last_name + "</td>"+
-									"</td><td>" + v.created_at + "</td></tr>";
-						$('tbody#deploySearchResult').append(newRow);
+						table.row.add([
+						               v.itemNo,
+						               v.itemType,
+						               v.brand,
+						               v.model,
+						               v.first_name + " " + v.last_name ,
+						               v.created_at]);
 						});
-					}else{
-						$('tbody#deploySearchResult').append("");
-				}
-				dataTable();
+				table.draw();
 				$('div#spinner').addClass('hide');
-				$('table#deploySearchResult').removeClass('hide');
+				$('div#deploySearchResult').removeClass('hide');
 			}
 		});
 		});
 	});
-function dataTable(){
-		
-		$('table#deploySearchResult').DataTable({
-            dom: '<"html5buttons"B>Tgitp',
-            buttons: [
-                { extend: 'copy'},
-                {extend: 'csv'},
-                {extend: 'excel', title: 'Remote Staff Inc. \n' + 'Deployed Items'},
-                {extend: 'pdf', title: 'Remote Staff Inc. \n' + 'Deployed Items', orientation: 'landscape',},
-
-                {extend: 'print',
-                 customize: function (win){
-                        $(win.document.body).addClass('white-bg');
-                        $(win.document.body).css('font-size', '10px');
-
-                        $(win.document.body).find('table')
-                                .addClass('compact')
-                                .css('font-size', 'inherit');
-                }
-                }
-            ]
-
-        });
-	};
 });
