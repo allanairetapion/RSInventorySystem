@@ -13,7 +13,6 @@ class ClientProfile extends Model {
 			'first_name',
 			'last_name',
 			'client_id',
-			'date_registered' 
 	];
 	public function client() {
 		return $this->belongsTo ( "App\User" );

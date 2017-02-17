@@ -85,19 +85,16 @@ class AuthController extends Controller
 		
 		
         $user = Admins::create([
-         	'id' => $ida,
-         	
+         	'id' => $ida,         	
             'user_type' => $data['user_type'],
             'email' => $data['email'],
-            'status' => 'Not Activated',
-           
+            'status' => 'Not Activated',           
         ]);
 		
 		$admin_profiles = AdminProfile::create([
 			'first_name' => $data['firstname'],
 			'agent_id' => $ida,
-			'last_name' => $data['lastname'],
-			
+			'last_name' => $data['lastname'],			
 		]);
 		
 		return $user;
