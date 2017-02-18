@@ -138,7 +138,9 @@
 
 	</div>
 </div>
-<<script type="text/javascript">
+@endsection
+@section('scripts')
+<script type="text/javascript">
 $(document).ready(function(){
 			
 	Dropzone.options.attachment = {

@@ -69,11 +69,10 @@
 					</nav>
 				</div>
 				<div class="wrapper wrapper-content">
-					
-
+					<div class="row">
 						@section('body')
 						@show
-
+</div>
 					
 				</div>
 
