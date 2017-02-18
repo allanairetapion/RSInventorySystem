@@ -31,6 +31,10 @@ $(function() {
 		    }
 
         });
+		$('.i-checks').iCheck({
+			checkboxClass : 'icheckbox_square-green',
+			radioClass : 'iradio_square-green',
+		});	
 		$('div#brokenSummary').summernote({
 			height: 150,
 			minHeight: 150,             // set minimum height of editor
