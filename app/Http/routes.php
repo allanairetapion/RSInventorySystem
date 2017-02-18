@@ -109,6 +109,8 @@ Route::group ( [
 	Route::put ( '/inventory/accomplishMSched', 'inventoryController@accomplishMaintenanceSchedule' );
 	Route::put ( '/inventory/changeAgentUserType', 'inventoryController@changeAgentUserType' );
 	Route::put ( '/inventory/updateActivity', 'inventoryController@updateActivity' );
+	Route::put ( '/inventory/updateStationDescription', 'inventoryController@updateStationDescription' );
+	Route::put ( '/inventory/updateStationIpAddress', 'inventoryController@updateStationIpAddress' );
 	
 	Route::delete ( "/inventory/deleteItemPhoto", "inventoryController@deleteItemPhoto" );
 	Route::delete ( "/inventory/deleteActivity", "inventoryController@deleteActivity" );

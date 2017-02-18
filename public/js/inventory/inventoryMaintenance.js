@@ -386,8 +386,10 @@ $(function(){
 	});
 	$('ellipse').click(function(){
 		var stationNo = $(this).attr('id');
+		$('span#stationDescription').text('Station Description');
+		$('input#ipAddress').val('');
 		$('div#stationStatus').modal('toggle');
-		$('h4.modal-title#stationStatus').text('Station No: '+stationNo);
+		$('span#stationId').text(stationNo);
 		$('tbody#stationStatus').html('');
 		$.ajax(
 				{
@@ -409,12 +411,17 @@ $(function(){
 								$('select#' + e.itemNo ).val(e.itemStatus);
 							}else{
 								$('select#' + e.itemNo ).val('');
-							}
-							
-							
-							
+							}								
 						});
 						
+						$(data.station).each(function(i,e){
+							if(e.description){
+								$('span#stationDescription').text(e.description);
+							}
+							if(e.ipAddress){
+								$('input#ipAddress').val(e.ipAddress);
+							}							
+						});
 						$('.i-checks').iCheck({
 						        checkboxClass: 'icheckbox_square-green',
 						        radioClass: 'iradio_square-green'
@@ -666,5 +673,78 @@ var repairItem = $('button.repairItem').ladda();
 					},
 				});
 			});
+	});
+	$('a[href="#editStationDescription"]').click(function(){
+		//$('div#stationStatus').modal('toggle');
+		swal({
+			  title: "Change Station Description",
+			  text: "Type Station's new description",
+			  type: "input",
+			  showCancelButton: true,
+			  closeOnConfirm: false,
+			  animation: "slide-from-top",
+			  confirmButtonText: "Save",
+			  inputPlaceholder: "Write something"
+			},
+			function(inputValue){
+			  if (inputValue === false) return false;
+			  
+			  if (inputValue === "") {
+			    swal.showInputError("You need to write something!");
+			    return false
+			  }
+			  
+			  $.ajax({
+				  	headers : {'X-CSRF-Token' : $('input[name="_token"]').val()},
+					type : "PUT",
+					url : "/inventory/updateStationDescription",
+					data : {id : $('span#stationId').text(),description : inputValue } ,
+					success: function(data){
+						swal('','Description Updated','success');
+						$('span#stationDescription').text(inputValue);
+					},
+					error: function(){
+						swal('Ooops','Something went wrong','error');
+					}
+				});
+			  
+			});
+	});
+	$('button#editStationIpAddress').click(function(){
+		
+		swal({
+			  title: "Are you sure?",
+			  text: "Change Station's I.P Address to " + $('input#stationIpAddress').val(),
+			  type: "input",
+			  showCancelButton: true,
+			  closeOnConfirm: false,
+			  animation: "slide-from-top",
+			  confirmButtonText: "Save",
+			  inputPlaceholder: "Write something"
+			},
+			function(inputValue){
+				  if (inputValue === false) return false;
+				  
+				  if (inputValue === "") {
+				    swal.showInputError("You need to write something!");
+				    return false
+				  }
+				  
+				 $.ajax({
+					  	headers : {'X-CSRF-Token' : $('input[name="_token"]').val()},
+						type : "PUT",
+						url : "/inventory/updateStationIpAddress",
+						data : {id : $('span#stationId').text(), ipAddress : inputValue } ,
+						success: function(data){
+							swal('','I.P. Address Updated','success');	
+							$('input#ipAddress').val(inputValue);
+						},
+						error: function(){
+							swal('Ooops','Something went wrong','error');
+						}
+					});
+			});
+		
+		
 	});
 });

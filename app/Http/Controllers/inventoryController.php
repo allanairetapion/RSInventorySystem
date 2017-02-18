@@ -16,6 +16,7 @@ use App\MaintenanceSchedule as mSchedule;
 use App\MaintenanceArea as mArea;
 use App\Admin as Admin;
 use App\ReturnItem as ReturnItem;
+use App\MaintenanceStation as Stations;
 use Illuminate\Http\Request;
 use Validator;
 use File;
@@ -23,6 +24,7 @@ use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use DB;
 
 class inventoryController extends Controller {
@@ -516,13 +518,14 @@ class inventoryController extends Controller {
 		$first = AProfile::select ( 'agent_id as id', 'first_name', 'last_name' );
 		$second = CProfile::select ( 'client_id as id', 'first_name', 'last_name' )->union ( $first );
 		
+		$returnedId = ReturnItem::select ( DB::raw ( 'Max(id)' ) )->groupBy ( 'itemNo' )->get ();
 		$returnedItems = Item::leftJoin ( DB::raw ( '(select id,itemNo, receiver, borrower,
 				created_at as dateReturned ,updated_at from return_logs) returnInfo' ), function ($join) {
 			$join->on ( 'items.itemNo', '=', 'returnInfo.itemNo' );
 		} )->leftJoin ( DB::raw ( '(select agent_id, first_name as agent_FN, last_name as agent_LN
 				from admin_profiles) admin_profiles' ), 'returnInfo.receiver', '=', 'admin_profiles.agent_id' )->leftJoin ( DB::raw ( "({$second->toSql()}) as names" ), function ($join) {
 			$join->on ( 'returnInfo.borrower', '=', 'names.id' );
-		} )->orderby ( 'dateReturned', 'desc' )->get ();
+		} )->whereIn ( 'returnInfo.id', $returnedId )->orderby ( 'dateReturned', 'desc' )->get ();
 		
 		$names = [ ];
 		
@@ -1304,11 +1307,37 @@ class inventoryController extends Controller {
 		
 		return $items;
 	}
+	public function updateStationDescription(Request $request){
+		try{
+			$station = Stations::findOrFail($request['id']);
+		}catch(ModelNotFoundException $e){
+			$station = new Stations;
+			$station->id = $request['id'];
+		}
+		
+		$station->description = $request['description'];
+		$station->save();
+		return response ()->json ( ['success' => true,] );
+	}
+	public function updateStationIpAddress(Request $request){
+		try{
+			$station = Stations::findOrFail($request['id']);
+		}catch(ModelNotFoundException $e){
+			$station = new Stations;
+			$station->id = $request['id'];
+		}
+	
+		$station->ipAddress = $request['ipAddress'];
+		$station->save();
+		return response ()->json ( ['success' => true,] );
+	}
 	public function maintenanceItem($stationNo) {
 		$items = Item::where ( 'stationNo', $stationNo )->get ();
+		$station = Stations::find($stationNo);
 		return response ()->json ( [ 
 				'success' => true,
-				'response' => $items 
+				'response' => $items ,
+				'station' => $station
 		] );
 	}
 	public function addSchedule(Request $request) {

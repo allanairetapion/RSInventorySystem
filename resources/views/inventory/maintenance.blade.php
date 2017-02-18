@@ -847,17 +847,33 @@ Maintenance') @section('header-page')
 		<div class="modal-content">
 			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal">&times;</button>
-				<h4 class="modal-title" id="stationStatus">Edit Schedule</h4>
+				<h4 class="modal-title">Station No: <span id="stationId"></span></h4>
+				<h5>
+					<span id="stationDescription">Station Description </span>
+					<a href="#editStationDescription"><i class="fa fa-edit"></i></a>
+				</h5>
 			</div>
 
 			<div class="modal-body">
+				<form class="form-horizontal">
+					<div class="form-group">
+						<label class="control-label col-lg-3">I.P Address:</label>
+						<div class="input-group col-lg-9">
+							<input type="text" class="form-control" name="ipAddress" id="ipAddress" readonly>
+								<span class="input-group-btn"> 
+									<button type="button" id="editStationIpAddress"
+									class="btn btn-primary"><i class="fa fa-edit"></i>
+                                     </button> 
+                                 </span>
+                        </div>						
+					</div>
+				</form>
 				<form class="form-horizontal" id="stationStatus">
-					<table class="table table-hover">
+					<table class="table table-hover table-bordered">
 						<thead>
 							<tr class="text-center">
 								<td>Item</td>
 								<td>Status</td>
-								<td>I.P. Address</td>
 							</tr>
 						</thead>
 						<tbody id="stationStatus">
