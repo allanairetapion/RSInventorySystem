@@ -212,7 +212,7 @@ Issues') @section('header-page')
 						<div class="col-lg-12">
 							<div class="form-group itemUser">
 								<label class="control-label"> Item User:</label> <select
-									class="form-control itemUser" name="item_user">
+									class="form-control itemUser chosen-select" name="item_user">
 									<option value="" selected></option> @foreach($users as $user)
 									<option value="{{$user->id}}">{{$user->first_name.'
 										'.$user->last_name}}</option> @endforeach

@@ -7,6 +7,10 @@ $(function() {
 		$('span.text-danger').hide();
 		$('.chosen-select', this).chosen();
 		$('div#brokenAdvancedSearch').hide();
+		$('.input-group.date').datepicker({
+		    format : 'yyyy-mm-dd',
+		    todayBtn: "linked"
+			});
 		$('table').DataTable({
             dom: '<"html5buttons"B>Tgitp',
             buttons: [

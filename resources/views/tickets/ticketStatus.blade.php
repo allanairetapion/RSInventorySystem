@@ -11,12 +11,10 @@
 				<div class="ibox-content">
 					<table class="table table-hover issue-tracker">
 				<thead>
-					<tr>
-					<th class="text-center">Status</th>
+					<tr>					
 						<th>Ticket No:</th>
-						<th>Topic</th>
-						
-						
+						<th class="text-center">Status</th>
+						<th>Topic</th>												
 						<th>Date Sent</th>
 						<th>Assigned to:</th>
 						<th>Closed By:</th>
@@ -26,7 +24,8 @@
 					
 						@foreach ($tickets as $ticket)
 						
-						<tr class="read" >
+						<tr >
+						<td><a href="/tickets/{{$ticket->id}}">{{$ticket->id}}</a></td>
 							<td class="text-center">@if($ticket->ticket_status == "Open") <span
 								class="label label-success">{{$ticket->ticket_status}}</span>
 								@elseif($ticket->ticket_status == "Pending") <span
@@ -37,9 +36,6 @@
 								class="label label-danger">{{$ticket->ticket_status}}</span>
 								@endif
 							</td>
-
-
-						<td><a href="/tickets/{{$ticket->id}}">{{$ticket->id}}</a></td>
 						<td>{{$ticket->description}}</td>
 						
 						<td >{{$ticket->created_at}}</td>

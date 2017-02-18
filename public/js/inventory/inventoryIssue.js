@@ -270,7 +270,7 @@ $(function() {
 				$('tr#'+$('repairItemNo').val()).remove();
 				table.draw();
 				$('div#repairReport').modal('toggle');
-				swal('','Item Repair Reported','Success');				
+				swal('','Item Repair Reported','success');				
 				$('form.returnItem').trigger('reset');			
 				$('form.itemInfo').hide();			
 			}

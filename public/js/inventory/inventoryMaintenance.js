@@ -202,6 +202,8 @@ $(function(){
 		    return String(hours+":"+minutes+":00");
 		};
 	$('button.saveSchedule').click(function(){
+		$('div').removeClass('has-error');
+		
 		var start_date = $('input#startScheduleDate').val();
 		
 		var start_time =  ($('input#startScheduleTime').val() == "") ? "": convert_time($('input#startScheduleTime').val());
