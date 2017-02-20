@@ -51,7 +51,7 @@
 
 				<div class="panel panel-default ">
 					<div class="panel-heading">
-						By: {{$message->sender}} <span class="pull-right">
+						By: {{$message->first_name.' '.$message->last_name}} <span class="pull-right">
 							{{$message->created_at}}</span>
 					</div>
 					<div class="panel-body">

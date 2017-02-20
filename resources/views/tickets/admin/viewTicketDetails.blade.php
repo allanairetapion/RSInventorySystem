@@ -1,4 +1,4 @@
-@extends('layouts.ticket_basic')
+@extends('layouts.ticket_summernote')
 @section('style')
 <style type="text/css">
 	@media print {
@@ -132,7 +132,7 @@
 			<h4>Description:</h4>
 				<div  class="panel panel-info ">
 					<div class="panel-heading"> 
-						By: {{$ticket->sender_id}} <span class="pull-right"> {{$ticket->created_at}}</span>
+						By: {{$ticket->first_name.' '.$ticket->last_name}} <span class="pull-right"> {{$ticket->created_at}}</span>
 					</div>
 					<div class="panel-body">
 						 <p>

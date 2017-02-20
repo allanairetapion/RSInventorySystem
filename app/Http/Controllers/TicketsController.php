@@ -9,7 +9,8 @@ use DB;
 use Illuminate\Http\Request;
 use Validator;
 use App\Client as Client;
-use App\ClientProfile as ClientProfile;
+use App\AdminProfile as AProfile;
+use App\ClientProfile as CProfile;
 use app\user;
 use Illuminate\Support\Facades\Mail;
 use Carbon\Carbon;
@@ -182,21 +183,20 @@ class TicketsController extends Controller{
 	}
 	
 	public function ticketDetails($id) {
-		$ticket = DB::table ( 'tickets' )->leftJoin ( 'ticket_topics', 'tickets.topic_id', "=", 'ticket_topics.topic_id' )->where ( 'id', $id )->where('sender_id',Auth::guard('user')->user()->id)->first ();
+		
+		$ticket = Ticket::leftJoin ( DB::raw ( '(select topic_id,description from ticket_topics) ticket_topics' ), 'tickets.topic_id', "=", 'ticket_topics.topic_id' )
+		->where ( 'id', $id )->where('sender_id',Auth::guard('user')->user()->id)
+		->leftJoin ( DB::raw ( '(select agent_id, first_name as assign_FN, last_name as assign_LN
+				from admin_profiles) admin_profiles' ), 'tickets.assigned_support', '=', 'admin_profiles.agent_id' )
+				->leftJoin ( DB::raw ( '(select agent_id, first_name as close_FN, last_name as close_LN
+				from admin_profiles) admin_profiles2' ), 'tickets.assigned_support', '=', 'admin_profiles2.agent_id' )
+		->first ();
 		
 		if($ticket == null){
 			abort(404);
 		}
-		$assignedTo = DB::table ( 'tickets' )->leftJoin ( 'admin_profiles', 'tickets.assigned_support', '=', 'admin_profiles.agent_id' )->leftJoin ( 'ticket_topics', 'tickets.topic_id', "=", 'ticket_topics.topic_id' )->where ( 'id', $id )->first ();
-		
-		$closedBy = DB::table ( 'tickets' )->leftJoin ( 'admin_profiles', 'tickets.closed_by', '=', 'admin_profiles.agent_id' )->leftJoin ( 'ticket_topics', 'tickets.topic_id', "=", 'ticket_topics.topic_id' )->where ( 'id', $id )->first ();
 		
 		
-		$sendername = DB::table('admin_profiles')->where('agent_id', $ticket->sender_id)->first();
-		if($sendername == null){
-			$sendername = DB::table('client_profiles')->where('client_id', $ticket->sender_id)->first();
-		}
-		$ticket->sender_id = $sendername->first_name.' '.$sendername->last_name;
 		
 		session ( [
 				'subject' => $ticket->subject,
@@ -208,26 +208,23 @@ class TicketsController extends Controller{
 				'topic_id' => $ticket->topic_id,
 				'topic' => $ticket->description,
 				'id' => $ticket->id,
-				'assigned_support' => $assignedTo->first_name . ' ' . $assignedTo->last_name,
+				'assigned_support' => $ticket->assign_FN . ' ' . $ticket->assign_LN,
 				'status' => $ticket->ticket_status,
 				'priority' => $ticket->priority_level,
-				'closed_by' => $closedBy->first_name . ' ' . $closedBy->last_name,
-				'closing_report' => $closedBy->closing_report
+				'closed_by' => $ticket->close_FN . ' ' . $ticket->close_LN,
+				'closing_report' => $ticket->closing_report
 		] );
-		if ($ticket->ticket_status != 'Open') {
-			$messages = TicketMessages::where('ticket_id',$id)->get();
 		
-			foreach($messages as $message){
-				$name = DB::table('admin_profiles')->where('agent_id', $message['sender'])->first();
-				if($name == null){
-					$name = DB::table('client_profiles')->where('client_id', $message['sender'])->first();
-				}
-				$message['sender'] = $name->first_name.' '.$name->last_name;
-			}
+			$first = AProfile::select ( 'agent_id as id', 'first_name', 'last_name' );
+			$second = CProfile::select ( 'client_id as id', 'first_name', 'last_name' )->union ( $first );
+			
+			$messages = TicketMessages::where('ticket_id',$id)
+			->leftJoin ( DB::raw ( "({$second->toSql()}) as names" ), function ($join) {
+			$join->on ( 'sender', '=', 'names.id' );
+		} )->get();
 		
 			return view('tickets.viewTicketDetails',['messages'=> $messages ]);
-		}
-		return view('tickets.viewTicketDetails');
+		
 	}
 	
 	public function suggestTopic(Request $request){

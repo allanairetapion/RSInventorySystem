@@ -37,7 +37,10 @@ class TicketsAdmin extends Controller {
 		$agents = DB::table ( 'admin' )->join ( 'admin_profiles', 'admin.id', '=', 'admin_profiles.agent_id' )->get ();
 		
 		$ticketsNoSupport = Tickets::leftJoin ( DB::raw ( '(select topic_id,description from ticket_topics) ticket_topics' ), 'tickets.topic_id', '=', 'ticket_topics.topic_id' )->where ( 'assigned_support', '=', "" )->orderBy ( 'updated_at', 'desc' )->get ();
-		
+		Tickets::where ( 'ticket_status', '!=', 'Closed' )->whereNotBetween ( 'updated_at', array (
+				Carbon::yesterday (),
+				Carbon::tomorrow ()
+		) )->update (['ticket_status' => 'Unresolved']);
 		return view ( 'tickets.admin.dashboard', [ 
 				'noSupport' => $ticketsNoSupport,
 				'agent' => $agents 
@@ -252,28 +255,31 @@ class TicketsAdmin extends Controller {
 		return $array;
 	}
 	public function showTicketDetails($id) {
+		$first = AProfile::select ( 'agent_id as nameid', 'first_name', 'last_name' );
+		$second = CProfile::select ( 'client_id as nameid', 'first_name', 'last_name' )->union ( $first );
+		
 		$topics = Topics::get ();
 		$restriction = DB::table ( 'ticket_restrictions' )->get ();
 		$agents = DB::table ( 'admin' )->join ( 'admin_profiles', 'admin.id', '=', 'admin_profiles.agent_id' )->where ( 'user_type', 'agent' )->orderBy ( 'last_name' )->get ();
 		
-		$ticket = Tickets::leftJoin ( 'ticket_topics', 'tickets.topic_id', "=", 'ticket_topics.topic_id' )->leftJoin ( DB::raw ( '(SELECT agent_id,first_name as assignFN, last_name as assignLN from admin_profiles) assignedSupport' ), function ($join) {
+		$ticket = Tickets::leftJoin ( DB::raw ( '(select topic_id,description from ticket_topics) ticket_topics' ), 'tickets.topic_id', "=", 'ticket_topics.topic_id' )
+		->leftJoin ( DB::raw ( '(SELECT agent_id,first_name as assignFN, last_name as assignLN from admin_profiles) assignedSupport' ), function ($join) {
 			$join->on ( 'tickets.assigned_support', '=', 'assignedSupport.agent_id' );
 		} )->leftJoin ( DB::raw ( '(SELECT agent_id,first_name as closedFN, last_name as closedLN from admin_profiles) closedBy' ), function ($join) {
 			$join->on ( 'tickets.closed_by', '=', 'closedBy.agent_id' );
-		} )->where ( 'id', $id )->first ();
+		} )
+		->leftJoin ( DB::raw ( "({$second->toSql()}) as names" ), function ($join) {
+			$join->on ( 'sender_id', '=', 'names.nameid' );
+		} )
+		->where ( 'tickets.id', $id )->first ();
 		
-		if ($ticket->assigned_support == null) {
+		if ($ticket->ticket_status == "Open") {
 			$updateTicket = Tickets::find ( $id );
 			$updateTicket->ticket_status = "Pending";
 			$updateTicket->assigned_support = Auth::guard ( 'admin' )->user ()->id;
 			$updateTicket->save ();
 		}
 		
-		$sendername = DB::table ( 'admin_profiles' )->where ( 'agent_id', $ticket->sender_id )->first ();
-		if ($sendername == null) {
-			$sendername = DB::table ( 'client_profiles' )->where ( 'client_id', $ticket->sender_id )->first ();
-		}
-		$ticket->sender_id = $sendername->first_name . ' ' . $sendername->last_name;
 		
 		if ($ticket->ticket_status != 'Open') {
 			$messages = TicketMessages::where ( 'ticket_id', $id )->get ();
@@ -438,10 +444,8 @@ class TicketsAdmin extends Controller {
 		$second = CProfile::select ( 'client_id as nameid', 'first_name', 'last_name' )->union ( $first );
 		$topics = Topics::get ();
 		
-		$tickets = Tickets::leftJoin ( DB::raw ( '(select topic_id,description from ticket_topics) ticket_topics' ), 'tickets.topic_id', '=', 'ticket_topics.topic_id' )->where ( 'ticket_status', 'Open' )->whereBetween ( 'updated_at', [ 
-				Carbon::yesterday (),
-				Carbon::tomorrow () 
-		] )->leftJoin ( DB::raw ( "({$second->toSql()}) as names" ), function ($join) {
+		$tickets = Tickets::leftJoin ( DB::raw ( '(select topic_id,description from ticket_topics) ticket_topics' ), 'tickets.topic_id', '=', 'ticket_topics.topic_id' )
+		->where ( 'ticket_status', 'Open' )->leftJoin ( DB::raw ( "({$second->toSql()}) as names" ), function ($join) {
 			$join->on ( 'tickets.sender_id', '=', 'names.nameid' );
 		} )->orderBy ( 'updated_at', 'desc' )->get();
 		
@@ -794,7 +798,7 @@ class TicketsAdmin extends Controller {
 	}
 	public function closeTicket(Request $request) {
 		$validator = Validator::make ( $request->all (), [ 
-				'id' => 'exists:tickets',
+				'id' => 'exists:tickets,id',
 				'closing_report' => 'required|min:15' 
 		] );
 		
@@ -991,10 +995,7 @@ class TicketsAdmin extends Controller {
 		) );
 	}
 	public function ticketCount() {
-		$opentickets = Tickets::where ( 'ticket_status', 'Open' )->whereBetween ( 'updated_at', [ 
-				Carbon::yesterday (),
-				Carbon::tomorrow () 
-		] )->count ();
+		$opentickets = Tickets::where ( 'ticket_status', 'Open' )->count ();
 		
 		$pendingtickets = Tickets::where ( 'ticket_status', 'Pending' )->count ();
 		
