@@ -16,6 +16,29 @@ $(function() {
 			$('span.closedTickets').text(data.closedTickets);
 		});
 
+		$('div.ticketsummernote')
+				.summernote(
+						{
+							toolbar : [
+									[
+											'style',
+											[
+													'bold',
+													'italic',
+													'underline',
+													'clear' ] ],
+									[ 'fontname',
+											[ 'fontname' ] ],
+									[ 'fontsize',
+											[ 'fontsize' ] ],
+									[ 'color', [ 'color' ] ],
+									[
+											'para',
+											[ 'ul', 'ol',
+													'paragraph' ] ],
+									 ]
+						});
+		
 		
 	});
 	
